@@ -16,7 +16,7 @@ export const entries: Entry[] = [
     kind: 'component',
     title: 'Button',
     summary: 'Triggers an action. A verb, in sentence case.',
-    details: 3,
+    details: 4,
     keywords: ['primary', 'secondary', 'ghost', 'hover', 'focus ring', 'action'],
   },
   {
@@ -32,8 +32,16 @@ export const entries: Entry[] = [
     kind: 'component',
     title: 'Toolbar',
     summary: 'A floating panel of tools, concentric with everything inside it.',
-    details: 2,
+    details: 3,
     keywords: ['panel', 'palette', 'tools', 'toggle', 'inset'],
+  },
+  {
+    slug: 'tooltip',
+    kind: 'component',
+    title: 'Tooltip',
+    summary: 'Names an icon-only control and its shortcut. One line, never clickable.',
+    details: 2,
+    keywords: ['hint', 'label', 'hover', 'shortcut', 'icon button', 'title'],
   },
   {
     slug: 'concentric-radius',

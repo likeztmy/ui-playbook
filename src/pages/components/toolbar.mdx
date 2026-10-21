@@ -2,7 +2,7 @@
 layout: ../../layouts/Entry.astro
 slug: toolbar
 ---
-import { ToolbarLive, ToolbarStates, ToolbarInset, ToolbarPressed } from '../../demos/toolbar';
+import { ToolbarLive, ToolbarStates, ToolbarInset, ToolbarPressed, ToolbarTips } from '../../demos/toolbar';
 
 ## Anatomy
 
@@ -35,11 +35,17 @@ Tools are toggles in a group: arrow keys move between them, and the current one 
 
 <ToolbarPressed client:visible />
 
+### Every tool is named by a tooltip
+
+<ToolbarTips client:visible />
+
+Icon-only tools carry an `aria-label` and a Tip with the same words. The toolbar shares one delay, so once a label has shown, its neighbours open instantly.
+
 ## Common mistakes
 
-- **Icon-only tools without names.** Every tool needs an `aria-label` and a tooltip with the same words.
 - **Borders around groups.** Separate groups with a hairline (`line`), not boxes inside the box.
+- **Two icon sets.** One set (Lucide) at one stroke. Mixing outline and filled icons, or two libraries, reads as two products bolted together.
 
 ## Copy
 
-- Tooltips name the tool, then its shortcut: **Rectangle  R**.
+- Tooltips name the tool, then its shortcut: **Rectangle** R. The name matches the `aria-label` word for word.

@@ -10,7 +10,7 @@ import { ConcentricTweak, SameRadius, BorderCounts } from '../../demos/concentri
 
 <ConcentricTweak client:visible />
 
-When the inset is as large as the outer radius, the formula reaches zero. Don't go square: floor it at `radius-xs` (4).
+The formula holds while the inset is smaller than the outer radius. Once the inset reaches it, the two arcs no longer touch and the rule has nothing to keep equal: give the inner shape its own usual radius. A dialog with a 16px corner and 16px padding keeps its buttons at `radius-md` 8, not 0.
 
 ## Details
 
@@ -32,6 +32,11 @@ The radius scale steps in 2–4px so the common insets always land on a token.
 | Menu `radius-lg` 12 | `space-1` 4 | Item `radius-md` 8 |
 | Segmented track `radius-md` 8 | `space-0-5` 2 | Thumb `radius-sm` 6 |
 | Field `radius-md` 8 | `space-1` 4 + 1px border | Key 3 |
+| Toast `radius-lg` 12 | `space-1` 4 | Action `radius-md` 8 |
+| Switch track `radius-full` | 2 | Knob `radius-full` |
+| Dialog `radius-xl` 16 | `space-4` 16 | Buttons `radius-md` 8 |
+
+A pill around a circle is concentric by construction, so the switch needs no arithmetic. The dialog is the exception above: its padding equals its radius, so its buttons keep their own corner.
 
 ## Common mistakes
 

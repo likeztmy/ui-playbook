@@ -12,8 +12,15 @@ const [primary] = themes;
 const vars = Object.fromEntries(themes.map((id) => [id, []]));
 const plain = [];
 
+// An alias such as "{accent-text}" resolves per theme block: declared once on
+// :root, var() would compute there and nested [data-theme] subtrees would
+// inherit the root theme's value.
+const alias = (v) => typeof v === 'string' && /^\{[A-Za-z0-9_.-]+\}$/.test(v);
+
 function push(name, value) {
-  if (value && typeof value === 'object') {
+  if (alias(value)) {
+    for (const id of themes) vars[id].push(`  --${name}: var(--${value.slice(1, -1)});`);
+  } else if (value && typeof value === 'object') {
     for (const id of themes) vars[id].push(`  --${name}: ${value[id] ?? value[primary]};`);
   } else {
     plain.push(`  --${name}: ${value};`);

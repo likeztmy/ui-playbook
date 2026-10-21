@@ -4,10 +4,15 @@ import { ToggleGroup } from '@base-ui/react/toggle-group';
 import type { ComponentProps, ReactNode } from 'react';
 import { buttonClass } from './Button';
 import { cx } from './cx';
+import { Tip, TipGroup } from './Tooltip';
 import s from './Toolbar.module.scss';
 
 function Root({ className, ...props }: ComponentProps<typeof BaseToolbar.Root>) {
-  return <BaseToolbar.Root {...props} className={cx(s.toolbar, className as string)} />;
+  return (
+    <TipGroup>
+      <BaseToolbar.Root {...props} className={cx(s.toolbar, className as string)} />
+    </TipGroup>
+  );
 }
 
 /** A set of mutually exclusive tools, e.g. Select / Rectangle / Pen. */
@@ -19,23 +24,34 @@ type ToolProps = {
   value: string;
   label: string;
   children: ReactNode;
+  /** Its shortcut, shown in the tooltip. */
+  keys?: string[];
   className?: string;
   /** Holds a state still for display; see styles/_states.scss. */
   pin?: string;
+  /** Demo only: name the tool with a native title instead of a Tip. */
+  nativeTitle?: boolean;
 };
 
-/** One tool in a Tools group: an icon toggle named by its label. */
-function Tool({ value, label, children, className, pin }: ToolProps) {
-  return (
+/** One tool in a Tools group: an icon toggle, named by its tooltip. */
+function Tool({ value, label, keys, children, className, pin, nativeTitle }: ToolProps) {
+  const button = (
     <BaseToolbar.Button
       render={<Toggle value={value} />}
       aria-label={label}
-      title={label}
+      title={nativeTitle ? label : undefined}
       data-pin={pin}
       className={cx(buttonClass({ icon: true }), s.tool, className)}
     >
       {children}
     </BaseToolbar.Button>
+  );
+  return nativeTitle ? (
+    button
+  ) : (
+    <Tip label={label} keys={keys}>
+      {button}
+    </Tip>
   );
 }
 

@@ -137,3 +137,59 @@
     width: var(--control-sm);
   }
 }
+
+// Destructive confirm: the dialog's one filled button.
+.dangerFill {
+  background: var(--danger);
+  box-shadow: none;
+  color: var(--on-accent);
+
+  &::before {
+    background: color-mix(in srgb, var(--ink) 14%, transparent);
+  }
+
+  @include focus {
+    box-shadow: var(--focus-ring);
+  }
+}
+
+// ── Loading ──────────────────────────────────────────────
+
+.labels {
+  display: inline-grid;
+
+  > [data-hidden] {
+    visibility: hidden;
+  }
+}
+
+.layer {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+}
+
+.button[data-loading] {
+  cursor: progress;
+
+  &::before {
+    opacity: 0 !important;
+  }
+}
+
+// Only spins while busy: the reserved layer keeps a spinner in the DOM.
+.button[data-loading] .spinner {
+  animation: spin 0.8s linear infinite;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation-duration: 2.4s;
+  }
+}
+
+@keyframes spin {
+  to {
+    rotate: 1turn;
+  }
+}

@@ -16,10 +16,17 @@ function Nest({ outer, inner, pad, border }: { outer: number; inner: number; pad
   );
 }
 
-/** inner = outer − inset − border, floored at radius-xs (4). */
+/** The inner shape's usual radius, kept once the arcs can no longer meet. */
+const OWN_RADIUS = 8;
+
+/**
+ * inner = outer − inset − border while the inset is smaller than the outer
+ * radius. At or past it the arcs no longer touch, so the inner shape keeps
+ * its own radius (radius-md) instead of collapsing to a square.
+ */
 export function innerRadius(outer: number, pad: number, border: number) {
   const r = outer - pad - border;
-  return r > 0 ? Math.max(r, Math.min(4, outer)) : Math.min(4, outer);
+  return r > 0 ? r : OWN_RADIUS;
 }
 
 export function ConcentricTweak() {
@@ -35,7 +42,9 @@ export function ConcentricTweak() {
       readout={
         mode === 'Concentric' ? (
           <code className={s.readout}>
-            {outer} − {pad} − {border} = {inner}px
+            {outer - pad - border > 0
+              ? `${outer} − ${pad} − ${border} = ${inner}px`
+              : `inset ≥ radius: inner keeps its own ${inner}px`}
           </code>
         ) : (
           <code className={s.readout}>inner = outer = {outer}px</code>

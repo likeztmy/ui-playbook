@@ -1,0 +1,41 @@
+// Inverse: ink ground, bg text, so it separates from the UI in both themes.
+
+.positioner {
+  z-index: var(--z-tooltip);
+}
+
+.popup {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  background: var(--ink);
+  color: var(--bg);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  white-space: nowrap;
+  pointer-events: none;
+  // Fade only, no travel: it labels, it doesn't arrive.
+  transition: opacity var(--duration-fast) var(--ease-out);
+
+  &[data-starting-style],
+  &[data-ending-style] {
+    opacity: 0;
+  }
+
+  // Moving between neighbours swaps the label at once.
+  &[data-instant] {
+    transition: none;
+  }
+}
+
+.keys {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  color: color-mix(in srgb, var(--bg) 62%, transparent);
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+}

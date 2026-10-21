@@ -4,19 +4,19 @@ import { Compare, Frame, StateGrid, statePin } from './shell';
 import m from './mistakes.module.scss';
 
 const TOOLS = [
-  ['select', 'Select', <PointerIcon />],
-  ['rect', 'Rectangle', <RectIcon />],
-  ['ellipse', 'Ellipse', <EllipseIcon />],
-  ['text', 'Text', <TextIcon />],
-  ['pen', 'Pen', <PenIcon />],
+  ['select', 'Select', <PointerIcon />, 'V'],
+  ['rect', 'Rectangle', <RectIcon />, 'R'],
+  ['ellipse', 'Ellipse', <EllipseIcon />, 'O'],
+  ['text', 'Text', <TextIcon />, 'T'],
+  ['pen', 'Pen', <PenIcon />, 'P'],
 ] as const;
 
-function DrawToolbar({ rootClass, toolClass }: { rootClass?: string; toolClass?: string }) {
+function DrawToolbar({ rootClass, toolClass, nativeTitle }: { rootClass?: string; toolClass?: string; nativeTitle?: boolean }) {
   return (
     <Toolbar.Root aria-label="Drawing" className={rootClass}>
       <Toolbar.Tools defaultValue={['select']} aria-label="Tools">
-        {TOOLS.map(([value, label, icon]) => (
-          <Toolbar.Tool key={value} value={value} label={label} className={toolClass}>
+        {TOOLS.map(([value, label, icon, key]) => (
+          <Toolbar.Tool key={value} value={value} label={label} keys={[key]} className={toolClass} nativeTitle={nativeTitle}>
             {icon}
           </Toolbar.Tool>
         ))}
@@ -79,6 +79,18 @@ export function ToolbarStates() {
           </Toolbar.Root>
         ),
       }))}
+    />
+  );
+}
+
+export function ToolbarTips() {
+  return (
+    <Compare
+      height={160}
+      before={<DrawToolbar nativeTitle />}
+      after={<DrawToolbar />}
+      beforeNote="A native title: the browser waits about a second, draws it in the system's style far from the button, has no shortcut, and makes you wait again for every neighbour."
+      afterNote="A Tip after delay-tooltip (500ms) with the tool's shortcut. Slide along the row and each label swaps in at once."
     />
   );
 }

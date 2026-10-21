@@ -3,7 +3,7 @@
 // an icon and a keycap.
 
 .positioner {
-  z-index: 50;
+  z-index: var(--z-dropdown);
   outline: none;
 }
 

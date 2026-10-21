@@ -1,8 +1,7 @@
 ---
 import '../styles/tokens.css';
 import '../styles/global.scss';
-import b from '../ui/Button.module.scss';
-import { MoonIcon, SunIcon } from '../ui/icons';
+import { ThemeToggle } from '../components/ThemeToggle';
 import s from './Base.module.scss';
 
 interface Props {
@@ -34,41 +33,11 @@ const pageTitle = title ? `${title} · UI Playbook` : 'UI Playbook';
     <div id="root">
       <header class={s.header}>
         <a class={s.wordmark} href="/">UI Playbook</a>
-        <button
-          class={`${b.button} ${b.ghost} ${b.icon}`}
-          type="button"
-          id="theme-toggle"
-          aria-label="Switch theme"
-          title="Switch theme"
-        >
-          <span class={s.sun}><SunIcon /></span>
-          <span class={s.moon}><MoonIcon /></span>
-        </button>
+        <ThemeToggle client:load sunClass={s.sun} moonClass={s.moon} />
       </header>
       <main class={s.main}>
         <slot />
       </main>
     </div>
-    <script>
-      const root = document.documentElement;
-      const dark = matchMedia('(prefers-color-scheme: dark)');
-      const current = () => (root.dataset.theme as 'light' | 'dark' | undefined) ?? (dark.matches ? 'dark' : 'light');
-      const button = document.getElementById('theme-toggle')!;
-      const label = () => {
-        const next = current() === 'dark' ? 'light' : 'dark';
-        button.setAttribute('aria-label', `Switch to ${next} theme`);
-        button.title = `Switch to ${next} theme`;
-      };
-      label();
-      dark.addEventListener('change', label);
-      button.addEventListener('click', () => {
-        const next = current() === 'dark' ? 'light' : 'dark';
-        root.dataset.theme = next;
-        try {
-          localStorage.setItem('theme', next);
-        } catch {}
-        label();
-      });
-    </script>
   </body>
 </html>

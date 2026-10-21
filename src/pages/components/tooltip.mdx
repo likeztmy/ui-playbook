@@ -1,0 +1,48 @@
+---
+layout: ../../layouts/Entry.astro
+slug: tooltip
+---
+import { TooltipLive, TooltipGrouping, TooltipInverse } from '../../demos/tooltip';
+
+## Anatomy
+
+| Part | Token | Value |
+| --- | --- | --- |
+| Ground and text | `ink` on `bg`, inverse | |
+| Radius | `radius-sm` | 6 |
+| Padding | `space-1` × `space-2` | 4 × 8 |
+| Text | label size, 12 / 16, weight 500 | 12 |
+| Offset from trigger | `space-1` | 4 |
+| Delay | `delay-tooltip` | 500ms |
+| Layer | `z-tooltip` | 400 |
+
+One line: the control's name, then its shortcut as glyphs, dimmed. It sits above the trigger and flips below when there's no room.
+
+## States
+
+<TooltipLive client:visible />
+
+Hover a button and wait; then slide along the row. Tab to a button and the tooltip shows on focus too. Touch devices don't get tooltips at all, so nothing a user must know can live only in one.
+
+## Details
+
+### Wait once, then follow the pointer
+
+<TooltipGrouping client:visible />
+
+### Inverse, so it can't pass for a control
+
+<TooltipInverse client:visible />
+
+It fades in over `duration-fast` and doesn't travel: a label appearing where you're already looking needs no direction.
+
+## Common mistakes
+
+- **Anything clickable inside.** A tooltip vanishes when the pointer leaves the trigger. Links, buttons or forms belong in a Popover.
+- **Tooltips on labelled buttons.** A button that says *Save* doesn't need a tooltip saying *Save*.
+- **Sentences.** If it needs more than a name and a shortcut, the control needs a visible label instead.
+
+## Copy
+
+- The tooltip's name is the control's `aria-label`, word for word: **Zoom out**, not *Zoom out of the canvas*.
+- Sentence case, no full stop. Shortcut after the name: **Redo** ⌘⇧Z.

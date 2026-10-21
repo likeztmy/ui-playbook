@@ -2,7 +2,7 @@
 layout: ../../layouts/Entry.astro
 slug: button
 ---
-import { ButtonStates, HoverTiming, FocusEdge, OnePrimary } from '../../demos/button';
+import { ButtonStates, HoverTiming, FocusEdge, OnePrimary, LoadingState } from '../../demos/button';
 
 ## Anatomy
 
@@ -14,8 +14,9 @@ import { ButtonStates, HoverTiming, FocusEdge, OnePrimary } from '../../demos/bu
 | Icon gap | `space-1` | 4 |
 | Label | body, weight 500 | 14 / 20 |
 | Edge | `shadow-xs` | 1px |
+| Spinner | Lucide `loader-circle` | 16 |
 
-Buttons in one row share one height. Icons are 16px and inherit the label's colour.
+Buttons in one row share one height. Icons are Lucide at 16px and inherit the label's colour. An icon-only button always has a tooltip with the same words as its `aria-label`.
 
 ## States
 
@@ -41,7 +42,13 @@ When the edge is drawn with `box-shadow`, any focus style that sets `box-shadow`
 
 <OnePrimary client:visible />
 
-The filled button is the reason the screen exists. Everything else is secondary or ghost; destructive actions use `danger` text.
+The filled button is the reason the screen exists. Everything else is secondary or ghost. In a destructive dialog the one fill is `danger-fill`; elsewhere a destructive action is `danger` text.
+
+### Loading keeps its shape and waits its turn
+
+<LoadingState client:visible />
+
+Show busy only past `delay-loading` (300ms). The spinner takes the icon's slot, the label turns progressive (*Publishing*), and the button stays focusable but ignores presses until the request settles.
 
 ## Common mistakes
 

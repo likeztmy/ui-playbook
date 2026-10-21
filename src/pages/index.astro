@@ -5,6 +5,7 @@ import { ButtonPreview } from '../demos/button';
 import { MenuPreview } from '../demos/menu';
 import { ToolbarPreview } from '../demos/toolbar';
 import { ConcentricPreview } from '../demos/concentric';
+import { TooltipPreview } from '../demos/tooltip';
 import Hero from '../components/Hero.astro';
 import s from './index.module.scss';
 
@@ -39,6 +40,7 @@ const groups = [
                   {e.slug === 'button' && <ButtonPreview client:visible />}
                   {e.slug === 'menu' && <MenuPreview client:visible />}
                   {e.slug === 'toolbar' && <ToolbarPreview client:visible />}
+                  {e.slug === 'tooltip' && <TooltipPreview client:visible />}
                   {e.slug === 'concentric-radius' && <ConcentricPreview />}
                 </div>
                 <p class={s.cardSummary}>{e.summary}</p>

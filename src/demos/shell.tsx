@@ -4,6 +4,7 @@ import { Button } from '../ui/Button';
 import { CheckIcon, ContrastIcon, CrossIcon } from '../ui/icons';
 import { DialPanel } from '../ui/Dial';
 import { cx } from '../ui/cx';
+import { Tip, TipGroup } from '../ui/Tooltip';
 import s from './shell.module.scss';
 
 type Theme = 'light' | 'dark';
@@ -35,12 +36,16 @@ export function Frame({ label, children, height = 200, className, defaultTheme }
     <figure className={cx(s.frame, className)} data-theme={theme ?? undefined}>
       <div className={s.bar}>
         <span className={s.label}>{label}</span>
-        <Button variant="ghost" size="sm" icon aria-label="Switch this demo's theme" title="Switch theme" onClick={flip}>
-          <ContrastIcon />
-        </Button>
+        <Tip label="Switch theme">
+          <Button variant="ghost" size="sm" icon aria-label="Switch theme" onClick={flip}>
+            <ContrastIcon />
+          </Button>
+        </Tip>
       </div>
       <div className={s.stage} style={{ minHeight: height }}>
-        <PortalContainer.Provider value={portal}>{children}</PortalContainer.Provider>
+        <PortalContainer.Provider value={portal}>
+          <TipGroup>{children}</TipGroup>
+        </PortalContainer.Provider>
       </div>
       <div ref={setPortal} />
     </figure>

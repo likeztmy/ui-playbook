@@ -1,3 +1,4 @@
+import { useRef, useState } from 'react';
 import { Button } from '../ui/Button';
 import { PlusIcon } from '../ui/icons';
 import { Compare, StateGrid, statePin, type State } from './shell';
@@ -88,12 +89,76 @@ export function OnePrimary() {
       }
       after={
         <div className={s.footer}>
-          <Button variant="ghost">Cancel</Button>
-          <Button variant="danger">Delete project</Button>
+          <Button>Cancel</Button>
+          <Button variant="danger-fill">Delete project</Button>
         </div>
       }
       beforeNote="Two filled buttons compete. Cancel looks as important as the action it backs out of."
-      afterNote="Cancel steps back to ghost. A destructive action gets danger, not the accent: blue says go."
+      afterNote="Cancel steps back to secondary. The one fill is danger, not the accent: blue says go, and this is a stop."
+    />
+  );
+}
+
+/**
+ * Runs a fake request of `ms`. The careful version waits delay-loading
+ * (300ms) before showing it's busy and ignores presses while busy.
+ */
+function useFakeRequest(ms: number, careful: boolean) {
+  const [shown, setShown] = useState(false);
+  const [sent, setSent] = useState(0);
+  const pending = useRef(false);
+  const run = () => {
+    if (careful && pending.current) return;
+    pending.current = true;
+    setSent((n) => n + 1);
+    let t: ReturnType<typeof setTimeout> | undefined;
+    if (careful) t = setTimeout(() => setShown(true), 300);
+    else setShown(true);
+    setTimeout(() => {
+      clearTimeout(t);
+      pending.current = false;
+      setShown(false);
+    }, ms);
+  };
+  return { shown, sent, run };
+}
+
+type Request = ReturnType<typeof useFakeRequest>;
+
+function LoadingPair({ careful }: { careful: boolean }) {
+  const fast = useFakeRequest(150, careful);
+  const slow = useFakeRequest(1600, careful);
+  const one = (r: Request, label: string, busyLabel: string) =>
+    careful ? (
+      <Button variant="primary" loading={r.shown} loadingLabel={busyLabel} onClick={r.run}>
+        {label}
+      </Button>
+    ) : (
+      // The naive version: swap the label in place, react at once, accept every press.
+      <Button variant="primary" onClick={r.run} leading={r.shown ? <span className={s.naiveSpin} /> : undefined}>
+        {r.shown ? busyLabel : label}
+      </Button>
+    );
+  return (
+    <div className={s.stack}>
+      <div className={s.row}>
+        {one(fast, 'Rename', 'Renaming')}
+        {one(slow, 'Publish', 'Publishing')}
+      </div>
+      <p className={s.meter}>
+        Requests sent: <b>{fast.sent + slow.sent}</b>
+      </p>
+    </div>
+  );
+}
+
+export function LoadingState() {
+  return (
+    <Compare
+      before={<LoadingPair careful={false} />}
+      after={<LoadingPair careful />}
+      beforeNote="Busy the instant it's pressed. Rename flashes a spinner for 150ms, Publish jumps wider as its label changes, and every extra press sends another request."
+      afterNote="Nothing for the first 300ms (delay-loading), so fast actions never flash. The width is reserved for the longer label, and presses while busy are ignored."
     />
   );
 }

@@ -172,6 +172,48 @@
           "dark": "#0f2e23"
         },
         "usage": "成功提示的浅底，文字用 `success`。"
+      },
+      {
+        "name": "warning",
+        "value": {
+          "light": "#9a5b00",
+          "dark": "#f5b042"
+        },
+        "usage": "需要注意但不阻断的状态：配额将满、未保存的修改。作为文字用于所有表面与 `warning-soft` 之上。与 `danger` 亮度接近，必须配图标或文字区分。"
+      },
+      {
+        "name": "warning-soft",
+        "value": {
+          "light": "#fdf3e1",
+          "dark": "#33250a"
+        },
+        "usage": "警告提示的浅底，文字用 `warning`。"
+      },
+      {
+        "name": "info",
+        "value": "{accent-text}",
+        "usage": "中性提示（新功能、说明）。`accent-text` 的别名，保证信息色和链接是同一种蓝。"
+      },
+      {
+        "name": "info-soft",
+        "value": "{accent-soft}",
+        "usage": "信息提示的浅底，`accent-soft` 的别名。"
+      },
+      {
+        "name": "scrim",
+        "value": {
+          "light": "#18181b52",
+          "dark": "#000000a3"
+        },
+        "usage": "对话框背后的遮罩，盖住整个视口。"
+      },
+      {
+        "name": "knob",
+        "value": {
+          "light": "#ffffff",
+          "dark": "#f4f4f6"
+        },
+        "usage": "开关的滑块。在 `line-strong`（关）和 `accent`（开）上都保持清晰。"
       }
     ]
   },
@@ -409,6 +451,14 @@
         "usage": "对话框、命令面板。"
       },
       {
+        "name": "shadow-knob",
+        "value": {
+          "light": "0 1px 2px #0000002e",
+          "dark": "0 1px 2px #00000066"
+        },
+        "usage": "开关滑块的投影，让滑块在轨道上浮起一点。"
+      },
+      {
         "name": "focus-ring",
         "value": {
           "light": "0 0 0 2px #ffffff, 0 0 0 4px #0071e3",
@@ -440,6 +490,16 @@
         "name": "duration-slow",
         "value": "260ms",
         "usage": "对话框、侧栏等大面积移动。"
+      },
+      {
+        "name": "delay-tooltip",
+        "value": "500ms",
+        "usage": "悬停多久才显示提示气泡；在相邻按钮之间移动时立即切换。"
+      },
+      {
+        "name": "delay-loading",
+        "value": "300ms",
+        "usage": "操作超过这个时间才显示加载状态，避免一闪而过。"
       }
     ]
   },
@@ -460,6 +520,91 @@
         "name": "ease-in-out",
         "value": "cubic-bezier(0.4, 0, 0.2, 1)",
         "usage": "位置移动（拖拽归位、选中块滑动）。"
+      }
+    ]
+  },
+  "layout": {
+    "note": "页面骨架尺寸。内容宽度有上限，侧栏宽度固定，正文行长受控。",
+    "tokens": [
+      {
+        "name": "sidebar",
+        "value": "240px",
+        "usage": "默认侧栏宽度（导航、文件树）。"
+      },
+      {
+        "name": "sidebar-wide",
+        "value": "280px",
+        "usage": "属性面板、检查器。"
+      },
+      {
+        "name": "toolbar-height",
+        "value": "48px",
+        "usage": "顶部工具栏高度 = `control-md` + 2 × `space-2`。"
+      },
+      {
+        "name": "content-max",
+        "value": "1200px",
+        "usage": "设置页、列表页的内容最大宽度。"
+      },
+      {
+        "name": "prose-max",
+        "value": "680px",
+        "usage": "长段落最大宽度，约 40 个汉字或 75 个英文字符。"
+      },
+      {
+        "name": "dialog-sm",
+        "value": "400px",
+        "usage": "确认类对话框宽度。"
+      },
+      {
+        "name": "dialog-md",
+        "value": "560px",
+        "usage": "表单类对话框宽度。"
+      },
+      {
+        "name": "bp-sm",
+        "value": "640px",
+        "usage": "断点：以下隐藏侧栏，改为抽屉。"
+      },
+      {
+        "name": "bp-md",
+        "value": "1024px",
+        "usage": "断点：以下属性面板改为浮层。"
+      },
+      {
+        "name": "bp-lg",
+        "value": "1440px",
+        "usage": "断点：以上内容区可同时展示侧栏与属性面板。"
+      }
+    ]
+  },
+  "zIndex": {
+    "note": "层叠顺序只用这几档，不写临时数字。",
+    "tokens": [
+      {
+        "name": "z-sticky",
+        "value": "10",
+        "usage": "吸顶表头、工具栏。"
+      },
+      {
+        "name": "z-dropdown",
+        "value": "100",
+        "usage": "菜单、下拉、弹出框。"
+      },
+      {
+        "name": "z-dialog",
+        "value": "200",
+        "usage": "对话框与遮罩。"
+      },
+      {
+        "name": "z-toast",
+        "value": "300",
+        "usage": "通知，盖过对话框。"
+      },
+      {
+        "name": "z-tooltip",
+        "value": "400",
+        "usage": "提示气泡，永远在最上层。"
       }
     ]
   }
