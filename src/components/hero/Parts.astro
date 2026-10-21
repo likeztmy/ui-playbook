@@ -1,0 +1,59 @@
+---
+// A · Parts: the site's own components as silhouettes, cropped by the card.
+import HeroText from './HeroText.astro';
+import s from './hero.module.scss';
+
+const menuRows = [
+  { on: false },
+  { on: true },
+  { on: false },
+  { sep: true },
+  { danger: true },
+];
+const barWidths = [64, 88, 72, 0, 56];
+---
+
+<div class={s.card}>
+  <HeroText />
+  <div class={s.parts} aria-hidden="true">
+    <div class={s.col}>
+      <div class={s.sToolbar}>
+        <span class={s.sTool} data-on></span>
+        <span class={s.sTool}></span>
+        <span class={s.sTool}></span>
+        <span class={s.sTool}></span>
+        <span class={s.sAction}></span>
+      </div>
+      <div class={s.sMenu}>
+        {
+          menuRows.map((r, i) =>
+            r.sep ? (
+              <span class={s.sSep} />
+            ) : (
+              <span class={s.sRow} data-on={r.on ? '' : undefined} data-danger={r.danger ? '' : undefined}>
+                <span class={s.sIcon} />
+                <span class={s.sBar} style={`width:${barWidths[i]}px`} />
+                <span class={s.sCaps}>
+                  <span class={s.sCap} />
+                  <span class={s.sCap} />
+                </span>
+              </span>
+            ),
+          )
+        }
+      </div>
+    </div>
+    <div class={`${s.col} ${s.shiftDown}`}>
+      <div class={s.sPanel}>
+        <span class={s.sDial} style="--v: 62%"></span>
+        <span class={s.sDial} style="--v: 34%"></span>
+        <span class={s.sDial} style="--v: 80%"></span>
+        <div class={s.sSeg}>
+          <span class={s.sSegItem}></span>
+          <span class={s.sSegItem} data-on></span>
+          <span class={s.sSegItem}></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

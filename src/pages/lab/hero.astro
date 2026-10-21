@@ -1,0 +1,45 @@
+---
+import Base from '../../layouts/Base.astro';
+import Parts from '../../components/hero/Parts.astro';
+import Redline from '../../components/hero/Redline.astro';
+import s from '../../layouts/Entry.module.scss';
+
+const directions = [
+  {
+    id: 'A · Parts',
+    note: 'The site’s own components as silhouettes, cropped by the card. Every piece is concentric and uses one accent.',
+    C: Parts,
+  },
+  {
+    id: 'B · Redline',
+    note: 'One real toolbar at 2×, measured like a spec sheet: the two corner arcs drawn around their shared centre, inset and height dimensioned, on a 16px grid with print crosshairs.',
+    C: Redline,
+  },
+];
+---
+
+<Base title="Hero directions">
+  <meta name="robots" content="noindex" slot="head" />
+  <article class={s.page} style="max-width: 1120px">
+    <header class={s.head}>
+      <p class={s.kind}>Lab</p>
+      <h1 class={s.title}>Hero directions</h1>
+      <p class={s.summary}>Directions A and B, kept for reference. C (rings) shipped on the home page.</p>
+    </header>
+    <div class={s.body}>
+      {
+        directions.map(({ id, note, C }) => (
+          <section>
+            <h2>{id}</h2>
+            <p>{note}</p>
+            {['light', 'dark'].map((theme) => (
+              <div data-theme={theme} data-lab-frame style="background: var(--bg); color: var(--ink); padding: 24px; border-radius: 16px; margin-bottom: 16px;">
+                <C />
+              </div>
+            ))}
+          </section>
+        ))
+      }
+    </div>
+  </article>
+</Base>

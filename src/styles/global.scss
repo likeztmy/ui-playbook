@@ -23,6 +23,8 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  // Full-bleed bands use 100vw, which includes the scrollbar; clip, don't scroll.
+  overflow-x: clip;
 }
 
 // Base UI: a stacking context so portalled popups sit above the page.

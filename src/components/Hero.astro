@@ -1,0 +1,25 @@
+---
+// The home hero. Rings grow out of the search field by the concentric rule:
+// ring k sits 24k px outside the field with radius 8 + 24k, so every ring
+// shares the field's corner centres at any width.
+import { SearchIcon } from '../ui/icons';
+import s from './Hero.module.scss';
+
+const RINGS = 14;
+---
+
+<section class={s.hero}>
+  <div class={s.text}>
+    <h1 class={s.title}>UI Playbook</h1>
+    <p class={s.lede}>The small details that make interface components feel right, each one shown side by side.</p>
+    <div class={s.field}>
+      <div class={s.halo} aria-hidden="true">
+        {Array.from({ length: RINGS }, (_, i) => <span class={s.ring} style={`--k: ${i + 1}`} />)}
+      </div>
+      <label class={s.search}>
+        <SearchIcon />
+        <input id="search" type="search" placeholder="Search components and principles" autocomplete="off" spellcheck="false" />
+      </label>
+    </div>
+  </div>
+</section>

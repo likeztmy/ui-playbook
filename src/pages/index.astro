@@ -5,7 +5,7 @@ import { ButtonPreview } from '../demos/button';
 import { MenuPreview } from '../demos/menu';
 import { ToolbarPreview } from '../demos/toolbar';
 import { ConcentricPreview } from '../demos/concentric';
-import { SearchIcon } from '../ui/icons';
+import Hero from '../components/Hero.astro';
 import s from './index.module.scss';
 
 const groups = [
@@ -15,14 +15,7 @@ const groups = [
 ---
 
 <Base>
-  <section class={s.hero}>
-    <h1 class={s.title}>UI Playbook</h1>
-    <p class={s.lede}>The small details that make interface components feel right, each one shown side by side.</p>
-    <label class={s.search}>
-      <SearchIcon />
-      <input id="search" type="search" placeholder="Search components and principles" autocomplete="off" spellcheck="false" />
-    </label>
-  </section>
+  <Hero />
 
   {
     groups.map((g) => {

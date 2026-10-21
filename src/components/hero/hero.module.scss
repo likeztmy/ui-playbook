@@ -1,0 +1,386 @@
+// Hero directions. Every shape is drawn from Precision tokens and obeys the
+// rules the site teaches: concentric corners, equal insets, one accent.
+
+// ── Shared text ──────────────────────────────────────────
+
+.text {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: 440px;
+
+  &[data-align='center'] {
+    align-items: center;
+    margin: 0 auto;
+    text-align: center;
+  }
+}
+
+.text .title {
+  margin: 0;
+  font-size: 40px;
+  line-height: 44px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+.text .lede {
+  margin: var(--space-3) 0 var(--space-8);
+  font-size: 15px;
+  line-height: 22px;
+  color: var(--ink-muted);
+  text-wrap: balance;
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: min(100%, 400px);
+  height: var(--control-lg);
+  padding: 0 var(--space-3);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--ink-muted);
+
+  input {
+    flex: 1;
+    min-width: 0;
+    border: 0;
+    outline: none;
+    background: transparent;
+    color: var(--ink);
+    font: inherit;
+    font-size: 15px;
+
+    &::placeholder {
+      color: var(--ink-muted);
+    }
+  }
+}
+
+// ── Shared card ──────────────────────────────────────────
+
+.card {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  min-height: 420px;
+  padding: var(--space-12);
+  border-radius: var(--radius-xl);
+  background: var(--surface);
+  box-shadow: var(--shadow-xs);
+  overflow: hidden;
+  color: var(--ink);
+
+  @media (max-width: 760px) {
+    grid-template-columns: minmax(0, 1fr);
+    padding: var(--space-8) var(--space-6);
+  }
+}
+
+// ── A · Parts ────────────────────────────────────────────
+// Silhouettes of the site's own components, cropped by the card's edge.
+
+.parts {
+  position: absolute;
+  top: 72px;
+  left: 52%;
+  zoom: 1.25;
+  display: grid;
+  grid-template-columns: 248px 232px;
+  gap: var(--space-6);
+  align-items: start;
+  pointer-events: none;
+  user-select: none;
+
+  @media (max-width: 760px) {
+    position: relative;
+    top: auto;
+    left: auto;
+    margin-top: var(--space-8);
+    margin-right: -120px;
+  }
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.shiftDown {
+  margin-top: 72px;
+}
+
+// Toolbar: radius-xl 16, inset 8, tools radius-md 8.
+.sToolbar {
+  display: flex;
+  gap: var(--space-1);
+  width: fit-content;
+  padding: var(--space-2);
+  border-radius: var(--radius-xl);
+  background: var(--surface-raised);
+  box-shadow: var(--shadow-sm);
+}
+
+.sTool {
+  width: var(--control-md);
+  height: var(--control-md);
+  border-radius: var(--radius-md);
+  background: var(--surface-sunken);
+
+  &[data-on] {
+    background: var(--accent-soft);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent);
+  }
+}
+
+.sAction {
+  width: 72px;
+  height: var(--control-md);
+  border-radius: var(--radius-md);
+  background: var(--accent);
+}
+
+// Menu: radius-lg 12, inset 4, rows radius-md 8.
+.sMenu {
+  display: flex;
+  flex-direction: column;
+  width: 248px;
+  padding: var(--space-1);
+  border-radius: var(--radius-lg);
+  background: var(--surface-raised);
+  box-shadow: var(--shadow-md);
+}
+
+.sRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: var(--control-md);
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-md);
+
+  &[data-on] {
+    background: var(--fill-active);
+  }
+
+  &[data-danger] .sBar {
+    background: color-mix(in srgb, var(--danger) 55%, transparent);
+  }
+}
+
+.sIcon {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  border-radius: var(--radius-xs);
+  box-shadow: inset 0 0 0 1.5px var(--line-strong);
+  opacity: 0.6;
+}
+
+.sBar {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--line-strong);
+  opacity: 0.45;
+}
+
+.sCaps {
+  display: flex;
+  gap: 2px;
+  margin-left: auto;
+}
+
+.sCap {
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius-xs);
+  background: var(--surface-sunken);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+.sSep {
+  height: 1px;
+  margin: var(--space-1) calc(var(--space-1) * -1);
+  background: var(--line);
+}
+
+// Dial panel: radius-xl 16, inset 8, rows radius-md 8.
+.sPanel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  width: 232px;
+  padding: var(--space-2);
+  border-radius: var(--radius-xl);
+  background: var(--surface-raised);
+  box-shadow: var(--shadow-sm);
+}
+
+.sDial {
+  position: relative;
+  height: var(--control-md);
+  border-radius: var(--radius-md);
+  background: var(--surface-sunken);
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: var(--v);
+    background: var(--fill-active);
+  }
+}
+
+// Segmented: track radius-md 8, inset 2, thumb radius-sm 6.
+.sSeg {
+  display: flex;
+  padding: var(--space-0-5);
+  border-radius: var(--radius-md);
+  background: var(--surface-sunken);
+}
+
+.sSegItem {
+  flex: 1;
+  height: 28px;
+  border-radius: var(--radius-sm);
+
+  &[data-on] {
+    background: var(--surface-raised);
+    box-shadow: var(--shadow-xs);
+  }
+}
+
+// ── B · Redline ──────────────────────────────────────────
+// A real toolbar at 2×, measured. The card carries a faint 16px grid.
+
+.grid {
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--line) 70%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--line) 70%, transparent) 1px, transparent 1px);
+  background-size: 16px 16px;
+  background-position: -1px -1px;
+
+  // Fade the grid out under the text so it reads as paper, not noise.
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, var(--surface) 28%, color-mix(in srgb, var(--surface) 0%, transparent) 62%);
+    pointer-events: none;
+  }
+}
+
+// Crosshairs just outside each corner, as on a print sheet.
+.crossWrap {
+  position: relative;
+}
+
+.cross {
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  color: var(--line-strong);
+  pointer-events: none;
+
+  &[data-c='tl'] {
+    top: -8px;
+    left: -8px;
+  }
+  &[data-c='tr'] {
+    top: -8px;
+    right: -8px;
+  }
+  &[data-c='bl'] {
+    bottom: -8px;
+    left: -8px;
+  }
+  &[data-c='br'] {
+    bottom: -8px;
+    right: -8px;
+  }
+}
+
+.spec {
+  position: relative;
+  z-index: 1;
+  justify-self: end;
+  width: 434px;
+  height: 200px;
+
+  @media (max-width: 760px) {
+    justify-self: start;
+    margin-top: var(--space-8);
+    zoom: 0.75;
+  }
+}
+
+// The toolbar at 2×: radius 32, inset 16, tools 64 at radius 16.
+.bigToolbar {
+  position: absolute;
+  top: 48px;
+  left: 48px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px;
+  border-radius: 32px;
+  background: var(--surface-raised);
+  box-shadow: var(--shadow-md);
+}
+
+.bigTool {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  color: var(--ink-muted);
+
+  &[data-on] {
+    background: var(--accent-soft);
+    color: var(--accent-text);
+  }
+
+  &[data-primary] {
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+}
+
+.bigSep {
+  width: 2px;
+  height: 48px;
+  margin: 0 8px;
+  background: var(--line);
+}
+
+.marks {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+  color: var(--accent-text);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.formula {
+  position: absolute;
+  left: 48px;
+  top: 168px;
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-xs);
+  background: var(--accent-soft);
+  color: var(--accent-text);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 20px;
+  font-variant-numeric: tabular-nums;
+}

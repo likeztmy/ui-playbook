@@ -1,0 +1,51 @@
+---
+// B · Redline: one real toolbar at 2×, measured like a spec sheet.
+import { MousePointer2, PenLine, Plus, Square } from 'lucide-react';
+import HeroText from './HeroText.astro';
+import s from './hero.module.scss';
+
+// Geometry at 2×, in the spec box's pixels. Toolbar at (48, 48), 338 × 96.
+// Outer corner radius 32 and the first tool's radius 16 share a centre at
+// (80, 80): that's the concentric rule, drawn.
+const icon = { size: 32, strokeWidth: 3, absoluteStrokeWidth: true, 'aria-hidden': true } as const;
+const corners = ['tl', 'tr', 'bl', 'br'];
+---
+
+<div class={s.crossWrap}>
+  <div class={`${s.card} ${s.grid}`}>
+    <HeroText />
+    <div class={s.spec} aria-hidden="true">
+      <div class={s.bigToolbar}>
+        <span class={s.bigTool} data-on><MousePointer2 {...icon} /></span>
+        <span class={s.bigTool}><Square {...icon} /></span>
+        <span class={s.bigTool}><PenLine {...icon} /></span>
+        <span class={s.bigSep}></span>
+        <span class={s.bigTool} data-primary><Plus {...icon} /></span>
+      </div>
+      <svg class={s.marks} viewBox="0 0 434 200" fill="none" stroke="currentColor" stroke-width="1">
+        <!-- Shared centre of the outer and inner corner arcs -->
+        <circle cx="80" cy="80" r="32" stroke-dasharray="3 3" opacity="0.8"></circle>
+        <circle cx="80" cy="80" r="16" stroke-dasharray="3 3" opacity="0.8"></circle>
+        <circle cx="80" cy="80" r="2.5" fill="currentColor" stroke="none"></circle>
+        <path d="M82 78 L128 18 H168" opacity="0.8"></path>
+        <text x="172" y="22" fill="currentColor" stroke="none">same centre</text>
+
+        <!-- Inset: toolbar top edge to tool top edge -->
+        <path d="M132 48 V64 M128 48 H136 M128 64 H136"></path>
+        <text x="129" y="40" fill="currentColor" stroke="none">8</text>
+
+        <!-- Height -->
+        <path d="M406 48 V144 M402 48 H410 M402 144 H410"></path>
+        <text x="412" y="100" fill="currentColor" stroke="none">48</text>
+      </svg>
+      <code class={s.formula}>radius-xl 16 − space-2 8 = radius-md 8</code>
+    </div>
+  </div>
+  {
+    corners.map((c) => (
+      <svg class={s.cross} data-c={c} viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true">
+        <path d="M7.5 0 V15 M0 7.5 H15" />
+      </svg>
+    ))
+  }
+</div>

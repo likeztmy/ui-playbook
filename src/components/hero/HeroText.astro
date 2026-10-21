@@ -1,0 +1,19 @@
+---
+// The hero's real content, shared by every direction.
+import { SearchIcon } from '../../ui/icons';
+import s from './hero.module.scss';
+
+interface Props {
+  align?: 'start' | 'center';
+}
+const { align = 'start' } = Astro.props;
+---
+
+<div class={s.text} data-align={align}>
+  <h1 class={s.title}>UI Playbook</h1>
+  <p class={s.lede}>The small details that make interface components feel right, each one shown side by side.</p>
+  <label class={s.search}>
+    <SearchIcon />
+    <input type="search" placeholder="Search components and principles" autocomplete="off" spellcheck="false" />
+  </label>
+</div>
