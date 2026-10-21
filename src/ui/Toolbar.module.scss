@@ -1,0 +1,56 @@
+@use '../styles/states' as *;
+
+// Outer radius-xl 16, equal inset space-2 8 → tools radius-md 8.
+
+.toolbar {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-2);
+  border-radius: var(--radius-xl);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.group {
+  display: flex;
+  gap: var(--space-1);
+}
+
+// Tools sit flat on the toolbar; `.toolbar .tool` outranks the button's base.
+.toolbar .tool {
+  background: transparent;
+  box-shadow: none;
+  color: var(--ink-muted);
+
+  @include hover {
+    color: var(--ink);
+  }
+
+  @include focus {
+    box-shadow: var(--focus-ring);
+  }
+
+  // The current tool: a soft tint and blue icon, not a solid fill.
+  &[data-pressed] {
+    background: var(--accent-soft);
+    color: var(--accent-text);
+
+    &::before {
+      display: none;
+    }
+  }
+
+  &[data-disabled] {
+    background: transparent;
+    color: var(--ink-disabled);
+  }
+}
+
+.separator {
+  width: 1px;
+  align-self: stretch;
+  margin: var(--space-1);
+  background: var(--line);
+}

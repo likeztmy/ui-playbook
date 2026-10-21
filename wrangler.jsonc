@@ -1,0 +1,11 @@
+{
+  // Static site on Workers assets: `pnpm deploy` builds and uploads dist/.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "ui-playbook",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "404-page"
+  },
+  "routes": [{ "pattern": "ui-playbook.suspense.site", "custom_domain": true }]
+}

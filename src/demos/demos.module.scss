@@ -1,0 +1,81 @@
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+}
+
+// A dialog footer: actions on the right.
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+// Pins a live trigger to the top so its menu has room below.
+.top {
+  align-self: start;
+  justify-self: start;
+}
+
+.readout {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+.nestOuter {
+  box-sizing: border-box;
+  display: flex;
+  width: 200px;
+  height: 128px;
+  border: 0 solid var(--line-strong);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.nestInner {
+  flex: 1;
+  background: var(--accent-soft);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+// A one-pixel difference needs magnifying to be seen.
+.magnify {
+  zoom: 2;
+}
+
+// A search field with an embedded shortcut key: radius-md 8, inset 4, border 1.
+.field {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  width: 150px;
+  height: var(--control-md);
+  padding: 0 var(--space-1) 0 var(--space-3);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--ink-muted);
+
+  span {
+    flex: 1;
+  }
+}
+
+.key {
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  height: 22px;
+  padding: 0 var(--space-1);
+  background: var(--surface-sunken);
+  box-shadow: inset 0 0 0 1px var(--line);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-muted);
+}

@@ -1,0 +1,45 @@
+---
+layout: ../../layouts/Entry.astro
+slug: toolbar
+---
+import { ToolbarLive, ToolbarStates, ToolbarInset, ToolbarPressed } from '../../demos/toolbar';
+
+## Anatomy
+
+<ToolbarLive client:visible />
+
+| Part | Token | Value |
+| --- | --- | --- |
+| Panel radius | `radius-xl` | 16 |
+| Panel inset | `space-2`, all four sides | 8 |
+| Tool radius | `radius-md` = 16 − 8 | 8 |
+| Tool size | `control-md` | 32 |
+| Gap between tools | `space-1` | 4 |
+| Panel height | 32 + 8 × 2 | 48 |
+
+For a tighter panel, drop the inset to `space-1` and the panel to `radius-lg`: 12 − 4 still gives 8 for the tools.
+
+## States
+
+<ToolbarStates client:visible />
+
+Tools are toggles in a group: arrow keys move between them, and the current one carries `aria-pressed`.
+
+## Details
+
+### Equal inset on every side
+
+<ToolbarInset client:visible />
+
+### The current tool is tinted, not filled
+
+<ToolbarPressed client:visible />
+
+## Common mistakes
+
+- **Icon-only tools without names.** Every tool needs an `aria-label` and a tooltip with the same words.
+- **Borders around groups.** Separate groups with a hairline (`line`), not boxes inside the box.
+
+## Copy
+
+- Tooltips name the tool, then its shortcut: **Rectangle  R**.

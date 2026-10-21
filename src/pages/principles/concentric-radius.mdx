@@ -1,0 +1,39 @@
+---
+layout: ../../layouts/Entry.astro
+slug: concentric-radius
+---
+import { ConcentricTweak, SameRadius, BorderCounts } from '../../demos/concentric';
+
+## The rule
+
+**Inner radius = outer radius − inset − border.** When both arcs share a centre, the gap at the corner is as wide as the gap along the sides. Copying the outer radius inward makes the inner shape look swollen at its corners; making it square makes it look pasted on.
+
+<ConcentricTweak client:visible />
+
+When the inset is as large as the outer radius, the formula reaches zero. Don't go square: floor it at `radius-xs` (4).
+
+## Details
+
+### Don't copy the outer radius
+
+<SameRadius client:visible />
+
+### The border is part of the gap
+
+<BorderCounts client:visible />
+
+## Precision's pairings
+
+The radius scale steps in 2–4px so the common insets always land on a token.
+
+| Outer | Inset | Inner |
+| --- | --- | --- |
+| Toolbar `radius-xl` 16 | `space-2` 8 | Tool `radius-md` 8 |
+| Menu `radius-lg` 12 | `space-1` 4 | Item `radius-md` 8 |
+| Segmented track `radius-md` 8 | `space-0-5` 2 | Thumb `radius-sm` 6 |
+| Field `radius-md` 8 | `space-1` 4 + 1px border | Key 3 |
+
+## Common mistakes
+
+- **Uneven inset.** Concentric corners need the same inset on both edges that meet at the corner. A toolbar padded 4 × 12 can't be concentric.
+- **One radius for everything.** A single global radius guarantees every nested pair is wrong.

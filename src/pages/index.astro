@@ -1,0 +1,103 @@
+---
+import Base from '../layouts/Base.astro';
+import { entries, href } from '../entries';
+import { ButtonPreview } from '../demos/button';
+import { MenuPreview } from '../demos/menu';
+import { ToolbarPreview } from '../demos/toolbar';
+import { ConcentricPreview } from '../demos/concentric';
+import { SearchIcon } from '../ui/icons';
+import s from './index.module.scss';
+
+const groups = [
+  { kind: 'component', title: 'Components' },
+  { kind: 'principle', title: 'Principles' },
+] as const;
+---
+
+<Base>
+  <section class={s.hero}>
+    <h1 class={s.title}>UI Playbook</h1>
+    <p class={s.lede}>The small details that make interface components feel right, each one shown side by side.</p>
+    <label class={s.search}>
+      <SearchIcon />
+      <input id="search" type="search" placeholder="Search components and principles" autocomplete="off" spellcheck="false" />
+    </label>
+  </section>
+
+  {
+    groups.map((g) => {
+      const items = entries.filter((e) => e.kind === g.kind);
+      return (
+        <section class={s.group} data-group>
+          <header class={s.groupHead}>
+            <h2 class={s.groupTitle}>{g.title}</h2>
+            <span class={s.count} data-count>{items.length}</span>
+          </header>
+          <div class={s.grid}>
+            {items.map((e) => (
+              <article class={s.card} data-card data-search={[e.title, e.summary, ...e.keywords].join(' ').toLowerCase()}>
+                <a class={s.cardHead} href={href(e)}>
+                  <span class={s.cardTitle}>{e.title}</span>
+                  <span class={s.cardMeta}>
+                    {e.details} {e.details === 1 ? 'detail' : 'details'}
+                  </span>
+                </a>
+                <div class={s.cardStage}>
+                  {e.slug === 'button' && <ButtonPreview client:visible />}
+                  {e.slug === 'menu' && <MenuPreview client:visible />}
+                  {e.slug === 'toolbar' && <ToolbarPreview client:visible />}
+                  {e.slug === 'concentric-radius' && <ConcentricPreview />}
+                </div>
+                <p class={s.cardSummary}>{e.summary}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+      );
+    })
+  }
+
+  <div class={s.empty} id="empty" hidden>
+    <p>Nothing matches “<span id="empty-query"></span>”.</p>
+    <button type="button" id="clear">Clear search</button>
+  </div>
+</Base>
+
+<script>
+  const input = document.getElementById('search') as HTMLInputElement;
+  const empty = document.getElementById('empty')!;
+  const emptyQuery = document.getElementById('empty-query')!;
+  const groups = [...document.querySelectorAll<HTMLElement>('[data-group]')];
+
+  function filter() {
+    const q = input.value.trim().toLowerCase();
+    let shown = 0;
+    for (const g of groups) {
+      const cards = [...g.querySelectorAll<HTMLElement>('[data-card]')];
+      let n = 0;
+      for (const c of cards) {
+        const hit = !q || c.dataset.search!.includes(q);
+        c.hidden = !hit;
+        if (hit) n++;
+      }
+      g.hidden = n === 0;
+      g.querySelector('[data-count]')!.textContent = String(n);
+      shown += n;
+    }
+    empty.hidden = shown > 0;
+    emptyQuery.textContent = input.value.trim();
+  }
+
+  input.addEventListener('input', filter);
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && input.value) {
+      input.value = '';
+      filter();
+    }
+  });
+  document.getElementById('clear')!.addEventListener('click', () => {
+    input.value = '';
+    filter();
+    input.focus();
+  });
+</script>

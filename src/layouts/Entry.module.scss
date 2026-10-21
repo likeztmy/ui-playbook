@@ -1,0 +1,189 @@
+.page {
+  max-width: 880px;
+  margin: 0 auto;
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  height: var(--control-sm);
+  margin-left: calc(var(--space-2) * -1);
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-sm);
+  color: var(--ink-muted);
+  font-weight: 500;
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out);
+
+  &:hover {
+    background: var(--fill-hover);
+    color: var(--ink);
+    transition-duration: var(--duration-instant);
+  }
+
+  &:focus-visible {
+    box-shadow: var(--focus-ring);
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.head {
+  margin: var(--space-6) 0 var(--space-12);
+}
+
+.kind {
+  margin: 0 0 var(--space-1);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--ink-muted);
+}
+
+.title {
+  margin: 0;
+  font-size: 32px;
+  line-height: 40px;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+.summary {
+  max-width: 560px;
+  margin: var(--space-2) 0 0;
+  font-size: 15px;
+  line-height: 22px;
+  color: var(--ink-muted);
+}
+
+// MDX prose. Sections are h2; each detail is an h3 with its demo below.
+.body {
+  font-size: 15px;
+  line-height: 24px;
+
+  :global {
+    h2 {
+      margin: var(--space-12) 0 var(--space-4);
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--line);
+      font-size: 18px;
+      line-height: 26px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    h2:first-child {
+      margin-top: 0;
+    }
+
+    h3 {
+      margin: var(--space-8) 0 var(--space-2);
+      font-size: 15px;
+      line-height: 22px;
+      font-weight: 600;
+    }
+
+    p,
+    ul {
+      max-width: 640px;
+      margin: 0 0 var(--space-4);
+    }
+
+    ul {
+      padding-left: var(--space-6);
+    }
+
+    li + li {
+      margin-top: var(--space-1);
+    }
+
+    :not(pre) > code {
+      padding: 1px var(--space-1);
+      border-radius: var(--radius-xs);
+      background: var(--surface-sunken);
+      font-size: 13px;
+    }
+
+    strong {
+      font-weight: 600;
+    }
+
+    table {
+      width: 100%;
+      margin: 0 0 var(--space-6);
+      border-collapse: collapse;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    th {
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+      color: var(--ink-muted);
+      text-align: left;
+    }
+
+    th,
+    td {
+      padding: var(--space-2) var(--space-3) var(--space-2) 0;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+
+    // Trailing value column aligns right, in one column.
+    th:last-child,
+    td:last-child {
+      padding-right: 0;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    // Demos are islands; give each one the same gap a paragraph gets.
+    astro-island {
+      display: block;
+      margin: 0 0 var(--space-4);
+    }
+  }
+}
+
+.next {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-top: var(--space-12);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xs);
+  background: var(--surface);
+  color: var(--ink);
+  transition: background-color var(--duration-fast) var(--ease-out);
+
+  &:hover {
+    // A mixed colour, not a gradient overlay, so the fade-out can transition.
+    background: color-mix(in srgb, var(--surface), var(--ink) 4%);
+    transition-duration: var(--duration-instant);
+  }
+
+  &:focus-visible {
+    box-shadow: var(--shadow-xs), var(--focus-ring);
+  }
+}
+
+.nextLabel {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--ink-muted);
+}
+
+.nextTitle {
+  font-size: 15px;
+  line-height: 22px;
+  font-weight: 600;
+}

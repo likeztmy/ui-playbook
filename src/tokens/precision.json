@@ -1,0 +1,466 @@
+{
+  "name": "Precision",
+  "version": 1,
+  "color": {
+    "themes": [
+      {
+        "id": "light",
+        "name": "Light"
+      },
+      {
+        "id": "dark",
+        "name": "Dark"
+      }
+    ],
+    "tokens": [
+      {
+        "name": "bg",
+        "value": {
+          "light": "#f7f7f8",
+          "dark": "#0e0f11"
+        },
+        "usage": "应用最底层背景：窗口、侧栏外的画布。"
+      },
+      {
+        "name": "surface",
+        "value": {
+          "light": "#ffffff",
+          "dark": "#16171a"
+        },
+        "usage": "面板、卡片、输入框底色。正文 `ink` 与 `ink-muted` 落在它上面。"
+      },
+      {
+        "name": "surface-raised",
+        "value": {
+          "light": "#ffffff",
+          "dark": "#1e1f23"
+        },
+        "usage": "浮层：菜单、弹出框、对话框。深色模式靠更亮的表面表达更高层级，浅色模式靠阴影。"
+      },
+      {
+        "name": "surface-sunken",
+        "value": {
+          "light": "#efeff1",
+          "dark": "#0a0b0c"
+        },
+        "usage": "凹陷的轨道：分段控件底槽、代码块、只读区域。"
+      },
+      {
+        "name": "line",
+        "value": {
+          "light": "#e4e4e8",
+          "dark": "#26272c"
+        },
+        "usage": "装饰性分隔线和面板描边（不承载含义，可低于 3:1）。"
+      },
+      {
+        "name": "line-strong",
+        "value": {
+          "light": "#868690",
+          "dark": "#6c6d76"
+        },
+        "usage": "可交互控件的边框（输入框、次要按钮）。在 `surface` 与 `bg` 上 ≥3:1。"
+      },
+      {
+        "name": "ink",
+        "value": {
+          "light": "#18181b",
+          "dark": "#ececef"
+        },
+        "usage": "主文本与图标，用于 `bg`、`surface`、`surface-raised`、`surface-sunken`、`accent-soft` 之上。"
+      },
+      {
+        "name": "ink-muted",
+        "value": {
+          "light": "#5e5e67",
+          "dark": "#a1a1ab"
+        },
+        "usage": "次要文本、说明、占位符，用于所有表面之上（≥5.5:1）。"
+      },
+      {
+        "name": "ink-disabled",
+        "value": {
+          "light": "#a8a8b0",
+          "dark": "#4a4b52"
+        },
+        "usage": "仅用于禁用态文字与图标，不用于任何需要阅读的内容。"
+      },
+      {
+        "name": "fill-hover",
+        "value": {
+          "light": "#18181b0d",
+          "dark": "#ffffff0f"
+        },
+        "usage": "中性控件与列表项的悬停叠加层。"
+      },
+      {
+        "name": "fill-active",
+        "value": {
+          "light": "#18181b17",
+          "dark": "#ffffff1a"
+        },
+        "usage": "中性控件按下态叠加层。"
+      },
+      {
+        "name": "accent",
+        "value": {
+          "light": "#0071e3",
+          "dark": "#0a84ff"
+        },
+        "usage": "Apple 系统蓝，唯一的强调色：主按钮填充、选中块、焦点环、输入框聚焦边框。作为文字请用 `accent-text`。每个视图主按钮最多一个。"
+      },
+      {
+        "name": "accent-hover",
+        "value": {
+          "light": "#0066cc",
+          "dark": "#409cff"
+        },
+        "usage": "主按钮悬停与按下填充。"
+      },
+      {
+        "name": "on-accent",
+        "value": {
+          "light": "#ffffff",
+          "dark": "#0e0f11"
+        },
+        "usage": "`accent` 与 `accent-hover` 填充上的文字和图标（浅色模式白字 4.7:1；深色模式 #0a84ff 上白字只有 3.6:1，所以用深色字）。"
+      },
+      {
+        "name": "accent-soft",
+        "value": {
+          "light": "#e8f2ff",
+          "dark": "#0b2747"
+        },
+        "usage": "选中行、选中工具的浅底；文字用 `ink` 或 `accent-text`。"
+      },
+      {
+        "name": "accent-text",
+        "value": {
+          "light": "#0066cc",
+          "dark": "#2997ff"
+        },
+        "usage": "蓝色文字：链接、选中工具的图标、强调文字。用于所有表面与 `accent-soft` 之上（≥4.8:1）。#007aff / #0a84ff 直接当文字用对比度不够，所以文字单独一档。"
+      },
+      {
+        "name": "danger",
+        "value": {
+          "light": "#c23a12",
+          "dark": "#ff8a65"
+        },
+        "usage": "破坏性操作与错误。始终配合图标或文字出现，不单靠颜色。"
+      },
+      {
+        "name": "danger-soft",
+        "value": {
+          "light": "#fdeee8",
+          "dark": "#3a1a10"
+        },
+        "usage": "错误提示的浅底，文字用 `danger`。"
+      },
+      {
+        "name": "success",
+        "value": {
+          "light": "#127a5a",
+          "dark": "#4fc79a"
+        },
+        "usage": "成功与完成状态。始终配合图标或文字出现，不单靠颜色与 `danger` 区分。"
+      },
+      {
+        "name": "success-soft",
+        "value": {
+          "light": "#e6f4ee",
+          "dark": "#0f2e23"
+        },
+        "usage": "成功提示的浅底，文字用 `success`。"
+      }
+    ]
+  },
+  "type": {
+    "fonts": [],
+    "families": {
+      "sans": "\"Geist Variable\", Geist, \"PingFang SC\", \"Hiragino Sans GB\", \"Noto Sans SC\", \"Microsoft YaHei\", system-ui, sans-serif",
+      "mono": "\"Geist Mono Variable\", \"Geist Mono\", ui-monospace, \"SF Mono\", Menlo, monospace"
+    },
+    "groups": [
+      {
+        "name": "Interface",
+        "family": "sans",
+        "note": "桌面工具的高密度阶梯：14px 正文为基准，标题用字重和负字距拉开层级，而不是靠字号猛涨。",
+        "styles": [
+          {
+            "name": "title-lg",
+            "fontSize": "24px",
+            "lineHeight": "32px",
+            "fontWeight": 600,
+            "sample": "Projects",
+            "usage": "页面标题，每屏一个。",
+            "letterSpacing": "-0.02em"
+          },
+          {
+            "name": "title",
+            "fontSize": "18px",
+            "lineHeight": "26px",
+            "fontWeight": 600,
+            "sample": "新建工作区 Workspace",
+            "usage": "对话框、面板标题。",
+            "letterSpacing": "-0.01em"
+          },
+          {
+            "name": "heading",
+            "fontSize": "15px",
+            "lineHeight": "22px",
+            "fontWeight": 600,
+            "sample": "Recent activity",
+            "usage": "分组标题、卡片标题。"
+          },
+          {
+            "name": "body",
+            "fontSize": "14px",
+            "lineHeight": "20px",
+            "fontWeight": 400,
+            "sample": "Invite teammates to collaborate.",
+            "usage": "界面默认文字：按钮、列表、表单。"
+          },
+          {
+            "name": "prose",
+            "fontSize": "14px",
+            "lineHeight": "24px",
+            "fontWeight": 400,
+            "sample": "同心圆角让嵌套元素的边缘处处等距。",
+            "usage": "中文为主的段落和长说明。汉字没有升部降部，需要更大的行高。"
+          },
+          {
+            "name": "body-sm",
+            "fontSize": "13px",
+            "lineHeight": "18px",
+            "fontWeight": 400,
+            "sample": "Updated 2 hours ago",
+            "usage": "表格单元格、侧栏、密集列表。"
+          },
+          {
+            "name": "label",
+            "fontSize": "12px",
+            "lineHeight": "16px",
+            "fontWeight": 500,
+            "sample": "Status",
+            "usage": "表单标签、徽标、快捷键提示。",
+            "letterSpacing": "0.01em"
+          },
+          {
+            "name": "caption",
+            "fontSize": "11px",
+            "lineHeight": "14px",
+            "fontWeight": 500,
+            "sample": "12 items · 3 MB",
+            "usage": "时间戳、计数等元数据；不要放在需要阅读的长句上。",
+            "letterSpacing": "0.02em"
+          }
+        ]
+      },
+      {
+        "name": "Code",
+        "family": "mono",
+        "styles": [
+          {
+            "name": "code",
+            "fontSize": "13px",
+            "lineHeight": "20px",
+            "fontWeight": 400,
+            "sample": "radius: 20 − 8 = 12",
+            "usage": "代码、ID、快捷键、数值对齐。"
+          }
+        ]
+      }
+    ]
+  },
+  "spacing": {
+    "note": "4px 网格。控件内部用 4/8，控件之间 8/12，区块之间 24/32。",
+    "tokens": [
+      {
+        "name": "space-0-5",
+        "value": "2px",
+        "usage": "分段控件轨道内衬、细微对齐。"
+      },
+      {
+        "name": "space-1",
+        "value": "4px",
+        "usage": "图标与文字间距；菜单、弹出框的内衬。"
+      },
+      {
+        "name": "space-2",
+        "value": "8px",
+        "usage": "工具栏、调色板面板的内衬；紧密控件之间。"
+      },
+      {
+        "name": "space-3",
+        "value": "12px",
+        "usage": "按钮水平内边距；相关字段之间。"
+      },
+      {
+        "name": "space-4",
+        "value": "16px",
+        "usage": "卡片、对话框内边距。"
+      },
+      {
+        "name": "space-6",
+        "value": "24px",
+        "usage": "区块之间。"
+      },
+      {
+        "name": "space-8",
+        "value": "32px",
+        "usage": "页面级分组之间。"
+      },
+      {
+        "name": "space-12",
+        "value": "48px",
+        "usage": "页面外边距、空状态留白。"
+      }
+    ]
+  },
+  "radius": {
+    "note": "同心规则：内圆角 = 外圆角 − 间距。每一档相差 2–4px，正好对应常用内衬，嵌套时总能落在刻度上。",
+    "tokens": [
+      {
+        "name": "radius-xs",
+        "value": "4px",
+        "usage": "徽标、复选框、键帽；`radius-md` 容器内衬 4px 时的子元素。"
+      },
+      {
+        "name": "radius-sm",
+        "value": "6px",
+        "usage": "小号按钮、分段控件的选中块（轨道 `radius-md` − `space-0-5`）。"
+      },
+      {
+        "name": "radius-md",
+        "value": "8px",
+        "usage": "按钮、输入框、菜单项（菜单 `radius-lg` − `space-1`）。"
+      },
+      {
+        "name": "radius-lg",
+        "value": "12px",
+        "usage": "菜单、弹出框、卡片。"
+      },
+      {
+        "name": "radius-xl",
+        "value": "16px",
+        "usage": "工具面板、对话框。内衬 `space-2` 时子控件用 `radius-md`。"
+      },
+      {
+        "name": "radius-full",
+        "value": "9999px",
+        "usage": "头像、开关、状态圆点。"
+      }
+    ]
+  },
+  "size": {
+    "note": "控件高度。同一行里的控件必须同高。",
+    "tokens": [
+      {
+        "name": "control-sm",
+        "value": "24px",
+        "usage": "工具栏图标按钮、表格内操作。"
+      },
+      {
+        "name": "control-md",
+        "value": "32px",
+        "usage": "默认按钮、输入框、分段控件。"
+      },
+      {
+        "name": "control-lg",
+        "value": "40px",
+        "usage": "对话框主操作、引导页。"
+      }
+    ]
+  },
+  "shadow": {
+    "note": "浅色模式用阴影分层，深色模式用更亮的表面 + 1px 内描边分层，阴影只负责和背景分离。",
+    "tokens": [
+      {
+        "name": "shadow-xs",
+        "value": {
+          "light": "0 1px 1px #18181b0a, 0 0 0 1px #18181b14",
+          "dark": "0 0 0 1px #ffffff14"
+        },
+        "usage": "静止的次要按钮、卡片：几乎看不见，只给边缘。"
+      },
+      {
+        "name": "shadow-sm",
+        "value": {
+          "light": "0 1px 2px #18181b0f, 0 2px 6px #18181b0a, 0 0 0 1px #18181b12",
+          "dark": "0 1px 2px #00000066, 0 0 0 1px #ffffff12"
+        },
+        "usage": "工具面板、浮在画布上的调色板。"
+      },
+      {
+        "name": "shadow-md",
+        "value": {
+          "light": "0 4px 12px #18181b14, 0 1px 3px #18181b0f, 0 0 0 1px #18181b14",
+          "dark": "0 8px 24px #00000080, 0 0 0 1px #ffffff17"
+        },
+        "usage": "菜单、弹出框、下拉。"
+      },
+      {
+        "name": "shadow-lg",
+        "value": {
+          "light": "0 16px 40px -8px #18181b29, 0 4px 12px #18181b0f, 0 0 0 1px #18181b14",
+          "dark": "0 24px 56px -8px #000000b3, 0 0 0 1px #ffffff1a"
+        },
+        "usage": "对话框、命令面板。"
+      },
+      {
+        "name": "focus-ring",
+        "value": {
+          "light": "0 0 0 2px #ffffff, 0 0 0 4px #0071e3",
+          "dark": "0 0 0 2px #0e0f11, 0 0 0 4px #0a84ff"
+        },
+        "usage": "键盘焦点：2px 底色间隔 + 2px 实心 `accent`。用 box-shadow 实现，自动跟随圆角。"
+      }
+    ]
+  },
+  "duration": {
+    "note": "进入快、离开稍慢；按下即时响应。",
+    "tokens": [
+      {
+        "name": "duration-instant",
+        "value": "0ms",
+        "usage": "按下态、悬停进入：反馈必须立即。"
+      },
+      {
+        "name": "duration-fast",
+        "value": "120ms",
+        "usage": "悬停离开、颜色与边框过渡。"
+      },
+      {
+        "name": "duration-base",
+        "value": "180ms",
+        "usage": "菜单、弹出框出现。"
+      },
+      {
+        "name": "duration-slow",
+        "value": "260ms",
+        "usage": "对话框、侧栏等大面积移动。"
+      }
+    ]
+  },
+  "easing": {
+    "note": "只用这三条曲线。",
+    "tokens": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.2, 0, 0, 1)",
+        "usage": "出现与展开：快速到位、柔和停住。"
+      },
+      {
+        "name": "ease-in",
+        "value": "cubic-bezier(0.4, 0, 1, 1)",
+        "usage": "消失与收起。"
+      },
+      {
+        "name": "ease-in-out",
+        "value": "cubic-bezier(0.4, 0, 0.2, 1)",
+        "usage": "位置移动（拖拽归位、选中块滑动）。"
+      }
+    ]
+  }
+}

@@ -1,0 +1,130 @@
+// A frame sets its own background and ink so a [data-theme] on it repaints
+// the subtree. No overflow clipping: popups portal inside the frame.
+
+.frame {
+  margin: 0;
+  min-width: 0;
+  border-radius: var(--radius-lg);
+  background: var(--bg);
+  box-shadow: var(--shadow-xs);
+  color: var(--ink);
+}
+
+// Bar height 40, the 24px theme button inset 8 from the frame's corner:
+// radius-lg 12 − 8 = radius-xs 4.
+.bar {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  height: 40px;
+  padding: 0 var(--space-2) 0 var(--space-3);
+  border-bottom: 1px solid var(--line);
+
+  button {
+    border-radius: var(--radius-xs);
+  }
+}
+
+.label {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--ink-muted);
+}
+
+.stage {
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  padding: var(--space-6);
+}
+
+.compare {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+
+  @media (max-width: 640px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.side {
+  min-width: 0;
+}
+
+.note {
+  margin: var(--space-2) 0 0;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--ink-muted);
+}
+
+.verdict {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--danger);
+
+  &[data-good] {
+    color: var(--success);
+  }
+
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+.tweak {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 248px;
+  gap: var(--space-4);
+  align-items: start;
+
+  @media (max-width: 720px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.panel {
+  position: sticky;
+  top: var(--space-4);
+}
+
+.grid {
+  display: grid;
+  gap: var(--space-4) var(--space-3);
+  align-items: center;
+  width: 100%;
+  overflow-x: auto;
+  // Room for the 4px focus ring: a scroll container clips both axes.
+  padding: var(--space-1);
+}
+
+.row {
+  display: contents;
+}
+
+.head {
+  font-size: 11px;
+  line-height: 14px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--ink-muted);
+  text-align: center;
+}
+
+.name {
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--ink-muted);
+}
+
+.cell {
+  display: flex;
+  justify-content: center;
+}

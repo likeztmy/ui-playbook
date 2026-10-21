@@ -1,0 +1,56 @@
+---
+layout: ../../layouts/Entry.astro
+slug: button
+---
+import { ButtonStates, HoverTiming, FocusEdge, OnePrimary } from '../../demos/button';
+
+## Anatomy
+
+| Part | Token | Value |
+| --- | --- | --- |
+| Height | `control-md` · `control-sm` · `control-lg` | 32 · 24 · 40 |
+| Horizontal padding | `space-3` (sm: `space-2`, lg: `space-4`) | 12 |
+| Radius | `radius-md` (sm: `radius-sm`) | 8 |
+| Icon gap | `space-1` | 4 |
+| Label | body, weight 500 | 14 / 20 |
+| Edge | `shadow-xs` | 1px |
+
+Buttons in one row share one height. Icons are 16px and inherit the label's colour.
+
+## States
+
+<ButtonStates client:visible />
+
+Hover and press are overlays (`fill-hover`, `fill-active`), not darker copies of each base colour, so one rule works on every variant and in both themes. Focus shows only on `:focus-visible`: a mouse click never draws a ring.
+
+## Details
+
+### Hover appears at once and leaves softly
+
+<HoverTiming client:visible />
+
+Feedback for something the pointer is on must be immediate; feedback for something it has left can take its time. Paint the overlay on a `::before` and transition its `opacity`. A `background-image` gradient can't be transitioned, so it would snap off.
+
+### The focus ring stacks on the edge
+
+<FocusEdge client:visible />
+
+When the edge is drawn with `box-shadow`, any focus style that sets `box-shadow` replaces it. List both shadows.
+
+### One filled button per view
+
+<OnePrimary client:visible />
+
+The filled button is the reason the screen exists. Everything else is secondary or ghost; destructive actions use `danger` text.
+
+## Common mistakes
+
+- **Scaling on press.** A 0.97 scale reads as playful and shifts the label under the cursor. Switch to `fill-active` instantly instead.
+- **Colour as rank.** Two secondary buttons in different colours ask the reader to learn a code. Use variants: primary, secondary, ghost.
+- **Disabled with no reason.** If the action can't run yet, say why nearby, or leave the button enabled and explain on press.
+
+## Copy
+
+- Start with a verb that names the result: **Save changes**, **Create project**, not **OK** or **Submit**.
+- Sentence case: **Create project**, not **Create Project**.
+- Match the dialog's title: a dialog called *Delete project?* confirms with **Delete project**.

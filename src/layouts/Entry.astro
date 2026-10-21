@@ -1,0 +1,38 @@
+---
+// Layout for every component and principle page. The MDX body supplies the
+// sections; this frame supplies the way back and the way on.
+import Base from './Base.astro';
+import { entries, href } from '../entries';
+import { BackIcon } from '../ui/icons';
+import s from './Entry.module.scss';
+
+const { frontmatter } = Astro.props;
+const i = entries.findIndex((e) => e.slug === frontmatter.slug);
+const entry = entries[i];
+const next = entries[i + 1];
+---
+
+<Base title={entry.title} description={entry.summary}>
+  <article class={s.page}>
+    <a class={s.back} href="/">
+      <BackIcon />
+      All {entry.kind === 'component' ? 'components' : 'principles'}
+    </a>
+    <header class={s.head}>
+      <p class={s.kind}>{entry.kind === 'component' ? 'Component' : 'Principle'}</p>
+      <h1 class={s.title}>{entry.title}</h1>
+      <p class={s.summary}>{entry.summary}</p>
+    </header>
+    <div class={s.body}>
+      <slot />
+    </div>
+    {
+      next && (
+        <a class={s.next} href={href(next)}>
+          <span class={s.nextLabel}>Next</span>
+          <span class={s.nextTitle}>{next.title}</span>
+        </a>
+      )
+    }
+  </article>
+</Base>

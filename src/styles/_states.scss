@@ -1,0 +1,40 @@
+// Live interaction states, each paired with a `data-pin` value so StateGrid
+// can hold a state still for display: <button data-pin="hover active">.
+
+@mixin hover {
+  &:hover,
+  &[data-pin~='hover'] {
+    @content;
+  }
+}
+
+@mixin active {
+  &:active,
+  &[data-pin~='active'] {
+    @content;
+  }
+}
+
+@mixin focus {
+  &:focus-visible,
+  &[data-pin~='focus'] {
+    outline: none;
+    @content;
+  }
+}
+
+@mixin enabled-hover {
+  &:not([data-disabled]) {
+    @include hover {
+      @content;
+    }
+  }
+}
+
+@mixin enabled-active {
+  &:not([data-disabled]) {
+    @include active {
+      @content;
+    }
+  }
+}

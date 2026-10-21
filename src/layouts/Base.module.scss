@@ -1,0 +1,57 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  padding: 0 var(--space-3) 0 var(--space-6);
+  background: color-mix(in srgb, var(--bg) 85%, transparent);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+
+  @media (max-width: 640px) {
+    padding-left: var(--space-4);
+  }
+}
+
+.wordmark {
+  font-size: 15px;
+  line-height: 22px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+// The toggle shows the theme it switches to.
+.sun,
+.moon {
+  display: none;
+}
+:global(:root[data-theme='dark']) .sun {
+  display: flex;
+}
+:global(:root[data-theme='light']) .moon {
+  display: flex;
+}
+@media (prefers-color-scheme: dark) {
+  :global(:root:not([data-theme])) .sun {
+    display: flex;
+  }
+}
+@media (prefers-color-scheme: light) {
+  :global(:root:not([data-theme])) .moon {
+    display: flex;
+  }
+}
+
+.main {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: var(--space-12) var(--space-6) 96px;
+
+  @media (max-width: 640px) {
+    padding: var(--space-8) var(--space-4) var(--space-12);
+  }
+}

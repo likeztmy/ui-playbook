@@ -1,0 +1,43 @@
+// The "before" side of comparisons: each class reproduces one common mistake.
+// !important is deliberate here — these override the real component.
+
+// Hover fades in as slowly as it fades out, so the button lags the pointer.
+.slowHover,
+.slowHover::before {
+  transition-duration: 250ms !important;
+  transition-timing-function: ease !important;
+}
+
+// The focus ring replaces the button's own edge instead of stacking on it.
+.ringReplacesEdge:is(:focus-visible, [data-pin~='focus']) {
+  box-shadow: var(--focus-ring) !important;
+}
+
+// Uneven inset: corners can't share a centre.
+.unevenInset {
+  padding: var(--space-1) var(--space-3) !important;
+}
+
+// The current tool as a solid fill: louder than the action it supports.
+.solidPressed[data-pressed] {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+
+// Menu items reuse the popup's radius instead of subtracting the inset.
+.sameRadius {
+  border-radius: var(--radius-lg) !important;
+}
+
+// Popup grows from its centre, the same speed both ways.
+.centerScale {
+  transform-origin: center !important;
+  transition:
+    opacity 200ms ease,
+    scale 200ms ease !important;
+  translate: none !important;
+
+  &:is([data-starting-style], [data-ending-style]) {
+    scale: 0.9;
+  }
+}

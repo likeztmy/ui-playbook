@@ -1,0 +1,51 @@
+---
+layout: ../../layouts/Entry.astro
+slug: menu
+---
+import { MenuLive, MenuConcentric, MenuShortcuts, MenuMotion } from '../../demos/menu';
+
+## Anatomy
+
+| Part | Token | Value |
+| --- | --- | --- |
+| Popup radius | `radius-lg` | 12 |
+| Popup inset | `space-1` | 4 |
+| Item radius | `radius-md` = 12 − 4 | 8 |
+| Item height | `control-md` | 32 |
+| Item padding | `space-2` | 8 |
+| Surface | `surface-raised`, `shadow-md` | |
+
+Icons are 16px in `ink-muted`. Shortcuts sit right-aligned in mono. Separators run through the inset to the popup's edge.
+
+## States
+
+<MenuLive client:visible />
+
+Open it and move with the arrow keys: the highlight follows the keyboard and the pointer alike (`data-highlighted`), with no transition in either direction.
+
+## Details
+
+### Item corners are concentric with the popup
+
+<MenuConcentric client:visible />
+
+### Shortcuts form a column
+
+<MenuShortcuts client:visible />
+
+### The popup comes out of its trigger
+
+<MenuMotion client:visible />
+
+Opening uses `duration-base` with `ease-out`, from 4px toward the trigger. Closing is half as long with `ease-in`: once the user has chosen, nothing should hold them up. With reduced motion, only a short fade remains.
+
+## Common mistakes
+
+- **Destructive actions mid-list.** Put them in the last group, in `danger`, where a slip of the pointer is least likely to land.
+- **Hover-delayed highlight.** Menus are read at the speed of the pointer; any fade on the highlight makes the list feel sticky.
+- **Labels for every group.** A separator is usually enough. Add a group label only when the group's purpose isn't obvious from its items.
+
+## Copy
+
+- Items are verbs or verb phrases: **Duplicate**, **Move to…**. An ellipsis means more input follows.
+- Keep one grammatical form within a menu.

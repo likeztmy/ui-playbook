@@ -1,0 +1,139 @@
+@use '../styles/states' as *;
+
+.button {
+  position: relative;
+  isolation: isolate;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  height: var(--control-md);
+  padding: 0 var(--space-3);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  box-shadow: var(--shadow-xs);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
+
+  // The hover/press overlay is a pseudo-element so its opacity can fade
+  // out. A background-image gradient would snap: gradients don't transition.
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background: var(--fill-hover);
+    opacity: 0;
+    transition: opacity var(--duration-fast) var(--ease-out);
+  }
+
+  @include enabled-hover {
+    &::before {
+      opacity: 1;
+      transition-duration: var(--duration-instant);
+    }
+  }
+
+  @include enabled-active {
+    &::before {
+      background: var(--fill-active);
+      opacity: 1;
+      transition: none;
+    }
+  }
+
+  // Keep the button's own edge under the ring: stack, don't replace.
+  @include focus {
+    box-shadow: var(--shadow-xs), var(--focus-ring);
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+    flex: none;
+  }
+
+  &[data-disabled] {
+    background: var(--surface-sunken);
+    box-shadow: none;
+    color: var(--ink-disabled);
+    cursor: not-allowed;
+  }
+}
+
+.primary {
+  background: var(--accent);
+  box-shadow: none;
+  color: var(--on-accent);
+
+  &::before {
+    display: none;
+  }
+
+  &:not([data-disabled]) {
+    @include hover {
+      background: var(--accent-hover);
+      transition-duration: var(--duration-instant);
+    }
+    @include active {
+      background: var(--accent-hover);
+    }
+  }
+
+  @include focus {
+    box-shadow: var(--focus-ring);
+  }
+}
+
+.ghost {
+  background: transparent;
+  box-shadow: none;
+  color: var(--ink-muted);
+
+  &:not([data-disabled]) {
+    @include hover {
+      color: var(--ink);
+      transition-duration: var(--duration-instant);
+    }
+  }
+
+  @include focus {
+    box-shadow: var(--focus-ring);
+  }
+}
+
+.danger {
+  color: var(--danger);
+}
+
+.sm {
+  height: var(--control-sm);
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+}
+
+.lg {
+  height: var(--control-lg);
+  padding: 0 var(--space-4);
+}
+
+.icon {
+  width: var(--control-md);
+  padding: 0;
+
+  &.sm {
+    width: var(--control-sm);
+  }
+}

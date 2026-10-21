@@ -1,0 +1,57 @@
+@use '@fontsource-variable/geist';
+@use '@fontsource-variable/geist-mono';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--bg);
+  color: var(--ink);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  // Base UI: backdrops cover the visual viewport on iOS Safari.
+  position: relative;
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 20px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+// Base UI: a stacking context so portalled popups sit above the page.
+#root {
+  isolation: isolate;
+}
+
+a {
+  color: var(--accent-text);
+  text-decoration: none;
+}
+
+code,
+kbd {
+  font-family: var(--font-mono);
+}
+
+::selection {
+  background: var(--accent-soft);
+}
+
+:focus-visible {
+  outline: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+  }
+}
