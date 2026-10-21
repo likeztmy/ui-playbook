@@ -20,11 +20,13 @@ type FrameProps = {
   /** Stage height in px. */
   height?: number;
   className?: string;
+  /** Start pinned to a theme instead of following the page. */
+  defaultTheme?: Theme;
 };
 
 /** A demo stage with its own light/dark switch. Popups stay inside it. */
-export function Frame({ label, children, height = 200, className }: FrameProps) {
-  const [theme, setTheme] = useState<Theme | null>(null);
+export function Frame({ label, children, height = 200, className, defaultTheme }: FrameProps) {
+  const [theme, setTheme] = useState<Theme | null>(defaultTheme ?? null);
   const [portal, setPortal] = useState<HTMLElement | null>(null);
   // Read at click time: the page theme may have changed since render.
   const flip = () => setTheme((t) => ((t ?? pageTheme()) === 'dark' ? 'light' : 'dark'));

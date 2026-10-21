@@ -24,7 +24,7 @@ export const entries: Entry[] = [
     kind: 'component',
     title: 'Menu',
     summary: 'A list of actions that opens from a trigger.',
-    details: 3,
+    details: 5,
     keywords: ['dropdown', 'context menu', 'popover', 'shortcut', 'popup'],
   },
   {

@@ -21,6 +21,7 @@ const pageTitle = title ? `${title} · UI Playbook` : 'UI Playbook';
     <meta name="description" content={description} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{pageTitle}</title>
+    <slot name="head" />
     <script is:inline>
       // Apply a saved theme before first paint. No saved theme: follow the system.
       try {

@@ -2,7 +2,7 @@
 layout: ../../layouts/Entry.astro
 slug: menu
 ---
-import { MenuLive, MenuConcentric, MenuShortcuts, MenuMotion } from '../../demos/menu';
+import { MenuLive, MenuHighlight, MenuDanger, MenuConcentric, MenuShortcuts, MenuMotion } from '../../demos/menu';
 
 ## Anatomy
 
@@ -12,26 +12,38 @@ import { MenuLive, MenuConcentric, MenuShortcuts, MenuMotion } from '../../demos
 | Popup inset | `space-1` | 4 |
 | Item radius | `radius-md` = 12 − 4 | 8 |
 | Item height | `control-md` | 32 |
-| Item padding | `space-2` | 8 |
+| Item padding, icon gap | `space-2` | 8 |
+| Label | body-sm size, 13 / 18 | 13 |
+| Keycap | 18 square, `radius-xs`, `surface-sunken` | 18 |
 | Surface | `surface-raised`, `shadow-md` | |
 
-Icons are 16px in `ink-muted`. Shortcuts sit right-aligned in mono. Separators run through the inset to the popup's edge.
+Icons are Lucide at 16px in `ink-muted`, turning `ink` on the highlighted row. Checkmarks and submenu chevrons sit to the right of the label; shortcuts end the row.
 
 ## States
 
 <MenuLive client:visible />
 
-Open it and move with the arrow keys: the highlight follows the keyboard and the pointer alike (`data-highlighted`), with no transition in either direction.
+Open it and use the keyboard. Arrows move the highlight, Right opens *Move to*, and Space toggles *Snap to grid* without closing the menu. Undo can be reached but not run: disabled menu items stay focusable so a screen reader still announces them. Pointer and keyboard share one highlight (`data-highlighted`), with no transition in either direction.
 
 ## Details
+
+### A highlight you can find from the keyboard
+
+<MenuHighlight client:visible />
+
+### A destructive row stays red
+
+<MenuDanger client:visible />
 
 ### Item corners are concentric with the popup
 
 <MenuConcentric client:visible />
 
-### Shortcuts form a column
+### Shortcuts are keycaps, drawn by one hand
 
 <MenuShortcuts client:visible />
+
+Check your fonts for the symbols before setting shortcuts in them. Geist has no ⌘ ⇧ ⌥ ⌫ ↵; Inter and SF do.
 
 ### The popup comes out of its trigger
 
@@ -41,11 +53,12 @@ Opening uses `duration-base` with `ease-out`, from 4px toward the trigger. Closi
 
 ## Common mistakes
 
+- **A group label that repeats the trigger.** A menu opened from *Edit* doesn't need an *Edit* heading. Separators group; add a label only when filtering or length mixes groups.
 - **Destructive actions mid-list.** Put them in the last group, in `danger`, where a slip of the pointer is least likely to land.
-- **Hover-delayed highlight.** Menus are read at the speed of the pointer; any fade on the highlight makes the list feel sticky.
-- **Labels for every group.** A separator is usually enough. Add a group label only when the group's purpose isn't obvious from its items.
+- **Closing on every toggle.** A checkbox item stays open so several options can be set in one visit.
+- **Disabled items that vanish.** Keep them in place in `ink-disabled`, so the menu's layout doesn't shift between contexts.
 
 ## Copy
 
-- Items are verbs or verb phrases: **Duplicate**, **Move to…**. An ellipsis means more input follows.
+- Items are verbs or verb phrases: **Duplicate**, **Move to**. An ellipsis means a dialog follows: **Rename…** if it opens one, **Rename** if it edits in place.
 - Keep one grammatical form within a menu.

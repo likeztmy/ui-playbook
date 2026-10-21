@@ -1,0 +1,172 @@
+@use 'motion' as *;
+
+// C · Command — after Raycast's action panel. Type to narrow the actions;
+// group labels earn their place because filtering mixes groups. The
+// highlight is an accent tint with a blue icon, keys are bare glyphs.
+// Popup radius-lg 12, list inset space-1 4 → items radius-md 8.
+
+.positioner {
+  z-index: 50;
+}
+
+.popup {
+  @include popup-motion;
+  box-sizing: border-box;
+  width: 280px;
+  border-radius: var(--radius-lg);
+  background: var(--surface-raised);
+  box-shadow: var(--shadow-md);
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.subPopup {
+  width: 180px;
+  padding: var(--space-1);
+}
+
+.inputRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: var(--control-lg);
+  padding: 0 var(--space-3);
+  border-bottom: 1px solid var(--line);
+  color: var(--ink-muted);
+}
+
+.inputIcon {
+  flex: none;
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+
+  &::placeholder {
+    color: var(--ink-muted);
+  }
+}
+
+.placeholder {
+  font-size: 14px;
+}
+
+.list {
+  padding: var(--space-1);
+}
+
+.empty {
+  padding: var(--space-6) var(--space-3);
+  color: var(--ink-muted);
+  text-align: center;
+
+  &:empty {
+    display: none;
+  }
+}
+
+.label {
+  padding: var(--space-2) var(--space-2) var(--space-1);
+  font-size: 11px;
+  line-height: 14px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--ink-muted);
+}
+
+.item {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: var(--control-md);
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-md);
+  outline: none;
+  cursor: default;
+  user-select: none;
+
+  &[data-highlighted],
+  &[data-popup-open] {
+    background: var(--accent-soft);
+
+    .icon {
+      color: var(--accent-text);
+    }
+  }
+
+  &[data-disabled] {
+    color: var(--ink-disabled);
+
+    .icon,
+    .keys {
+      color: inherit;
+    }
+  }
+}
+
+.danger {
+  color: var(--danger);
+
+  .icon {
+    color: inherit;
+  }
+
+  &[data-highlighted] {
+    background: var(--danger-soft);
+
+    .icon {
+      color: inherit;
+    }
+  }
+}
+
+.icon {
+  flex: none;
+  color: var(--ink-muted);
+}
+
+.text {
+  flex: 1;
+  white-space: nowrap;
+}
+
+.check {
+  display: grid;
+  place-items: center;
+  color: var(--accent-text);
+}
+
+.chevron {
+  color: var(--ink-muted);
+}
+
+.keys {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  margin-left: var(--space-4);
+  color: var(--ink-muted);
+  font: inherit;
+  font-size: 12px;
+}
+
+.key {
+  display: grid;
+  place-items: center;
+  min-width: 12px;
+}
+
+.separator {
+  height: 1px;
+  margin: var(--space-1) calc(var(--space-1) * -1);
+  background: var(--line);
+}

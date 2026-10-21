@@ -1,0 +1,30 @@
+// Shared by every direction: out of the trigger with ease-out, away at half
+// the time with ease-in. Directions differ in look, not in motion.
+@mixin popup-motion {
+  outline: none;
+  transform-origin: var(--transform-origin);
+  transition:
+    opacity var(--duration-base) var(--ease-out),
+    translate var(--duration-base) var(--ease-out);
+
+  &[data-starting-style],
+  &[data-ending-style] {
+    opacity: 0;
+  }
+  &[data-side='bottom']:is([data-starting-style], [data-ending-style]) {
+    translate: 0 -4px;
+  }
+  &[data-side='right']:is([data-starting-style], [data-ending-style]) {
+    translate: -4px 0;
+  }
+  &[data-ending-style] {
+    transition-timing-function: var(--ease-in);
+    transition-duration: calc(var(--duration-base) / 2);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    transition-duration: var(--duration-fast);
+    &:is([data-starting-style], [data-ending-style]) {
+      translate: none;
+    }
+  }
+}

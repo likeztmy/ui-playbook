@@ -1,0 +1,20 @@
+---
+// Design explorations, kept out of the gallery and out of search engines.
+import Base from './Base.astro';
+import s from './Entry.module.scss';
+
+const { frontmatter } = Astro.props;
+---
+
+<Base title={frontmatter.title}>
+  <meta name="robots" content="noindex" slot="head" />
+  <article class={s.page} style="max-width: 1240px">
+    <header class={s.head}>
+      <p class={s.kind}>Lab</p>
+      <h1 class={s.title}>{frontmatter.title}</h1>
+    </header>
+    <div class={s.body}>
+      <slot />
+    </div>
+  </article>
+</Base>

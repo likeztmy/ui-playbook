@@ -41,3 +41,21 @@
     scale: 0.9;
   }
 }
+
+// The menu highlight at fill-hover: too faint to find from the keyboard.
+.faintHighlight[data-highlighted] {
+  background: var(--fill-hover) !important;
+}
+
+// A destructive row highlighted with the neutral fill.
+.greyDanger[data-highlighted] {
+  background: var(--fill-active) !important;
+}
+
+// A shortcut as one mono string, glyphs left to font fallback.
+.monoShortcut {
+  margin-left: var(--space-4);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-muted);
+}

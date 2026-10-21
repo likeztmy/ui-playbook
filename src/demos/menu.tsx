@@ -1,52 +1,58 @@
-import { useState, type ReactNode } from 'react';
+import { useState } from 'react';
 import { Button } from '../ui/Button';
-import { Menu } from '../ui/Menu';
-import { ChevronDownIcon, CopyIcon, DuplicateIcon, RenameIcon, TrashIcon } from '../ui/icons';
+import { Menu, RowContent, menuClasses as ms } from '../ui/Menu';
+import { ChevronDownIcon } from '../ui/icons';
 import { cx } from '../ui/cx';
 import { Compare, Frame } from './shell';
-import ms from '../ui/Menu.module.scss';
+import { GROUPS, type Row } from './menu-lab/content';
 import m from './mistakes.module.scss';
 import s from './demos.module.scss';
 
-type Entry = { label: string; icon?: ReactNode; shortcut?: string; danger?: boolean } | 'sep';
-
-const ENTRIES: Entry[] = [
-  { label: 'Copy', icon: <CopyIcon />, shortcut: '⌘C' },
-  { label: 'Duplicate', icon: <DuplicateIcon />, shortcut: '⌘D' },
-  { label: 'Rename', icon: <RenameIcon />, shortcut: 'F2' },
-  'sep',
-  { label: 'Delete', icon: <TrashIcon />, shortcut: '⌫', danger: true },
-];
+type StillProps = {
+  /** The row highlighted at rest and after the pointer leaves. */
+  initial?: string;
+  /** Extra class on every row: how a "before" reproduces its mistake. */
+  itemClass?: string;
+  /** Render shortcuts as one mono string, as the first version did. */
+  monoShortcuts?: boolean;
+};
 
 /**
- * The menu's look without its behaviour, for side-by-side stills.
- * Hovering highlights like the real thing.
+ * The open menu as a still: the live menu's classes and row markup, with a
+ * highlight that follows the pointer.
  */
-function StillMenu({ itemClass, inlineShortcut }: { itemClass?: string; inlineShortcut?: boolean }) {
-  const [hot, setHot] = useState(0);
+function StillMenu({ initial = 'duplicate', itemClass, monoShortcuts }: StillProps) {
+  const [hot, setHot] = useState(initial);
+  const row = (r: Row) => {
+    const keys = 'keys' in r ? r.keys : undefined;
+    return (
+      <div
+        key={r.id}
+        className={cx(ms.item, r.kind === 'item' && r.danger && ms.danger, itemClass)}
+        data-highlighted={hot === r.id ? '' : undefined}
+        data-disabled={r.kind === 'item' && r.disabled ? '' : undefined}
+        onMouseEnter={() => !(r.kind === 'item' && r.disabled) && setHot(r.id)}
+      >
+        <RowContent
+          icon={r.icon}
+          keys={monoShortcuts ? undefined : keys}
+          checked={r.kind === 'check' && r.checked}
+          submenu={r.kind === 'submenu'}
+        >
+          {r.label}
+        </RowContent>
+        {monoShortcuts && keys && <kbd className={m.monoShortcut}>{keys.join('')}</kbd>}
+      </div>
+    );
+  };
   return (
-    <div className={ms.popup} role="presentation" onMouseLeave={() => setHot(-1)}>
-      <div className={ms.label}>Edit</div>
-      {ENTRIES.map((e, i) =>
-        e === 'sep' ? (
-          <div key={i} className={ms.separator} />
-        ) : (
-          <div
-            key={i}
-            className={cx(ms.item, e.danger && ms.danger, itemClass)}
-            data-highlighted={hot === i ? '' : undefined}
-            onMouseEnter={() => setHot(i)}
-          >
-            {e.icon}
-            {e.label}
-            {e.shortcut && (
-              <kbd className={ms.shortcut} style={inlineShortcut ? { marginLeft: 0 } : undefined}>
-                {e.shortcut}
-              </kbd>
-            )}
-          </div>
-        ),
-      )}
+    <div className={ms.popup} role="presentation" onMouseLeave={() => setHot(initial)}>
+      {GROUPS.map((g, gi) => (
+        <div key={g.id}>
+          {gi > 0 && <div className={ms.separator} />}
+          {g.rows.map(row)}
+        </div>
+      ))}
     </div>
   );
 }
@@ -62,15 +68,28 @@ function LiveMenu({ popupClass }: { popupClass?: string }) {
         Edit <ChevronDownIcon />
       </Menu.Trigger>
       <Menu.Popup className={popupClass}>
-        {ENTRIES.map((e, i) =>
-          e === 'sep' ? (
-            <Menu.Separator key={i} />
-          ) : (
-            <Menu.Item key={i} icon={e.icon} shortcut={e.shortcut} danger={e.danger}>
-              {e.label}
-            </Menu.Item>
-          ),
-        )}
+        {GROUPS.map((g, gi) => (
+          <Menu.Group key={g.id}>
+            {gi > 0 && <Menu.Separator />}
+            {g.rows.map((r) =>
+              r.kind === 'submenu' ? (
+                <Menu.Submenu key={r.id} icon={r.icon} label={r.label}>
+                  {r.items.map((name) => (
+                    <Menu.Item key={name}>{name}</Menu.Item>
+                  ))}
+                </Menu.Submenu>
+              ) : r.kind === 'check' ? (
+                <Menu.CheckboxItem key={r.id} icon={r.icon} keys={r.keys} defaultChecked={r.checked}>
+                  {r.label}
+                </Menu.CheckboxItem>
+              ) : (
+                <Menu.Item key={r.id} icon={r.icon} keys={r.keys} danger={r.danger} disabled={r.disabled}>
+                  {r.label}
+                </Menu.Item>
+              ),
+            )}
+          </Menu.Group>
+        ))}
       </Menu.Popup>
     </Menu.Root>
   );
@@ -78,7 +97,7 @@ function LiveMenu({ popupClass }: { popupClass?: string }) {
 
 export function MenuLive() {
   return (
-    <Frame label="Live" height={260}>
+    <Frame label="Live" height={380}>
       <div className={s.top}>
         <LiveMenu />
       </div>
@@ -86,10 +105,36 @@ export function MenuLive() {
   );
 }
 
+const STILL_HEIGHT = 360;
+
+export function MenuHighlight() {
+  return (
+    <Compare
+      height={STILL_HEIGHT}
+      before={<StillMenu itemClass={m.faintHighlight} />}
+      after={<StillMenu />}
+      beforeNote="A 5% overlay (fill-hover) on surface-raised. Fine under a pointer; from the keyboard you have to hunt for the current row."
+      afterNote="fill-active, 9%. The highlight is the keyboard user's cursor, so it has to be found at a glance in both themes."
+    />
+  );
+}
+
+export function MenuDanger() {
+  return (
+    <Compare
+      height={STILL_HEIGHT}
+      before={<StillMenu initial="delete" itemClass={m.greyDanger} />}
+      after={<StillMenu initial="delete" />}
+      beforeNote="The neutral highlight under red text. The row looks smudged, and the warning colour loses its ground."
+      afterNote="danger-soft behind danger: the row keeps saying what it does at the moment you're about to do it."
+    />
+  );
+}
+
 export function MenuConcentric() {
   return (
     <Compare
-      height={240}
+      height={STILL_HEIGHT}
       before={<StillMenu itemClass={m.sameRadius} />}
       after={<StillMenu />}
       beforeNote="Items reuse the popup's 12px radius. With a 4px inset the highlight's corners bulge toward the popup's edge."
@@ -101,11 +146,11 @@ export function MenuConcentric() {
 export function MenuShortcuts() {
   return (
     <Compare
-      height={240}
-      before={<StillMenu inlineShortcut />}
+      height={STILL_HEIGHT}
+      before={<StillMenu monoShortcuts />}
       after={<StillMenu />}
-      beforeNote="Shortcuts trail each label, so they start at a different x on every row and can't be scanned."
-      afterNote="Pushed to the right edge in mono with tabular figures: one column, read top to bottom."
+      beforeNote="One mono string per shortcut. The UI fonts have no ⌘ or ⌫, so the browser borrows them from another face: thinner, smaller, off the baseline."
+      afterNote="One 18px cap per key, modifiers drawn as icons at the text's stroke. Every glyph comes from the same hand, and the caps line up as a column."
     />
   );
 }
@@ -113,7 +158,7 @@ export function MenuShortcuts() {
 export function MenuMotion() {
   return (
     <Compare
-      height={260}
+      height={STILL_HEIGHT}
       before={
         <div className={s.top}>
           <LiveMenu popupClass={m.centerScale} />

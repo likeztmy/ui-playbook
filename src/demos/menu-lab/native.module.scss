@@ -1,0 +1,115 @@
+@use 'motion' as *;
+
+// A · Native — after macOS menus. Dense 24px rows at 13px, no icons, a
+// checkmark column on the left, and a solid accent highlight with every
+// part of the row reversed out of it.
+// Popup radius-md 8, inset space-1 4 → items radius-xs 4.
+
+.positioner {
+  z-index: 50;
+}
+
+.popup {
+  @include popup-motion;
+  box-sizing: border-box;
+  min-width: 232px;
+  padding: var(--space-1);
+  border-radius: var(--radius-md);
+  background: var(--surface-raised);
+  box-shadow: var(--shadow-md);
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 16px;
+}
+
+.subPopup {
+  min-width: 160px;
+}
+
+.item {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  height: var(--control-sm);
+  padding: 0 var(--space-2) 0 0;
+  border-radius: var(--radius-xs);
+  outline: none;
+  cursor: default;
+  user-select: none;
+
+  &[data-highlighted],
+  &[data-popup-open] {
+    background: var(--accent);
+    color: var(--on-accent);
+
+    .keys,
+    .chevron {
+      color: inherit;
+    }
+  }
+
+  &[data-disabled] {
+    color: var(--ink-disabled);
+
+    .keys {
+      color: inherit;
+    }
+  }
+}
+
+// Destructive rows keep their colour at rest and reverse out of a danger
+// fill, not the accent: blue would say "go".
+.danger {
+  color: var(--danger);
+
+  &[data-highlighted] {
+    background: var(--danger);
+    color: var(--on-accent);
+  }
+}
+
+// Reserved on every row so labels share one left edge, checked or not.
+.check {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 20px;
+}
+
+.text {
+  flex: 1;
+  white-space: nowrap;
+}
+
+.chevron {
+  margin-right: calc(var(--space-1) * -1);
+  color: var(--ink-muted);
+}
+
+// System font for the key symbols: the UI face has no ⌘ ⇧ ⌫ glyphs.
+// Modifiers sit right-aligned before a fixed key slot, so keys align in a
+// column whatever their modifiers.
+.keys {
+  display: flex;
+  margin-left: var(--space-6);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI Symbol', system-ui, sans-serif;
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+
+.mods {
+  text-align: right;
+}
+
+.key {
+  min-width: 1.1em;
+  padding-left: 1px;
+  text-align: left;
+}
+
+// Inset from the sides, as in macOS.
+.separator {
+  height: 1px;
+  margin: var(--space-1) var(--space-2);
+  background: var(--line);
+}

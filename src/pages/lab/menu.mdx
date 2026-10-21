@@ -1,0 +1,25 @@
+---
+layout: ../../layouts/Lab.astro
+title: Menu directions
+---
+import { NativeDirection, CapsDirection, CommandDirection } from '../../demos/menu-lab/Lab';
+
+Three directions on the same menu: disabled, checkbox, submenu and destructive items, with modifier shortcuts. Each row shows a light still, a dark still, and the live menu. Try the keyboard in the live one.
+
+## A · Native
+
+After macOS. 24px rows at 13px, no icons, a reserved checkmark column, and a solid accent highlight that reverses the whole row. Delete reverses out of danger instead. Shortcut symbols come from the system font, and the key letters align in their own column.
+
+<NativeDirection client:visible />
+
+## B · Keycaps
+
+After Linear. 32px rows at 13px with icons, a `fill-active` highlight you can find from the keyboard, and one cap per key. Modifier glyphs are Lucide icons, so the caps share one stroke. No group labels: the separators already say it.
+
+<CapsDirection client:visible />
+
+## C · Command
+
+After Raycast's action panel. Type to narrow the actions; labels name the groups, since filtering mixes them. The highlight is an accent tint with a blue icon, and the keys are bare glyphs.
+
+<CommandDirection client:visible />
