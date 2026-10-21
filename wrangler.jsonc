@@ -5,6 +5,8 @@
   "compatibility_date": "2026-10-01",
   "assets": {
     "directory": "./dist",
+    // Site links have no trailing slash; serve /x from x/index.html directly.
+    "html_handling": "drop-trailing-slash",
     "not_found_handling": "404-page"
   },
   "routes": [{ "pattern": "ui-playbook.suspense.site", "custom_domain": true }]
