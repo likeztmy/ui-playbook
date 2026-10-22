@@ -16,6 +16,7 @@ import { SliderPreview } from '../demos/slider';
 import { SegmentedPreview } from '../demos/segmented';
 import { CardPreview } from '../demos/card';
 import { BadgePreview } from '../demos/badge';
+import { TablePreview } from '../demos/table';
 import Hero from '../components/Hero.astro';
 import s from './index.module.scss';
 
@@ -61,6 +62,7 @@ const groups = [
                   {e.slug === 'segmented-control' && <SegmentedPreview client:visible />}
                   {e.slug === 'card' && <CardPreview client:visible />}
                   {e.slug === 'badge' && <BadgePreview />}
+                  {e.slug === 'table' && <TablePreview />}
                   {e.slug === 'concentric-radius' && <ConcentricPreview />}
                 </div>
                 <p class={s.cardSummary}>{e.summary}</p>

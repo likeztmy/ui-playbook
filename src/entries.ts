@@ -124,6 +124,14 @@ export const entries: Entry[] = [
     keywords: ['badge', 'tag', 'label', 'status', 'pill', 'chip', 'dot'],
   },
   {
+    slug: 'table',
+    kind: 'component',
+    title: 'Table',
+    summary: 'Many things by the same attributes. Lines, not stripes; numbers line up on the right.',
+    details: 5,
+    keywords: ['table', 'data table', 'grid', 'rows', 'columns', 'sort', 'select', 'bulk actions'],
+  },
+  {
     slug: 'concentric-radius',
     kind: 'principle',
     title: 'Concentric radius',

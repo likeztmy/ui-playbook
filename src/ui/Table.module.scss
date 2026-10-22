@@ -1,0 +1,176 @@
+@use '../styles/states' as *;
+
+// Page content, not a layer: a line edge and radius-lg, no shadow. Rows
+// are divided by lines, never stripes.
+
+.wrap {
+  box-sizing: border-box;
+  max-width: 100%;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  // Too many columns: scroll sideways inside the frame, first column fixed.
+  overflow: auto;
+  overscroll-behavior-x: contain;
+}
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 13px;
+  line-height: 18px;
+  font-variant-numeric: tabular-nums;
+}
+
+// .table raises specificity over page prose's own table rules.
+.table th,
+.table td {
+  box-sizing: border-box;
+  padding: 0 var(--space-3);
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.table th {
+  // Stays put while the rows scroll under it.
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  height: 32px;
+  background: var(--surface-sunken);
+  color: var(--ink-muted);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.table td {
+  height: 36px;
+  background: var(--surface);
+}
+
+.table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+// Hover and selection tint every cell, opaque, so a pinned first column
+// still covers what scrolls beneath it.
+.table tbody tr {
+  td {
+    transition: background-color var(--duration-fast) var(--ease-out);
+  }
+
+  &:hover td,
+  &[data-pin~='hover'] td {
+    background: linear-gradient(var(--fill-hover), var(--fill-hover)), var(--surface);
+    transition-duration: var(--duration-instant);
+  }
+
+  &[aria-selected='true'] td {
+    background: var(--accent-soft);
+  }
+}
+
+// Numbers right-aligned in tabular figures, header too, so digits line up.
+.table .num {
+  text-align: right;
+}
+
+.table .muted {
+  color: var(--ink-muted);
+}
+
+.table .check {
+  width: calc(16px + 2 * var(--space-3));
+  padding-right: 0;
+
+  > * {
+    display: flex;
+  }
+}
+
+// The first data column stays while the rest scroll sideways.
+.stickyFirst {
+  th:first-child,
+  td:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+  }
+
+  &:not(.hasCheck) :is(th, td):first-child {
+    box-shadow: 1px 0 0 var(--line);
+  }
+
+  th:first-child {
+    z-index: calc(var(--z-sticky) + 1);
+  }
+
+  // With a checkbox column, the name column is pinned beside it.
+  &.hasCheck {
+    th:nth-child(2),
+    td:nth-child(2) {
+      position: sticky;
+      left: calc(16px + 2 * var(--space-3));
+      z-index: 1;
+      box-shadow: 1px 0 0 var(--line);
+    }
+
+    th:nth-child(2) {
+      z-index: calc(var(--z-sticky) + 1);
+    }
+  }
+}
+
+// A sortable header is a button filling the cell.
+.sort {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  height: 32px;
+  margin: 0 calc(var(--space-1) * -1);
+  padding: 0 var(--space-1);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+  outline: none;
+
+  @include hover {
+    color: var(--ink);
+  }
+
+  @include focus {
+    box-shadow: inset 0 0 0 2px var(--accent);
+  }
+
+  // Numeric columns put the arrow before the label so the label stays
+  // flush with the digits.
+  .num & {
+    flex-direction: row-reverse;
+  }
+
+  svg {
+    flex: none;
+    opacity: 0;
+    transition: opacity var(--duration-fast) var(--ease-out);
+  }
+
+  // Only the sorted column's arrow stays; the others show on hover.
+  &:hover svg,
+  &:focus-visible svg,
+  &[data-sorted] svg {
+    opacity: 1;
+  }
+
+  &[data-sorted] {
+    color: var(--ink);
+  }
+}

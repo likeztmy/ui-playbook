@@ -1,0 +1,77 @@
+---
+layout: ../../layouts/Entry.astro
+slug: table
+---
+import { TableLive, TableVariants, TableStates, TableNumbers, TableLines, TableArrows, TableMuted, TableScroll } from '../../demos/table';
+
+## When to use
+
+A table is for comparing many things by the same attributes, and for acting on several at once. Reach for something else when:
+
+- **There are only a few things.** Three files are a list; a table's header and lines cost more than they give.
+- **People choose by sight.** Projects and templates browsed by thumbnail are Cards.
+- **It's one thing's details.** Fields of a single record are a description list: label, value, label, value.
+- **Rows need paragraphs.** A table cell holds a value. Long text belongs on the row's own page.
+
+## Variants
+
+<TableVariants client:visible />
+
+## Anatomy
+
+| Part | Token | Value |
+| --- | --- | --- |
+| Frame | 1px `line`, `radius-lg`, `surface`, no shadow | 10 |
+| Header | 32, label 12 / 500, `ink-muted` on `surface-sunken` | 32 |
+| Row | 36, body-sm 13 / 18 | 36 |
+| Cell padding | `space-3` each side | 12 |
+| Divider | 1px `line` between rows; none after the last | 1 |
+| Numbers | right-aligned, `tabular-nums`, header too | |
+| Secondary columns | `ink-muted` | |
+| Hover · selected | `fill-hover` · `accent-soft` | |
+| Sticky header | `z-sticky` | 10 |
+
+A table is page content, not a layer: it takes a line edge, never a shadow.
+
+## States
+
+<TableStates client:visible />
+
+<TableLive client:visible />
+
+Sorting is a button in the header; the header carries `aria-sort`, so a screen reader announces the order. Click again to reverse it. The select-all box goes mixed when some rows are chosen, and a click on it then selects them all. The bar above names the count and enables the bulk actions.
+
+## Details
+
+### Numbers line up on the right
+
+<TableNumbers client:visible />
+
+### Lines, not stripes
+
+<TableLines client:visible />
+
+### One arrow: the sorted column's
+
+<TableArrows client:visible />
+
+### Secondary columns step back
+
+<TableMuted client:visible />
+
+### The name stays when the rest scroll
+
+<TableScroll client:visible />
+
+## Common mistakes
+
+- **Status as colour alone.** A coloured cell or dot needs its word: use a Badge with the state written in it.
+- **Actions in every row.** Five icon buttons on each row make a grid of noise. Show them on hover or put them in a row menu.
+- **Truncating the name column.** It's the column people scan. Give it the room, and truncate the secondary ones.
+- **Row click and checkbox doing different things without saying so.** Pick one: the row opens it, the checkbox selects it.
+
+## Copy
+
+- Headers: a noun, sentence case, short: **Name**, **Owner**, **Modified**.
+- Units in the cells, not the header, when values mix scales: **18.4 MB**, **812 KB**.
+- Empty cells show an en dash, **–**, not *N/A* or nothing.

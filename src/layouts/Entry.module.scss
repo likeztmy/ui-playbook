@@ -114,29 +114,6 @@
       font-weight: 600;
     }
 
-    table {
-      width: 100%;
-      margin: 0 0 var(--space-6);
-      border-collapse: collapse;
-      font-size: 14px;
-      line-height: 20px;
-    }
-
-    th {
-      font-size: 12px;
-      line-height: 16px;
-      font-weight: 500;
-      color: var(--ink-muted);
-      text-align: left;
-    }
-
-    th,
-    td {
-      padding: var(--space-2) var(--space-3) var(--space-2) 0;
-      border-bottom: 1px solid var(--line);
-      vertical-align: top;
-    }
-
     // The Anatomy table ends in a value column (Part · Token · Value): align
     // it right, in one column. Tables that compare text stay left.
     h2#anatomy + table th:last-child,
@@ -187,4 +164,28 @@
   font-size: 15px;
   line-height: 22px;
   font-weight: 600;
+}
+
+// Only the prose's own tables: component tables inside demos keep theirs.
+.body > :global(table) {
+  width: 100%;
+  margin: 0 0 var(--space-6);
+  border-collapse: collapse;
+  font-size: 14px;
+  line-height: 20px;
+
+  :global(th) {
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 500;
+    color: var(--ink-muted);
+    text-align: left;
+  }
+
+  :global(th),
+  :global(td) {
+    padding: var(--space-2) var(--space-3) var(--space-2) 0;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
 }

@@ -344,3 +344,28 @@
 .greyscale {
   filter: grayscale(1);
 }
+
+// Table numbers in proportional digits.
+.proportionalTable table {
+  font-variant-numeric: proportional-nums !important;
+}
+
+// Zebra-striped table rows.
+.zebraTable tbody tr:nth-child(even) td {
+  background: var(--fill-hover) !important;
+}
+
+// A sort arrow on every sortable header.
+.allArrows th button svg {
+  opacity: 1 !important;
+}
+
+// A wide table with nothing pinned.
+.nothingPinned :is(th, td) {
+  position: static !important;
+  box-shadow: none !important;
+}
+
+.nothingPinned th {
+  position: sticky !important;
+}

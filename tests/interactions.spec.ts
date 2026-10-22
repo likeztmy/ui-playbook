@@ -449,3 +449,37 @@ test('card: a refreshed number swaps in digit by digit', async ({ page }) => {
   const delays = await digits.evaluateAll((d) => d.map((n) => getComputedStyle(n).animationDelay.split(',')[0].trim()));
   expect(delays.slice(0, 3)).toEqual(['0s', '0.03s', '0.06s']);
 });
+
+test('table: header sorts and announces it, select-all goes mixed then all, name stays pinned', async ({ page }) => {
+  await page.goto('/components/table');
+  await hydrateAll(page);
+  const live = page.locator('figure').filter({ hasText: 'Live · sort' });
+  const table = live.getByRole('table', { name: 'Files' });
+  await table.scrollIntoViewIfNeeded();
+  const firstName = () => table.locator('tbody tr').first().locator('td').nth(1).innerText();
+
+  const size = table.getByRole('columnheader', { name: 'Size' });
+  await size.getByRole('button').click();
+  await expect(size).toHaveAttribute('aria-sort', 'ascending');
+  await expect.poll(firstName).toBe('Interview notes.md');
+  await size.getByRole('button').click();
+  await expect(size).toHaveAttribute('aria-sort', 'descending');
+  await expect.poll(firstName).toBe('Onboarding flow.fig');
+  await expect(table.getByRole('columnheader', { name: 'Modified' })).toHaveAttribute('aria-sort', 'none');
+
+  const all = table.getByRole('checkbox', { name: 'Select all rows' });
+  await table.getByRole('checkbox', { name: 'Select Metrics.csv' }).click();
+  await expect(all).toHaveAttribute('aria-checked', 'mixed');
+  await expect(live.getByText('1 selected')).toBeVisible();
+  await all.click();
+  await expect(live.getByText('5 selected')).toBeVisible();
+  await all.click();
+  await expect(live.getByText('Select files to act on them')).toBeVisible();
+
+  const wide = page.locator('figure').filter({ hasText: 'After' }).filter({ hasText: 'Comments' }).getByRole('table');
+  await wide.scrollIntoViewIfNeeded();
+  const name = wide.locator('tbody td').first();
+  const before = (await name.boundingBox())!.x;
+  await wide.locator('..').evaluate((el) => (el.scrollLeft = 200));
+  expect(Math.round((await name.boundingBox())!.x), 'pinned name column').toBe(Math.round(before));
+});

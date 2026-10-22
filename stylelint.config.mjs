@@ -10,7 +10,8 @@ export default {
     'color-named': ['never', { ignoreProperties: ['mask-image', '/^mask/'] }],
     // Layers come from z-* tokens; 0/1 order siblings inside one local context.
     'declaration-property-value-allowed-list': {
-      'z-index': ['/^var\\(--z-/', '0', '1', '-1'],
+      // A layer token, or one step above one (a pinned header over its row).
+      'z-index': ['/^var\\(--z-/', '/^calc\\(var\\(--z-[a-z]+\\) \\+ 1\\)$/', '0', '1', '-1'],
     },
     'declaration-property-value-disallowed-list': {
       // Name what transitions; `all` animates layout and colour you didn't mean.
