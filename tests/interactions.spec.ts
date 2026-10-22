@@ -296,3 +296,29 @@ test('switch: takes effect at once, Space toggles, knob stretches while pressed'
   await expect.poll(async () => (await thumb.boundingBox())!.width).toBeCloseTo(16, 0);
   await expect(rulers).toHaveAttribute('aria-checked', 'true');
 });
+
+test('tabs: arrows open, Home/End jump, bar sits under the current tab, nothing shifts', async ({ page }) => {
+  await page.goto('/components/tabs');
+  await hydrateAll(page);
+  const live = page.locator('figure').filter({ hasText: 'Live · arrows' });
+  const tab = (name: string) => live.getByRole('tab', { name });
+  await tab('Overview').scrollIntoViewIfNeeded();
+  const settingsX = (await tab('Settings').boundingBox())!.x;
+
+  await tab('Overview').focus();
+  await page.keyboard.press('ArrowRight');
+  await expect(tab('Issues 12')).toHaveAttribute('aria-selected', 'true');
+  await expect(live.getByText('12 open issues')).toBeVisible();
+  await page.keyboard.press('End');
+  await expect(tab('Settings')).toHaveAttribute('aria-selected', 'true');
+  await page.keyboard.press('Home');
+  await expect(tab('Overview')).toHaveAttribute('aria-selected', 'true');
+
+  await tab('Activity').click();
+  await expect(live.getByText('Ana moved')).toBeVisible();
+  const bar = live.locator('[role=tablist] > :last-child');
+  const t = (await tab('Activity').boundingBox())!;
+  await expect.poll(async () => Math.round((await bar.boundingBox())!.x)).toBe(Math.round(t.x));
+  expect(Math.round((await bar.boundingBox())!.width)).toBe(Math.round(t.width));
+  expect((await tab('Settings').boundingBox())!.x, 'tabs keep their place').toBe(settingsX);
+});

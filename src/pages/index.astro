@@ -11,6 +11,7 @@ import { InputPreview } from '../demos/input';
 import { SelectPreview } from '../demos/select';
 import { CheckboxPreview } from '../demos/checkbox';
 import { SwitchPreview } from '../demos/switch';
+import { TabsPreview } from '../demos/tabs';
 import Hero from '../components/Hero.astro';
 import s from './index.module.scss';
 
@@ -51,6 +52,7 @@ const groups = [
                   {e.slug === 'select' && <SelectPreview />}
                   {e.slug === 'checkbox' && <CheckboxPreview client:visible />}
                   {e.slug === 'switch' && <SwitchPreview client:visible />}
+                  {e.slug === 'tabs' && <TabsPreview client:visible />}
                   {e.slug === 'concentric-radius' && <ConcentricPreview />}
                 </div>
                 <p class={s.cardSummary}>{e.summary}</p>

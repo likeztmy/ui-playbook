@@ -1,0 +1,126 @@
+@use '../styles/states' as *;
+
+// Tabs 40 tall, space-4 apart, on a line that runs the full width. The
+// current tab is ink with a 2px ink bar under it: blue is kept for things
+// you can act on.
+
+.list {
+  position: relative;
+  display: flex;
+  gap: var(--space-4);
+  // Too many to fit: scroll sideways. Never wrap, never shrink the type.
+  overflow-x: auto;
+  scrollbar-width: none;
+  // 8px of room each side for the focus ring, given back by the margin so
+  // the first label still lines up with the panel. The line is a local
+  // background on the content box: it scrolls with the tabs and stops
+  // where the content does.
+  margin-inline: calc(var(--space-2) * -1);
+  padding-inline: var(--space-2);
+  background: linear-gradient(var(--line), var(--line)) bottom / 100% 1px no-repeat local content-box;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.tab {
+  position: relative;
+  box-sizing: border-box;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-2);
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--ink-muted);
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  // One weight for every tab: a bolder current tab is wider, and its
+  // neighbours would shift each time it changes.
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: default;
+  user-select: none;
+  outline: none;
+  transition: color var(--duration-fast) var(--ease-out);
+
+  @include hover {
+    color: var(--ink);
+    transition-duration: var(--duration-instant);
+  }
+
+  // Around the label, not the 40px box: the box's top and bottom would be
+  // clipped by the scrolling list. 6px out plus a 2px ring fills the list's
+  // 8px padding exactly.
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 6px -6px;
+    border-radius: var(--radius-sm);
+  }
+
+  @include focus {
+    &::before {
+      box-shadow: 0 0 0 2px var(--accent);
+    }
+  }
+
+  &[data-active] {
+    color: var(--ink);
+  }
+
+  &[data-disabled] {
+    color: var(--ink-disabled);
+  }
+}
+
+// A count beside the label: mono, so it doesn't jitter as it changes.
+.count {
+  box-sizing: border-box;
+  min-width: 20px;
+  height: 18px;
+  padding: 0 var(--space-1);
+  border-radius: var(--radius-xs);
+  background: var(--surface-sunken);
+  color: var(--ink-muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 18px;
+  font-weight: 400;
+  text-align: center;
+}
+
+// One bar that travels from tab to tab, so the change has a direction.
+.indicator {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  width: var(--active-tab-width);
+  height: 2px;
+  border-radius: var(--radius-full);
+  background: var(--ink);
+  translate: var(--active-tab-left) 0;
+  transition:
+    translate var(--duration-base) var(--ease-in-out),
+    width var(--duration-base) var(--ease-in-out);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+.panel {
+  padding-top: var(--space-4);
+  outline: none;
+  border-radius: var(--radius-sm);
+
+  @include focus {
+    box-shadow: var(--focus-ring);
+  }
+}

@@ -141,3 +141,25 @@
 .rigidThumb {
   width: 16px !important;
 }
+
+// The current tab set in bold, so it changes width.
+.boldActiveTab[data-active] {
+  font-weight: 700 !important;
+}
+
+// Tabs whose current one is marked in the accent colour.
+.accentTabs {
+  [data-active] {
+    color: var(--accent-text) !important;
+  }
+
+  > :last-child {
+    background: var(--accent) !important;
+  }
+}
+
+// Tabs that wrap onto a second row instead of scrolling.
+.wrapTabs {
+  flex-wrap: wrap !important;
+  overflow: visible !important;
+}

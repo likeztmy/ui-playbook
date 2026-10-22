@@ -84,6 +84,14 @@ export const entries: Entry[] = [
     keywords: ['toggle', 'on off', 'setting', 'preference', 'knob'],
   },
   {
+    slug: 'tabs',
+    kind: 'component',
+    title: 'Tabs',
+    summary: 'Views of one thing, one row. An ink bar slides under the current tab; nothing else moves.',
+    details: 4,
+    keywords: ['tab', 'tab bar', 'sections', 'views', 'underline', 'indicator', 'segmented'],
+  },
+  {
     slug: 'concentric-radius',
     kind: 'principle',
     title: 'Concentric radius',

@@ -1,0 +1,82 @@
+---
+layout: ../../layouts/Entry.astro
+slug: tabs
+---
+import { TabsLive, TabsVariants, TabsStates, TabsWeight, TabsIndicator, TabsOverflow, TabsCounts } from '../../demos/tabs';
+
+## When to use
+
+Tabs switch between views of one thing: a project's *Overview*, *Issues* and *Settings*. Each tab replaces a region of the page, and every view is about the same object. Reach for something else when:
+
+- **It changes how one control shows its content.** *List* or *Board* for the same items is a segmented control.
+- **Each view is a place of its own.** Pages with their own URL and history are navigation links, even if they're styled like tabs.
+- **There are more than about six.** Apple suggests another way past six: a sidebar, or a Select for the view.
+- **The content is a sequence.** Steps that must be done in order belong in a stepper or a flow, not in tabs people can skip around.
+
+### Tabs or segmented control
+
+| | Tabs | Segmented control |
+| --- | --- | --- |
+| Switches | A region of the page | One control's mode |
+| Looks like | Labels on a line, a bar under the current one | A filled track with a raised segment |
+| Count | 2 to about 6, can scroll | 2 to 5, never scrolls |
+| Sits | Above the content it changes | Beside the thing it changes, often in a toolbar |
+
+## Variants
+
+<TabsVariants client:visible />
+
+## Anatomy
+
+| Part | Token | Value |
+| --- | --- | --- |
+| Tab height | 40 | 40 |
+| Between tabs | `space-4` | 16 |
+| Label | 14 / 20, weight 500 | 14 |
+| Default | `ink-muted` | |
+| Current | `ink` | |
+| Bar | 2px, `ink`, `radius-full` | 2 |
+| Line | 1px `line`, the full width of the tabs | 1 |
+| Count | mono 11, `surface-sunken`, `radius-xs` | 18 |
+| Panel gap | `space-4` | 16 |
+
+The bar sits on the line, under the label's full width. Tabs have no side padding: the gap is the only space between them, so labels line up with the content's left edge.
+
+## States
+
+<TabsStates client:visible />
+
+<TabsLive client:visible />
+
+Tab into the row and use ← →: each arrow moves to the next tab and opens it, since the panels appear at once. Home and End jump to the ends. Tab again moves into the panel. The bar slides over `duration-base` with `ease-in-out`.
+
+## Details
+
+### Weight stays put
+
+<TabsWeight client:visible />
+
+### The bar is ink, not blue
+
+<TabsIndicator client:visible />
+
+### One row that scrolls
+
+<TabsOverflow client:visible />
+
+### Counts beside the label, not in it
+
+<TabsCounts client:visible />
+
+## Common mistakes
+
+- **Tabs that hide required input.** If a form spans tabs, people submit without seeing half of it. Put it on one page, or make it a flow.
+- **Controls above the tabs that act on one panel.** Apple: controls in a pane affect only that pane. Move them inside.
+- **Tabs that reset.** Coming back to a page should show the tab people left, not the first one.
+- **A single tab.** One view needs a heading, not a tab.
+
+## Copy
+
+- Labels: nouns or short noun phrases, one or two words: **Overview**, **Pull requests**.
+- Sentence case, as everywhere here; Apple's title case is the platform's, not ours.
+- Parallel: all nouns, or all verbs. Not *Overview*, *Manage members*, *Billing*.
