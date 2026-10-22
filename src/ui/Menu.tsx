@@ -1,8 +1,9 @@
 import { Menu as BaseMenu } from '@base-ui/react/menu';
 import { ContextMenu as BaseContextMenu } from '@base-ui/react/context-menu';
-import { ArrowBigUp, Check, ChevronRight, Command, CornerDownLeft, Delete, Option, type LucideIcon } from 'lucide-react';
+import { Check, ChevronRight, type LucideIcon } from 'lucide-react';
 import { useState, type ComponentProps, type ReactNode } from 'react';
 import { cx } from './cx';
+import { KEY_ICON, inAppleOrder } from './keys';
 import { usePortalContainer } from './portal';
 import s from './Menu.module.scss';
 
@@ -33,27 +34,29 @@ function Popup({ side = 'bottom', align = 'start', sub, className, ...props }: P
   );
 }
 
-// Modifier keys drawn as icons: Geist has no ⌘ ⇧ ⌥ ⌫ ↵ glyphs.
-const KEY_ICON: Record<string, LucideIcon> = {
-  '⌘': Command,
-  '⇧': ArrowBigUp,
-  '⌥': Option,
-  '⌫': Delete,
-  '↵': CornerDownLeft,
-};
+function KeyGlyph({ k }: { k: string }) {
+  const Icon = KEY_ICON[k];
+  return Icon ? <Icon size={12} strokeWidth={1.25} nonScalingStroke aria-label={k} /> : <>{k}</>;
+}
 
-/** A shortcut as keycaps, e.g. keys={['⌘', 'D']}. */
+/**
+ * A shortcut as bare symbols, after macOS: the last key in a fixed cell at
+ * the row's end, modifiers to its left in Apple's order. Every row's key
+ * falls in one column, however many modifiers come before it.
+ */
 export function Keys({ keys, className }: { keys: string[]; className?: string }) {
+  const ordered = inAppleOrder(keys);
+  const key = ordered[ordered.length - 1];
   return (
     <kbd className={cx(s.keys, className)}>
-      {keys.map((k, i) => {
-        const Icon = KEY_ICON[k];
-        return (
-          <span key={i} className={s.key}>
-            {Icon ? <Icon size={12} strokeWidth={1.5} nonScalingStroke aria-label={k} /> : k}
-          </span>
-        );
-      })}
+      <span className={s.mods}>
+        {ordered.slice(0, -1).map((k) => (
+          <KeyGlyph key={k} k={k} />
+        ))}
+      </span>
+      <span className={s.keyCell}>
+        <KeyGlyph k={key} />
+      </span>
     </kbd>
   );
 }

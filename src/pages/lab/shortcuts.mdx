@@ -1,0 +1,27 @@
+---
+layout: ../../layouts/Lab.astro
+title: Menu shortcut directions
+---
+import { ColumnDirection, TextDirection, ChipDirection } from '../../demos/menu-lab/Shortcuts';
+
+The menu used to draw a box around every key: fourteen boxes in seven rows, louder than the labels they sit beside. Apple's menus, shadcn/ui and Radix Themes all show shortcuts as bare symbols. Three directions on the same Edit menu, with one-, two- and three-key shortcuts. Rows, icons and highlight are unchanged. Hover the stills to move the highlight.
+
+**Picked: A.** The Menu component now draws shortcuts this way.
+
+## A · Column
+
+After macOS. Bare symbols in `ink-muted`. The last key sits in a fixed cell at the right edge and the modifiers line up to its left, so Z, C, D and G fall in one column whatever comes before them. Modifiers follow Apple's order: ⌃ ⌥ ⇧ ⌘.
+
+<ColumnDirection client:visible />
+
+## B · Text
+
+After shadcn/ui and Radix Themes. The whole shortcut as one run of symbols, a size smaller than the label, right-aligned. Simplest; the keys don't form a column.
+
+<TextDirection client:visible />
+
+## C · Chip
+
+The same run on one borderless chip in `fill-hover`, darker on the highlighted row. Keeps a hint of “this is a key” without a box per key.
+
+<ChipDirection client:visible />

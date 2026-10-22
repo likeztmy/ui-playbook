@@ -1,6 +1,6 @@
 // Popup radius-lg 12, inset space-1 4 → items radius-md 8.
 // Rows are control-md 32 at 13px: dense enough for a tool, roomy enough for
-// an icon and a keycap.
+// an icon and a shortcut.
 
 .positioner {
   z-index: var(--z-dropdown);
@@ -86,7 +86,7 @@
     color: var(--ink-disabled);
 
     .icon,
-    .key {
+    .keys {
       color: inherit;
     }
   }
@@ -131,31 +131,31 @@
   color: var(--ink-muted);
 }
 
-// One cap per key, right-aligned as a column.
+// Shortcuts as bare symbols, after macOS: quiet beside the label, no box
+// per key. The last key sits in a fixed cell at the row's end, so keys form
+// one column whatever the modifiers before them.
 .keys {
-  display: flex;
-  gap: 2px;
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
   margin-left: var(--space-4);
+  color: var(--ink-muted);
   font: inherit;
+
+  svg {
+    display: block;
+  }
 }
 
-// Caps: 18px square in a 32px row, radius-xs. Modifiers are Lucide icons,
-// since the UI face has no ⌘ ⇧ ⌫ glyphs; letters are Geist. 3px padding
-// keeps a 12px icon cap exactly as wide as a letter cap.
-.key {
-  box-sizing: border-box;
-  display: grid;
+.mods {
+  display: inline-flex;
+  gap: 1px;
+}
+
+.keyCell {
+  display: inline-grid;
   place-items: center;
-  min-width: 18px;
-  height: 18px;
-  padding: 0 3px;
-  border-radius: var(--radius-xs);
-  background: var(--surface-sunken);
-  box-shadow: inset 0 0 0 1px var(--line);
-  color: var(--ink-muted);
-  font-size: 11px;
-  line-height: 1;
-  font-weight: 500;
+  width: 14px;
 }
 
 .label {

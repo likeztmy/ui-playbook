@@ -1,6 +1,6 @@
 import { Tooltip } from '@base-ui/react/tooltip';
-import { ArrowBigUp, Command, CornerDownLeft, Delete, Option, type LucideIcon } from 'lucide-react';
 import type { ReactElement, ReactNode } from 'react';
+import { KEY_ICON, inAppleOrder } from './keys';
 import { usePortalContainer } from './portal';
 import s from './Tooltip.module.scss';
 
@@ -16,14 +16,6 @@ export function TipGroup({ children }: { children: ReactNode }) {
     </Tooltip.Provider>
   );
 }
-
-const KEY_ICON: Record<string, LucideIcon> = {
-  '⌘': Command,
-  '⇧': ArrowBigUp,
-  '⌥': Option,
-  '⌫': Delete,
-  '↵': CornerDownLeft,
-};
 
 type TipProps = {
   /** Same words as the trigger's aria-label. */
@@ -58,7 +50,7 @@ export function Tip({ label, keys, side = 'top', defaultOpen, children }: TipPro
 export function TipKeys({ keys }: { keys: string[] }) {
   return (
     <kbd className={s.keys}>
-      {keys.map((k, i) => {
+      {inAppleOrder(keys).map((k, i) => {
         const Icon = KEY_ICON[k];
         return Icon ? (
           <Icon key={i} size={12} strokeWidth={1.5} nonScalingStroke aria-label={k} />

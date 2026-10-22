@@ -144,7 +144,7 @@ export function ToolbarVariants() {
               <Toolbar.Action label="Undo" keys={['⌘', 'Z']}>
                 <Undo2 {...ic} />
               </Toolbar.Action>
-              <Toolbar.Action label="Redo" keys={['⌘', '⇧', 'Z']}>
+              <Toolbar.Action label="Redo" keys={['⇧', '⌘', 'Z']}>
                 <Redo2 {...ic} />
               </Toolbar.Action>
               <Toolbar.Separator />

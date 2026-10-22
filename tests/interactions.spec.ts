@@ -56,7 +56,7 @@ test('loading waits delay-loading, keeps its width, ignores presses', async ({ p
   expect((await publish.boundingBox())!.width, 'width after').toBeCloseTo(width, 0);
 });
 
-test('menu: keycaps share one width; keyboard flow; focus returns', async ({ page }) => {
+test('menu: shortcut keys form one column; keyboard flow; focus returns', async ({ page }) => {
   await page.goto('/components/menu');
   await hydrateAll(page);
   const trigger = page.getByRole('button', { name: 'Edit' }).first();
@@ -65,10 +65,10 @@ test('menu: keycaps share one width; keyboard flow; focus returns', async ({ pag
   const menu = page.getByRole('menu');
   await expect(menu).toBeVisible();
 
-  const capWidths = await menu.locator('kbd > span').evaluateAll((caps) => [
-    ...new Set(caps.map((c) => Math.round(c.getBoundingClientRect().width))),
+  const keyCells = await menu.locator('kbd > span:last-child').evaluateAll((cells) => [
+    ...new Set(cells.map((c) => Math.round(c.getBoundingClientRect().left))),
   ]);
-  expect(capWidths, 'one cap width').toHaveLength(1);
+  expect(keyCells, 'last keys share one column').toHaveLength(1);
 
   const snap = menu.getByRole('menuitemcheckbox', { name: 'Snap to grid' });
   await expect(snap).toHaveAttribute('aria-checked', 'true');

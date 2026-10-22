@@ -9,7 +9,7 @@ import s from './demos.module.scss';
 
 const ACTIONS: [string, LucideIcon, string[]][] = [
   ['Undo', Undo2, ['⌘', 'Z']],
-  ['Redo', Redo2, ['⌘', '⇧', 'Z']],
+  ['Redo', Redo2, ['⇧', '⌘', 'Z']],
   ['Zoom in', ZoomIn, ['⌘', '+']],
   ['Zoom out', ZoomOut, ['⌘', '−']],
   ['Fit to screen', Maximize, ['⇧', '1']],
@@ -68,7 +68,7 @@ function Still({ popupClass }: { popupClass?: string }) {
     <div className={s.tipStill}>
       <div className={cx(ts.popup, popupClass)}>
         Redo
-        <TipKeys keys={['⌘', '⇧', 'Z']} />
+        <TipKeys keys={['⇧', '⌘', 'Z']} />
       </div>
       <IconButton label="Redo" Icon={Redo2} />
     </div>

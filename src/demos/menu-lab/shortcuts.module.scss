@@ -1,0 +1,66 @@
+// Three ways to show a shortcut in a 32px, 13px menu row. None draws a box
+// per key.
+
+.popup {
+  min-width: 260px;
+}
+
+// Shared: quiet, out of the way of the label, dimmer still when the row is
+// unavailable.
+.column,
+.run {
+  display: inline-flex;
+  align-items: center;
+  margin-left: var(--space-4);
+  color: var(--ink-muted);
+  font: inherit;
+
+  [data-disabled] > & {
+    color: var(--ink-disabled);
+  }
+
+  svg {
+    display: block;
+  }
+}
+
+// A · Column, after macOS: the last key sits in a fixed cell at the right
+// edge, modifiers line up to its left, so every row's key falls in one
+// column whatever the modifiers.
+.column {
+  gap: 1px;
+  font-size: 13px;
+}
+
+.mods {
+  display: inline-flex;
+  gap: 1px;
+}
+
+.keyCell {
+  display: inline-grid;
+  place-items: center;
+  width: 14px;
+}
+
+// B · Text, after shadcn/ui and Radix Themes: one run of glyphs, smaller
+// than the label and spaced out a little.
+.run {
+  gap: 2px;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+
+// C · Chip: the same run on one borderless chip, the whole shortcut as a
+// single object rather than a cap per key.
+.chip {
+  box-sizing: border-box;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: var(--radius-xs);
+  background: var(--fill-hover);
+
+  [data-highlighted] > & {
+    background: var(--fill-active);
+  }
+}

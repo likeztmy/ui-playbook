@@ -16,15 +16,15 @@ type StillProps = {
   initial?: string;
   /** Extra class on every row: how a "before" reproduces its mistake. */
   itemClass?: string;
-  /** Render shortcuts as one mono string, as the first version did. */
-  monoShortcuts?: boolean;
+  /** Render shortcuts as a box per key, as the second version did. */
+  capShortcuts?: boolean;
 };
 
 /**
  * The open menu as a still: the live menu's classes and row markup, with a
  * highlight that follows the pointer.
  */
-function StillMenu({ groups = GROUPS, initial = 'duplicate', itemClass, monoShortcuts }: StillProps) {
+function StillMenu({ groups = GROUPS, initial = 'duplicate', itemClass, capShortcuts }: StillProps) {
   const [hot, setHot] = useState(initial);
   const row = (r: Row) => {
     const keys = 'keys' in r ? r.keys : undefined;
@@ -38,13 +38,19 @@ function StillMenu({ groups = GROUPS, initial = 'duplicate', itemClass, monoShor
       >
         <RowContent
           icon={r.icon}
-          keys={monoShortcuts ? undefined : keys}
+          keys={capShortcuts ? undefined : keys}
           checked={r.kind === 'check' && r.checked}
           submenu={r.kind === 'submenu'}
         >
           {r.label}
         </RowContent>
-        {monoShortcuts && keys && <kbd className={m.monoShortcut}>{keys.join('')}</kbd>}
+        {capShortcuts && keys && (
+          <kbd className={m.capShortcut}>
+            {keys.map((k) => (
+              <span key={k}>{k}</span>
+            ))}
+          </kbd>
+        )}
       </div>
     );
   };
@@ -150,10 +156,10 @@ export function MenuShortcuts() {
   return (
     <Compare
       height={STILL_HEIGHT}
-      before={<StillMenu monoShortcuts />}
+      before={<StillMenu capShortcuts />}
       after={<StillMenu />}
-      beforeNote="One mono string per shortcut. The UI fonts have no ⌘ or ⌫, so the browser borrows them from another face: thinner, smaller, off the baseline."
-      afterNote="One 18px cap per key, modifiers drawn as icons at the text's stroke. Every glyph comes from the same hand, and the caps line up as a column."
+      beforeNote="A box around every key: a dozen boxes in seven rows, louder than the labels they explain. In dark they read as holes in the menu."
+      afterNote="Bare symbols in ink-muted, as macOS draws them. The last key sits in a fixed cell, modifiers to its left in Apple's order ⌃ ⌥ ⇧ ⌘, so the keys form one column."
     />
   );
 }
@@ -312,8 +318,8 @@ export function MenuContextShortcuts() {
     open: ['↵'],
     rename: ['⌘', 'R'],
     duplicate: ['⌘', 'D'],
-    share: ['⌘', '⇧', 'S'],
-    link: ['⌘', '⇧', 'C'],
+    share: ['⇧', '⌘', 'S'],
+    link: ['⇧', '⌘', 'C'],
     delete: ['⌘', '⌫'],
   });
   return (
