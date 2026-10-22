@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Choice, Dial } from '../ui/Dial';
+import { Choice } from '../ui/Dial';
+import { Slider } from '../ui/Slider';
 import { Compare, Tweak } from './shell';
 import s from './demos.module.scss';
 
@@ -54,9 +55,9 @@ export function ConcentricTweak() {
       controls={
         <>
           <Choice label="Inner radius" value={mode} options={['Concentric', 'Same radius'] as const} onChange={setMode} />
-          <Dial label="Outer radius" value={outer} onChange={setOuter} max={40} unit="px" />
-          <Dial label="Inset" value={pad} onChange={setPad} max={32} unit="px" />
-          <Dial label="Border" value={border} onChange={setBorder} max={6} unit="px" />
+          <Slider label="Outer radius" value={outer} onValueChange={setOuter} max={40} unit="px" />
+          <Slider label="Inset" value={pad} onValueChange={setPad} max={32} unit="px" />
+          <Slider label="Border" value={border} onValueChange={setBorder} max={6} unit="px" />
         </>
       }
     />

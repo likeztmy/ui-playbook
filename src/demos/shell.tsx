@@ -2,7 +2,7 @@ import { useState, type ReactNode } from 'react';
 import { PortalContainer } from '../ui/portal';
 import { Button } from '../ui/Button';
 import { CheckIcon, ContrastIcon, CrossIcon } from '../ui/icons';
-import { DialPanel } from '../ui/Dial';
+import { SliderPanel } from '../ui/Slider';
 import { cx } from '../ui/cx';
 import { Tip, TipGroup } from '../ui/Tooltip';
 import s from './shell.module.scss';
@@ -103,7 +103,7 @@ export function Tweak({ stage, controls, readout, height = 280 }: TweakProps) {
       <Frame label={readout} height={height}>
         {stage}
       </Frame>
-      <DialPanel className={s.panel}>{controls}</DialPanel>
+      <SliderPanel className={s.panel}>{controls}</SliderPanel>
     </div>
   );
 }

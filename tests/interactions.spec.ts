@@ -331,3 +331,48 @@ test('tabs: arrows open, Home/End jump, bar sits under the current tab, nothing 
   expect(Math.round((await bar.boundingBox())!.width)).toBe(Math.round(t.width));
   expect((await tab('Settings').boundingBox())!.x, 'tabs keep their place').toBe(settingsX);
 });
+
+test('slider: click glides to a stop, drag follows, ends stretch, keys step', async ({ page }) => {
+  await page.goto('/components/slider');
+  await hydrateAll(page);
+  const live = page.locator('figure').filter({ hasText: 'Live · drag' });
+  const radius = live.getByRole('slider', { name: 'Radius' });
+  const opacity = live.getByRole('slider', { name: 'Opacity' });
+  const columns = live.getByRole('slider', { name: 'Columns' });
+  await radius.scrollIntoViewIfNeeded();
+
+  // A click on a long range lands on the nearest tenth: 22% of 0–48 → 0.2 → 10.
+  const r = (await radius.boundingBox())!;
+  await page.mouse.click(r.x + r.width * 0.22, r.y + r.height / 2);
+  await expect(radius).toHaveAttribute('aria-valuenow', '10');
+
+  // A click on ten stops or fewer lands on a stop: 62% of 1–6 → 4.
+  const c = (await columns.boundingBox())!;
+  await page.mouse.click(c.x + c.width * 0.62, c.y + c.height / 2);
+  await expect(columns).toHaveAttribute('aria-valuenow', '4');
+
+  // A drag follows the pointer exactly, with no glide.
+  const o = (await opacity.boundingBox())!;
+  const y = o.y + o.height / 2;
+  await page.mouse.move(o.x + o.width * 0.5, y);
+  await page.mouse.down();
+  await page.mouse.move(o.x + o.width * 0.8, y, { steps: 8 });
+  await expect(opacity).toHaveAttribute('aria-valuenow', '80');
+  await expect(opacity).not.toHaveAttribute('data-gliding');
+
+  // Past the end the row stretches, at most 10px, and springs back.
+  await page.mouse.move(o.x + o.width + 400, y, { steps: 8 });
+  await expect(opacity).toHaveAttribute('aria-valuenow', '100');
+  expect((await opacity.boundingBox())!.width - o.width).toBeCloseTo(10, 0);
+  await page.mouse.up();
+  await expect.poll(async () => Math.round((await opacity.boundingBox())!.width)).toBe(Math.round(o.width));
+
+  await opacity.focus();
+  await page.keyboard.press('ArrowLeft');
+  await expect(opacity).toHaveAttribute('aria-valuenow', '99');
+  await page.keyboard.press('Shift+ArrowLeft');
+  await expect(opacity).toHaveAttribute('aria-valuenow', '89');
+  await page.keyboard.press('Home');
+  await expect(opacity).toHaveAttribute('aria-valuenow', '0');
+  await expect(opacity).toHaveAttribute('aria-valuetext', '0%');
+});

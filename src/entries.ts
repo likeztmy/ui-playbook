@@ -92,6 +92,14 @@ export const entries: Entry[] = [
     keywords: ['tab', 'tab bar', 'sections', 'views', 'underline', 'indicator', 'segmented'],
   },
   {
+    slug: 'slider',
+    kind: 'component',
+    title: 'Slider',
+    summary: 'The whole row is the control. A drag follows, a click glides, the ends give a little.',
+    details: 5,
+    keywords: ['range', 'dial', 'property panel', 'value', 'drag', 'rubber band', 'dialkit'],
+  },
+  {
     slug: 'concentric-radius',
     kind: 'principle',
     title: 'Concentric radius',

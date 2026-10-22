@@ -312,3 +312,52 @@
 .narrowTabs {
   max-width: 300px;
 }
+
+// Sliders: a lone row, a stack, a property panel, the state list.
+.sliderRow {
+  width: min(100%, 280px);
+}
+
+.sliderStack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: min(100%, 280px);
+}
+
+.sliderPanel {
+  width: min(100%, 280px);
+}
+
+.sliderStates {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--space-4) var(--space-6);
+  width: 100%;
+}
+
+.sliderState {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+
+  > span {
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--ink-muted);
+  }
+}
+
+// The live preview: tiles the sliders shape.
+.swatchGrid {
+  display: grid;
+  grid-template-columns: repeat(var(--cols), 24px);
+  gap: var(--space-2);
+  justify-content: center;
+  width: 200px;
+
+  > span {
+    height: 24px;
+    background: var(--accent);
+  }
+}

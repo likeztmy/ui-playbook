@@ -217,3 +217,47 @@
     order: 3;
   }
 }
+
+// A classic slider: label, thin track with a round knob, value.
+.classicSlider {
+  display: grid;
+  grid-template-columns: 64px 1fr 40px;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 13px;
+  color: var(--ink-muted);
+
+  input {
+    width: 100%;
+    accent-color: var(--accent);
+  }
+
+  output {
+    text-align: right;
+    color: var(--ink);
+  }
+}
+
+// A slider that eases every change, drags included.
+.laggySlider > * {
+  transition:
+    width 400ms ease,
+    left 400ms ease !important;
+}
+
+// A slider that stops dead at its ends.
+.rigidSlider {
+  width: 100% !important;
+  margin-left: 0 !important;
+}
+
+// A handle that never steps aside.
+.noDodge[data-dodging] > [class*='handle'] {
+  opacity: 0.85 !important;
+}
+
+// A value in proportional digits.
+.proportionalValue > [class*='value'] {
+  font-family: inherit !important;
+  font-variant-numeric: proportional-nums !important;
+}

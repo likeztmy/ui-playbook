@@ -1,0 +1,74 @@
+---
+layout: ../../layouts/Entry.astro
+slug: slider
+---
+import { SliderLive, SliderVariants, SliderStates, SliderRow, SliderFollow, SliderEdge, SliderDodge, SliderDigits } from '../../demos/slider';
+
+## When to use
+
+A slider tunes a value you judge by eye while watching the result: an opacity, a radius, a spring's bounce. This one is built for property panels, after DialKit: the whole row is the control. Reach for something else when:
+
+- **People know the exact number.** A number field takes *1280* faster than any drag. Offer both when either happens.
+- **There are a few named options.** *Small*, *Medium*, *Large* is a segmented control.
+- **It's a range with two ends.** A two-thumb slider is its own component; don't stack two of these.
+- **The change is expensive.** A slider fires continuously; if each value costs a request, commit on release or use a field.
+
+## Variants
+
+<SliderVariants client:visible />
+
+## Anatomy
+
+| Part | Token | Value |
+| --- | --- | --- |
+| Row | `control-md`, `radius-lg`, `fill-control` | 32 |
+| Fill | another `fill-control`; hover `fill-control-hover` | |
+| Label | 13 / 500, `space-3` from the left | 13 |
+| Value | Geist Mono, `tabular-nums`, `space-3` from the right | 13 |
+| Handle | 3 × 16, `radius-full`, `ink` | 3 |
+| Ticks | 1 × 8, `line-strong`, ten stops or fewer | 8 |
+| In a panel | `radius-xl` 18, inset `space-2` 8 → row `radius-lg` 10 | 10 |
+
+Label and value are `ink-muted` at rest and `ink` while the row is hovered, dragged or focused.
+
+## States
+
+<SliderStates client:visible />
+
+<SliderLive client:visible />
+
+A press becomes a drag after 3px of travel. Short of that it's a click, and the value glides there on the smooth spring, snapping to a stop when there are ten or fewer, otherwise to the nearest tenth: exact values come from dragging or the keyboard. Arrows move one step, Shift ten, Home and End go to the ends.
+
+## Details
+
+### The whole row is the control
+
+<SliderRow client:visible />
+
+### A drag follows; a click glides
+
+<SliderFollow client:visible />
+
+### The ends give, then spring back
+
+<SliderEdge client:visible />
+
+### The handle steps aside
+
+<SliderDodge client:visible />
+
+### Digits keep their width
+
+<SliderDigits client:visible />
+
+## Common mistakes
+
+- **No visible value.** A slider without a number makes people drag back and forth to find out where they are.
+- **A slider for a precise number.** Three-digit precision by dragging is a test of hand steadiness. Pair it with a field.
+- **Steps finer than the pixels.** A 0–10,000 range on a 280px row skips values; drop the step or narrow the range.
+- **Animating keyboard steps.** Arrow presses come in bursts; each should land at once.
+
+## Copy
+
+- Label: the property, a noun: **Opacity**, **Radius**, **Columns**.
+- Value: the number with its unit attached: **64%**, **12px**. A bare number when the unit is obvious from the label: **Columns 3**.

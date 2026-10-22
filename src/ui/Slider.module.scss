@@ -1,0 +1,163 @@
+// The whole row is the control, after DialKit: the label sits in the track
+// on the left, the value on the right, and the fill runs to the value.
+// radius-lg 10 inside a radius-xl 18 panel inset space-2 8: concentric.
+
+.slider {
+  position: relative;
+  box-sizing: border-box;
+  // Rubber band: past either end the row stretches by up to 10px.
+  width: calc(100% + var(--stretch, 0px));
+  margin-left: var(--stretch-left, 0px);
+  height: var(--control-md);
+  border-radius: var(--radius-lg);
+  background: var(--fill-control);
+  overflow: hidden;
+  cursor: ew-resize;
+  user-select: none;
+  touch-action: none;
+  outline: none;
+  // Released past an end, it springs back.
+  transition:
+    width var(--spring-smooth-duration) var(--ease-spring-smooth),
+    margin-left var(--spring-smooth-duration) var(--ease-spring-smooth);
+
+  &[data-dragging] {
+    transition: none;
+  }
+
+  &:focus-visible,
+  &[data-pin~='focus'] {
+    box-shadow: var(--focus-ring);
+  }
+}
+
+// Fill stacked on the track: two layers of fill-control. Dragging follows
+// the pointer exactly; only a click or Home/End glides.
+.fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--pct);
+  background: var(--fill-control);
+  transition: background-color var(--duration-fast) var(--ease-out);
+
+  [data-gliding] > & {
+    transition:
+      width var(--spring-smooth-duration) var(--ease-spring-smooth),
+      background-color var(--duration-fast) var(--ease-out);
+  }
+}
+
+// A 3 × 16 line just inside the fill's end. Hidden at rest, 40% on hover,
+// 85% while dragging, 10% when it would sit on the label or the value.
+.handle {
+  position: absolute;
+  top: 50%;
+  left: max(6px, calc(var(--pct) - 7px));
+  width: 3px;
+  height: 16px;
+  margin-top: -8px;
+  border-radius: var(--radius-full);
+  background: var(--ink);
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--ease-out);
+
+  [data-gliding] > & {
+    transition:
+      left var(--spring-smooth-duration) var(--ease-spring-smooth),
+      opacity var(--duration-fast) var(--ease-out);
+  }
+}
+
+.label,
+.value {
+  position: absolute;
+  inset-block: 0;
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-muted);
+  pointer-events: none;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.label {
+  left: var(--space-3);
+}
+
+// Mono and tabular: the value changes width-for-width while dragging.
+.value {
+  right: var(--space-3);
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+// A discrete slider (ten stops or fewer) shows its stops on hover.
+.tick {
+  position: absolute;
+  top: 50%;
+  width: 1px;
+  height: 8px;
+  margin-top: -4px;
+  border-radius: var(--radius-full);
+  background: var(--line-strong);
+  opacity: 0;
+  transition: opacity var(--duration-base) var(--ease-out);
+}
+
+// Hover, drag and keyboard focus all wake the row up.
+.slider:hover,
+.slider[data-pin~='hover'],
+.slider[data-dragging],
+.slider:focus-visible,
+.slider[data-pin~='focus'] {
+  .fill {
+    background: var(--fill-control-hover);
+  }
+
+  .label,
+  .value {
+    color: var(--ink);
+  }
+}
+
+.slider:hover,
+.slider[data-pin~='hover'],
+.slider[data-dragging] {
+  .tick {
+    opacity: 1;
+  }
+}
+
+.slider:hover .handle,
+.slider[data-pin~='hover'] .handle {
+  opacity: 0.4;
+}
+
+.slider[data-dragging] .handle {
+  opacity: 0.85;
+}
+
+.slider[data-dodging]:is(:hover, [data-pin~='hover'], [data-dragging]) .handle {
+  opacity: 0.1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slider,
+  [data-gliding] > .fill,
+  [data-gliding] > .handle {
+    transition-duration: 0ms;
+  }
+}
+
+// A property panel of sliders: radius-xl 18, inset space-2 8.
+.panel {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-2);
+  border-radius: var(--radius-xl);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
