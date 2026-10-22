@@ -108,6 +108,14 @@ export const entries: Entry[] = [
     keywords: ['segmented', 'toggle group', 'radio group', 'view switcher', 'mode', 'thumb'],
   },
   {
+    slug: 'card',
+    kind: 'component',
+    title: 'Card',
+    summary: 'A frame around a grey stage, words beneath. Only cards that open lift.',
+    details: 5,
+    keywords: ['card', 'tile', 'grid', 'gallery', 'project', 'thumbnail', 'stagger', 'hover lift'],
+  },
+  {
     slug: 'concentric-radius',
     kind: 'principle',
     title: 'Concentric radius',

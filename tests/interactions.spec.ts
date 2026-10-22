@@ -409,3 +409,43 @@ test('segmented: icon segments are named and carry tooltips', async ({ page }) =
   await center.hover();
   await expect(page.locator('[data-open]').filter({ hasText: 'Align center' }).last()).toBeVisible();
 });
+
+test('card: opens as one target, More opens its own menu, only live cards lift', async ({ page }) => {
+  await page.goto('/components/card');
+  await hydrateAll(page);
+  const live = page.locator('figure').filter({ hasText: 'Live · hover' });
+  const open = live.getByRole('button', { name: 'Brand refresh', exact: true });
+  await open.scrollIntoViewIfNeeded();
+
+  // Clicking the stage, not the title, still opens: the title's target covers the card.
+  // Playwright sees the title's stretched target covering the stage, which
+  // is the point; click the stage's spot with the mouse.
+  const stage = (await live.locator('article').nth(1).locator('div').first().boundingBox())!;
+  await page.mouse.click(stage.x + stage.width / 2, stage.y + stage.height / 2);
+  await expect(live.getByText('Opened Brand refresh')).toBeVisible();
+
+  await live.getByRole('button', { name: 'More for Q4 roadmap' }).click();
+  await expect(page.getByRole('menu')).toBeVisible();
+  await expect(live.getByText('Opened Q4 roadmap'), 'More does not open the card').toHaveCount(0);
+  await page.keyboard.press('Escape');
+
+  const scaleOf = (el: import('@playwright/test').Locator) => el.evaluate((n) => getComputedStyle(n).scale);
+  const linkCard = page.locator('figure').filter({ hasText: 'Variants' }).locator('article').first();
+  const staticCard = page.locator('figure').filter({ hasText: 'Variants' }).locator('article').last();
+  await linkCard.hover();
+  await expect.poll(() => scaleOf(linkCard)).toBe('1.01');
+  await staticCard.hover();
+  await expect.poll(() => scaleOf(staticCard)).toBe('none');
+});
+
+test('card: a refreshed number swaps in digit by digit', async ({ page }) => {
+  await page.goto('/components/card');
+  await hydrateAll(page);
+  const after = page.locator('figure').filter({ hasText: 'After' }).filter({ hasText: 'Conversion' });
+  await after.scrollIntoViewIfNeeded();
+  await after.getByRole('button', { name: 'Conversion' }).click();
+  const digits = after.locator('[aria-hidden] > span');
+  await expect(digits).toHaveCount(5);
+  const delays = await digits.evaluateAll((d) => d.map((n) => getComputedStyle(n).animationDelay.split(',')[0].trim()));
+  expect(delays.slice(0, 3)).toEqual(['0s', '0.03s', '0.06s']);
+});

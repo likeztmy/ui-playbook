@@ -1,0 +1,77 @@
+---
+layout: ../../layouts/Entry.astro
+slug: card
+---
+import { CardLive, CardVariants, CardStates, CardStage, CardHonest, CardLift, CardStagger, CardNumber } from '../../demos/card';
+
+## When to use
+
+A card is one unit in a set people browse by sight: projects, samples, templates, files. A frame holds a grey stage for the content, and the words sit underneath. Reach for something else when:
+
+- **People compare by attributes.** Names, owners, dates and sizes side by side are a Table.
+- **It's one block of a page.** A settings group or a summary is a section with a heading, not a card.
+- **There's nothing to see.** A card whose stage is a generic icon is a list row in disguise; use a list.
+- **Cards inside cards.** Nesting frames multiplies edges; group with spacing and headings instead.
+
+## Variants
+
+<CardVariants client:visible />
+
+## Anatomy
+
+| Part | Token | Value |
+| --- | --- | --- |
+| Frame | `surface`, `shadow-xs`, `radius-xl` | 18 |
+| Inset | `space-2`, all four sides | 8 |
+| Stage | `fill-control`, `radius-lg` = 18 − 8 | 10 |
+| Title | 14 / 20, weight 500 | 14 |
+| Subtitle | 13 / 18, `ink-muted` | 13 |
+| Meta padding | `space-3` above, `space-2` sides | 12 |
+| Hover | `hover-lift`, `shadow-sm`, `ease-spring-gentle` | 1.01 |
+| Entrance | `stagger` apart, at most eight | 30ms |
+
+The stage gives the content a quiet grey; the card itself brings no colour. Colour on a page of cards comes from the work on them.
+
+## States
+
+<CardStates client:visible />
+
+<CardLive client:visible />
+
+The whole card is one target: its title is the link or button, stretched over the card, so a screen reader hears one name. The More button sits above it and opens its own menu without opening the card. Tab reaches the card, then its action.
+
+## Details
+
+### The stage is concentric
+
+<CardStage client:visible />
+
+### Only a card that opens lifts
+
+<CardHonest client:visible />
+
+### A small lift
+
+<CardLift client:visible />
+
+### Arrive together, almost
+
+<CardStagger client:visible />
+
+### Numbers change with a blur
+
+<CardNumber client:visible />
+
+This is Precision's swap: new text rises 4px out of a `swap-blur` and fades in over `duration-base`, each character `stagger` after the last. Assistive tech reads the value once, whole.
+
+## Common mistakes
+
+- **Buttons all over the card.** One primary target and at most one action. More belongs in the action's menu.
+- **Text on the stage.** Titles over images lose contrast on half the images; keep words in the meta row.
+- **Uneven heights.** Two-line titles in one card and one-line in the next make a ragged grid. Truncate to one line; show the rest in a tooltip or the opened view.
+- **Staggering every re-render.** The entrance plays when the grid first appears, not when a filter changes or a card is renamed.
+
+## Copy
+
+- Title: the thing's own name: **Q4 roadmap**, not *Project: Q4 roadmap*.
+- Subtitle: the one fact that helps choose between cards, usually when it changed: **Edited 2 hours ago**.

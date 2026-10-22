@@ -1,0 +1,42 @@
+// Each new character starts swap-blur soft, enter-offset low and faded,
+// and settles: opacity and blur over duration-base, position on the smooth
+// spring, each one `stagger` after the last.
+
+.chars {
+  font-variant-numeric: tabular-nums;
+}
+
+.char {
+  display: inline-block;
+  animation:
+    swap-in var(--duration-base) var(--ease-out) backwards,
+    swap-rise var(--spring-smooth-duration) var(--ease-spring-smooth) backwards;
+  animation-delay: calc(var(--i) * var(--stagger));
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: swap-in var(--duration-fast) var(--ease-out) backwards;
+  }
+}
+
+@keyframes swap-in {
+  from {
+    opacity: 0;
+    filter: blur(var(--swap-blur));
+  }
+}
+
+@keyframes swap-rise {
+  from {
+    translate: 0 var(--enter-offset);
+  }
+}
+
+// Read once, as a whole, by assistive tech.
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
