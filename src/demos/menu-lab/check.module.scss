@@ -1,0 +1,21 @@
+// Check placement examples.
+
+.slot {
+  flex: none;
+
+  &[data-off] {
+    visibility: hidden;
+  }
+}
+
+// An empty leading column, so labels line up with checked rows.
+.gutter {
+  flex: none;
+  width: 16px;
+}
+
+// These stills place every column by hand: switch off the popup's own
+// leading gutter.
+.noAutoGutter :global(*)::before {
+  display: none !important;
+}

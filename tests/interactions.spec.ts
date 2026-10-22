@@ -71,6 +71,11 @@ test('menu: shortcut keys form one column; keyboard flow; focus returns', async 
   expect(keyCells, 'last keys share one column').toHaveLength(1);
 
   const snap = menu.getByRole('menuitemcheckbox', { name: 'Snap to grid' });
+  const checkBox = (await snap.locator('svg').first().boundingBox())!;
+  const snapLabel = (await snap.getByText('Snap to grid', { exact: true }).boundingBox())!;
+  const copyLabel = (await menu.getByRole('menuitem', { name: 'Copy' }).getByText('Copy', { exact: true }).boundingBox())!;
+  expect(checkBox.x, 'check leads the row').toBeLessThan(snapLabel.x);
+  expect(Math.round(copyLabel.x), 'labels share one line').toBe(Math.round(snapLabel.x));
   await expect(snap).toHaveAttribute('aria-checked', 'true');
   await page.keyboard.press('ArrowUp');
   await page.keyboard.press('ArrowUp');
@@ -137,8 +142,9 @@ test('choice menu: picking a value closes and relabels the trigger', async ({ pa
   await trigger.click();
   const menu = page.getByRole('menu');
   await expect(menu.getByRole('menuitemradio', { name: 'Modified' })).toHaveAttribute('aria-checked', 'true');
-  // No icons: the only glyphs are the checkmarks, one per radio group.
-  await expect(menu.locator('svg.lucide')).toHaveCount(2);
+  // No icons: the only visible glyphs are the checkmarks, one per radio
+  // group. Unchecked rows keep a hidden one to hold the column.
+  await expect(menu.locator('svg.lucide:visible')).toHaveCount(2);
   await menu.getByRole('menuitemradio', { name: 'Name' }).click();
   await expect(menu).toHaveCount(0);
   await expect(page.getByRole('button', { name: /^Sort: Name/ })).toBeVisible();

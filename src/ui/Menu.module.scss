@@ -9,7 +9,9 @@
 
 .popup {
   box-sizing: border-box;
-  min-width: 248px;
+  // As wide as its longest row, as on macOS: no fixed width padding out
+  // the gap between labels and shortcuts.
+  min-width: 160px;
   padding: var(--space-1);
   border-radius: var(--radius-lg);
   background: var(--surface-raised);
@@ -55,7 +57,7 @@
 }
 
 .subPopup {
-  min-width: 168px;
+  min-width: 120px;
 }
 
 .item {
@@ -122,8 +124,21 @@
 
 .check {
   display: grid;
+  flex: none;
   place-items: center;
   color: var(--accent-text);
+
+  &:is([data-off], [data-unchecked]) {
+    visibility: hidden;
+  }
+}
+
+// The checkmark leads the row, as on macOS. Once any row in a popup can be
+// checked, every row keeps that column, so the labels stay on one line.
+.popup:has(.check) .item:not(:has(.check))::before {
+  content: '';
+  flex: none;
+  width: 16px;
 }
 
 .chevron {
@@ -138,8 +153,12 @@
   display: inline-flex;
   align-items: center;
   gap: 1px;
-  margin-left: var(--space-4);
-  color: var(--ink-muted);
+  // At least 24px from the label: with the menu sized to its widest row,
+  // this is the only gap between them.
+  margin-left: var(--space-6);
+  // One step lighter than the icons, the same grey macOS gives shortcuts
+  // and unavailable items: present, never competing with the label.
+  color: var(--ink-disabled);
   font: inherit;
 
   svg {
@@ -167,9 +186,10 @@
   color: var(--ink-muted);
 }
 
-// Separators run edge to edge, through the popup's inset.
+// Separators stop where the rows' content does, as on macOS: inset by the
+// popup's padding plus the row's, the same on both sides.
 .separator {
   height: 1px;
-  margin: var(--space-1) calc(var(--space-1) * -1);
+  margin: var(--space-1) var(--space-2);
   background: var(--line);
 }

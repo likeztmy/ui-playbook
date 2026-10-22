@@ -11,7 +11,7 @@ import {
   MenuUnavailable,
   MenuHighlight,
   MenuDanger,
-  MenuConcentric,
+  MenuCheck, MenuConcentric,
   MenuShortcuts,
   MenuMotion,
 } from '../../demos/menu';
@@ -78,14 +78,17 @@ Opened from a trigger that shows the current value (*Sort: Modified*). Each row 
 | --- | --- | --- |
 | Popup radius | `radius-lg` | 12 |
 | Popup inset | `space-1` | 4 |
+| Width | the widest row; at least 160 | |
+| Separator | inset `space-2` each side, past the popup's | 12 |
 | Item radius | `radius-md` = 12 − 4 | 8 |
 | Item height | `control-md` | 32 |
 | Item padding, icon gap | `space-2` | 8 |
 | Label | body-sm size, 13 / 18 | 13 |
-| Shortcut | bare symbols, `ink-muted`; last key in a fixed cell | 14 |
+| Shortcut | bare symbols, `ink-disabled`; last key in a fixed cell | 14 |
+| Label to shortcut | `space-6`, at least | 24 |
 | Surface | `surface-raised`, `shadow-md` | |
 
-Icons are Lucide at 16px in `ink-muted`, turning `ink` on the highlighted row. Checkmarks and submenu chevrons sit to the right of the label; shortcuts end the row.
+Icons are Lucide at 16px in `ink-muted`, turning `ink` on the highlighted row. Checkmarks lead the row, as on macOS: once any row in a menu can be checked, every row keeps that 16px column so the labels stay aligned. Submenu chevrons and shortcuts end the row.
 
 ## States
 
@@ -112,6 +115,10 @@ Use the pull-down above from the keyboard. Arrows move the highlight, Right open
 ### A destructive row stays red
 
 <MenuDanger client:visible />
+
+### The checkmark leads the row
+
+<MenuCheck client:visible />
 
 ### Item corners are concentric with the popup
 

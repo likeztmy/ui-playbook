@@ -39,7 +39,7 @@ function StillMenu({ groups = GROUPS, initial = 'duplicate', itemClass, capShort
         <RowContent
           icon={r.icon}
           keys={capShortcuts ? undefined : keys}
-          checked={r.kind === 'check' && r.checked}
+          checked={r.kind === 'check' ? r.checked : undefined}
           submenu={r.kind === 'submenu'}
         >
           {r.label}
@@ -140,6 +140,18 @@ export function MenuDanger() {
   );
 }
 
+export function MenuCheck() {
+  return (
+    <Compare
+      height={STILL_HEIGHT}
+      before={<StillMenu itemClass={m.trailingCheck} />}
+      after={<StillMenu />}
+      beforeNote="The check after the label, at the end of the label's space. It floats mid-row, far from the word it qualifies, and crowds the shortcut."
+      afterNote="A leading column, as on macOS. Once any row can be checked every row keeps the column, so the labels stay on one line and the checks read top to bottom."
+    />
+  );
+}
+
 export function MenuConcentric() {
   return (
     <Compare
@@ -159,7 +171,7 @@ export function MenuShortcuts() {
       before={<StillMenu capShortcuts />}
       after={<StillMenu />}
       beforeNote="A box around every key: a dozen boxes in seven rows, louder than the labels they explain. In dark they read as holes in the menu."
-      afterNote="Bare symbols in ink-muted, as macOS draws them. The last key sits in a fixed cell, modifiers to its left in Apple's order ⌃ ⌥ ⇧ ⌘, so the keys form one column."
+      afterNote="Bare symbols a step lighter than the label, as macOS draws them. The last key sits in a fixed cell, modifiers to its left in Apple's order ⌃ ⌥ ⇧ ⌘, so the keys form one column."
     />
   );
 }

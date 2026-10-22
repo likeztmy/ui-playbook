@@ -1,0 +1,25 @@
+---
+layout: ../../layouts/Lab.astro
+title: Menu checkmark placement
+---
+import { CheckNow, CheckA, CheckB, CheckC } from '../../demos/menu-lab/CheckPlacement';
+
+Where the checkmark goes, on a menu with icons and one without.
+
+**Picked: the leading column**, as on macOS, once the menu itself followed macOS too: separators inset 12px on both sides instead of running edge to edge, the popup only as wide as its widest row, and shortcuts a step lighter. The leading column only looked wrong inside a wide menu with full-width rules.
+
+## Leading column (shipped)
+
+<CheckNow client:visible />
+
+## A · Leading without icons, trailing with icons
+
+<CheckA client:visible />
+
+## B · The check takes the icon's place
+
+<CheckB client:visible />
+
+## C · After the label (the previous version)
+
+<CheckC client:visible />

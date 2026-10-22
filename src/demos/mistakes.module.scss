@@ -179,3 +179,27 @@
   flex-wrap: wrap !important;
   overflow: visible !important;
 }
+
+// A menu checkmark placed after the label instead of leading the row.
+.trailingCheck {
+  &::before {
+    display: none !important;
+  }
+
+  > * {
+    order: 0;
+  }
+
+  > [class*='text'] {
+    order: 1;
+  }
+
+  > [class*='check'] {
+    order: 2;
+  }
+
+  > [class*='chevron'],
+  > kbd {
+    order: 3;
+  }
+}

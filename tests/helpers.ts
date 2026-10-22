@@ -1,7 +1,7 @@
 import { expect, type Page } from '@playwright/test';
 import { entries, href } from '../src/entries';
 
-export const ROUTES = ['/', ...entries.map(href), '/lab/menu', '/lab/shortcuts', '/lab/hero'];
+export const ROUTES = ['/', ...entries.map(href), '/lab/menu', '/lab/shortcuts', '/lab/check', '/lab/hero'];
 
 /**
  * Collects console errors and page exceptions from the moment it's called.

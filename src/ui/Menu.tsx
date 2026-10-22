@@ -64,22 +64,28 @@ export function Keys({ keys, className }: { keys: string[]; className?: string }
 type RowProps = {
   icon?: LucideIcon;
   keys?: string[];
+  /** On or off for a toggle row; leave undefined for a row that can't be checked. */
   checked?: boolean;
   submenu?: boolean;
   children: ReactNode;
 };
 
+/** The checkmark slot, leading the row as on macOS. Kept when off, so labels stay aligned. */
+function CheckSlot({ on }: { on: boolean }) {
+  return (
+    <span className={s.check} data-off={on ? undefined : ''}>
+      <Check size={16} strokeWidth={1.75} nonScalingStroke aria-hidden />
+    </span>
+  );
+}
+
 /** The inside of a row. Shared by live items and stills, so they can't drift. */
 export function RowContent({ icon: Icon, keys, checked, submenu, children }: RowProps) {
   return (
     <>
+      {checked !== undefined && <CheckSlot on={checked} />}
       {Icon && <Icon className={s.icon} size={16} strokeWidth={1.5} nonScalingStroke aria-hidden />}
       <span className={s.text}>{children}</span>
-      {checked && (
-        <span className={s.check}>
-          <Check size={16} strokeWidth={1.75} nonScalingStroke aria-hidden />
-        </span>
-      )}
       {submenu && <ChevronRight className={s.chevron} size={16} strokeWidth={1.5} nonScalingStroke aria-hidden />}
       {keys && <Keys keys={keys} />}
     </>
@@ -153,10 +159,10 @@ type RadioItemProps = Omit<ComponentProps<typeof BaseMenu.RadioItem>, 'children'
 function RadioItem({ children, className, closeOnClick = true, ...props }: RadioItemProps) {
   return (
     <BaseMenu.RadioItem {...props} closeOnClick={closeOnClick} label={children} className={cx(s.item, className as string)}>
-      <span className={s.text}>{children}</span>
-      <BaseMenu.RadioItemIndicator className={s.check}>
+      <BaseMenu.RadioItemIndicator keepMounted className={s.check}>
         <Check size={16} strokeWidth={1.75} nonScalingStroke aria-hidden />
       </BaseMenu.RadioItemIndicator>
+      <span className={s.text}>{children}</span>
     </BaseMenu.RadioItem>
   );
 }
