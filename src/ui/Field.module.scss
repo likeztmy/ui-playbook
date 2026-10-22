@@ -18,8 +18,8 @@
 }
 
 // The box carries the edge so leading and trailing parts sit inside it.
-// radius-md 8, inset space-1 4 on the trailing side, 1px border: an
-// embedded key takes 8 − 4 − 1 = 3.
+// radius-lg 10; an embedded key sits 4 from the outer edge on three sides
+// (24 tall in 32), so it takes 10 − 4 = radius-sm 6.
 .box {
   box-sizing: border-box;
   display: flex;
@@ -28,7 +28,7 @@
   min-height: var(--control-md);
   padding: 0 var(--space-3);
   border: 1px solid var(--line-strong);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   background: var(--surface);
   color: var(--ink);
   cursor: text;
@@ -41,12 +41,12 @@
     transition-duration: var(--duration-instant);
   }
 
-  // A tight 1px accent edge, not the gapped focus-ring: the ring's 2px gap
-  // would crowd the label above.
+  // An accent edge with a 3px accent-soft halo that hugs the box, not the
+  // gapped focus-ring: the ring's 2px gap would crowd the label above.
   &:focus-within,
   &[data-pin~='focus'] {
     border-color: var(--accent);
-    box-shadow: 0 0 0 1px var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
   }
 
   &:has(> [data-invalid]) {
@@ -54,7 +54,7 @@
 
     &:focus-within,
     &[data-pin~='focus'] {
-      box-shadow: 0 0 0 1px var(--danger);
+      box-shadow: 0 0 0 3px var(--danger-soft);
     }
   }
 
@@ -76,8 +76,10 @@
   }
 }
 
-.trailingInset {
-  padding-right: var(--space-1);
+// An embedded key sits 4 from the outer edge: the 1px border plus 3.
+// A unit or a clear button keeps the usual padding.
+.box:has(> .key) {
+  padding-right: calc(var(--space-1) - 1px);
 }
 
 .multiline {
@@ -120,16 +122,16 @@ textarea.control {
   font-variant-numeric: tabular-nums;
 }
 
-// A shortcut key inside the field: 22px tall in a 30px content box (4px
-// each side), radius 8 − 4 − 1 = 3.
+// A shortcut key inside the field: 24 tall in 32, so 4 from the outer edge
+// above, below and right; radius 10 − 4 = radius-sm 6.
 .key {
   box-sizing: border-box;
   display: inline-flex;
   align-items: center;
   gap: 1px;
-  height: 22px;
-  padding: 0 var(--space-1);
-  border-radius: 3px;
+  height: 24px;
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-sm);
   background: var(--surface-sunken);
   box-shadow: inset 0 0 0 1px var(--line);
   color: var(--ink-muted);

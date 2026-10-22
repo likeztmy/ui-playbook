@@ -1,6 +1,6 @@
 // A whole-row slider. The row is the track and the fill is the value.
-// In a panel inset by space-2 the row takes radius-md, concentric with the
-// panel's radius-xl.
+// In a panel of radius-xl 18 inset by space-2 8, the row takes
+// radius-lg 10: concentric.
 
 .panel {
   box-sizing: border-box;
@@ -17,7 +17,7 @@
   position: relative;
   box-sizing: border-box;
   height: var(--control-md);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   background: var(--surface-sunken);
   cursor: ew-resize;
   touch-action: none;
@@ -83,11 +83,11 @@
 }
 
 // A segmented choice sized to sit among dials.
-// Track radius-md 8, inset space-0-5 2 → segment radius-sm 6.
+// A pill track, inset space-0-5 2 → pill segments: concentric by shape.
 .choice {
   display: flex;
   padding: var(--space-0-5);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-full);
   background: var(--surface-sunken);
 }
 
@@ -96,7 +96,7 @@
   height: calc(var(--control-md) - 2 * var(--space-0-5));
   padding: 0 var(--space-2);
   border: 0;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-full);
   background: transparent;
   color: var(--ink-muted);
   font: inherit;

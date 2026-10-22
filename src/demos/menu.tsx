@@ -158,8 +158,8 @@ export function MenuConcentric() {
       height={STILL_HEIGHT}
       before={<StillMenu itemClass={m.sameRadius} />}
       after={<StillMenu />}
-      beforeNote="Items reuse the popup's 12px radius. With a 4px inset the highlight's corners bulge toward the popup's edge."
-      afterNote="radius-lg 12 − space-1 4 = radius-md 8. The gap at the corner matches the gap along the sides."
+      beforeNote="Items reuse the popup's 10px radius. With a 4px inset the highlight's corners bulge toward the popup's edge."
+      afterNote="radius-lg 10 − space-1 4 = radius-sm 6. The gap at the corner matches the gap along the sides."
     />
   );
 }
@@ -191,7 +191,7 @@ export function MenuMotion() {
         </div>
       }
       beforeNote="Grows from its own centre at the same 200ms both ways. It seems to appear from nowhere, and closing makes you wait."
-      afterNote="Slides 4px out of the trigger with ease-out, and leaves in half the time with ease-in."
+      afterNote="Grows from 0.96, 4px toward the trigger, on the smooth spring; leaves in duration-fast with ease-in."
     />
   );
 }

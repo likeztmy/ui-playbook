@@ -31,15 +31,15 @@ A Select picks one value from a short, flat list of choices that exclude each ot
 
 | Part | Token | Value |
 | --- | --- | --- |
-| Trigger | as Input: `control-md`, `radius-md`, `line-strong` | 32 |
+| Trigger | as Input: `control-md`, `radius-lg`, `line-strong` | 32 |
 | Chevron | 16px, `space-2` from the right | 16 |
-| List | as Menu: `radius-lg`, inset `space-1`, rows `control-md` | 12 |
+| List | as Menu: `radius-lg`, inset `space-1`, rows `control-md` | 10 |
 | List width | the trigger's, or wider for a long option | |
-| Current option | weight 500, `accent-text` check, no fill | |
+| Current option | weight 500, leading `accent-text` check, no fill | |
 | Keyboard highlight | `fill-active` | |
 | Layer | `z-dropdown` | 100 |
 
-The list's text lines up with the trigger's: popup inset 4 + row padding 8 = trigger padding 12. That's what lets it open right over the trigger.
+Opened over the trigger, the list shifts left so the current option's text lands exactly on the trigger's, and its check hangs in the column to the left, as on macOS. The list widens by that column so it still covers the trigger.
 
 ## States
 

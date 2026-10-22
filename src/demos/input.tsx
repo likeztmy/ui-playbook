@@ -166,7 +166,7 @@ export function InputFocus() {
         </div>
       }
       beforeNote="The button's gapped 2px ring. Around a field it doubles the edge, crowds the label, and floats 2px off a box that's already outlined."
-      afterNote="The edge itself turns accent and thickens by a pixel. The field's outline is its focus: nothing new appears around it, nothing shifts."
+      afterNote="The edge turns accent and a 3px accent-soft halo hugs it, with no gap. The field's outline is its focus: nothing floats off it, nothing shifts."
     />
   );
 }
@@ -187,8 +187,8 @@ export function InputKey() {
       height={180}
       before={field(m.sameKeyRadius)}
       after={field()}
-      beforeNote="The key copies the field's 8px radius. Inside a 4px inset its corners swell toward the field's, so the gap is wider at the corners than along the sides."
-      afterNote="radius-md 8 − inset 4 − border 1 = 3. The key's corners follow the field's, and the gap stays even all the way round. Shown at 2×."
+      beforeNote="The key copies the field's 10px radius. Inside a 4px inset its corners swell toward the field's, so the gap is wider at the corners than along the sides."
+      afterNote="24 tall in 32, so 4 from the outer edge on three sides; radius-lg 10 − 4 = radius-sm 6. The gap stays even all the way round. Shown at 2×."
     />
   );
 }

@@ -10,7 +10,7 @@ import { ConcentricTweak, SameRadius, BorderCounts } from '../../demos/concentri
 
 <ConcentricTweak client:visible />
 
-The formula holds while the inset is smaller than the outer radius. Once the inset reaches it, the two arcs no longer touch and the rule has nothing to keep equal: give the inner shape its own usual radius. A dialog with a 16px corner and 16px padding keeps its buttons at `radius-md` 8, not 0.
+The formula holds while the inset is smaller than the outer radius. Once the inset reaches it, the two arcs no longer touch and the rule has nothing to keep equal: give the inner shape its own usual radius. A dialog with an 18px corner and 20px padding keeps its pill buttons, not square ones.
 
 ## Details
 
@@ -28,15 +28,15 @@ The radius scale steps in 2–4px so the common insets always land on a token.
 
 | Outer | Inset | Inner |
 | --- | --- | --- |
-| Toolbar `radius-xl` 16 | `space-2` 8 | Tool `radius-md` 8 |
-| Menu `radius-lg` 12 | `space-1` 4 | Item `radius-md` 8 |
-| Segmented track `radius-md` 8 | `space-0-5` 2 | Thumb `radius-sm` 6 |
-| Field `radius-md` 8 | `space-1` 4 + 1px border | Key 3 |
-| Toast `radius-lg` 12 | `space-1` 4 | Action `radius-md` 8 |
+| Card `radius-xl` 18 | `space-2` 8 | Stage `radius-lg` 10 |
+| Property panel `radius-xl` 18 | `space-2` 8 | Slider `radius-lg` 10 |
+| Menu `radius-lg` 10 | `space-1` 4 | Item `radius-sm` 6 |
+| Field `radius-lg` 10 | 3 + 1px border | Key `radius-sm` 6 |
+| Toolbar, segmented, toast `radius-full` | 2 or 4 | `radius-full` |
 | Switch track `radius-full` | 2 | Knob `radius-full` |
-| Dialog `radius-xl` 16 | `space-4` 16 | Buttons `radius-md` 8 |
+| Dialog `radius-xl` 18 | `space-5` 20 | Buttons, their own pill |
 
-A pill around a circle is concentric by construction, so the switch needs no arithmetic. The dialog is the exception above: its padding equals its radius, so its buttons keep their own corner.
+A pill in a pill is concentric by construction, as long as the inset is equal on every side, which is why Precision makes toolbars, segmented controls and toasts pills. The dialog is the exception above: its padding exceeds its radius, so its buttons keep their own shape.
 
 ## Common mistakes
 

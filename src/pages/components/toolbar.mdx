@@ -22,14 +22,14 @@ One toolbar can hold all three, each in its own group behind a separator. What c
 
 | Part | Token | Value |
 | --- | --- | --- |
-| Panel radius | `radius-xl` | 16 |
-| Panel inset | `space-2`, all four sides | 8 |
-| Tool radius | `radius-md` = 16 − 8 | 8 |
-| Tool size | `control-md` | 32 |
-| Gap between tools | `space-1` | 4 |
-| Panel height | 32 + 8 × 2 | 48 |
+| Panel | `radius-full`, `surface-raised`, `shadow-sm` | pill |
+| Panel inset | `space-1`, all four sides | 4 |
+| Tools | `control-md`, `radius-full` | 32 |
+| Gap between tools | `space-0-5` | 2 |
+| Panel height | 32 + 4 × 2 | 40 |
+| Divider | 1 × 16, `line` | 16 |
 
-For a tighter panel, drop the inset to `space-1` and the panel to `radius-lg`: 12 − 4 still gives 8 for the tools.
+A pill in a pill: with an equal inset on every side the centres coincide, so there's no radius to calculate. The toolbar is the control seen most, so it gets the shape that can't go wrong.
 
 <ToolbarLive client:visible />
 

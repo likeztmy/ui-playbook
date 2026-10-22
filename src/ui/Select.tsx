@@ -78,10 +78,10 @@ export function Select({
                       {g.label && <BaseSelect.GroupLabel className={m.label}>{g.label}</BaseSelect.GroupLabel>}
                       {g.options.map((o) => (
                         <BaseSelect.Item key={o.value} value={o.value} disabled={o.disabled} className={cx(m.item, s.item)}>
-                          <BaseSelect.ItemText className={m.text}>{o.label}</BaseSelect.ItemText>
-                          <BaseSelect.ItemIndicator className={cx(m.check, s.indicator)}>
+                          <BaseSelect.ItemIndicator keepMounted className={m.check}>
                             <Check size={16} strokeWidth={1.75} nonScalingStroke aria-hidden />
                           </BaseSelect.ItemIndicator>
+                          <BaseSelect.ItemText className={m.text}>{o.label}</BaseSelect.ItemText>
                         </BaseSelect.Item>
                       ))}
                     </BaseSelect.Group>

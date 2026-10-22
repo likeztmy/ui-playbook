@@ -1,4 +1,4 @@
-// Popup radius-lg 12, inset space-1 4 → items radius-md 8.
+// Popup radius-lg 10, inset space-1 4 → items radius-sm 6.
 // Rows are control-md 32 at 13px: dense enough for a tool, roomy enough for
 // an icon and a shortcut.
 
@@ -20,21 +20,25 @@
   font-size: 13px;
   line-height: 18px;
   outline: none;
+  // Grows out of the trigger: from enter-scale and enter-offset toward it,
+  // on the smooth spring. From 0 it would look like a balloon; from 0.96 it
+  // looks like it was there all along.
   transform-origin: var(--transform-origin);
   transition:
     opacity var(--duration-base) var(--ease-out),
-    translate var(--duration-base) var(--ease-out);
+    scale var(--spring-smooth-duration) var(--ease-spring-smooth),
+    translate var(--spring-smooth-duration) var(--ease-spring-smooth);
 
-  // Enter from the trigger's side: start 4px toward it, faded out.
   &[data-starting-style],
   &[data-ending-style] {
     opacity: 0;
+    scale: var(--enter-scale);
   }
   $shift: (
-    bottom: 0 -4px,
-    top: 0 4px,
-    right: -4px 0,
-    left: 4px 0,
+    bottom: 0 calc(var(--enter-offset) * -1),
+    top: 0 var(--enter-offset),
+    right: calc(var(--enter-offset) * -1) 0,
+    left: var(--enter-offset) 0,
   );
   @each $side, $offset in $shift {
     &[data-side='#{$side}']:is([data-starting-style], [data-ending-style]) {
@@ -42,15 +46,18 @@
     }
   }
 
-  // Leave twice as fast, accelerating away.
+  // Closing is quicker, with no spring: the choice is made.
   &[data-ending-style] {
-    transition-timing-function: var(--ease-in);
-    transition-duration: calc(var(--duration-base) / 2);
+    transition:
+      opacity var(--duration-fast) var(--ease-in),
+      scale var(--duration-fast) var(--ease-in),
+      translate var(--duration-fast) var(--ease-in);
   }
 
   @media (prefers-reduced-motion: reduce) {
-    transition-duration: var(--duration-fast);
+    transition: opacity var(--duration-fast) var(--ease-out);
     &:is([data-starting-style], [data-ending-style]) {
+      scale: none;
       translate: none;
     }
   }
@@ -67,7 +74,7 @@
   gap: var(--space-2);
   height: var(--control-md);
   padding: 0 var(--space-2);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   outline: none;
   cursor: default;
   user-select: none;

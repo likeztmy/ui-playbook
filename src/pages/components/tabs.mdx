@@ -37,7 +37,7 @@ Tabs switch between views of one thing: a project's *Overview*, *Issues* and *Se
 | Current | `ink` | |
 | Bar | 2px, `ink`, `radius-full` | 2 |
 | Line | 1px `line`, the full width of the tabs | 1 |
-| Count | mono 11, `surface-sunken`, `radius-xs` | 18 |
+| Count | mono 11, `surface-sunken`, `radius-full` | 18 |
 | Panel gap | `space-4` | 16 |
 
 The bar sits on the line, under the label's full width. Tabs have no side padding: the gap is the only space between them, so labels line up with the content's left edge.
@@ -48,7 +48,7 @@ The bar sits on the line, under the label's full width. Tabs have no side paddin
 
 <TabsLive client:visible />
 
-Tab into the row and use ← →: each arrow moves to the next tab and opens it, since the panels appear at once. Home and End jump to the ends. Tab again moves into the panel. The bar slides over `duration-base` with `ease-in-out`.
+Tab into the row and use ← →: each arrow moves to the next tab and opens it, since the panels appear at once. Home and End jump to the ends. Tab again moves into the panel. The bar slides to the new tab and takes its width on the smooth spring (`ease-spring-smooth`), with a hint of overshoot.
 
 ## Details
 

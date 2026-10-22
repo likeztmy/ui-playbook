@@ -2,15 +2,29 @@
 // !important is deliberate here — these override the real component.
 
 // Hover fades in as slowly as it fades out, so the button lags the pointer.
-.slowHover,
-.slowHover::before {
+.slowHover {
   transition-duration: 250ms !important;
   transition-timing-function: ease !important;
 }
 
-// The focus ring replaces the button's own edge instead of stacking on it.
-.ringReplacesEdge:is(:focus-visible, [data-pin~='focus']) {
-  box-shadow: var(--focus-ring) !important;
+// Buttons drawn as outlined rectangles.
+.outlined {
+  border: 1px solid var(--line-strong) !important;
+  border-radius: var(--radius-md) !important;
+
+  &:not([class*='primary']) {
+    background: transparent !important;
+  }
+}
+
+// A deep, slow press that eases both ways.
+.bigPress:is(:active, [data-pin~='active']) {
+  scale: 0.9 !important;
+}
+
+.bigPress,
+.bigPress:is(:active, [data-pin~='active']) {
+  transition: scale 250ms ease !important;
 }
 
 // Uneven inset: corners can't share a centre.

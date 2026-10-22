@@ -113,12 +113,10 @@ function Still({ itemClass, hot = 'commenter' }: { itemClass?: string; hot?: str
             data-selected={r.value === 'editor' ? '' : undefined}
             data-highlighted={r.value === hot ? '' : undefined}
           >
+            <span className={ms.check} data-off={r.value === 'editor' ? undefined : ''}>
+              <Check size={16} strokeWidth={1.75} nonScalingStroke aria-hidden />
+            </span>
             <span className={ms.text}>{r.label}</span>
-            {r.value === 'editor' && (
-              <span className={cx(ms.check, ss.indicator)}>
-                <Check size={16} strokeWidth={1.75} nonScalingStroke aria-hidden />
-              </span>
-            )}
           </div>
         ))}
       </div>
@@ -133,7 +131,7 @@ export function SelectCurrent() {
       before={<Still itemClass={m.filledSelected} />}
       after={<Still />}
       beforeNote="The current option is filled, and so is the row under the keyboard. Two grey rows: which one is chosen, and which one will Enter choose?"
-      afterNote="Current: a check in accent and weight 500, no fill. The fill means one thing only, where the keyboard is. Both read at a glance."
+      afterNote="Current: a leading check in accent and weight 500, no fill. The fill means one thing only, where the keyboard is. Both read at a glance."
     />
   );
 }

@@ -2,7 +2,6 @@
 
 .button {
   position: relative;
-  isolation: isolate;
   box-sizing: border-box;
   display: inline-flex;
   align-items: center;
@@ -11,9 +10,9 @@
   height: var(--control-md);
   padding: 0 var(--space-3);
   border: 0;
-  border-radius: var(--radius-md);
-  background: var(--surface);
-  box-shadow: var(--shadow-xs);
+  // A pill, filled to say "press me"; never outlined, never lifted.
+  border-radius: var(--radius-full);
+  background: var(--fill-control);
   color: var(--ink);
   font: inherit;
   font-weight: 500;
@@ -21,41 +20,30 @@
   cursor: pointer;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
+  // Release: spring back from the press. Colour leaves in duration-fast.
   transition:
     background-color var(--duration-fast) var(--ease-out),
-    color var(--duration-fast) var(--ease-out);
+    color var(--duration-fast) var(--ease-out),
+    scale var(--spring-snappy-duration) var(--ease-spring-snappy);
 
-  // The hover/press overlay is a pseudo-element so its opacity can fade
-  // out. A background-image gradient would snap: gradients don't transition.
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    border-radius: inherit;
-    background: var(--fill-hover);
-    opacity: 0;
-    transition: opacity var(--duration-fast) var(--ease-out);
-  }
+  &:not([data-disabled]) {
+    // Hover arrives at once and fades out.
+    @include hover {
+      background: var(--fill-control-hover);
+      transition-duration: var(--duration-instant), var(--duration-instant), var(--spring-snappy-duration);
+    }
 
-  @include enabled-hover {
-    &::before {
-      opacity: 1;
-      transition-duration: var(--duration-instant);
+    // Press: down to press-scale in 80ms, quick in, soft back.
+    @include active {
+      scale: var(--press-scale);
+      transition:
+        background-color var(--duration-instant),
+        scale 80ms var(--ease-out);
     }
   }
 
-  @include enabled-active {
-    &::before {
-      background: var(--fill-active);
-      opacity: 1;
-      transition: none;
-    }
-  }
-
-  // Keep the button's own edge under the ring: stack, don't replace.
   @include focus {
-    box-shadow: var(--shadow-xs), var(--focus-ring);
+    box-shadow: var(--focus-ring);
   }
 
   svg {
@@ -65,51 +53,42 @@
   }
 
   &[data-disabled] {
-    background: var(--surface-sunken);
-    box-shadow: none;
     color: var(--ink-disabled);
     cursor: not-allowed;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &:not([data-disabled]):is(:active, [data-pin~='active']) {
+      scale: none;
+    }
   }
 }
 
 .primary {
   background: var(--accent);
-  box-shadow: none;
   color: var(--on-accent);
-
-  &::before {
-    display: none;
-  }
 
   &:not([data-disabled]) {
     @include hover {
       background: var(--accent-hover);
-      transition-duration: var(--duration-instant);
-    }
-    @include active {
-      background: var(--accent-hover);
     }
   }
 
-  @include focus {
-    box-shadow: var(--focus-ring);
+  &[data-disabled] {
+    background: var(--fill-control);
   }
 }
 
+// Toolbars and Cancel: no fill until hovered.
 .ghost {
   background: transparent;
-  box-shadow: none;
   color: var(--ink-muted);
 
   &:not([data-disabled]) {
     @include hover {
+      background: var(--fill-control);
       color: var(--ink);
-      transition-duration: var(--duration-instant);
     }
-  }
-
-  @include focus {
-    box-shadow: var(--focus-ring);
   }
 }
 
@@ -120,7 +99,6 @@
 .sm {
   height: var(--control-sm);
   padding: 0 var(--space-2);
-  border-radius: var(--radius-sm);
   font-size: 13px;
 }
 
@@ -136,20 +114,25 @@
   &.sm {
     width: var(--control-sm);
   }
+
+  &.lg {
+    width: var(--control-lg);
+  }
 }
 
 // Destructive confirm: the dialog's one filled button.
 .dangerFill {
   background: var(--danger);
-  box-shadow: none;
   color: var(--on-accent);
 
-  &::before {
-    background: color-mix(in srgb, var(--ink) 14%, transparent);
+  &:not([data-disabled]) {
+    @include hover {
+      background: color-mix(in srgb, var(--danger) 86%, var(--ink));
+    }
   }
 
-  @include focus {
-    box-shadow: var(--focus-ring);
+  &[data-disabled] {
+    background: var(--fill-control);
   }
 }
 
@@ -173,10 +156,6 @@
 
 .button[data-loading] {
   cursor: progress;
-
-  &::before {
-    opacity: 0 !important;
-  }
 }
 
 // Only spins while busy: the reserved layer keeps a spinner in the DOM.

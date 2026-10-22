@@ -48,8 +48,8 @@ export function ToolbarInset() {
     <Compare
       before={<DrawToolbar rootClass={m.unevenInset} />}
       after={<DrawToolbar />}
-      beforeNote="4px top and bottom, 12px at the sides. The 16px outer corner and the 8px tool corners can't share a centre, so the ends look pinched."
-      afterNote="8px on every side: radius-xl 16 − space-2 8 = radius-md 8. Height falls out of it too: 32 + 8 × 2 = 48."
+      beforeNote="4px top and bottom, 12px at the sides. The end tools sit off the pill's centre, so the ends look stretched and the gap bulges at each end."
+      afterNote="4px on every side: a pill in a pill, concentric by shape. Height falls out of it too: 32 + 4 × 2 = 40."
     />
   );
 }

@@ -1,13 +1,13 @@
 // Scrim over the viewport, a raised panel in the middle.
-// Padding space-4 16 equals radius-xl 16: the arcs no longer meet, so the
-// footer buttons keep their own radius-md (see Concentric radius).
+// Padding space-5 20 is more than radius-xl 18: the arcs no longer meet, so
+// the footer buttons keep their own pill (see Concentric radius).
 
 .backdrop {
   position: fixed;
   inset: 0;
   z-index: var(--z-dialog);
   background: var(--scrim);
-  transition: opacity var(--duration-slow) var(--ease-out);
+  transition: opacity var(--duration-base) var(--ease-out);
 
   &[data-starting-style],
   &[data-ending-style] {
@@ -15,8 +15,7 @@
   }
 
   &[data-ending-style] {
-    transition-timing-function: var(--ease-in);
-    transition-duration: calc(var(--duration-slow) / 2);
+    transition: opacity var(--duration-fast) var(--ease-in);
   }
 }
 
@@ -34,7 +33,7 @@
   display: flex;
   flex-direction: column;
   width: min(100%, var(--dialog-md));
-  padding: var(--space-4);
+  padding: var(--space-5);
   border-radius: var(--radius-xl);
   background: var(--surface-raised);
   box-shadow: var(--shadow-lg);
@@ -43,20 +42,22 @@
   font-size: 14px;
   line-height: 20px;
   outline: none;
-  // Arrives from 98% and settles; leaves in half the time, accelerating.
+  // Grows from enter-scale on the gentle spring, fading in over
+  // duration-base; leaves in duration-fast, accelerating, with no spring.
   transition:
-    opacity var(--duration-slow) var(--ease-out),
-    scale var(--duration-slow) var(--ease-out);
+    opacity var(--duration-base) var(--ease-out),
+    scale var(--spring-gentle-duration) var(--ease-spring-gentle);
 
   &[data-starting-style],
   &[data-ending-style] {
     opacity: 0;
-    scale: 0.98;
+    scale: var(--enter-scale);
   }
 
   &[data-ending-style] {
-    transition-timing-function: var(--ease-in);
-    transition-duration: calc(var(--duration-slow) / 2);
+    transition:
+      opacity var(--duration-fast) var(--ease-in),
+      scale var(--duration-fast) var(--ease-in);
   }
 
   @media (prefers-reduced-motion: reduce) {

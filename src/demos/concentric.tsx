@@ -90,7 +90,7 @@ export function BorderCounts() {
         <div className={s.magnify}>
           <div className={s.field}>
             <span>Search</span>
-            <kbd className={s.key} style={{ borderRadius: 8 }}>⌘K</kbd>
+            <kbd className={s.key} style={{ borderRadius: 10 }}>⌘K</kbd>
           </div>
         </div>
       }
@@ -98,12 +98,12 @@ export function BorderCounts() {
         <div className={s.magnify}>
           <div className={s.field}>
             <span>Search</span>
-            <kbd className={s.key} style={{ borderRadius: 3 }}>⌘K</kbd>
+            <kbd className={s.key} style={{ borderRadius: 6 }}>⌘K</kbd>
           </div>
         </div>
       }
-      beforeNote="Shown at 2×. The key copies the field's 8px corner. Inset is 4px plus a 1px border, so the key's corner bulges into the gap."
-      afterNote="8 − 4 inset − 1 border = 3. The border is part of the gap; leave it out and the result is off by a pixel per side."
+      beforeNote="Shown at 2×. The key copies the field's 10px corner. Inset is 3px plus a 1px border, so the key's corner bulges into the gap."
+      afterNote="10 − 3 inset − 1 border = 6. The border is part of the gap; leave it out and the result is off by a pixel per side."
     />
   );
 }

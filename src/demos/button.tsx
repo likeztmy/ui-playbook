@@ -69,13 +69,50 @@ export function HoverTiming() {
   );
 }
 
-export function FocusEdge() {
+export function ButtonShape() {
   return (
     <Compare
-      before={<Button className={m.ringReplacesEdge} data-pin="focus">Export</Button>}
-      after={<Button data-pin="focus">Export</Button>}
-      beforeNote="The ring overwrites the box-shadow that drew the button's edge, so the button loses its outline exactly when it's focused."
-      afterNote="box-shadow: var(--shadow-xs), var(--focus-ring). The edge stays and the ring sits outside it."
+      before={
+        <div className={s.row}>
+          <Button className={m.outlined}>Cancel</Button>
+          <Button className={m.outlined}>Duplicate</Button>
+          <Button variant="primary" className={m.outlined}>
+            Save
+          </Button>
+        </div>
+      }
+      after={
+        <div className={s.row}>
+          <Button>Cancel</Button>
+          <Button>Duplicate</Button>
+          <Button variant="primary">Save</Button>
+        </div>
+      }
+      beforeNote="Outlined rectangles. Every button draws a line, and a row of them reads like a row of empty inputs: a border is how a field says “type here”."
+      afterNote="Filled pills. Fill says “press me” without a line, and a pill nested in a pill-shaped toolbar or toast is concentric by construction."
+    />
+  );
+}
+
+export function PressFeel() {
+  return (
+    <Compare
+      before={
+        <div className={s.row}>
+          <Button className={m.bigPress}>Duplicate</Button>
+          <Button variant="primary" className={m.bigPress}>
+            Save
+          </Button>
+        </div>
+      }
+      after={
+        <div className={s.row}>
+          <Button>Duplicate</Button>
+          <Button variant="primary">Save</Button>
+        </div>
+      }
+      beforeNote="Down to 0.9 over 250ms and back the same way. The button visibly shrinks, lags the click, and the label jumps under the cursor."
+      afterNote="Down to press-scale (0.97) in 80ms, back on the snappy spring. Quick to answer the finger, soft to let go; too small to move the label."
     />
   );
 }

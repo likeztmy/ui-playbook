@@ -65,7 +65,7 @@ export function TextField({
     >
       <Field.Label className={s.label}>{label}</Field.Label>
       <div
-        className={cx(s.box, trailing != null && s.trailingInset, multiline && s.multiline)}
+        className={cx(s.box, multiline && s.multiline)}
         data-pin={pin}
       >
         {leading}

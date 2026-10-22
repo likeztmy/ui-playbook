@@ -51,7 +51,7 @@
           "light": "#e4e4e8",
           "dark": "#26272c"
         },
-        "usage": "装饰性分隔线和面板描边（不承载含义，可低于 3:1）。"
+        "usage": "表格分隔线、分组分隔线。纯装饰，不承载含义。"
       },
       {
         "name": "line-strong",
@@ -59,7 +59,7 @@
           "light": "#868690",
           "dark": "#6c6d76"
         },
-        "usage": "可交互控件的边框（输入框、次要按钮）。在 `surface` 与 `bg` 上 ≥3:1。"
+        "usage": "输入框、下拉触发器、复选框的边框（≥3:1）。这是\"用填充代替描边\"的唯一例外：空输入框没有文字，只有边框能告诉人这里可以输入。"
       },
       {
         "name": "ink",
@@ -73,9 +73,9 @@
         "name": "ink-muted",
         "value": {
           "light": "#5e5e67",
-          "dark": "#a1a1ab"
+          "dark": "#b4b4bd"
         },
-        "usage": "次要文本、说明、占位符，用于所有表面之上（≥5.5:1）。"
+        "usage": "次要文本、说明、占位符，用于所有表面以及叠了两层 `fill-control` 的区域（Slider 填充）之上，两种主题下 ≥4.5:1。"
       },
       {
         "name": "ink-disabled",
@@ -100,6 +100,22 @@
           "dark": "#ffffff1a"
         },
         "usage": "中性控件按下态叠加层。"
+      },
+      {
+        "name": "fill-control",
+        "value": {
+          "light": "#18181b0f",
+          "dark": "#ffffff17"
+        },
+        "usage": "次要按钮、图标按钮、筛选胶囊的静止底色。用填充而不是描边来表示\"这是一个控件\"，文字 `ink`。"
+      },
+      {
+        "name": "fill-control-hover",
+        "value": {
+          "light": "#18181b1a",
+          "dark": "#ffffff21"
+        },
+        "usage": "`fill-control` 的悬停与按下态。"
       },
       {
         "name": "accent",
@@ -144,7 +160,7 @@
       {
         "name": "danger",
         "value": {
-          "light": "#c23a12",
+          "light": "#bb3610",
           "dark": "#ff8a65"
         },
         "usage": "破坏性操作与错误。始终配合图标或文字出现，不单靠颜色。"
@@ -344,6 +360,11 @@
         "usage": "卡片、对话框内边距。"
       },
       {
+        "name": "space-5",
+        "value": "20px",
+        "usage": "对话框内边距（与 `radius-xl` 相等）；卡片标题区内边距。"
+      },
+      {
         "name": "space-6",
         "value": "24px",
         "usage": "区块之间。"
@@ -361,37 +382,37 @@
     ]
   },
   "radius": {
-    "note": "同心规则：内圆角 = 外圆角 − 间距。每一档相差 2–4px，正好对应常用内衬，嵌套时总能落在刻度上。",
+    "note": "利落而不圆滚。同心规则：内圆角 = 外圆角 − 间距，刻度按常用内衬排好：18 − 8 = 10，10 − 4 = 6。胶囊套胶囊天然同心，所以按钮、工具条、分段控件、Toast 全部 `radius-full`。",
     "tokens": [
       {
         "name": "radius-xs",
         "value": "4px",
-        "usage": "徽标、复选框、键帽；`radius-md` 容器内衬 4px 时的子元素。"
+        "usage": "复选框、表格内的小标记。"
       },
       {
         "name": "radius-sm",
         "value": "6px",
-        "usage": "小号按钮、分段控件的选中块（轨道 `radius-md` − `space-0-5`）。"
+        "usage": "Tooltip、键帽；菜单项（菜单 `radius-lg` − `space-1`）；输入框内嵌键帽（输入框 `radius-lg` − 4）。"
       },
       {
         "name": "radius-md",
         "value": "8px",
-        "usage": "按钮、输入框、菜单项（菜单 `radius-lg` − `space-1`）。"
+        "usage": "比 `radius-sm` 稍大的小元素：卡片舞台里的缩略块、表格内的紧凑控件。"
       },
       {
         "name": "radius-lg",
-        "value": "12px",
-        "usage": "菜单、弹出框、卡片。"
+        "value": "10px",
+        "usage": "所有 32 高的方形控件和中等表面：输入框、下拉触发器、Slider、菜单与弹出框、表格容器、卡片舞台（卡片 `radius-xl` − `space-2`）。"
       },
       {
         "name": "radius-xl",
-        "value": "16px",
-        "usage": "工具面板、对话框。内衬 `space-2` 时子控件用 `radius-md`。"
+        "value": "18px",
+        "usage": "卡片、对话框、属性面板等大表面。内衬 `space-2` 时，里面的控件正好是 `radius-lg`。"
       },
       {
         "name": "radius-full",
         "value": "9999px",
-        "usage": "头像、开关、状态圆点。"
+        "usage": "所有按钮、工具条、分段控件、开关、徽标、Toast。"
       }
     ]
   },
@@ -469,27 +490,42 @@
     ]
   },
   "duration": {
-    "note": "进入快、离开稍慢；按下即时响应。",
+    "note": "颜色与透明度用固定时长 + 缓动；位置、大小、缩放一律用弹簧。弹簧的时长是\"完全静止\"的时长，视觉上在前 60% 就已到位。",
     "tokens": [
       {
         "name": "duration-instant",
         "value": "0ms",
-        "usage": "按下态、悬停进入：反馈必须立即。"
+        "usage": "悬停进入：反馈必须立即。"
       },
       {
         "name": "duration-fast",
         "value": "120ms",
-        "usage": "悬停离开、颜色与边框过渡。"
+        "usage": "悬停离开、颜色、边框、透明度过渡。"
       },
       {
         "name": "duration-base",
         "value": "180ms",
-        "usage": "菜单、弹出框出现。"
+        "usage": "淡入淡出（Tooltip、遮罩）。"
       },
       {
-        "name": "duration-slow",
-        "value": "260ms",
-        "usage": "对话框、侧栏等大面积移动。"
+        "name": "spring-snappy-duration",
+        "value": "394ms",
+        "usage": "配合 `ease-spring-snappy`：按压回弹、开关滑块、复选框。"
+      },
+      {
+        "name": "spring-smooth-duration",
+        "value": "618ms",
+        "usage": "配合 `ease-spring-smooth`：菜单、下拉、分段控件滑块、Toast 出现。"
+      },
+      {
+        "name": "spring-gentle-duration",
+        "value": "792ms",
+        "usage": "配合 `ease-spring-gentle`：对话框、侧栏、卡片尺寸变化等大面积移动。"
+      },
+      {
+        "name": "stagger",
+        "value": "30ms",
+        "usage": "列表项依次出现时，每项之间的延迟；最多错落 8 项，之后同时出现。"
       },
       {
         "name": "delay-tooltip",
@@ -504,22 +540,32 @@
     ]
   },
   "easing": {
-    "note": "只用这三条曲线。",
+    "note": "三条弹簧由 Motion 的 visualDuration / bounce 换算成 CSS linear()，JS 里直接用括号里的参数。",
     "tokens": [
       {
         "name": "ease-out",
         "value": "cubic-bezier(0.2, 0, 0, 1)",
-        "usage": "出现与展开：快速到位、柔和停住。"
+        "usage": "颜色、透明度的进入。"
       },
       {
         "name": "ease-in",
         "value": "cubic-bezier(0.4, 0, 1, 1)",
-        "usage": "消失与收起。"
+        "usage": "颜色、透明度的退出。"
       },
       {
-        "name": "ease-in-out",
-        "value": "cubic-bezier(0.4, 0, 0.2, 1)",
-        "usage": "位置移动（拖拽归位、选中块滑动）。"
+        "name": "ease-spring-snappy",
+        "value": "linear(0,0.096,0.281,0.461,0.615,0.73,0.815,0.876,0.917,0.945,0.964,0.976,0.985,0.99,0.994,0.996,0.997,0.998,0.999,0.999,1)",
+        "usage": "无回弹的快速弹簧（visualDuration 0.2, bounce 0）。直接回应手指的东西：按压、开关、勾选。"
+      },
+      {
+        "name": "ease-spring-smooth",
+        "value": "linear(0,0.047,0.154,0.291,0.43,0.559,0.672,0.766,0.841,0.9,0.942,0.971,0.991,1.004,1.011,1.014,1.015,1.014,1.012,1.01,1.008,1.006,1.005,1.003,1.002,1.001,1.001,1,1)",
+        "usage": "带 1.5% 过冲的弹簧（visualDuration 0.35, bounce 0.2）。一点点生命感：弹出层、滑块归位、Toast。"
+      },
+      {
+        "name": "ease-spring-gentle",
+        "value": "linear(0,0.049,0.156,0.285,0.413,0.529,0.63,0.714,0.782,0.835,0.877,0.909,0.934,0.952,0.966,0.976,0.983,0.988,0.992,0.994,0.996,0.997,0.998,0.999,1)",
+        "usage": "几乎不回弹的柔和弹簧（visualDuration 0.5, bounce 0.04）。大面积移动：对话框、面板、卡片。"
       }
     ]
   },
@@ -605,6 +651,36 @@
         "name": "z-tooltip",
         "value": "400",
         "usage": "提示气泡，永远在最上层。"
+      }
+    ]
+  },
+  "effect": {
+    "note": "动效里的固定参数。东西从不从 0 出现，而是从\"差一点\"的状态出现。",
+    "tokens": [
+      {
+        "name": "press-scale",
+        "value": "0.97",
+        "usage": "按钮按下时缩到 97%，松开用 `ease-spring-snappy` 回弹。"
+      },
+      {
+        "name": "enter-scale",
+        "value": "0.96",
+        "usage": "弹出层出现时的起始缩放，从触发点方向展开；不要从 0 开始。"
+      },
+      {
+        "name": "enter-offset",
+        "value": "4px",
+        "usage": "弹出层出现时朝远离触发点方向的位移。"
+      },
+      {
+        "name": "swap-blur",
+        "value": "4px",
+        "usage": "文字、数字切换时旧内容模糊淡出、新内容从模糊中清晰。"
+      },
+      {
+        "name": "hover-lift",
+        "value": "1.01",
+        "usage": "可点击卡片悬停时的放大量。"
       }
     ]
   }

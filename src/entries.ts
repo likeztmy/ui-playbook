@@ -15,8 +15,8 @@ export const entries: Entry[] = [
     slug: 'button',
     kind: 'component',
     title: 'Button',
-    summary: 'Runs an action now. Weight, not colour, picks the variant.',
-    details: 4,
+    summary: 'Runs an action now. A filled pill that answers the press: quick down, soft back.',
+    details: 5,
     keywords: ['primary', 'secondary', 'ghost', 'hover', 'focus ring', 'action'],
   },
   {

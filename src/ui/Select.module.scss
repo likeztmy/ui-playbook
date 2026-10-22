@@ -2,8 +2,9 @@
 
 // The trigger is an Input that opens a list: same box, same edge, a 16px
 // chevron at space-2 from the right. The list is a Menu: same popup, same
-// rows. Item text sits on the trigger's text line: popup inset 4 + item
-// padding 8 = trigger padding 12, so the list can open over the trigger.
+// rows, the check in the leading column. Opened over the trigger, the list
+// sits so the current option's text lands on the trigger's text, and the
+// check hangs to its left, as on macOS.
 
 .trigger {
   box-sizing: border-box;
@@ -14,7 +15,7 @@
   height: var(--control-md);
   padding: 0 var(--space-2) 0 var(--space-3);
   border: 1px solid var(--line-strong);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   background: var(--surface);
   color: var(--ink);
   font: inherit;
@@ -36,7 +37,7 @@
   &:focus-visible:not([data-popup-open]),
   &[data-pin~='focus'] {
     border-color: var(--accent);
-    box-shadow: 0 0 0 1px var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
   }
 
   &[data-disabled] {
@@ -78,6 +79,13 @@
 // outrank Menu's own min-width.
 .positioner .popup {
   min-width: var(--anchor-width);
+
+  // Over the trigger, the list shifts left by the check column (16 + gap 8)
+  // so the current text lands on the trigger's; widen it by the same so it
+  // still covers the trigger's right edge.
+  &[data-side='none'] {
+    min-width: calc(var(--anchor-width) + 16px + var(--space-2));
+  }
 }
 
 .list {
@@ -92,8 +100,9 @@
   font-weight: 500;
 }
 
-.indicator {
-  margin-left: var(--space-4);
+// Every row keeps the check's column; only the current one shows it.
+.item:not([data-selected]) > [class*='check'] {
+  visibility: hidden;
 }
 
 .scrollArrow {

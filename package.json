@@ -19,7 +19,7 @@
     "deploy": "pnpm verify && wrangler deploy",
     "astro": "astro",
     "prepare": "git config core.hooksPath .githooks",
-    "lint": "stylelint \"src/**/*.scss\" && node scripts/lint-svg.mjs"
+    "lint": "stylelint \"src/**/*.scss\" && node scripts/lint-svg.mjs && node scripts/lint-tokens.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^8.1.1",
@@ -35,6 +35,7 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
     "@playwright/test": "^1.64.1",
+    "@types/node": "^22.20.5",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "postcss-scss": "^4.0.9",

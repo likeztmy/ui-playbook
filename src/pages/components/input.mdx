@@ -24,14 +24,14 @@ For text people type: a name, an address, a search, a number with a unit. Reach 
 | Part | Token | Value |
 | --- | --- | --- |
 | Height | `control-md` | 32 |
-| Radius | `radius-md` | 8 |
+| Radius | `radius-lg` | 10 |
 | Edge | `line-strong`, 1px | |
 | Padding | `space-3` | 12 |
-| Trailing inset | `space-1` | 4 |
-| Embedded key radius | 8 − 4 − 1 | 3 |
+| Trailing inset | 4 from the outer edge: 1 border + 3 | 4 |
+| Embedded key | 24 tall, `radius-sm` = 10 − 4 | 6 |
 | Label | label, 12 / 16, weight 500, `ink-muted` | 12 |
 | Label, field, hint | `space-1` apart | 4 |
-| Focus | `accent` edge + 1px | |
+| Focus | `accent` edge + 3px `accent-soft` halo | 3 |
 
 The label sits above, the hint or the error below. Never both: the error takes the hint's line.
 

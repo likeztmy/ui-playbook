@@ -238,9 +238,12 @@ test('select: opens over the trigger, typeahead + Enter picks, Esc keeps the old
   await trigger.click();
   const current = page.getByRole('option', { name: 'Editor' });
   await expect(current).toBeVisible();
-  const [t, o] = [await trigger.locator('span').first().boundingBox(), await current.locator('div, span').first().boundingBox()];
-  expect(Math.abs(t!.x - o!.x), 'option text on the trigger text').toBeLessThan(1);
-  expect(Math.abs(t!.y + t!.height / 2 - (o!.y + o!.height / 2))).toBeLessThan(1);
+  // Measured once the opening spring has settled.
+  const offset = async () => {
+    const [t, o] = [await trigger.locator('span').first().boundingBox(), await current.getByText('Editor', { exact: true }).boundingBox()];
+    return Math.max(Math.abs(t!.x - o!.x), Math.abs(t!.y + t!.height / 2 - (o!.y + o!.height / 2)));
+  };
+  await expect.poll(offset, { message: 'option text on the trigger text' }).toBeLessThan(1);
 
   await page.keyboard.press('v');
   await expect(page.getByRole('option', { name: 'Viewer' })).toHaveAttribute('data-highlighted', '');

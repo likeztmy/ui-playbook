@@ -79,13 +79,13 @@
   }
 }
 
-// A count beside the label: mono, so it doesn't jitter as it changes.
+// A count beside the label: a mono pill, so it doesn't jitter as it changes.
 .count {
   box-sizing: border-box;
   min-width: 20px;
   height: 18px;
-  padding: 0 var(--space-1);
-  border-radius: var(--radius-xs);
+  padding: 0 6px;
+  border-radius: var(--radius-full);
   background: var(--surface-sunken);
   color: var(--ink-muted);
   font-family: var(--font-mono);
@@ -107,8 +107,8 @@
   background: var(--ink);
   translate: var(--active-tab-left) 0;
   transition:
-    translate var(--duration-base) var(--ease-in-out),
-    width var(--duration-base) var(--ease-in-out);
+    translate var(--spring-smooth-duration) var(--ease-spring-smooth),
+    width var(--spring-smooth-duration) var(--ease-spring-smooth);
 
   @media (prefers-reduced-motion: reduce) {
     transition: none;

@@ -2,7 +2,7 @@
 layout: ../../layouts/Entry.astro
 slug: button
 ---
-import { ButtonStates, ButtonVariants, HoverTiming, FocusEdge, OnePrimary, LoadingState } from '../../demos/button';
+import { ButtonStates, ButtonVariants, HoverTiming, ButtonShape, PressFeel, OnePrimary, LoadingState } from '../../demos/button';
 
 ## When to use
 
@@ -24,10 +24,11 @@ Pick by weight, not by colour: primary for the reason the view exists, secondary
 | --- | --- | --- |
 | Height | `control-md` · `control-sm` · `control-lg` | 32 · 24 · 40 |
 | Horizontal padding | `space-3` (sm: `space-2`, lg: `space-4`) | 12 |
-| Radius | `radius-md` (sm: `radius-sm`) | 8 |
+| Radius | `radius-full`, every size | pill |
 | Icon gap | `space-1` | 4 |
 | Label | body, weight 500 | 14 / 20 |
-| Edge | `shadow-xs` | 1px |
+| Fill | `fill-control` · hover `fill-control-hover` | |
+| Press | `press-scale`, back on `ease-spring-snappy` | 0.97 |
 | Spinner | Lucide `loader-circle` | 16 |
 
 Buttons in one row share one height. Icons are Lucide at 16px and inherit the label's colour. An icon-only button always has a tooltip with the same words as its `aria-label`.
@@ -36,21 +37,27 @@ Buttons in one row share one height. Icons are Lucide at 16px and inherit the la
 
 <ButtonStates client:visible />
 
-Hover and press are overlays (`fill-hover`, `fill-active`), not darker copies of each base colour, so one rule works on every variant and in both themes. Focus shows only on `:focus-visible`: a mouse click never draws a ring.
+Secondary is a fill (`fill-control`), translucent ink, so one value works on any surface and in both themes; hover deepens it to `fill-control-hover`. Ghost has no fill until hovered. Focus shows only on `:focus-visible`: a mouse click never draws a ring.
 
 ## Details
+
+### Filled, never outlined
+
+<ButtonShape client:visible />
+
+Only an input keeps a border: an empty field has nothing else to say “you can type here”. A button has its label, so it uses a fill.
 
 ### Hover appears at once and leaves softly
 
 <HoverTiming client:visible />
 
-Feedback for something the pointer is on must be immediate; feedback for something it has left can take its time. Paint the overlay on a `::before` and transition its `opacity`. A `background-image` gradient can't be transitioned, so it would snap off.
+Feedback for something the pointer is on must be immediate; feedback for something it has left can take its time.
 
-### The focus ring stacks on the edge
+### Quick down, soft back
 
-<FocusEdge client:visible />
+<PressFeel client:visible />
 
-When the edge is drawn with `box-shadow`, any focus style that sets `box-shadow` replaces it. List both shadows.
+Pressing is the one moment a button moves. Actions run from a keyboard shortcut, hundreds of times a day, don't play it.
 
 ### One filled button per view
 
@@ -66,7 +73,7 @@ Show busy only past `delay-loading` (300ms). The spinner takes the icon's slot, 
 
 ## Common mistakes
 
-- **Scaling on press.** A 0.97 scale reads as playful and shifts the label under the cursor. Switch to `fill-active` instantly instead.
+- **An outline or a shadow to lift it.** Fill is the signal; a border makes it a field, a shadow makes it a card.
 - **Colour as rank.** Two secondary buttons in different colours ask the reader to learn a code. Use variants: primary, secondary, ghost.
 - **Disabled with no reason.** If the action can't run yet, say why nearby, or leave the button enabled and explain on press.
 

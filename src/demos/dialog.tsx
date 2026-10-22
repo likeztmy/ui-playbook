@@ -180,8 +180,8 @@ export function DialogCorners() {
       height={220}
       before={<Still {...AFTER_TEXT} actions={[['Cancel', 'secondary'], ['Delete project', 'danger-fill']]} actionClass={m.squareActions} />}
       after={<Still {...AFTER_TEXT} actions={[['Cancel', 'secondary'], ['Delete project', 'danger-fill']]} />}
-      beforeNote="The concentric formula applied blindly: radius-xl 16 − padding 16 = 0, so the buttons go square and look foreign to the rest of the product."
-      afterNote="Padding equals the radius, so the arcs no longer meet and the formula has nothing to keep equal. The buttons keep their own radius-md."
+      beforeNote="The concentric formula applied blindly: radius-xl 18 − padding 20 is below 0, so the buttons go square and look foreign to the rest of the product."
+      afterNote="Padding is more than the radius, so the arcs no longer meet and the formula has nothing to keep equal. The buttons keep their own pill."
     />
   );
 }
@@ -193,7 +193,7 @@ export function DialogMotion() {
       before={<DeleteFlow popupClass={m.dropIn} />}
       after={<DeleteFlow />}
       beforeNote="Drops 32px from above over 300ms, and climbs back out just as slowly. A big move for a box that appears in place."
-      afterNote="Grows from 98% with a fade over duration-slow (260ms), ease-out; leaves in half that, ease-in. The scrim fades with it."
+      afterNote="Grows from enter-scale (0.96) on the gentle spring, fading in over duration-base; leaves in duration-fast, ease-in, no spring. The scrim fades with it."
     />
   );
 }

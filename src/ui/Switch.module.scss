@@ -96,8 +96,8 @@
   background: var(--knob);
   box-shadow: var(--shadow-knob);
   transition:
-    translate var(--duration-base) var(--ease-in-out),
-    width var(--duration-base) var(--ease-in-out);
+    translate var(--spring-snappy-duration) var(--ease-spring-snappy),
+    width var(--spring-snappy-duration) var(--ease-spring-snappy);
 
   &[data-checked] {
     translate: var(--travel) 0;

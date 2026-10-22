@@ -53,7 +53,8 @@
   outline: none;
   transition:
     background-color var(--duration-fast) var(--ease-out),
-    border-color var(--duration-fast) var(--ease-out);
+    border-color var(--duration-fast) var(--ease-out),
+    scale var(--spring-snappy-duration) var(--ease-spring-snappy);
 
   // Hovering the label counts as hovering the box.
   &:not([data-disabled]) {
@@ -64,9 +65,12 @@
       transition-duration: var(--duration-instant);
     }
 
+    // Pressed, the box dips to 0.9 and springs back on release.
     .row:active > &,
     &[data-pin~='active'] {
       background: var(--fill-active);
+      scale: 0.9;
+      transition: scale 80ms var(--ease-out);
     }
   }
 
@@ -97,27 +101,29 @@
   }
 }
 
-// The mark arrives from a quarter size, blurred, and settles. It stays
-// mounted so it can leave the same way.
+// The mark springs in from 0.4 with a touch of overshoot; unchecking fades
+// it out in duration-fast. It stays mounted so it can leave.
 .indicator {
   display: grid;
   opacity: 0;
-  scale: 0.25;
-  filter: blur(4px);
+  scale: 0.4;
   transition:
-    opacity var(--duration-fast) var(--ease-out),
-    scale var(--duration-fast) var(--ease-out),
-    filter var(--duration-fast) var(--ease-out);
+    opacity var(--duration-fast) var(--ease-in),
+    scale var(--duration-fast) var(--ease-in);
 
   .box:is([data-checked], [data-indeterminate]) > & {
     opacity: 1;
     scale: 1;
-    filter: none;
+    transition:
+      opacity var(--duration-fast) var(--ease-out),
+      scale var(--spring-smooth-duration) var(--ease-spring-smooth);
   }
 
   @media (prefers-reduced-motion: reduce) {
-    scale: 1;
-    filter: none;
+    &,
+    .box:is([data-checked], [data-indeterminate]) > & {
+      scale: 1;
+    }
   }
 }
 
