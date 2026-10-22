@@ -365,6 +365,9 @@
 // Stretches a control to its container, e.g. a segmented control in a panel.
 .fill {
   width: 100%;
+  // As a flex or grid item it may shrink below its content, so a wide
+  // table scrolls inside instead of widening the page.
+  min-width: 0;
 }
 
 // Six tasks drawn as a board, a list or a timeline.
@@ -562,7 +565,7 @@
 // ── Tables ────────────────────────────────────────────────
 
 .narrowTable {
-  max-width: 420px;
+  max-width: min(100%, 420px);
 }
 
 // The bar above a selectable table: the count, then bulk actions.
