@@ -6,7 +6,7 @@
 // Popup radius-lg 12, list inset space-1 4 → items radius-md 8.
 
 .positioner {
-  z-index: 50;
+  z-index: var(--z-dropdown);
 }
 
 .popup {

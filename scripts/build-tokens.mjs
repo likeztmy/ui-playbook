@@ -31,7 +31,16 @@ for (const [family, group] of Object.entries(t)) {
   if (family === 'type' || !group?.tokens) continue;
   for (const tok of group.tokens) push(tok.name, tok.value);
 }
-for (const [name, stack] of Object.entries(t.type.families)) plain.push(`  --font-${name}: ${stack};`);
+// The design system names faces as designers know them; the self-hosted
+// fontsource packages register them under other names. Lead each stack with
+// the registered name so precision.json can be copied from the design
+// system verbatim.
+const SELF_HOSTED = { Geist: 'Geist Variable', 'Geist Mono': 'Geist Mono Variable' };
+const leadSelfHosted = (stack) => {
+  const first = stack.split(',')[0].trim().replace(/^"|"$/g, '');
+  return SELF_HOSTED[first] ? `"${SELF_HOSTED[first]}", ${stack}` : stack;
+};
+for (const [name, stack] of Object.entries(t.type.families)) plain.push(`  --font-${name}: ${leadSelfHosted(stack)};`);
 
 const typeClasses = t.type.groups.flatMap((g) =>
   g.styles.map((s) =>

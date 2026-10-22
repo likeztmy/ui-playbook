@@ -12,13 +12,14 @@
     "prebuild": "node scripts/build-tokens.mjs",
     "build": "astro build",
     "preview": "astro preview",
-    "check": "node scripts/build-tokens.mjs && astro check",
+    "check": "node scripts/build-tokens.mjs && astro check && pnpm -s lint",
     "test:e2e": "playwright test",
     "verify": "pnpm check && pnpm build && pnpm test:e2e",
     "shoot": "node scripts/shoot.mjs",
     "deploy": "pnpm verify && wrangler deploy",
     "astro": "astro",
-    "prepare": "git config core.hooksPath .githooks"
+    "prepare": "git config core.hooksPath .githooks",
+    "lint": "stylelint \"src/**/*.scss\" && node scripts/lint-svg.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^8.1.1",
@@ -36,7 +37,9 @@
     "@playwright/test": "^1.64.1",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
+    "postcss-scss": "^4.0.9",
     "sass": "^1.106.0",
+    "stylelint": "^17.16.0",
     "typescript": "^6.0.3",
     "wrangler": "^4.151.3"
   }

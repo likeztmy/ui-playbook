@@ -220,8 +220,8 @@
   "type": {
     "fonts": [],
     "families": {
-      "sans": "\"Geist Variable\", Geist, \"PingFang SC\", \"Hiragino Sans GB\", \"Noto Sans SC\", \"Microsoft YaHei\", system-ui, sans-serif",
-      "mono": "\"Geist Mono Variable\", \"Geist Mono\", ui-monospace, \"SF Mono\", Menlo, monospace"
+      "sans": "Geist, \"PingFang SC\", \"Hiragino Sans GB\", \"Noto Sans SC\", \"Microsoft YaHei\", system-ui, sans-serif",
+      "mono": "\"Geist Mono\", ui-monospace, \"SF Mono\", Menlo, monospace"
     },
     "groups": [
       {

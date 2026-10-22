@@ -11,7 +11,7 @@ Live at <https://ui-playbook.suspense.site>.
 ```bash
 pnpm install      # also points git at .githooks (pre-commit runs `pnpm check`)
 pnpm dev          # http://localhost:4321
-pnpm check        # astro check: .astro, .ts, .tsx
+pnpm check        # astro check (.astro, .ts, .tsx) + stylelint + no inline SVG
 pnpm test:e2e     # Playwright against the built site, installed Chrome, one worker
 pnpm verify       # check + build + test:e2e
 pnpm run deploy   # verify, then upload to Cloudflare Workers (`pnpm deploy` is a pnpm builtin)
@@ -41,8 +41,8 @@ States that StateGrid pins use `data-pin` (see `src/styles/_states.scss`), so co
 
 ## Syncing the design system
 
-Precision lives as a Design System artifact (claude.ai/artifact/KF1A98gMkmBjWbeyZ4njh9). To take an update, copy its `project/tokens.json` over `src/tokens/precision.json`, then:
+Precision lives as a Design System artifact (claude.ai/artifact/KF1A98gMkmBjWbeyZ4njh9). To take an update, copy its `project/tokens.json` over `src/tokens/precision.json` unchanged. `scripts/build-tokens.mjs` handles the rest:
 
-- Keep the font stacks led by `"Geist Variable"` / `"Geist Mono Variable"`, the names the self-hosted fontsource packages register.
+- Font stacks get the self-hosted names (`"Geist Variable"`, `"Geist Mono Variable"`) put in front.
 - Aliases like `"{accent-text}"` are emitted inside every theme block, so a subtree pinned with `data-theme` resolves them in its own theme.
 - Its README's Chinese rules are the source for each page's rules; the playbook restates them in English.
