@@ -24,20 +24,18 @@
   cursor: default;
   user-select: none;
   outline: none;
-  transition:
-    border-color var(--duration-fast) var(--ease-out),
-    box-shadow var(--duration-fast) var(--ease-out);
+  transition: border-color var(--duration-fast) var(--ease-out);
 
   @include hover {
     border-color: var(--ink-muted);
     transition-duration: var(--duration-instant);
   }
 
-  // Not while open: the list covers the trigger, and a ring would peek out.
+  // Focus is the edge turning accent, as on a field. Not while open: the
+  // list covers the trigger, and the blue edge would peek out around it.
   &:focus-visible:not([data-popup-open]),
   &[data-pin~='focus'] {
     border-color: var(--accent);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent);
   }
 
   &[data-disabled] {

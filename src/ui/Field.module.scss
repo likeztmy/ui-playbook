@@ -32,32 +32,24 @@
   background: var(--surface);
   color: var(--ink);
   cursor: text;
-  transition:
-    border-color var(--duration-fast) var(--ease-out),
-    box-shadow var(--duration-fast) var(--ease-out);
+  transition: border-color var(--duration-fast) var(--ease-out);
 
   @include hover {
     border-color: var(--ink-muted);
     transition-duration: var(--duration-instant);
   }
 
-  // An accent edge with a 3px halo that hugs the box, not the gapped
-  // focus-ring: the ring's 2px gap would crowd the label above. Precision
-  // names accent-soft for the halo, but on a light page that is ~1.1:1 and
-  // invisible; accent at 25% carries the same idea and can be seen.
+  // Focus is the edge turning accent, 1px, nothing around it, as in
+  // Linear. Precision's halo read as glare; the field's own outline is
+  // already where the eye looks, so recolouring it is enough.
   &:focus-within,
   &[data-pin~='focus'] {
     border-color: var(--accent);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent);
   }
 
+  // Invalid keeps its red edge, focused or not; the message says why.
   &:has(> [data-invalid]) {
     border-color: var(--danger);
-
-    &:focus-within,
-    &[data-pin~='focus'] {
-      box-shadow: 0 0 0 3px color-mix(in srgb, var(--danger) 25%, transparent);
-    }
   }
 
   &:has(> [data-disabled]) {

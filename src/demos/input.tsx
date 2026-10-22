@@ -148,7 +148,7 @@ export function InputAnatomy() {
           <div className={cx(s.magnify, s.magnifiedField)}>
             <TextField label="Email" defaultValue="ana@studio.com" pin="focus" />
           </div>
-          <figcaption className={s.anatomyCaption}>The edge turns accent; a 3px halo hugs it, no gap.</figcaption>
+          <figcaption className={s.anatomyCaption}>Focus recolours the edge it already has: accent, 1px, nothing around it.</figcaption>
         </figure>
         <figure className={s.anatomyItem}>
           <div className={cx(s.magnify, s.magnifiedField)}>
