@@ -2,16 +2,31 @@
 layout: ../../layouts/Entry.astro
 slug: badge
 ---
-import { BadgeVariants, BadgeAll, BadgeWords, BadgeGreyscale, BadgeSoft, BadgeDot } from '../../demos/badge';
+import { BadgeScene, BadgeVariants, BadgeAll, BadgeWords, BadgeGreyscale, BadgeSoft, BadgeDot } from '../../demos/badge';
+
+<BadgeScene client:visible />
 
 ## When to use
 
-A badge labels where something stands or what it is, in a word or two: *In review*, *Shipped*, *Beta*. It can't be clicked. Reach for something else when:
+A badge says where something stands or what it is, in a word or two, and can't be clicked. A filter you toggle is a chip, a count beside a tab is a plain number, an explanation is text, and anything urgent is a message people have to see.
 
-- **It does something.** A filter you can toggle is a chip or a toggle button; an action is a Button.
-- **It's a count.** A number beside a tab or a nav item is a count, mono and plain.
-- **It needs a sentence.** An explanation belongs in text, an inline message or a tooltip.
-- **It's urgent.** A failed payment isn't a badge on a row; it's a message people have to see.
+## Details
+
+### Words say it; colour helps
+
+<BadgeWords client:visible />
+
+<BadgeGreyscale client:visible />
+
+Precision's `danger` and `warning` sit at nearly the same lightness, so without colour their dots are the same grey.
+
+### Soft, not solid
+
+<BadgeSoft client:visible />
+
+### A dot for states, none for attributes
+
+<BadgeDot client:visible />
 
 ## Variants
 
@@ -32,27 +47,9 @@ A badge labels where something stands or what it is, in a word or two: *In revie
 
 ## States
 
-A badge has no interactive states. It does have tones, and each has to hold in both themes:
+A badge has no interactive states; each tone has to hold in both themes.
 
 <BadgeAll client:visible />
-
-## Details
-
-### Words say it; colour helps
-
-<BadgeWords client:visible />
-
-<BadgeGreyscale client:visible />
-
-Precision's `danger` and `warning` sit at nearly the same lightness. Without colour, the dots on the left are the same grey; the words on the right still work.
-
-### Soft, not solid
-
-<BadgeSoft client:visible />
-
-### A dot for states, none for attributes
-
-<BadgeDot client:visible />
 
 ## Common mistakes
 

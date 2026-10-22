@@ -66,7 +66,7 @@ function Triggers() {
 
 export function ToastLive() {
   return (
-    <Frame label="Live · delete, then Undo; or trigger the others" height={320}>
+    <Frame label="Files" height={320}>
       <ToastStage>
         <div className={s.stack}>
           <Files />
@@ -79,7 +79,7 @@ export function ToastLive() {
 
 export function ToastKinds() {
   return (
-    <Frame label="Kinds · hover a toast to pause it" height={280}>
+    <Frame label="Kinds" height={280}>
       <ToastStage>
         <Triggers />
       </ToastStage>
@@ -133,8 +133,13 @@ export function ToastUndo() {
           <Files />
         </ToastStage>
       }
-      beforeNote="A dialog for every delete. The dialog even says it can be restored, so the question protects nothing, and people learn to click through."
-      afterNote="It's deleted at once, and a toast offers Undo for six seconds. The rare mistake costs one click; the common case costs nothing."
+      beforeNote={
+        <>
+          Asked every time, the answer becomes a reflex, and the reflex is still there the one time it matters (
+          <a href="https://alistapart.com/article/neveruseawarning/">Aza Raskin</a>). This one even says the file can be restored.
+        </>
+      }
+      afterNote="The rare mistake costs one click; the common case costs nothing."
     />
   );
 }
@@ -153,8 +158,12 @@ export function ToastTone() {
           <Triggers />
         </ToastStage>
       }
-      beforeNote="The whole toast in its status colour. A red slab across the page reads as an alarm, even when the message is a calm “Link copied”."
-      afterNote="A neutral pill with the colour on its icon. The words do the talking; the icon tells you the kind at a glance."
+      beforeNote={
+        <>
+          A slab of colour reads as an alarm whatever it says. <a href="https://github.com/CodeSeven/toastr">toastr</a> fills each toast this way.
+        </>
+      }
+      afterNote="The words do the talking; the icon tells the kind at a glance."
     />
   );
 }
@@ -185,8 +194,8 @@ export function ToastLimit() {
           <Burst />
         </ToastStage>
       }
-      beforeNote="No limit: six toasts tower up the screen and cover what you were doing. Each one says almost the same thing."
-      afterNote="Three at most; the rest wait their turn. Better still, say it once: “Uploaded 6 photos”."
+      beforeNote="Six messages that say nearly the same thing cover what you were doing."
+      afterNote="Three at most, the rest wait. Better still, say it once: “Uploaded 6 photos”."
     />
   );
 }

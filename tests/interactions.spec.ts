@@ -34,13 +34,33 @@ test('toolbar tools are named by tooltips with their shortcut', async ({ page })
   await expect(tool).not.toHaveAttribute('title');
 });
 
+test('button: publishing the draft shows busy, then the state changes', async ({ page }) => {
+  await page.goto('/components/button');
+  await hydrateAll(page);
+  const scene = page.locator('figure').first();
+  await expect(scene.getByText('Draft')).toBeVisible();
+  await scene.getByRole('button', { name: 'Publish' }).click();
+  await expect(scene.getByRole('button', { name: /Publish/ })).toHaveAttribute('data-loading', '', { timeout: 800 });
+  await expect(scene.getByText('Published')).toBeVisible({ timeout: 3000 });
+});
+
+test('badge: the states are words, so the list filters by them', async ({ page }) => {
+  await page.goto('/components/badge');
+  await hydrateAll(page);
+  const scene = page.locator('figure').first();
+  await scene.getByRole('textbox', { name: 'Filter' }).fill('review');
+  await expect(scene.getByRole('listitem')).toHaveCount(2);
+  await scene.getByRole('textbox', { name: 'Filter' }).fill('Atlantis');
+  await expect(scene.getByText('No issue matches “Atlantis”.')).toBeVisible();
+});
+
 test('loading waits delay-loading, keeps its width, ignores presses', async ({ page }) => {
   await page.goto('/components/button');
   await hydrateAll(page);
-  // The "after" side of the loading comparison.
-  const publish = page.getByRole('button', { name: /^Publish/ }).nth(1);
+  const after = page.locator('figure').filter({ hasText: 'Requests sent' }).filter({ hasText: 'After' });
+  const publish = after.getByRole('button', { name: /^Publish/ });
   await publish.scrollIntoViewIfNeeded();
-  const meter = page.getByText(/^Requests sent:/).nth(1);
+  const meter = after.getByText(/^Requests sent:/);
   const width = (await publish.boundingBox())!.width;
 
   await publish.click();
@@ -308,7 +328,7 @@ test('select: opens over the trigger, typeahead + Enter picks, Esc keeps the old
 test('checkbox: label toggles; parent goes mixed, then all on, then all off', async ({ page }) => {
   await page.goto('/components/checkbox');
   await hydrateAll(page);
-  const live = page.locator('figure').filter({ hasText: 'Live · a parent box' });
+  const live = page.locator('figure').first();
   const parent = live.getByRole('checkbox', { name: 'All activity' });
   const comments = live.getByRole('checkbox', { name: 'Comments' });
   await parent.scrollIntoViewIfNeeded();
@@ -605,7 +625,7 @@ test('toast: Undo restores, plain ones leave after 4s, errors stay and are alert
   await page.clock.install();
   await page.goto('/components/toast');
   await hydrateAll(page);
-  const live = page.locator('figure').filter({ hasText: 'Live · delete' });
+  const live = page.locator('figure').first();
   await live.scrollIntoViewIfNeeded();
 
   await live.getByRole('button', { name: 'Delete' }).first().click();

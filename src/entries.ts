@@ -88,7 +88,7 @@ export const entries: Entry[] = [
     kind: 'component',
     title: 'Checkbox',
     summary: 'On, off or mixed, sent with the form. The whole row is the target.',
-    details: 4,
+    details: 2,
     keywords: ['check box', 'tick', 'mixed', 'indeterminate', 'select all', 'form', 'option'],
   },
   {

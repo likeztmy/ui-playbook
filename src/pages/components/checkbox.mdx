@@ -2,22 +2,23 @@
 layout: ../../layouts/Entry.astro
 slug: checkbox
 ---
-import { CheckboxLive, CheckboxVariants, CheckboxStates, CheckboxTarget, CheckboxMixed, CheckboxAlign, CheckboxEdge } from '../../demos/checkbox';
+import { CheckboxLive, CheckboxVariants, CheckboxStates, CheckboxTarget, CheckboxMixed, CheckboxAnatomy } from '../../demos/checkbox';
+
+<CheckboxLive client:visible />
 
 ## When to use
 
-A checkbox turns one option on or off, and the choice waits for the form to be sent. Use it for:
+A checkbox turns one option on or off, and the choice waits for the form to be sent: options you can combine, one option sent with a form, a parent over its children, or a bare box selecting rows. A setting that applies at once is a Switch; one of a few is a Radio group; an action is a Button.
 
-- **Options you can combine.** Any number of a set can be on: *PDF*, *PNG*, *SVG*.
-- **One option sent with a form.** *Keep me signed in*, *Accept the terms*.
-- **A hierarchy.** A parent box over its children, which line up under it. Apple prefers checkboxes over switches here: they align and group better.
-- **Selecting rows.** A bare box in each row of a list or table.
+## Details
 
-Reach for something else when:
+### The words are part of the target
 
-- **It takes effect at once.** A setting that applies the moment it changes is a Switch.
-- **Only one can be chosen.** Radios for up to five, a Select for more.
-- **It does something.** An action is a Button, even if it toggles a view.
+<CheckboxTarget client:visible />
+
+### Some is a dash, not a check
+
+<CheckboxMixed client:visible />
 
 ## Variants
 
@@ -36,35 +37,13 @@ Reach for something else when:
 | Box offset | first line: (20 − 16) / 2 | 2 |
 | Children indent | box + gap | 24 |
 
-The label wraps the box, so the whole row is one target.
+<CheckboxAnatomy client:visible />
 
 ## States
 
 <CheckboxStates client:visible />
 
-<CheckboxLive client:visible />
-
-Turn the children on one by one and watch the parent go from empty, to a dash, to a check. Click a mixed parent and everything turns on. Space toggles the focused box.
-
-## Details
-
-### The words are part of the target
-
-<CheckboxTarget client:visible />
-
-### Some is a dash, not a check
-
-<CheckboxMixed client:visible />
-
-### The box sits on the first line
-
-<CheckboxAlign client:visible />
-
-### An empty box still has to be seen
-
-<CheckboxEdge client:visible />
-
-Pressed, the box dips to 0.9. The mark springs in from 0.4 on the smooth spring, overshooting a touch; the fill fades in `duration-fast`. Unchecking fades the mark out quickly. With reduced motion it only fades.
+Pressed, the box dips to 0.9. The mark springs in from 0.4 on the smooth spring, overshooting a touch; the fill fades in `duration-fast`. Unchecking fades the mark out quickly. With reduced motion it only fades. Space toggles the focused box.
 
 ## Common mistakes
 

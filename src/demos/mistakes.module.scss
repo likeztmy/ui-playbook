@@ -1,10 +1,10 @@
 // The "before" side of comparisons: each class reproduces one common mistake.
 // !important is deliberate here — these override the real component.
 
-// Hover fades in as slowly as it fades out, so the button lags the pointer.
+// Hover fades in as fast as it fades out, as Bootstrap's 0.15s both ways:
+// symmetric, so the highlight trails the pointer on the way in.
 .slowHover {
-  transition-duration: 250ms !important;
-  transition-timing-function: ease !important;
+  transition-duration: var(--duration-fast), var(--duration-fast), var(--spring-snappy-duration) !important;
 }
 
 // Buttons drawn as outlined rectangles.
@@ -17,14 +17,9 @@
   }
 }
 
-// A deep, slow press that eases both ways.
+// A deep press: the same timing, a scale you can see.
 .bigPress:is(:active, [data-pin~='active']) {
   scale: 0.9 !important;
-}
-
-.bigPress,
-.bigPress:is(:active, [data-pin~='active']) {
-  transition: scale 250ms ease !important;
 }
 
 // Uneven inset: corners can't share a centre.
@@ -131,20 +126,6 @@
   gap: var(--space-2);
   font-size: 14px;
   line-height: 20px;
-}
-
-// The box centred on a wrapped label.
-.centeredBox {
-  align-items: center !important;
-
-  > * {
-    margin-top: 0 !important;
-  }
-}
-
-// An off checkbox edged in the divider colour.
-.faintEdge[data-unchecked] {
-  border-color: var(--line) !important;
 }
 
 // A switch placed right after its label instead of in a column.

@@ -1,8 +1,5 @@
-import { Checkbox as BaseCheckbox } from '@base-ui/react/checkbox';
-import { Check } from 'lucide-react';
 import { useState } from 'react';
 import { Checkbox, CheckboxGroup, checkboxClasses as cs } from '../ui/Checkbox';
-import { cx } from '../ui/cx';
 import { Compare, Frame, Gallery, StateGrid, statePin, type State } from './shell';
 import m from './mistakes.module.scss';
 import s from './demos.module.scss';
@@ -28,7 +25,7 @@ function Notifications({ initial = ['mentions', 'assignments'] }: { initial?: st
 
 export function CheckboxLive() {
   return (
-    <Frame label="Live · a parent box over its children" height={220}>
+    <Frame label="Notifications" height={220}>
       <Notifications />
     </Frame>
   );
@@ -135,8 +132,13 @@ export function CheckboxTarget() {
           <Checkbox label="Show hidden files" />
         </div>
       }
-      beforeNote="Only the 16px box responds. Click the words and nothing happens, so people aim for a target smaller than a fingertip."
-      afterNote="A <label> wraps the box and the words: the whole row is the target, and hovering the words darkens the box to say so."
+      beforeNote={
+        <>
+          The eye lands on the words, but only a 16px box answers; the smaller the target, the longer it takes to hit (
+          <a href="https://www.nngroup.com/articles/fitts-law/">Fitts’s law</a>).
+        </>
+      }
+      afterNote="A <label> around box and words makes the whole row the target."
     />
   );
 }
@@ -173,52 +175,39 @@ export function CheckboxMixed() {
       height={220}
       before={<NaiveParent />}
       after={<Notifications />}
-      beforeNote="Two of four are on, and the parent says on. Click it expecting to turn everything on, and it turns everything off."
-      afterNote="A dash: some, not all. Clicking a mixed parent turns them all on; again, all off. Apple and WAI-ARIA both define this mixed state."
+      beforeNote="It says on while half its children are off, so a click meant to turn everything on turns it all off."
+      afterNote={
+        <>
+          A dash means some. Clicking it turns them all on, then all off, as{' '}
+          <a href="https://www.w3.org/WAI/ARIA/apg/patterns/checkbox/examples/checkbox-mixed/">WAI-ARIA</a> defines the mixed state.
+        </>
+      }
     />
   );
 }
 
-export function CheckboxAlign() {
-  const label = 'Send me a weekly summary of what changed in projects I follow';
+/** Alignment and edge, held still and magnified. */
+export function CheckboxAnatomy() {
   return (
-    <Compare
-      height={140}
-      before={<Checkbox label={label} defaultChecked className={cx(s.narrowRow, m.centeredBox)} />}
-      after={<Checkbox label={label} defaultChecked className={s.narrowRow} />}
-      beforeNote="Centred on a two-line label, the box floats between the lines and belongs to neither. In a list, the boxes stop forming a column."
-      afterNote="The box sits on the first line: 2px down a 20px line. Wrapped labels hang under their own first word, and the boxes stay in one column."
-    />
-  );
-}
-
-/** A still, unlabelled box drawn with a chosen edge colour. */
-function EdgeStill({ faint }: { faint?: boolean }) {
-  return (
-    <div className={s.leftStack}>
-      {['Comments', 'Mentions'].map((l, i) => (
-        <label key={l} className={cs.row}>
-          <BaseCheckbox.Root className={cx(cs.box, faint && m.faintEdge)} defaultChecked={i === 1}>
-            <BaseCheckbox.Indicator keepMounted className={cs.indicator}>
-              <Check size={12} strokeWidth={2} nonScalingStroke aria-hidden />
-            </BaseCheckbox.Indicator>
-          </BaseCheckbox.Root>
-          {l}
-        </label>
-      ))}
-    </div>
-  );
-}
-
-export function CheckboxEdge() {
-  return (
-    <Compare
-      height={120}
-      before={<EdgeStill faint />}
-      after={<EdgeStill />}
-      beforeNote="The off box in the divider colour, line. At about 1.3:1 against the page it nearly vanishes, and an empty box is the whole message."
-      afterNote="line-strong, at least 3:1, as WCAG asks of a control’s boundary. Off is an empty box you can see; on is a filled one."
-    />
+    <Frame label="At 2×" height={0}>
+      <div className={s.anatomyPair}>
+        <figure className={s.anatomyItem}>
+          <div className={s.magnify}>
+            <Checkbox label="Send me a weekly summary of what changed" defaultChecked className={s.anatomyCheck} />
+          </div>
+          <figcaption className={s.anatomyCaption}>On the first line, not the middle: (20 − 16) / 2 = 2 down.</figcaption>
+        </figure>
+        <figure className={s.anatomyItem}>
+          <div className={s.magnify}>
+            <Checkbox label="Mentions" />
+          </div>
+          <figcaption className={s.anatomyCaption}>
+            Off is an empty box, so its edge holds at least 3:1 against the page (
+            <a href="https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html">WCAG 1.4.11</a>).
+          </figcaption>
+        </figure>
+      </div>
+    </Frame>
   );
 }
 

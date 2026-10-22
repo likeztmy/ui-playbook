@@ -2,15 +2,35 @@
 layout: ../../layouts/Entry.astro
 slug: button
 ---
-import { ButtonStates, ButtonVariants, HoverTiming, ButtonShape, PressFeel, OnePrimary, LoadingState } from '../../demos/button';
+import { ButtonScene, ButtonStates, ButtonVariants, HoverTiming, ButtonShape, PressFeel, OnePrimary, LoadingState } from '../../demos/button';
+
+<ButtonScene client:visible />
 
 ## When to use
 
-A button runs an action now. Reach for something else when:
+A button runs an action now. Navigation is a link, even when it looks like a button; a state that stays is a Switch or a Segmented control; more actions than room go in a pull-down Menu, with the main one left visible.
 
-- **It goes somewhere.** Navigation is a link, even when it looks like a button.
-- **It sets a state that stays.** On/off is a Switch or a toggle; one of a few modes is a Segmented control.
-- **There are more actions than room.** Keep the main one visible and put the rest in a pull-down Menu.
+## Details
+
+### Filled, never outlined
+
+<ButtonShape client:visible />
+
+### Hover appears at once and leaves softly
+
+<HoverTiming client:visible />
+
+### Quick down, soft back
+
+<PressFeel client:visible />
+
+### One filled button per view
+
+<OnePrimary client:visible />
+
+### Loading keeps its shape and waits its turn
+
+<LoadingState client:visible />
 
 ## Variants
 
@@ -28,52 +48,21 @@ Pick by weight, not by colour: primary for the reason the view exists, secondary
 | Icon gap | `space-1` | 4 |
 | Label | body, weight 500 | 14 / 20 |
 | Fill | `fill-control` · hover `fill-control-hover` | |
-| Press | `press-scale`, back on `ease-spring-snappy` | 0.97 |
-| Spinner | Lucide `loader-circle` | 16 |
+| Hover | in `duration-instant`, out `duration-fast` | 0 · 120 |
+| Press | `press-scale` in 80ms, back on `ease-spring-snappy` | 0.97 |
+| Busy | after `delay-loading`; Lucide `loader-circle` in the icon slot | 300 |
 
-Buttons in one row share one height. Icons are Lucide at 16px and inherit the label's colour. An icon-only button always has a tooltip with the same words as its `aria-label`.
+Buttons in one row share one height. An icon-only button always has a tooltip with the same words as its `aria-label`. While busy it stays focusable but ignores presses until the request settles.
 
 ## States
 
 <ButtonStates client:visible />
 
-Secondary is a fill (`fill-control`), translucent ink, so one value works on any surface and in both themes; hover deepens it to `fill-control-hover`. Ghost has no fill until hovered. Focus shows only on `:focus-visible`: a mouse click never draws a ring.
-
-## Details
-
-### Filled, never outlined
-
-<ButtonShape client:visible />
-
-Only an input keeps a border: an empty field has nothing else to say “you can type here”. A button has its label, so it uses a fill.
-
-### Hover appears at once and leaves softly
-
-<HoverTiming client:visible />
-
-Feedback for something the pointer is on must be immediate; feedback for something it has left can take its time.
-
-### Quick down, soft back
-
-<PressFeel client:visible />
-
-Pressing is the one moment a button moves. Actions run from a keyboard shortcut, hundreds of times a day, don't play it.
-
-### One filled button per view
-
-<OnePrimary client:visible />
-
-The filled button is the reason the screen exists. Everything else is secondary or ghost. In a destructive dialog the one fill is `danger-fill`; elsewhere a destructive action is `danger` text.
-
-### Loading keeps its shape and waits its turn
-
-<LoadingState client:visible />
-
-Show busy only past `delay-loading` (300ms). The spinner takes the icon's slot, the label turns progressive (*Publishing*), and the button stays focusable but ignores presses until the request settles.
+Secondary is a fill (`fill-control`), translucent ink, so one value works on any surface and in both themes. Focus shows only on `:focus-visible`: a mouse click never draws a ring.
 
 ## Common mistakes
 
-- **An outline or a shadow to lift it.** Fill is the signal; a border makes it a field, a shadow makes it a card.
+- **A shadow to lift it.** Fill is the signal; a shadow makes it a card.
 - **Colour as rank.** Two secondary buttons in different colours ask the reader to learn a code. Use variants: primary, secondary, ghost.
 - **Disabled with no reason.** If the action can't run yet, say why nearby, or leave the button enabled and explain on press.
 

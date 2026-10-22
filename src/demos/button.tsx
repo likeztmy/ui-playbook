@@ -1,9 +1,10 @@
 import { useRef, useState } from 'react';
+import { Badge } from '../ui/Badge';
 import { Button } from '../ui/Button';
 import { PlusIcon } from '../ui/icons';
-import { Download, Settings2 } from 'lucide-react';
+import { Download, Ellipsis, Settings2 } from 'lucide-react';
 import { Tip, TipGroup } from '../ui/Tooltip';
-import { Compare, Gallery, StateGrid, statePin, type State } from './shell';
+import { Compare, Frame, Gallery, StateGrid, statePin, type State } from './shell';
 import m from './mistakes.module.scss';
 import s from './demos.module.scss';
 
@@ -13,6 +14,58 @@ export function ButtonPreview() {
       <Button>Cancel</Button>
       <Button variant="primary">Save changes</Button>
     </div>
+  );
+}
+
+/** A document's header: a draft you can publish. */
+function DocHeader() {
+  const [busy, setBusy] = useState(false);
+  const [published, setPublished] = useState(false);
+  const pending = useRef(false);
+  const publish = () => {
+    if (pending.current) return;
+    pending.current = true;
+    const shown = setTimeout(() => setBusy(true), 300);
+    setTimeout(() => {
+      clearTimeout(shown);
+      pending.current = false;
+      setBusy(false);
+      setPublished(true);
+    }, 1400);
+  };
+  return (
+    <div className={s.doc}>
+      <div className={s.docHeader}>
+        <div className={s.docTitle}>
+          <span className={s.docName}>Q4 roadmap</span>
+          <Badge tone={published ? 'success' : 'neutral'} status>
+            {published ? 'Published' : 'Draft'}
+          </Badge>
+        </div>
+        <div className={s.docActions}>
+          <Tip label="More">
+            <Button variant="ghost" icon aria-label="More">
+              <Ellipsis size={16} strokeWidth={1.5} nonScalingStroke aria-hidden />
+            </Button>
+          </Tip>
+          <Button>Preview</Button>
+          <Button variant="primary" loading={busy} loadingLabel="Publishing" onClick={publish}>
+            Publish
+          </Button>
+        </div>
+      </div>
+      <div className={s.docBody}>
+        Ship offline sync to everyone, cut cold start below a second, and retire the old exporter before the holidays.
+      </div>
+    </div>
+  );
+}
+
+export function ButtonScene() {
+  return (
+    <Frame label="Document" height={0}>
+      <DocHeader />
+    </Frame>
   );
 }
 
@@ -63,8 +116,14 @@ export function HoverTiming() {
           <Button>Move</Button>
         </div>
       }
-      beforeNote="A 250ms fade both ways. Sweep across the row: the highlight trails behind the pointer."
-      afterNote="Appears at once (duration-instant), fades out over duration-fast. The highlight is always under the pointer."
+      beforeNote={
+        <>
+          The same fade in as out, as in{' '}
+          <a href="https://getbootstrap.com/docs/5.3/components/buttons/">Bootstrap</a>’s 0.15s both ways. On the way in, any delay reads as
+          lag.
+        </>
+      }
+      afterNote="What the pointer is on answers at once; what it has left can take its time."
     />
   );
 }
@@ -88,8 +147,13 @@ export function ButtonShape() {
           <Button variant="primary">Save</Button>
         </div>
       }
-      beforeNote="Outlined rectangles. Every button draws a line, and a row of them reads like a row of empty inputs: a border is how a field says “type here”."
-      afterNote="Filled pills. Fill says “press me” without a line, and a pill nested in a pill-shaped toolbar or toast is concentric by construction."
+      beforeNote={
+        <>
+          A border is how an empty field says it can be typed in, so a row of outlines reads as a row of fields.{' '}
+          <a href="https://getbootstrap.com/docs/5.3/components/buttons/#outline-buttons">Bootstrap’s outline buttons</a> are the common source.
+        </>
+      }
+      afterNote="A fill needs no line, and a pill inside a pill-shaped toolbar or toast is concentric for free."
     />
   );
 }
@@ -111,8 +175,8 @@ export function PressFeel() {
           <Button variant="primary">Save</Button>
         </div>
       }
-      beforeNote="Down to 0.9 over 250ms and back the same way. The button visibly shrinks, lags the click, and the label jumps under the cursor."
-      afterNote="Down to press-scale (0.97) in 80ms, back on the snappy spring. Quick to answer the finger, soft to let go; too small to move the label."
+      beforeNote="At 0.9 the press is something you watch rather than feel, and the label moves under the cursor."
+      afterNote="0.97 is felt more than seen. Actions run from a keyboard shortcut, hundreds of times a day, don’t play it at all."
     />
   );
 }
@@ -132,8 +196,8 @@ export function OnePrimary() {
           <Button variant="danger-fill">Delete project</Button>
         </div>
       }
-      beforeNote="Two filled buttons compete. Cancel looks as important as the action it backs out of."
-      afterNote="Cancel steps back to secondary. The one fill is danger, not the accent: blue says go, and this is a stop."
+      beforeNote="Cancel weighs as much as the action it backs out of."
+      afterNote="Blue says go; a destructive confirm is a stop, so its one fill is danger."
     />
   );
 }
@@ -197,8 +261,8 @@ export function LoadingState() {
     <Compare
       before={<LoadingPair careful={false} />}
       after={<LoadingPair careful />}
-      beforeNote="Busy the instant it's pressed. Rename flashes a spinner for 150ms, Publish jumps wider as its label changes, and every extra press sends another request."
-      afterNote="Nothing for the first 300ms (delay-loading), so fast actions never flash. The width is reserved for the longer label, and presses while busy are ignored."
+      beforeNote="A spinner that comes and goes in 150ms reads as a glitch, not progress."
+      afterNote="Under delay-loading (300ms) nothing changes. Past it, the width reserved for the longer label keeps the button still under the cursor."
     />
   );
 }

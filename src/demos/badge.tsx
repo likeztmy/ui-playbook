@@ -1,6 +1,8 @@
-import type { ReactNode } from 'react';
+import { Search } from 'lucide-react';
+import { useState, type ReactNode } from 'react';
 import { Badge, type Tone } from '../ui/Badge';
 import { cx } from '../ui/cx';
+import { TextField } from '../ui/Field';
 import { Compare, Frame, Gallery } from './shell';
 import m from './mistakes.module.scss';
 import s from './demos.module.scss';
@@ -42,6 +44,62 @@ const dotsOnly = (t: Task) => (
     </Badge>
   </span>
 );
+
+type Issue = { id: string; title: string; tone: Tone; state: string; tag?: string };
+
+const ISSUES: Issue[] = [
+  { id: 'PB-142', title: 'Export cuts off long titles', tone: 'danger', state: 'Failed' },
+  { id: 'PB-139', title: 'Search ranks archived files first', tone: 'warning', state: 'In review' },
+  { id: 'PB-137', title: 'Smart folders', tone: 'info', state: 'Scheduled', tag: 'Beta' },
+  { id: 'PB-131', title: 'Dark mode for charts', tone: 'success', state: 'Shipped' },
+  { id: 'PB-128', title: 'Comments on exported PDFs', tone: 'warning', state: 'In review' },
+  { id: 'PB-120', title: 'Keyboard map', tone: 'neutral', state: 'Draft' },
+  { id: 'PB-117', title: 'Offline sync', tone: 'success', state: 'Shipped', tag: 'Beta' },
+];
+
+/** An issue list you can filter by any word, the states' included. */
+function Issues() {
+  const [query, setQuery] = useState('');
+  const q = query.trim().toLowerCase();
+  const shown = ISSUES.filter((i) => !q || [i.id, i.title, i.state, i.tag ?? ''].some((w) => w.toLowerCase().includes(q)));
+  return (
+    <div className={s.issues}>
+      <TextField
+        label="Filter"
+        placeholder="Title, state or ID"
+        value={query}
+        onValueChange={setQuery}
+        leading={<Search size={16} strokeWidth={1.5} nonScalingStroke aria-hidden />}
+      />
+      {shown.length ? (
+        <div className={s.issueList} role="list">
+          {shown.map((i) => (
+            <div key={i.id} className={s.issueRow} role="listitem">
+              <span className={s.issueId}>{i.id}</span>
+              <span className={s.issueTitle}>
+                {i.title}
+                {i.tag && <Badge tone="info">{i.tag}</Badge>}
+              </span>
+              <Badge tone={i.tone} status>
+                {i.state}
+              </Badge>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className={s.issueEmpty}>No issue matches “{query.trim()}”.</div>
+      )}
+    </div>
+  );
+}
+
+export function BadgeScene() {
+  return (
+    <Frame label="Issues" height={0}>
+      <Issues />
+    </Frame>
+  );
+}
 
 export function BadgeVariants() {
   return (
@@ -88,7 +146,7 @@ export function BadgeVariants() {
 
 export function BadgeAll() {
   return (
-    <Frame label="Every tone, light and dark: switch the theme" height={0}>
+    <Frame label="Tones" height={0}>
       <div className={s.badgeGrid}>
         {TASKS.map((t) => (
           <div key={t.state} className={s.row}>
@@ -111,15 +169,20 @@ export function BadgeWords() {
       height={220}
       before={<TaskList badge={dotsOnly} />}
       after={<TaskList badge={withWords} />}
-      beforeNote="Colour alone. Which dot is In review and which is Failed? You'd need the legend, and red and amber sit at nearly the same lightness."
-      afterNote="The words say the state; the colour only helps you scan. It reads the same to someone who can't tell red from amber."
+      beforeNote={
+        <>
+          A dot alone leaves anyone who can’t tell red from amber with a legend to learn;{' '}
+          <a href="https://www.w3.org/WAI/WCAG22/Understanding/use-of-color.html">WCAG</a> asks that colour never be the only signal.
+        </>
+      }
+      afterNote="The words carry the state, and they can be searched; the colour only speeds the scan."
     />
   );
 }
 
 export function BadgeGreyscale() {
   return (
-    <Frame label="The same two lists, without colour" height={220}>
+    <Frame label="Without colour" height={220}>
       <div className={cx(s.row, m.greyscale)}>
         <TaskList badge={dotsOnly} />
         <TaskList badge={withWords} />
@@ -134,8 +197,13 @@ export function BadgeSoft() {
       height={220}
       before={<TaskList badge={(t) => <Badge tone={t.tone} status className={m.solidBadge}>{t.state}</Badge>} />}
       after={<TaskList badge={withWords} />}
-      beforeNote="Solid fills with the text knocked out. Five of them shout over the task names they describe, and a table of them becomes a patchwork."
-      afterNote="A soft tint with the colour in the words: present when you look for it, quiet when you read the names."
+      beforeNote={
+        <>
+          Solid fills outweigh the names they describe, and a column of them becomes a patchwork. They’re the default in{' '}
+          <a href="https://getbootstrap.com/docs/5.3/components/badge/">Bootstrap</a>.
+        </>
+      }
+      afterNote="A tint is there when you look for it and quiet while you read."
     />
   );
 }
@@ -157,8 +225,8 @@ export function BadgeDot() {
       height={120}
       before={attrs(true)}
       after={attrs(false)}
-      beforeNote="A dot on every badge. Admin and Beta now look like states that could change any moment, like Online."
-      afterNote="The dot marks a state, which can change. Attributes, what something is, go without, so the one live state stands out."
+      beforeNote="Admin and Beta read as states that could change at any moment, like Online."
+      afterNote="A dot marks what can change; what something is goes without, so the one live state stands out."
     />
   );
 }

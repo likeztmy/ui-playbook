@@ -4,14 +4,25 @@ slug: toast
 ---
 import { ToastLive, ToastKinds, ToastUndo, ToastTone, ToastLimit } from '../../demos/toast';
 
+<ToastLive client:visible />
+
 ## When to use
 
-A toast confirms that something just happened, briefly, without stopping anyone: *Link copied*, *Deleted “Q4 roadmap”*. Its most useful job is to offer Undo. Reach for something else when:
+A toast confirms that something just happened, briefly, without stopping anyone, and its most useful job is to offer Undo. A choice is a Dialog; news about one field or row belongs there; a change already plain on screen needs no toast; and anything people may need later belongs in the page, since toasts vanish.
 
-- **People must read it or decide.** A choice is a Dialog; information that has to stay is an inline message.
-- **It's about one field or one row.** Say it there: an error under the field, a badge on the row.
-- **Nothing happened that they can't see.** If the change is plain on screen, a toast repeats it.
-- **It's the only record.** Toasts vanish; anything people may need later belongs in the page or a log.
+## Details
+
+### Undo instead of asking
+
+<ToastUndo client:visible />
+
+### Colour on the icon only
+
+<ToastTone client:visible />
+
+### Three at most
+
+<ToastLimit client:visible />
 
 ## Kinds
 
@@ -41,25 +52,7 @@ Hovering or focusing a toast pauses its clock; F6 moves keyboard focus into the 
 
 A pill in a pill: the buttons inside are pills with an even 4px inset, so they're concentric by construction.
 
-## States
-
-<ToastLive client:visible />
-
 Toasts rise 8px out of `enter-scale` on the smooth spring and leave in `duration-fast`, sinking and fading. The newest sits lowest; older ones move up, on the same spring, to make room. Three at most; more wait their turn.
-
-## Details
-
-### Undo instead of asking
-
-<ToastUndo client:visible />
-
-### Colour on the icon only
-
-<ToastTone client:visible />
-
-### Three at most
-
-<ToastLimit client:visible />
 
 ## Common mistakes
 

@@ -926,3 +926,91 @@
   clip-path: inset(50%);
   white-space: nowrap;
 }
+
+// Button: a document's header and its first lines.
+.doc {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  width: min(100%, 560px);
+}
+
+.docHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--line);
+}
+
+.docTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.docName {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.docActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.docBody {
+  color: var(--ink-muted);
+}
+
+// Badge: an issue list with a filter.
+.issues {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: min(100%, 520px);
+}
+
+.issueList {
+  display: flex;
+  flex-direction: column;
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.issueRow {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 36px;
+  border-bottom: 1px solid var(--line);
+}
+
+.issueId {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-muted);
+}
+
+.issueTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.issueEmpty {
+  margin: 0;
+  padding: var(--space-3) 0;
+  color: var(--ink-muted);
+  font-size: 13px;
+}
+
+.anatomyCheck {
+  width: 150px;
+}
