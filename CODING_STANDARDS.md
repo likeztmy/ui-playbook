@@ -18,6 +18,7 @@ for those rules.
 
 ## Demos and pages
 
+- **Pages cover every case, not just the best one.** A component page opens with *When to use* (and what to use instead) and *Kinds* or *Variants*: every option the component exposes (icons, shortcuts, sizes, states, how it opens) appears in a live example with when to use it and when not. A rule that holds in one variant and not another says which. Ground the guidance in the reference products' own docs (Apple HIG and the like), and name deliberate deviations.
 - **One island per live demo.** A demo whose children are interactive is a single exported component; children passed into an island render as static HTML.
 - **Before is a real mistake.** A comparison's "before" reproduces something shipping products actually do, via `src/demos/mistakes.module.scss`, and its note says what goes wrong.
 - **Claims are tested.** Each behaviour a page states (a delay, a kept width, a keyboard path) has a test in `tests/interactions.spec.ts`.

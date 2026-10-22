@@ -2,7 +2,21 @@
 layout: ../../layouts/Entry.astro
 slug: toolbar
 ---
-import { ToolbarLive, ToolbarStates, ToolbarInset, ToolbarPressed, ToolbarTips } from '../../demos/toolbar';
+import { ToolbarLive, ToolbarStates, ToolbarVariants, ToolbarInset, ToolbarPressed, ToolbarTips } from '../../demos/toolbar';
+
+## When to use
+
+A floating toolbar keeps a canvas's tools one click away without taking a column of the layout. Reach for something else when:
+
+- **The controls belong to a form or a page.** Lay them out as buttons in the content.
+- **The actions are rare.** Put them in a pull-down Menu; a toolbar is for what people reach for every minute.
+- **The icons wouldn't be recognised.** Label the controls, or use a menu with words.
+
+## Variants
+
+<ToolbarVariants client:visible />
+
+One toolbar can hold all three, each in its own group behind a separator. What changes is how pressing behaves: tools switch a mode, toggles flip their own state, actions just run.
 
 ## Anatomy
 

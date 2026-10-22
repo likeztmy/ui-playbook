@@ -114,3 +114,44 @@ test('home search filters and names the empty state', async ({ page }) => {
   await page.getByRole('button', { name: 'Clear search' }).click();
   await expect(page.getByRole('searchbox')).toBeFocused();
 });
+
+test('context menu: opens on right-click, no shortcuts, nothing dimmed', async ({ page }) => {
+  await page.goto('/components/menu');
+  await hydrateAll(page);
+  const file = page.getByText('Q4 roadmap').first();
+  await file.scrollIntoViewIfNeeded();
+  await file.click({ button: 'right' });
+  const menu = page.getByRole('menu');
+  await expect(menu).toBeVisible();
+  await expect(menu.getByRole('menuitem', { name: 'Copy link' })).toBeVisible();
+  await expect(menu.locator('kbd')).toHaveCount(0);
+  await expect(menu.locator('[data-disabled]')).toHaveCount(0);
+  await page.keyboard.press('Escape');
+});
+
+test('choice menu: picking a value closes and relabels the trigger', async ({ page }) => {
+  await page.goto('/components/menu');
+  await hydrateAll(page);
+  const trigger = page.getByRole('button', { name: /^Sort: Modified/ });
+  await trigger.scrollIntoViewIfNeeded();
+  await trigger.click();
+  const menu = page.getByRole('menu');
+  await expect(menu.getByRole('menuitemradio', { name: 'Modified' })).toHaveAttribute('aria-checked', 'true');
+  // No icons: the only glyphs are the checkmarks, one per radio group.
+  await expect(menu.locator('svg.lucide')).toHaveCount(2);
+  await menu.getByRole('menuitemradio', { name: 'Name' }).click();
+  await expect(menu).toHaveCount(0);
+  await expect(page.getByRole('button', { name: /^Sort: Name/ })).toBeVisible();
+});
+
+test('toolbar toggles: several can be pressed at once', async ({ page }) => {
+  await page.goto('/components/toolbar');
+  await hydrateAll(page);
+  const bold = page.getByRole('button', { name: 'Bold' });
+  const italic = page.getByRole('button', { name: 'Italic' });
+  await italic.scrollIntoViewIfNeeded();
+  await expect(bold).toHaveAttribute('aria-pressed', 'true');
+  await italic.click();
+  await expect(bold).toHaveAttribute('aria-pressed', 'true');
+  await expect(italic).toHaveAttribute('aria-pressed', 'true');
+});

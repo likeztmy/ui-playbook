@@ -54,7 +54,7 @@ function RowBody({ row, look, checked }: { row: Row; look: Look; checked?: boole
   return (
     <>
       {look.check === 'left' && checkSlot(isCheck && checked ? tick : null)}
-      {look.icons && <Icon className={s.icon} size={16} strokeWidth={1.5} nonScalingStroke aria-hidden />}
+      {look.icons && Icon && <Icon className={s.icon} size={16} strokeWidth={1.5} nonScalingStroke aria-hidden />}
       <span className={s.text}>{row.label}</span>
       {look.check === 'right' && isCheck && checkSlot(checked ? tick : null)}
       {row.kind === 'submenu' && (

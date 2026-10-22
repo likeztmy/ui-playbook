@@ -2,7 +2,21 @@
 layout: ../../layouts/Entry.astro
 slug: button
 ---
-import { ButtonStates, HoverTiming, FocusEdge, OnePrimary, LoadingState } from '../../demos/button';
+import { ButtonStates, ButtonVariants, HoverTiming, FocusEdge, OnePrimary, LoadingState } from '../../demos/button';
+
+## When to use
+
+A button runs an action now. Reach for something else when:
+
+- **It goes somewhere.** Navigation is a link, even when it looks like a button.
+- **It sets a state that stays.** On/off is a Switch or a toggle; one of a few modes is a Segmented control.
+- **There are more actions than room.** Keep the main one visible and put the rest in a pull-down Menu.
+
+## Variants
+
+<ButtonVariants client:visible />
+
+Pick by weight, not by colour: primary for the reason the view exists, secondary for everything else, ghost to step back. The danger pair marks destruction, as text among ordinary actions or as the one fill in a confirm dialog.
 
 ## Anatomy
 

@@ -2,7 +2,75 @@
 layout: ../../layouts/Entry.astro
 slug: menu
 ---
-import { MenuLive, MenuHighlight, MenuDanger, MenuConcentric, MenuShortcuts, MenuMotion } from '../../demos/menu';
+import {
+  MenuLive,
+  MenuContextLive,
+  MenuChoiceLive,
+  MenuIconsAllOrNone,
+  MenuContextShortcuts,
+  MenuUnavailable,
+  MenuHighlight,
+  MenuDanger,
+  MenuConcentric,
+  MenuShortcuts,
+  MenuMotion,
+} from '../../demos/menu';
+
+## When to use
+
+A menu holds actions or choices that don't need a permanent place on screen. Reach for something else when:
+
+- **There are one or two items.** Opening a menu is a cost; show them as buttons, or a switch for an on/off setting. Three is the least worth hiding.
+- **It's a form field's value.** Use a Select: it sits in the form, shows the value, and submits with it.
+- **People will search for the action.** A Command menu (type to filter) scales to dozens of actions; a menu past about 15 items is hard to scan.
+
+## Kinds
+
+What opens a menu decides what belongs in it. The same parts (icons, shortcuts, unavailable items) are right in one kind and wrong in another.
+
+### Pull-down: commands from a button
+
+<MenuLive client:visible />
+
+Opened from a labelled button such as *Edit* or a *More* icon. Lists the commands for that area of the app, in the order people use them.
+
+- **Icons** where each one clearly means its action, for every row of a group or for none.
+- **Shortcuts** for the commands that have one. Leave the others blank; never invent one for the menu.
+- **Unavailable commands stay, dimmed.** The layout stays put between contexts and people learn what exists. Here *Undo* is dimmed because there's nothing to undo.
+
+### Context menu: actions on one object
+
+<MenuContextLive client:visible />
+
+Opened by right-click or long-press on a thing: a file, a row, a selection. It's already the shortcut, so it carries only the handful of actions that apply to this object now.
+
+- **Three groups at most**, most-used first, destructive last. No title.
+- **Icons** for familiar actions, the same ones used everywhere else in the product.
+- **No keyboard shortcuts.** They belong in the pull-down and command menus. A web app with no menu bar may show them here so they can be learned somewhere; if so, only real ones, and in every context menu.
+- **Unavailable actions are hidden**, not dimmed: the menu lists what this object can do.
+
+### Choice: picking one value
+
+<MenuChoiceLive client:visible />
+
+Opened from a trigger that shows the current value (*Sort: Modified*). Each row is a value, not a command.
+
+- **Radio items with a checkmark** on the current value. The checkmark marks state; highlight stays for the keyboard.
+- **No icons, no shortcuts.** Values are words; decoration slows the scan.
+- **A separator between independent choices**, such as the field and the order.
+- Picking a value closes the menu and updates the trigger's label.
+
+### Parts by kind
+
+| Part | Pull-down | Context menu | Choice |
+| --- | --- | --- | --- |
+| Icon | All or none per group | Familiar actions, all or none | None |
+| Shortcut | Where the command has one | None | None |
+| Unavailable item | Dimmed | Hidden | — |
+| Checkmark | On toggles | On toggles | On the current value |
+| Submenu | One level, for a repeated term | One level | Rarely |
+| Group label | When sections are distinct | Rarely | To name independent choices |
+| Ellipsis | When more input follows | When more input follows | Never |
 
 ## Anatomy
 
@@ -21,11 +89,21 @@ Icons are Lucide at 16px in `ink-muted`, turning `ink` on the highlighted row. C
 
 ## States
 
-<MenuLive client:visible />
-
-Open it and use the keyboard. Arrows move the highlight, Right opens *Move to*, and Space toggles *Snap to grid* without closing the menu. Undo can be reached but not run: disabled menu items stay focusable so a screen reader still announces them. Pointer and keyboard share one highlight (`data-highlighted`), with no transition in either direction.
+Use the pull-down above from the keyboard. Arrows move the highlight, Right opens *Move to*, and Space toggles *Snap to grid* without closing the menu. *Undo* can be reached but not run: disabled items in a pull-down stay focusable so a screen reader still announces them. Pointer and keyboard share one highlight (`data-highlighted`), with no transition in either direction.
 
 ## Details
+
+### Icons on every row of a group, or none
+
+<MenuIconsAllOrNone client:visible />
+
+### A context menu carries no shortcuts
+
+<MenuContextShortcuts client:visible />
+
+### Unavailable: hidden in a context menu, dimmed in a pull-down
+
+<MenuUnavailable client:visible />
 
 ### A highlight you can find from the keyboard
 
@@ -53,12 +131,15 @@ Opening uses `duration-base` with `ease-out`, from 4px toward the trigger. Closi
 
 ## Common mistakes
 
-- **A group label that repeats the trigger.** A menu opened from *Edit* doesn't need an *Edit* heading. Separators group; add a label only when filtering or length mixes groups.
+- **A menu for one or two items.** Show them as buttons; the menu only hides them.
+- **A group label that repeats the trigger.** A menu opened from *Edit* doesn't need an *Edit* heading. Separators group; add a label only when sections are genuinely distinct.
 - **Destructive actions mid-list.** Put them in the last group, in `danger`, where a slip of the pointer is least likely to land.
-- **Closing on every toggle.** A checkbox item stays open so several options can be set in one visit.
-- **Disabled items that vanish.** Keep them in place in `ink-disabled`, so the menu's layout doesn't shift between contexts.
+- **Closing on every toggle.** A checkbox item stays open so several options can be set in one visit. A choice item closes: one value was picked.
+- **Submenus inside submenus.** One level. If a submenu needs its own, it wants to be a separate menu or a dialog.
 
 ## Copy
 
-- Items are verbs or verb phrases: **Duplicate**, **Move to**. An ellipsis means a dialog follows: **Rename…** if it opens one, **Rename** if it edits in place.
+- Commands are verbs or verb phrases: **Duplicate**, **Move to**. Choices are the values themselves: **Name**, **Modified**.
+- An ellipsis means more input follows before the action completes: **Share…** opens a dialog, **Rename** edits in place.
+- Sentence case, unlike Apple's title case: Precision writes all interface text in sentence case.
 - Keep one grammatical form within a menu.

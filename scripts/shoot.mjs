@@ -7,7 +7,8 @@
 // Flags: --base (default http://localhost:4321, the dev server), --width
 // (1280), --height (800), --theme light|dark (light), --selector (element to
 // shoot; default the viewport), --full (whole page), --scale (device pixel
-// ratio, 2), --hover "<selector>" (hover it, wait 800ms), --out (shots/<route>.png),
+// ratio, 2), --hover / --click / --context "<selector>" (hover, click or
+// right-click it first, then wait 800ms), --out (shots/<route>.png),
 // --eval "<expression>" (printed as JSON after the shot).
 import { chromium } from '@playwright/test';
 import { mkdirSync } from 'node:fs';
@@ -42,10 +43,13 @@ try {
   await page.goto(base + route);
 
   // Hydrate every client:visible island, then return to the top.
-  const islands = page.locator('astro-island');
-  for (let i = 0, n = await islands.count(); i < n; i++) await islands.nth(i).scrollIntoViewIfNeeded();
-  try {
+  const hydrate = async () => {
+    const islands = page.locator('astro-island');
+    for (let i = 0, n = await islands.count(); i < n; i++) await islands.nth(i).scrollIntoViewIfNeeded();
     await page.waitForFunction(() => !document.querySelector('astro-island[ssr]'), null, { timeout: 10_000 });
+  };
+  try {
+    await hydrate();
   } catch {
     const stuck = await page.$$eval('astro-island[ssr]', (els) => els.map((e) => e.getAttribute('component-url')));
     console.error(`Islands never hydrated: ${stuck.join(', ')}`);
@@ -56,8 +60,15 @@ try {
   }
   await page.evaluate(() => window.scrollTo(0, 0));
 
-  if (flags.hover) {
-    await page.locator(flags.hover).first().hover();
+  for (const [flag, act] of [
+    ['hover', (l) => l.hover()],
+    ['click', (l) => l.click()],
+    ['context', (l) => l.click({ button: 'right' })],
+  ]) {
+    if (!flags[flag]) continue;
+    const target = page.locator(flags[flag]).first();
+    await target.scrollIntoViewIfNeeded();
+    await act(target);
     await page.waitForTimeout(800);
   }
 

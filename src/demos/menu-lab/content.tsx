@@ -7,7 +7,7 @@ import { Copy, CopyPlus, FolderInput, Grid3x3, TextCursorInput, Trash2, Undo2, t
 export type Keys = string[];
 
 export type Row =
-  | { kind: 'item'; id: string; label: string; icon: LucideIcon; keys?: Keys; disabled?: boolean; danger?: boolean }
+  | { kind: 'item'; id: string; label: string; icon?: LucideIcon; keys?: Keys; disabled?: boolean; danger?: boolean }
   | { kind: 'check'; id: string; label: string; icon: LucideIcon; keys?: Keys; checked: boolean }
   | { kind: 'submenu'; id: string; label: string; icon: LucideIcon; items: string[] };
 

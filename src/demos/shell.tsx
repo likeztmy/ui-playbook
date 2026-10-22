@@ -149,3 +149,27 @@ export function StateGrid({ rows }: StateGridProps) {
     </Frame>
   );
 }
+
+type GalleryProps = {
+  label?: string;
+  rows: { name: string; use: string; render: () => ReactNode }[];
+};
+
+/** Variants side by side: what each one is for, and a live instance of it. */
+export function Gallery({ label = 'Variants', rows }: GalleryProps) {
+  return (
+    <Frame label={label} height={0}>
+      <div className={s.gallery}>
+        {rows.map((row) => (
+          <div key={row.name} className={s.galleryRow}>
+            <div className={s.galleryText}>
+              <span className={s.galleryName}>{row.name}</span>
+              <span className={s.galleryUse}>{row.use}</span>
+            </div>
+            <div className={s.galleryLive}>{row.render()}</div>
+          </div>
+        ))}
+      </div>
+    </Frame>
+  );
+}

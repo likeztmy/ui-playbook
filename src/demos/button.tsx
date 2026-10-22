@@ -1,7 +1,9 @@
 import { useRef, useState } from 'react';
 import { Button } from '../ui/Button';
 import { PlusIcon } from '../ui/icons';
-import { Compare, StateGrid, statePin, type State } from './shell';
+import { Download, Settings2 } from 'lucide-react';
+import { Tip, TipGroup } from '../ui/Tooltip';
+import { Compare, Gallery, StateGrid, statePin, type State } from './shell';
 import m from './mistakes.module.scss';
 import s from './demos.module.scss';
 
@@ -159,6 +161,79 @@ export function LoadingState() {
       after={<LoadingPair careful />}
       beforeNote="Busy the instant it's pressed. Rename flashes a spinner for 150ms, Publish jumps wider as its label changes, and every extra press sends another request."
       afterNote="Nothing for the first 300ms (delay-loading), so fast actions never flash. The width is reserved for the longer label, and presses while busy are ignored."
+    />
+  );
+}
+
+export function ButtonVariants() {
+  return (
+    <Gallery
+      rows={[
+        {
+          name: 'Primary',
+          use: 'The one action this view exists for. One per view.',
+          render: () => <Button variant="primary">Save changes</Button>,
+        },
+        {
+          name: 'Secondary',
+          use: 'Every other action. The default when in doubt.',
+          render: () => <Button>Export</Button>,
+        },
+        {
+          name: 'Ghost',
+          use: 'Backing out (Cancel), and quiet actions in dense rows.',
+          render: () => <Button variant="ghost">Cancel</Button>,
+        },
+        {
+          name: 'Danger',
+          use: 'A destructive action among ordinary ones. Red text, no fill.',
+          render: () => <Button variant="danger">Delete</Button>,
+        },
+        {
+          name: 'Danger fill',
+          use: 'The single confirm of a destructive dialog. Nowhere else.',
+          render: () => <Button variant="danger-fill">Delete project</Button>,
+        },
+        {
+          name: 'Leading icon',
+          use: 'When the icon speeds recognition. Every button in the row, or none.',
+          render: () => (
+            <>
+              <Button leading={<PlusIcon />}>New file</Button>
+              <Button leading={<Download size={16} strokeWidth={1.5} nonScalingStroke aria-hidden />}>Download</Button>
+            </>
+          ),
+        },
+        {
+          name: 'Icon only',
+          use: 'Icons everyone knows, where space is tight. Always with a tooltip.',
+          render: () => (
+            <TipGroup>
+              <Tip label="Settings">
+                <Button icon aria-label="Settings">
+                  <Settings2 size={16} strokeWidth={1.5} nonScalingStroke aria-hidden />
+                </Button>
+              </Tip>
+              <Tip label="New file" keys={['⌘', 'N']}>
+                <Button icon aria-label="New file">
+                  <PlusIcon />
+                </Button>
+              </Tip>
+            </TipGroup>
+          ),
+        },
+        {
+          name: 'Sizes',
+          use: 'sm in toolbars and table rows; md everywhere else; lg for a dialog’s primary or onboarding.',
+          render: () => (
+            <>
+              <Button size="sm">Small</Button>
+              <Button>Medium</Button>
+              <Button size="lg">Large</Button>
+            </>
+          ),
+        },
+      ]}
     />
   );
 }

@@ -1,14 +1,17 @@
 import { useState } from 'react';
 import { Button } from '../ui/Button';
-import { Menu, RowContent, menuClasses as ms } from '../ui/Menu';
+import { ClipboardPaste, CopyPlus, FileText, FolderInput, FolderOpen, History, Link, Share2, TextCursorInput, Trash2 } from 'lucide-react';
+import { ContextMenu, Menu, RowContent, menuClasses as ms } from '../ui/Menu';
 import { ChevronDownIcon } from '../ui/icons';
 import { cx } from '../ui/cx';
 import { Compare, Frame } from './shell';
-import { GROUPS, type Row } from './menu-lab/content';
+import { GROUPS, type Group, type Row } from './menu-lab/content';
 import m from './mistakes.module.scss';
 import s from './demos.module.scss';
 
 type StillProps = {
+  /** The menu's content; defaults to the Edit menu. */
+  groups?: Group[];
   /** The row highlighted at rest and after the pointer leaves. */
   initial?: string;
   /** Extra class on every row: how a "before" reproduces its mistake. */
@@ -21,7 +24,7 @@ type StillProps = {
  * The open menu as a still: the live menu's classes and row markup, with a
  * highlight that follows the pointer.
  */
-function StillMenu({ initial = 'duplicate', itemClass, monoShortcuts }: StillProps) {
+function StillMenu({ groups = GROUPS, initial = 'duplicate', itemClass, monoShortcuts }: StillProps) {
   const [hot, setHot] = useState(initial);
   const row = (r: Row) => {
     const keys = 'keys' in r ? r.keys : undefined;
@@ -47,7 +50,7 @@ function StillMenu({ initial = 'duplicate', itemClass, monoShortcuts }: StillPro
   };
   return (
     <div className={ms.popup} role="presentation" onMouseLeave={() => setHot(initial)}>
-      {GROUPS.map((g, gi) => (
+      {groups.map((g, gi) => (
         <div key={g.id}>
           {gi > 0 && <div className={ms.separator} />}
           {g.rows.map(row)}
@@ -171,6 +174,178 @@ export function MenuMotion() {
       }
       beforeNote="Grows from its own centre at the same 200ms both ways. It seems to appear from nowhere, and closing makes you wait."
       afterNote="Slides 4px out of the trigger with ease-out, and leaves in half the time with ease-in."
+    />
+  );
+}
+
+// ── Kinds of menu ────────────────────────────────────────
+
+// A file's context menu: actions on this one object, no shortcuts, nothing
+// unavailable shown, three groups at most.
+const CONTEXT: Group[] = [
+  {
+    id: 'object',
+    rows: [
+      { kind: 'item', id: 'open', label: 'Open', icon: FolderOpen },
+      { kind: 'item', id: 'rename', label: 'Rename', icon: TextCursorInput },
+      { kind: 'item', id: 'duplicate', label: 'Duplicate', icon: CopyPlus },
+      { kind: 'submenu', id: 'move', label: 'Move to', icon: FolderInput, items: ['Inbox', 'Projects', 'Archive'] },
+    ],
+  },
+  {
+    id: 'share',
+    rows: [
+      { kind: 'item', id: 'share', label: 'Share…', icon: Share2 },
+      { kind: 'item', id: 'link', label: 'Copy link', icon: Link },
+    ],
+  },
+  { id: 'danger', rows: [{ kind: 'item', id: 'delete', label: 'Delete', icon: Trash2, danger: true }] },
+];
+
+function FileCard() {
+  return (
+    <span className={s.fileCard}>
+      <FileText size={16} strokeWidth={1.5} nonScalingStroke aria-hidden />
+      <span>
+        <span className={s.fileName}>Q4 roadmap</span>
+        <span className={s.fileMeta}>Edited 2 hours ago</span>
+      </span>
+    </span>
+  );
+}
+
+export function MenuContextLive() {
+  return (
+    <Frame label="Context menu · right-click the file" height={380}>
+      <ContextMenu.Root>
+        <ContextMenu.Trigger className={cx(s.contextTarget, s.top)}>
+          <FileCard />
+        </ContextMenu.Trigger>
+        <ContextMenu.Popup>
+          {CONTEXT.map((g, gi) => (
+            <Menu.Group key={g.id}>
+              {gi > 0 && <Menu.Separator />}
+              {g.rows.map((r) =>
+                r.kind === 'submenu' ? (
+                  <Menu.Submenu key={r.id} icon={r.icon} label={r.label}>
+                    {r.items.map((name) => (
+                      <Menu.Item key={name}>{name}</Menu.Item>
+                    ))}
+                  </Menu.Submenu>
+                ) : (
+                  <Menu.Item key={r.id} icon={r.icon} danger={r.kind === 'item' && r.danger}>
+                    {r.label}
+                  </Menu.Item>
+                ),
+              )}
+            </Menu.Group>
+          ))}
+        </ContextMenu.Popup>
+      </ContextMenu.Root>
+    </Frame>
+  );
+}
+
+const SORT_FIELDS = ['Name', 'Modified', 'Created', 'Size'] as const;
+
+export function MenuChoiceLive() {
+  const [field, setField] = useState<string>('Modified');
+  const [order, setOrder] = useState<string>('Newest first');
+  return (
+    <Frame label="Choice · the trigger shows the value" height={300}>
+      <div className={s.top}>
+        <Menu.Root>
+          <Menu.Trigger render={<Button variant="ghost" />}>
+            Sort: {field} <ChevronDownIcon />
+          </Menu.Trigger>
+          <Menu.Popup>
+            <Menu.RadioGroup value={field} onValueChange={(v) => setField(v as string)}>
+              {SORT_FIELDS.map((f) => (
+                <Menu.RadioItem key={f} value={f}>
+                  {f}
+                </Menu.RadioItem>
+              ))}
+            </Menu.RadioGroup>
+            <Menu.Separator />
+            <Menu.RadioGroup value={order} onValueChange={(v) => setOrder(v as string)}>
+              {['Newest first', 'Oldest first'].map((o) => (
+                <Menu.RadioItem key={o} value={o}>
+                  {o}
+                </Menu.RadioItem>
+              ))}
+            </Menu.RadioGroup>
+          </Menu.Popup>
+        </Menu.Root>
+      </div>
+    </Frame>
+  );
+}
+
+// ── Icons, shortcuts and unavailable items, by kind ──────
+
+const withoutIcons = (groups: Group[], keep: string[]): Group[] =>
+  groups.map((g) => ({
+    ...g,
+    rows: g.rows.map((r) => (r.kind === 'item' && !keep.includes(r.id) ? { ...r, icon: undefined } : r)),
+  }));
+
+export function MenuIconsAllOrNone() {
+  return (
+    <Compare
+      height={STILL_HEIGHT}
+      before={<StillMenu groups={withoutIcons(GROUPS, ['copy', 'delete'])} />}
+      after={<StillMenu />}
+      beforeNote="Icons on Copy and Delete only. Labels start at two different x positions, and the iconless rows read as second-class."
+      afterNote="Every row in the group has one, so labels share one edge. When an item has no icon that clearly means it, the whole menu goes without."
+    />
+  );
+}
+
+const withKeys = (groups: Group[], keys: Record<string, string[]>): Group[] =>
+  groups.map((g) => ({
+    ...g,
+    rows: g.rows.map((r) => (r.kind === 'item' && keys[r.id] ? { ...r, keys: keys[r.id] } : r)),
+  }));
+
+export function MenuContextShortcuts() {
+  const invented = withKeys(CONTEXT, {
+    open: ['↵'],
+    rename: ['⌘', 'R'],
+    duplicate: ['⌘', 'D'],
+    share: ['⌘', '⇧', 'S'],
+    link: ['⌘', '⇧', 'C'],
+    delete: ['⌘', '⌫'],
+  });
+  return (
+    <Compare
+      height={STILL_HEIGHT}
+      before={<StillMenu groups={invented} initial="share" />}
+      after={<StillMenu groups={CONTEXT} initial="share" />}
+      beforeNote="A context menu carrying shortcuts, two of them made up for the menu. Right-clicking already is the shortcut; the column only adds width and noise."
+      afterNote="No shortcuts in the context menu. They live in the pull-down and command menus, where people go to learn them."
+    />
+  );
+}
+
+export function MenuUnavailable() {
+  const dimmed: Group[] = [
+    {
+      ...CONTEXT[0],
+      rows: [
+        ...CONTEXT[0].rows,
+        { kind: 'item', id: 'paste', label: 'Paste style', icon: ClipboardPaste, disabled: true },
+        { kind: 'item', id: 'restore', label: 'Restore version', icon: History, disabled: true },
+      ],
+    },
+    ...CONTEXT.slice(1),
+  ];
+  return (
+    <Compare
+      height={STILL_HEIGHT}
+      before={<StillMenu groups={dimmed} initial="open" />}
+      after={<StillMenu groups={CONTEXT} initial="open" />}
+      beforeNote="Paste style and Restore version shown dimmed in a context menu. There's nothing to paste and no versions: the menu lists what this file can't do."
+      afterNote="Hidden: a context menu holds what applies to this object now. A pull-down keeps unavailable commands dimmed instead, so its layout stays put and features stay discoverable."
     />
   );
 }

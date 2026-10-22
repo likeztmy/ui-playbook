@@ -25,7 +25,7 @@ pnpm shoot /components/menu --theme dark --selector figure   # headless screensh
 | `src/tokens/precision.json` | Design tokens, the single source. `scripts/build-tokens.mjs` writes `src/styles/tokens.css` before every dev and build. |
 | `src/ui/` | Precision components on Base UI, each with its own `.module.scss`. Icons are Lucide. |
 | `src/demos/` | Demo shells (`Frame`, `Compare`, `Tweak`, `StateGrid`) and each page's demos. `mistakes.module.scss` holds the "before" styles. |
-| `src/pages/components/`, `src/pages/principles/` | One MDX page each: Anatomy, States, Details, Common mistakes, Copy. |
+| `src/pages/components/`, `src/pages/principles/` | One MDX page each: When to use, Kinds or Variants, Anatomy, States, Details, Common mistakes, Copy. |
 | `src/entries.ts` | What the home page lists, in order. The smoke test walks every entry. |
 | `tests/` | `smoke.spec.ts`: every page hydrates, logs no errors, never scrolls sideways (2 widths × 2 themes). `interactions.spec.ts`: one test per behaviour a page claims. |
 | `src/pages/lab/` | Design directions kept for reference; not in the gallery, `noindex`. |

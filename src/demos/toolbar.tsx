@@ -1,6 +1,7 @@
 import { Toolbar } from '../ui/Toolbar';
 import { EllipseIcon, PenIcon, PlusIcon, PointerIcon, RectIcon, TextIcon } from '../ui/icons';
-import { Compare, Frame, StateGrid, statePin } from './shell';
+import { Bold, Italic, Redo2, Underline, Undo2 } from 'lucide-react';
+import { Compare, Frame, Gallery, StateGrid, statePin } from './shell';
 import m from './mistakes.module.scss';
 
 const TOOLS = [
@@ -91,6 +92,70 @@ export function ToolbarTips() {
       after={<DrawToolbar />}
       beforeNote="A native title: the browser waits about a second, draws it in the system's style far from the button, has no shortcut, and makes you wait again for every neighbour."
       afterNote="A Tip after delay-tooltip (500ms) with the tool's shortcut. Slide along the row and each label swaps in at once."
+    />
+  );
+}
+
+const ic = { size: 16, strokeWidth: 1.5, nonScalingStroke: true, 'aria-hidden': true } as const;
+
+export function ToolbarVariants() {
+  return (
+    <Gallery
+      rows={[
+        {
+          name: 'Tools',
+          use: 'Modes: what the pointer does next. Exactly one is current, so it shows pressed.',
+          render: () => (
+            <Toolbar.Root aria-label="Tools">
+              <Toolbar.Tools defaultValue={['select']} aria-label="Tools">
+                {TOOLS.slice(0, 3).map(([value, label, icon, key]) => (
+                  <Toolbar.Tool key={value} value={value} label={label} keys={[key]}>
+                    {icon}
+                  </Toolbar.Tool>
+                ))}
+              </Toolbar.Tools>
+            </Toolbar.Root>
+          ),
+        },
+        {
+          name: 'Toggles',
+          use: 'Independent on/off settings, like text styles. Any number can be pressed.',
+          render: () => (
+            <Toolbar.Root aria-label="Text style">
+              <Toolbar.Tools multiple defaultValue={['bold']} aria-label="Text style">
+                <Toolbar.Tool value="bold" label="Bold" keys={['⌘', 'B']}>
+                  <Bold {...ic} />
+                </Toolbar.Tool>
+                <Toolbar.Tool value="italic" label="Italic" keys={['⌘', 'I']}>
+                  <Italic {...ic} />
+                </Toolbar.Tool>
+                <Toolbar.Tool value="underline" label="Underline" keys={['⌘', 'U']}>
+                  <Underline {...ic} />
+                </Toolbar.Tool>
+              </Toolbar.Tools>
+            </Toolbar.Root>
+          ),
+        },
+        {
+          name: 'Actions',
+          use: 'One-off commands. Buttons, never pressed; a primary only for the toolbar’s main job.',
+          render: () => (
+            <Toolbar.Root aria-label="History">
+              <Toolbar.Action label="Undo" keys={['⌘', 'Z']}>
+                <Undo2 {...ic} />
+              </Toolbar.Action>
+              <Toolbar.Action label="Redo" keys={['⌘', '⇧', 'Z']}>
+                <Redo2 {...ic} />
+              </Toolbar.Action>
+              <Toolbar.Separator />
+              <Toolbar.Action primary>
+                <PlusIcon />
+                Create
+              </Toolbar.Action>
+            </Toolbar.Root>
+          ),
+        },
+      ]}
     />
   );
 }

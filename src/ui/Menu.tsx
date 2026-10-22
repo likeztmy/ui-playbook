@@ -1,4 +1,5 @@
 import { Menu as BaseMenu } from '@base-ui/react/menu';
+import { ContextMenu as BaseContextMenu } from '@base-ui/react/context-menu';
 import { ArrowBigUp, Check, ChevronRight, Command, CornerDownLeft, Delete, Option, type LucideIcon } from 'lucide-react';
 import { useState, type ComponentProps, type ReactNode } from 'react';
 import { cx } from './cx';
@@ -143,6 +144,20 @@ function Submenu({ icon, label, children, className }: SubmenuProps) {
   );
 }
 
+type RadioItemProps = Omit<ComponentProps<typeof BaseMenu.RadioItem>, 'children'> & { children: string };
+
+/** One value in a choice menu (Sort by, View as). Picking it closes the menu. */
+function RadioItem({ children, className, closeOnClick = true, ...props }: RadioItemProps) {
+  return (
+    <BaseMenu.RadioItem {...props} closeOnClick={closeOnClick} label={children} className={cx(s.item, className as string)}>
+      <span className={s.text}>{children}</span>
+      <BaseMenu.RadioItemIndicator className={s.check}>
+        <Check size={16} strokeWidth={1.75} nonScalingStroke aria-hidden />
+      </BaseMenu.RadioItemIndicator>
+    </BaseMenu.RadioItem>
+  );
+}
+
 function Group({ className, ...props }: ComponentProps<typeof BaseMenu.Group>) {
   return <BaseMenu.Group {...props} className={className} />;
 }
@@ -161,8 +176,29 @@ export const Menu = {
   Popup,
   Item,
   CheckboxItem,
+  RadioGroup: BaseMenu.RadioGroup,
+  RadioItem,
   Submenu,
   Group,
   Label,
   Separator,
+};
+
+/** Opens at the pointer on right-click or long-press, over its trigger area. */
+function ContextPopup({ className, ...props }: ComponentProps<typeof BaseMenu.Popup>) {
+  const container = usePortalContainer();
+  return (
+    <BaseContextMenu.Portal container={container}>
+      <BaseContextMenu.Positioner className={s.positioner}>
+        <BaseContextMenu.Popup {...props} className={cx(s.popup, className as string)} />
+      </BaseContextMenu.Positioner>
+    </BaseContextMenu.Portal>
+  );
+}
+
+/** A context menu. Its items are Menu's: Menu.Item, Menu.Separator, and so on. */
+export const ContextMenu = {
+  Root: BaseContextMenu.Root,
+  Trigger: BaseContextMenu.Trigger,
+  Popup: ContextPopup,
 };

@@ -129,3 +129,43 @@
   align-items: center;
   gap: var(--space-1);
 }
+
+// A file card that takes a context menu.
+.contextTarget {
+  border-radius: var(--radius-lg);
+  outline: none;
+
+  &[data-popup-open] .fileCard,
+  &:focus-visible .fileCard {
+    box-shadow: var(--shadow-xs), 0 0 0 2px var(--accent);
+  }
+}
+
+.fileCard {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 240px;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-xs);
+  color: var(--ink-muted);
+  cursor: context-menu;
+  user-select: none;
+
+  > span {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.fileName {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.fileMeta {
+  font-size: 12px;
+  line-height: 16px;
+}

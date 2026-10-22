@@ -55,14 +55,32 @@ function Tool({ value, label, keys, children, className, pin, nativeTitle }: Too
   );
 }
 
-type ActionProps = ComponentProps<typeof BaseToolbar.Button> & { primary?: boolean };
+type ActionProps = ComponentProps<typeof BaseToolbar.Button> & {
+  primary?: boolean;
+  /** Icon-only action: names it for screen readers and in a tooltip. */
+  label?: string;
+  keys?: string[];
+};
 
-function Action({ primary, className, ...props }: ActionProps) {
-  return (
+/** A one-off command: a button, never pressed. */
+function Action({ primary, label, keys, className, ...props }: ActionProps) {
+  const button = (
     <BaseToolbar.Button
       {...props}
-      className={cx(buttonClass({ variant: primary ? 'primary' : 'secondary' }), !primary && s.tool, className as string)}
+      aria-label={label ?? props['aria-label']}
+      className={cx(
+        buttonClass({ variant: primary ? 'primary' : 'secondary', icon: Boolean(label) }),
+        !primary && s.tool,
+        className as string,
+      )}
     />
+  );
+  return label ? (
+    <Tip label={label} keys={keys}>
+      {button}
+    </Tip>
+  ) : (
+    button
   );
 }
 

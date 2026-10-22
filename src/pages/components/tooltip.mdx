@@ -4,6 +4,17 @@ slug: tooltip
 ---
 import { TooltipLive, TooltipGrouping, TooltipInverse } from '../../demos/tooltip';
 
+## When to use
+
+- **Icon-only controls.** Every one gets a tooltip with the same words as its `aria-label`, plus its shortcut.
+- **Truncated text.** A name cut off with an ellipsis can show in full on hover.
+
+Reach for something else when:
+
+- **The control already has a label.** A button that says *Save* needs no tooltip saying *Save*.
+- **The content is interactive or long.** Links, buttons and paragraphs belong in a Popover.
+- **People must see it.** Tooltips never appear on touch screens; put essential text on the page.
+
 ## Anatomy
 
 | Part | Token | Value |
