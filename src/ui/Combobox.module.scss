@@ -9,6 +9,11 @@
 
 .input {
   font-size: 14px;
+
+  // As in Field: iOS Safari zooms into fields under 16px.
+  @media (pointer: coarse) {
+    font-size: 16px;
+  }
 }
 
 // The chevron is a 24px button, 4 from the edge on three sides like a

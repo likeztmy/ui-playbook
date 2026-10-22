@@ -1,0 +1,29 @@
+---
+layout: ../../layouts/Entry.astro
+slug: error-timing
+---
+import { TimingGrid, TimingPassword } from '../../demos/error-timing';
+
+## The rule
+
+**Wait until they've finished to say something is wrong; say it's right the moment it is.** An error is an accusation. Made too early, it lands on an answer that isn't finished yet; withdrawn too late, it hangs over one that's already fixed.
+
+<TimingGrid client:visible />
+
+Each field starts with the same unfinished address. Checking on submit says nothing until the end, then keeps an old verdict while you fix it. Checking on every keystroke calls each letter a mistake until the last, so the message stops meaning anything. Checking on leaving waits for the answer, but if it only listens on leaving, the fix goes unacknowledged until you click away.
+
+The last one has the asymmetry. In Luke Wroblewski's tests of six sign-up forms with Etre, checking as people left each field cut completion time by 42% and errors by 22% against checking after submit; checking before and while they typed did worst ([A List Apart](https://alistapart.com/article/inline-validation-in-web-forms/)). Baymard adds the second half: once a field has been corrected, clear its error on the next keystroke ([Baymard](https://baymard.com/blog/inline-form-validation)). Leaving an empty field while looking around is exploring, not a mistake ([NN/g](https://www.nngroup.com/articles/error-message-guidelines/)).
+
+## Good news can't come too early
+
+<TimingPassword client:visible />
+
+A rule that's met is information, not judgement, so it turns green as you type. The ones still unmet stay neutral until you leave the field; only then are they wrong.
+
+## When to check sooner
+
+- **Fixed-length answers.** A postal code, a card number, a security code: check when the last character arrives, without waiting for focus to leave.
+- **Availability.** Whether a username is taken is what they want to know; check shortly after they stop typing.
+- **Typed confirmations.** When a repository's name must be typed to delete it, the button stays off until it matches, letter by letter.
+
+Used on [Input](/components/input) and [Combobox](/components/combobox), whose empty list repeats the query instead of calling it a mistake.

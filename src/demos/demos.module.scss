@@ -774,3 +774,155 @@
   align-items: flex-start;
   gap: 6px;
 }
+
+// Input: a shipping address form, then its summary.
+.addressForm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  width: min(100%, 360px);
+}
+
+.addressRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.addressCity {
+  flex: 1;
+  min-width: 140px;
+}
+
+.addressCard {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  width: min(100%, 360px);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-xs);
+}
+
+.addressText {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.addressHeading {
+  margin-bottom: var(--space-1);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  color: var(--ink-muted);
+}
+
+.addressMuted {
+  margin-top: var(--space-1);
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+
+.cardNumber {
+  width: 220px;
+}
+
+.tinyField {
+  width: 72px;
+}
+
+// Two magnified stills with a line each.
+.anatomyPair {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+  justify-content: center;
+}
+
+.anatomyItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  margin: 0;
+}
+
+.anatomyCaption {
+  max-width: 300px;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--ink-muted);
+  text-align: center;
+  text-wrap: balance;
+}
+
+// Error timing: four cells, one field each.
+.timingGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-6) var(--space-8);
+  width: min(100%, 640px);
+  align-items: start;
+}
+
+@media (width < 640px) {
+  .timingGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.timingCell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.timingName {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.timingSubmit {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+// Password rules: neutral until met or until you've left the field.
+.ruleList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.rule {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--ink-muted);
+  transition: color var(--duration-fast) var(--ease-out);
+
+  &[data-state='met'] {
+    color: var(--success);
+  }
+
+  &[data-state='unmet'] {
+    color: var(--danger);
+  }
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

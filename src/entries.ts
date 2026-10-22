@@ -64,7 +64,7 @@ export const entries: Entry[] = [
     kind: 'component',
     title: 'Input',
     summary: 'A labelled field for typed text. Checked when you leave it, not while you type.',
-    details: 5,
+    details: 4,
     keywords: ['text field', 'textarea', 'form', 'label', 'placeholder', 'validation', 'error', 'search'],
   },
   {
@@ -170,6 +170,14 @@ export const entries: Entry[] = [
     summary: 'Inner radius = outer radius − inset. Nested corners share one centre.',
     details: 2,
     keywords: ['border radius', 'corners', 'nesting', 'padding', 'inset'],
+  },
+  {
+    slug: 'error-timing',
+    kind: 'principle',
+    title: 'Error timing',
+    summary: 'Wait until they’ve finished to say it’s wrong; say it’s right the moment it is.',
+    details: 1,
+    keywords: ['validation', 'inline validation', 'error', 'form', 'blur', 'feedback', 'password rules'],
   },
 ];
 

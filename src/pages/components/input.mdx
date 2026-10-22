@@ -2,15 +2,31 @@
 layout: ../../layouts/Entry.astro
 slug: input
 ---
-import { InputLive, InputVariants, InputStates, InputLabel, InputValidation, InputFocus, InputKey, InputWidth } from '../../demos/input';
+import { InputScene, InputVariants, InputAnatomy, InputStates, InputValidation, InputErrorPlace, InputLabel, InputWidth } from '../../demos/input';
+
+<InputScene client:visible />
 
 ## When to use
 
-For text people type: a name, an address, a search, a number with a unit. Reach for something else when:
+For text people type: a name, an address, a number with a unit. Reach for something else when the answer is one of a few known values (radios, a Select, or a combobox for many), on or off (a Switch or a Checkbox), or a position on a range (a Slider).
 
-- **The answer is one of a few known values.** Two to four: a segmented control or radios. Five to fifteen: a Select. More, or searchable: a combobox.
-- **The answer is on or off.** A Switch or a Checkbox.
-- **The value is a position on a range.** A Slider, often paired with a small number field.
+## Details
+
+### Check when they leave, not while they type
+
+<InputValidation client:visible />
+
+### The error sits under its field
+
+<InputErrorPlace client:visible />
+
+### A label above, an example inside
+
+<InputLabel client:visible />
+
+### Width says how much to write
+
+<InputWidth client:visible />
 
 ## Variants
 
@@ -32,48 +48,29 @@ For text people type: a name, an address, a search, a number with a unit. Reach 
 | Label | label, 12 / 16, weight 500, `ink-muted` | 12 |
 | Label, field, hint | `space-1` apart | 4 |
 | Focus | `accent` edge + 3px halo, `accent` at 25% | 3 |
+| Text | 14 / 20; 16 on touch screens | 14 |
 
-The label sits above, the hint or the error below. Never both: the error takes the hint's line.
+<InputAnatomy client:visible />
+
+The label sits above, the hint or the error below, never both: the error takes the hint's line. The field keeps its outline because an empty box has nothing else to say it can be filled; the focus ring a button uses would float 2px off an edge that's already there.
 
 ## States
 
 <InputStates client:visible />
 
-<InputLive client:visible />
+## Known issues
 
-Type a partial address and Tab away: the error appears. Go back and finish it: the error clears as you type.
-
-## Details
-
-### A label above, an example inside
-
-<InputLabel client:visible />
-
-### Check when they leave, not while they type
-
-<InputValidation client:visible />
-
-### Focus is the edge, not a ring
-
-<InputFocus client:visible />
-
-### An embedded key is concentric
-
-<InputKey client:visible />
-
-### Width says how much to write
-
-<InputWidth client:visible />
+- **iOS Safari zooms into text under 16px** when a field takes focus. Fields use 16px on touch screens (`pointer: coarse`).
+- **`type="email"` answers first**, with the browser's own message in the browser's language. Use `type="text"` with `inputMode="email"`, so the phone still shows the @ keyboard.
 
 ## Common mistakes
 
 - **A hint that repeats the label.** *Enter your email* under **Email** says nothing. Keep the line for a format, a limit, or a consequence.
-- **Errors in a toast or at the top.** Put each one under its field, where the eye already is.
 - **Clearing the field on error.** Keep what they typed; they're usually one character away.
 - **Read-only drawn as disabled.** Read-only text can still be selected and copied, so it keeps the ink colour.
 
 ## Copy
 
-- Label: a noun, sentence case, no colon: **Email**, **Project name**.
+- Label: a noun, sentence case, no colon: **Email**, **Postal code**.
 - Placeholder: an example, not an instruction: **ana@studio.com**, not *Enter your email*.
-- Error: what to do, with an example if the format is the problem: **Enter an email address, like ana@studio.com.** Never *Invalid input*.
+- Error: what to do, with an example if the format is the problem: **Enter a 5-digit postal code, like 10115.** Never *Invalid input*.

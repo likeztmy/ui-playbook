@@ -215,16 +215,64 @@ test('task dialog: field focused, Enter submits, scrim cancels only when untouch
 test('input: checked on blur, not per keystroke; clears as you fix it', async ({ page }) => {
   await page.goto('/components/input');
   await hydrateAll(page);
-  const live = page.locator('figure').filter({ hasText: 'Live · checked' });
-  const email = live.getByRole('textbox', { name: 'Email' });
+  const after = page.locator('figure').filter({ hasText: 'After' }).filter({ hasText: 'For delivery updates only.' }).first();
+  const email = after.getByRole('textbox', { name: 'Email' });
   await email.scrollIntoViewIfNeeded();
-  await email.fill('ana@studio');
-  await expect(live.getByText('Enter an email address'), 'no error while typing').toHaveCount(0);
+  await email.fill('zoe@laurent');
+  await expect(after.getByText('Enter an email address'), 'no error while typing').toHaveCount(0);
   await email.press('Tab');
-  await expect(live.getByText('Enter an email address, like ana@studio.com.')).toBeVisible();
-  await expect(live.getByText('We send the invite here.'), 'error takes the hint’s line').toBeHidden();
-  await email.fill('ana@studio.com');
-  await expect(live.getByText('Enter an email address'), 'clears on fix').toHaveCount(0);
+  await expect(after.getByText('Enter an email address, like ana@studio.com.')).toBeVisible();
+  await expect(after.getByText('For delivery updates only.'), 'error takes the hint’s line').toBeHidden();
+  await email.fill('zoe@laurent.de');
+  await expect(after.getByText('Enter an email address'), 'clears on fix').toHaveCount(0);
+});
+
+test('input: a failed submit focuses the first error with the caret at the end; Edit comes back', async ({ page }) => {
+  await page.goto('/components/input');
+  await hydrateAll(page);
+  const scene = page.locator('figure').filter({ hasText: 'Shipping address' }).first();
+  await scene.scrollIntoViewIfNeeded();
+  await scene.getByRole('button', { name: 'Continue' }).click();
+  const email = scene.getByRole('textbox', { name: 'Email' });
+  await expect(email).toBeFocused();
+  await expect(scene.getByText('Enter an email address, like ana@studio.com.')).toBeVisible();
+  // Base UI selects the text here; one keystroke would replace the answer.
+  await expect.poll(() => email.evaluate((el: HTMLInputElement) => [el.selectionStart, el.selectionEnd])).toEqual([11, 11]);
+  await page.keyboard.type('.de');
+  await expect(email).toHaveValue('zoe@laurent.de');
+  await scene.getByRole('button', { name: 'Continue' }).click();
+  const edit = scene.getByRole('button', { name: 'Edit' });
+  await expect(edit, 'focus follows to the summary').toBeFocused();
+  await expect(scene.getByText('Updates go to zoe@laurent.de')).toBeVisible();
+  await edit.click();
+  await expect(scene.getByRole('textbox', { name: 'Full name' })).toBeFocused();
+  await expect(email, 'nothing is lost').toHaveValue('zoe@laurent.de');
+});
+
+test('error timing: only “on leaving, cleared on fix” is quiet while typing and clears on the fix', async ({ page }) => {
+  await page.goto('/principles/error-timing');
+  await hydrateAll(page);
+  const grid = page.locator('figure').filter({ hasText: 'Four timings' });
+  await grid.scrollIntoViewIfNeeded();
+  const cell = (name: string) => grid.getByRole('region', { name, exact: true });
+  const error = (name: string) => cell(name).getByText(/^Enter an email/);
+  const field = (name: string) => cell(name).getByRole('textbox', { name: 'Email' });
+
+  await field('On every keystroke').fill('zoe@laure');
+  await expect(error('On every keystroke'), 'judged mid-word').toBeVisible();
+
+  for (const [name, clearsOnFix] of [['On leaving', false], ['On leaving, cleared on fix', true]] as const) {
+    await field(name).fill('zoe@laurent');
+    await expect(error(name), 'quiet while typing').toHaveCount(0);
+    await field(name).blur();
+    await expect(error(name)).toBeVisible();
+    await field(name).focus();
+    await field(name).press('End');
+    await page.keyboard.type('.de');
+    if (clearsOnFix) await expect(error(name), 'cleared on the fix').toHaveCount(0);
+    else await expect(error(name), 'still accusing until you leave').toBeVisible();
+    await field(name).blur();
+  }
 });
 
 test('select: opens over the trigger, typeahead + Enter picks, Esc keeps the old value', async ({ page }) => {

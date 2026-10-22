@@ -107,6 +107,11 @@
   &:disabled {
     cursor: not-allowed;
   }
+
+  // iOS Safari zooms into any field under 16px when it takes focus.
+  @media (pointer: coarse) {
+    font-size: 16px;
+  }
 }
 
 textarea.control {

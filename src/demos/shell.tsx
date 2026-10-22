@@ -55,8 +55,9 @@ export function Frame({ label, children, height = 200, className, defaultTheme }
 type CompareProps = {
   before: ReactNode;
   after: ReactNode;
-  beforeNote: string;
-  afterNote: string;
+  /** What the demo can't show: why, a source link, when it flips. */
+  beforeNote: ReactNode;
+  afterNote: ReactNode;
   height?: number;
   /** One above the other, for demos too wide for half a column (tables). */
   stacked?: boolean;

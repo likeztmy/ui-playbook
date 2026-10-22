@@ -38,6 +38,7 @@ type TextFieldProps = {
   pin?: string;
   className?: string;
   onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void;
+  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
 };
 
 /** A labelled single-line field (or multiline), with its hint or error. */
