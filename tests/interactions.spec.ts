@@ -65,10 +65,10 @@ test('menu: shortcut keys form one column; keyboard flow; focus returns', async 
   const menu = page.getByRole('menu');
   await expect(menu).toBeVisible();
 
-  const keyCells = await menu.locator('kbd > span:last-child').evaluateAll((cells) => [
-    ...new Set(cells.map((c) => Math.round(c.getBoundingClientRect().left))),
-  ]);
-  expect(keyCells, 'last keys share one column').toHaveLength(1);
+  // Measured once the opening spring has settled.
+  const keyColumns = () =>
+    menu.locator('kbd > span:last-child').evaluateAll((cells) => new Set(cells.map((c) => Math.round(c.getBoundingClientRect().left))).size);
+  await expect.poll(keyColumns, { message: 'last keys share one column' }).toBe(1);
 
   const snap = menu.getByRole('menuitemcheckbox', { name: 'Snap to grid' });
   const checkBox = (await snap.locator('svg').first().boundingBox())!;
@@ -328,7 +328,7 @@ test('tabs: arrows open, Home/End jump, bar sits under the current tab, nothing 
   const bar = live.locator('[role=tablist] > :last-child');
   const t = (await tab('Activity').boundingBox())!;
   await expect.poll(async () => Math.round((await bar.boundingBox())!.x)).toBe(Math.round(t.x));
-  expect(Math.round((await bar.boundingBox())!.width)).toBe(Math.round(t.width));
+  await expect.poll(async () => Math.round((await bar.boundingBox())!.width)).toBe(Math.round(t.width));
   expect((await tab('Settings').boundingBox())!.x, 'tabs keep their place').toBe(settingsX);
 });
 
