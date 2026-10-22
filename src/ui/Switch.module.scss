@@ -1,0 +1,125 @@
+@use '../styles/states' as *;
+
+// Track 32 × 20, knob 16, inset 2. Both are radius-full: a pill around a
+// circle is concentric by construction.
+
+.row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--ink);
+  cursor: default;
+  user-select: none;
+
+  &[data-disabled] {
+    color: var(--ink-disabled);
+  }
+}
+
+// In a settings list the switch trails, in one column at the right edge.
+.end {
+  justify-content: space-between;
+}
+
+.text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.description {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--ink-muted);
+
+  [data-disabled] > .text > & {
+    color: var(--ink-disabled);
+  }
+}
+
+.track {
+  --travel: 12px;
+  box-sizing: border-box;
+  display: flex;
+  flex: none;
+  align-items: center;
+  width: 32px;
+  height: 20px;
+  padding: 2px;
+  border-radius: var(--radius-full);
+  background: var(--line-strong);
+  outline: none;
+  transition: background-color var(--duration-fast) var(--ease-out);
+
+  &:not([data-disabled]) {
+    .row:hover > &,
+    &:hover,
+    &[data-pin~='hover'] {
+      // A step toward ink: darker in light, lighter in dark, and never so
+      // light in dark that the knob loses its edge (ink-muted would).
+      background: color-mix(in srgb, var(--line-strong), var(--ink) 20%);
+    }
+  }
+
+  @include focus {
+    box-shadow: var(--focus-ring);
+  }
+
+  &[data-checked] {
+    background: var(--accent);
+
+    &:not([data-disabled]) {
+      .row:hover > &,
+      &:hover,
+      &[data-pin~='hover'] {
+        background: var(--accent-hover);
+      }
+    }
+  }
+
+  &[data-disabled] {
+    background: var(--surface-sunken);
+
+    &[data-checked] {
+      background: var(--accent-soft);
+    }
+  }
+}
+
+.thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: var(--radius-full);
+  background: var(--knob);
+  box-shadow: var(--shadow-knob);
+  transition:
+    translate var(--duration-base) var(--ease-in-out),
+    width var(--duration-base) var(--ease-in-out);
+
+  &[data-checked] {
+    translate: var(--travel) 0;
+  }
+
+  // Pressed, the knob stretches 4px toward where it will go, as on iOS and
+  // macOS; when on, it grows leftward so its right edge stays put.
+  .track:not([data-disabled]):is(:active, [data-pin~='active']) > &,
+  .row:not([data-disabled]):active > .track > & {
+    width: 20px;
+
+    &[data-checked] {
+      translate: calc(var(--travel) - 4px) 0;
+    }
+  }
+
+  &[data-disabled] {
+    background: var(--ink-disabled);
+    box-shadow: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition-duration: var(--duration-fast);
+  }
+}

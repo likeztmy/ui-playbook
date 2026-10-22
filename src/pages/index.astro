@@ -9,6 +9,8 @@ import { TooltipPreview } from '../demos/tooltip';
 import { DialogPreview } from '../demos/dialog';
 import { InputPreview } from '../demos/input';
 import { SelectPreview } from '../demos/select';
+import { CheckboxPreview } from '../demos/checkbox';
+import { SwitchPreview } from '../demos/switch';
 import Hero from '../components/Hero.astro';
 import s from './index.module.scss';
 
@@ -47,6 +49,8 @@ const groups = [
                   {e.slug === 'dialog' && <DialogPreview />}
                   {e.slug === 'input' && <InputPreview client:visible />}
                   {e.slug === 'select' && <SelectPreview />}
+                  {e.slug === 'checkbox' && <CheckboxPreview client:visible />}
+                  {e.slug === 'switch' && <SwitchPreview client:visible />}
                   {e.slug === 'concentric-radius' && <ConcentricPreview />}
                 </div>
                 <p class={s.cardSummary}>{e.summary}</p>

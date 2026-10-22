@@ -247,3 +247,52 @@ test('select: opens over the trigger, typeahead + Enter picks, Esc keeps the old
   await expect(trigger).toHaveText('Viewer');
   await expect(trigger).toBeFocused();
 });
+
+test('checkbox: label toggles; parent goes mixed, then all on, then all off', async ({ page }) => {
+  await page.goto('/components/checkbox');
+  await hydrateAll(page);
+  const live = page.locator('figure').filter({ hasText: 'Live · a parent box' });
+  const parent = live.getByRole('checkbox', { name: 'All activity' });
+  const comments = live.getByRole('checkbox', { name: 'Comments' });
+  await parent.scrollIntoViewIfNeeded();
+  await expect(parent).toHaveAttribute('aria-checked', 'mixed');
+
+  await live.getByText('Comments').click();
+  await expect(comments, 'clicking the words toggles').toHaveAttribute('aria-checked', 'true');
+
+  await live.getByText('All activity').click();
+  for (const name of ['Comments', 'Mentions', 'Assigned to me', 'Status changes'])
+    await expect(live.getByRole('checkbox', { name })).toHaveAttribute('aria-checked', 'true');
+  await expect(parent).toHaveAttribute('aria-checked', 'true');
+
+  await parent.click();
+  await expect(parent).toHaveAttribute('aria-checked', 'false');
+  await expect(comments).toHaveAttribute('aria-checked', 'false');
+});
+
+test('switch: takes effect at once, Space toggles, knob stretches while pressed', async ({ page }) => {
+  await page.goto('/components/switch');
+  await hydrateAll(page);
+  const live = page.locator('figure').filter({ hasText: 'Live · takes effect' });
+  const rulers = live.getByRole('switch', { name: 'Show rulers' });
+  const canvas = live.getByRole('img', { name: 'Canvas preview' });
+  await rulers.scrollIntoViewIfNeeded();
+  await expect(canvas).not.toHaveAttribute('data-rulers');
+
+  await live.getByText('Show rulers').click();
+  await expect(rulers).toHaveAttribute('aria-checked', 'true');
+  await expect(canvas).toHaveAttribute('data-rulers');
+
+  await rulers.focus();
+  await page.keyboard.press('Space');
+  await expect(rulers).toHaveAttribute('aria-checked', 'false');
+
+  const thumb = rulers.locator('span').first();
+  const box = (await rulers.boundingBox())!;
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  await page.mouse.down();
+  await expect.poll(async () => (await thumb.boundingBox())!.width).toBeCloseTo(20, 0);
+  await page.mouse.up();
+  await expect.poll(async () => (await thumb.boundingBox())!.width).toBeCloseTo(16, 0);
+  await expect(rulers).toHaveAttribute('aria-checked', 'true');
+});

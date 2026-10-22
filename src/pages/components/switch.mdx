@@ -1,0 +1,89 @@
+---
+layout: ../../layouts/Entry.astro
+slug: switch
+---
+import { SwitchLive, SwitchVariants, SwitchStates, SwitchImmediate, SwitchLabel, SwitchColumn, SwitchPress } from '../../demos/switch';
+
+## When to use
+
+A switch turns a setting on or off, and the change happens the moment it flips: no Save, no confirmation. Use it for:
+
+- **Settings that apply at once.** *Autosave*, *Show grid*, *Notifications*.
+- **A setting that governs others.** A switch has more weight than a checkbox, so Apple suggests it for the main setting over a group.
+
+Reach for something else when:
+
+- **The choice waits for Save or Submit.** That's a Checkbox.
+- **The change is risky.** A switch can't ask first. Use a Button, and confirm if it can't be undone.
+- **There are more than two states.** A segmented control or a Select.
+- **It's in a toolbar.** Apple keeps switches in the window body; a toolbar uses a toggle button.
+
+### Switch or Checkbox
+
+| | Switch | Checkbox |
+| --- | --- | --- |
+| Takes effect | Immediately | When the form is sent |
+| Typical home | Settings lists | Forms, lists of options |
+| Mixed state | None | A dash, for a parent |
+| Hierarchy | Master over a group | Parent with indented children |
+| Placement | Trailing in lists, leading in forms | Leading, always |
+
+## Variants
+
+<SwitchVariants client:visible />
+
+Pick one placement per context and keep it: trailing in settings lists, leading in forms.
+
+## Anatomy
+
+| Part | Token | Value |
+| --- | --- | --- |
+| Track | 32 × 20, `radius-full` | 32 |
+| Knob | 16, `radius-full`, `knob`, `shadow-knob` | 16 |
+| Inset | track − knob, halved | 2 |
+| Off | `line-strong`, ≥ 3:1 | |
+| On | `accent` | |
+| Travel | 32 − 16 − 2 × 2 | 12 |
+| Label to switch | `space-3` | 12 |
+| Disabled | track `surface-sunken` (on: `accent-soft`), knob `ink-disabled` | |
+
+A pill around a circle with an even inset is concentric by construction: no radius to calculate.
+
+## States
+
+<SwitchStates client:visible />
+
+<SwitchLive client:visible />
+
+Click a switch or its label; Tab to one and press Space. The canvas changes on the same frame. The knob slides over `duration-base` with `ease-in-out`, since it starts and stops on screen; the colour fades in `duration-fast`.
+
+## Details
+
+### It takes effect, or it's a checkbox
+
+<SwitchImmediate client:visible />
+
+### The label names the setting, not the state
+
+<SwitchLabel client:visible />
+
+### Switches form a column
+
+<SwitchColumn client:visible />
+
+### The knob answers the press
+
+<SwitchPress client:visible />
+
+## Common mistakes
+
+- **A switch in a form with a Submit button.** The form makes people wonder whether flipping it did anything yet.
+- **On / Off text inside or beside the track.** The knob's side and the fill already say it; text doubles the reading and breaks in other languages.
+- **A confirmation after flipping.** If it needs one, it shouldn't be a switch.
+- **Colour as the only difference.** The knob's position carries the state too, so it survives colour blindness and greyscale.
+
+## Copy
+
+- Label: the setting, as a noun phrase or a verb phrase that's true when on: **Autosave**, **Show grid**.
+- Never the state: not *Grid on*, not *Enabled*.
+- Description: what on means, when it isn't obvious: **Moved objects land on grid lines.**

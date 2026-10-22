@@ -68,6 +68,22 @@ export const entries: Entry[] = [
     keywords: ['dropdown', 'pop-up button', 'picker', 'options', 'form', 'choice'],
   },
   {
+    slug: 'checkbox',
+    kind: 'component',
+    title: 'Checkbox',
+    summary: 'On, off or mixed, sent with the form. The whole row is the target.',
+    details: 4,
+    keywords: ['check box', 'tick', 'mixed', 'indeterminate', 'select all', 'form', 'option'],
+  },
+  {
+    slug: 'switch',
+    kind: 'component',
+    title: 'Switch',
+    summary: 'A setting that takes effect the moment it flips. Label names the setting, never the state.',
+    details: 4,
+    keywords: ['toggle', 'on off', 'setting', 'preference', 'knob'],
+  },
+  {
     slug: 'concentric-radius',
     kind: 'principle',
     title: 'Concentric radius',

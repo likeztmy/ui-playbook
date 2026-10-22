@@ -104,3 +104,40 @@
   background: var(--fill-active);
   font-weight: 400 !important;
 }
+
+// A checkbox whose words sit beside it, outside any <label>.
+.boxOnlyRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+// The box centred on a wrapped label.
+.centeredBox {
+  align-items: center !important;
+
+  > * {
+    margin-top: 0 !important;
+  }
+}
+
+// An off checkbox edged in the divider colour.
+.faintEdge[data-unchecked] {
+  border-color: var(--line) !important;
+}
+
+// A switch placed right after its label instead of in a column.
+.inlineSwitch {
+  justify-content: flex-start !important;
+
+  > :first-child {
+    flex: none !important;
+  }
+}
+
+// A knob that doesn't respond to the press.
+.rigidThumb {
+  width: 16px !important;
+}

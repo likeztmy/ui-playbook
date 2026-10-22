@@ -1,0 +1,80 @@
+---
+layout: ../../layouts/Entry.astro
+slug: checkbox
+---
+import { CheckboxLive, CheckboxVariants, CheckboxStates, CheckboxTarget, CheckboxMixed, CheckboxAlign, CheckboxEdge } from '../../demos/checkbox';
+
+## When to use
+
+A checkbox turns one option on or off, and the choice waits for the form to be sent. Use it for:
+
+- **Options you can combine.** Any number of a set can be on: *PDF*, *PNG*, *SVG*.
+- **One option sent with a form.** *Keep me signed in*, *Accept the terms*.
+- **A hierarchy.** A parent box over its children, which line up under it. Apple prefers checkboxes over switches here: they align and group better.
+- **Selecting rows.** A bare box in each row of a list or table.
+
+Reach for something else when:
+
+- **It takes effect at once.** A setting that applies the moment it changes is a Switch.
+- **Only one can be chosen.** Radios for up to five, a Select for more.
+- **It does something.** An action is a Button, even if it toggles a view.
+
+## Variants
+
+<CheckboxVariants client:visible />
+
+## Anatomy
+
+| Part | Token | Value |
+| --- | --- | --- |
+| Box | 16 × 16, `radius-xs` | 4 |
+| Off | `surface` with a `line-strong` edge, ≥ 3:1 | |
+| On, mixed | `accent` fill, `on-accent` mark | |
+| Mark | Lucide `Check` or `Minus`, 12px, 2px stroke | 12 |
+| Box to label | `space-2` | 8 |
+| Label | body, 14 / 20 | 14 |
+| Box offset | first line: (20 − 16) / 2 | 2 |
+| Children indent | box + gap | 24 |
+
+The label wraps the box, so the whole row is one target.
+
+## States
+
+<CheckboxStates client:visible />
+
+<CheckboxLive client:visible />
+
+Turn the children on one by one and watch the parent go from empty, to a dash, to a check. Click a mixed parent and everything turns on. Space toggles the focused box.
+
+## Details
+
+### The words are part of the target
+
+<CheckboxTarget client:visible />
+
+### Some is a dash, not a check
+
+<CheckboxMixed client:visible />
+
+### The box sits on the first line
+
+<CheckboxAlign client:visible />
+
+### An empty box still has to be seen
+
+<CheckboxEdge client:visible />
+
+The mark arrives from a quarter of its size with a slight blur and settles in `duration-fast`; unchecking plays it backwards. With reduced motion it only fades.
+
+## Common mistakes
+
+- **A checkbox that saves on the spot.** If nothing waits for a Save or Submit, it's a Switch.
+- **Negative labels.** *Don't email me* turns checking into a double negative. Name what's on: **Email me about updates**.
+- **Consent ticked in advance.** Marketing and data-sharing boxes start empty; checking them is the consent.
+- **Disabling instead of explaining.** A greyed box with no reason is a dead end. Say why in the description, or hide it.
+
+## Copy
+
+- Label: what's true when it's checked, sentence case, no full stop: **Keep me signed in**.
+- Group label: what the set is about: **Email me about**, **Export**.
+- Description: the consequence, in a short sentence: **Anyone with the link can reply.**

@@ -1,0 +1,145 @@
+@use '../styles/states' as *;
+
+// A 16px box beside its label. The whole row is the target: the label is a
+// <label> around the box, so a click on the words toggles it too.
+
+.row {
+  display: inline-flex;
+  // The box sits on the first line, not the middle of a wrapped label:
+  // 20px line, 16px box, 2px down.
+  align-items: flex-start;
+  gap: var(--space-2);
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--ink);
+  cursor: default;
+  user-select: none;
+
+  > .box {
+    margin-top: 2px;
+  }
+
+  &[data-disabled] {
+    color: var(--ink-disabled);
+  }
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+}
+
+.description {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--ink-muted);
+
+  [data-disabled] > .text > & {
+    color: var(--ink-disabled);
+  }
+}
+
+.box {
+  box-sizing: border-box;
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-xs);
+  background: var(--surface);
+  color: var(--on-accent);
+  outline: none;
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
+
+  // Hovering the label counts as hovering the box.
+  &:not([data-disabled]) {
+    .row:hover > &,
+    &:hover,
+    &[data-pin~='hover'] {
+      border-color: var(--ink-muted);
+      transition-duration: var(--duration-instant);
+    }
+
+    .row:active > &,
+    &[data-pin~='active'] {
+      background: var(--fill-active);
+    }
+  }
+
+  @include focus {
+    box-shadow: var(--focus-ring);
+  }
+
+  &:is([data-checked], [data-indeterminate]) {
+    border-color: var(--accent);
+    background: var(--accent);
+
+    &:not([data-disabled]) {
+      .row:hover > &,
+      &:hover,
+      &[data-pin~='hover'],
+      .row:active > &,
+      &[data-pin~='active'] {
+        border-color: var(--accent-hover);
+        background: var(--accent-hover);
+      }
+    }
+  }
+
+  &[data-disabled] {
+    border-color: var(--line);
+    background: var(--surface-sunken);
+    color: var(--ink-disabled);
+  }
+}
+
+// The mark arrives from a quarter size, blurred, and settles. It stays
+// mounted so it can leave the same way.
+.indicator {
+  display: grid;
+  opacity: 0;
+  scale: 0.25;
+  filter: blur(4px);
+  transition:
+    opacity var(--duration-fast) var(--ease-out),
+    scale var(--duration-fast) var(--ease-out),
+    filter var(--duration-fast) var(--ease-out);
+
+  .box:is([data-checked], [data-indeterminate]) > & {
+    opacity: 1;
+    scale: 1;
+    filter: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    scale: 1;
+    filter: none;
+  }
+}
+
+// A set of checkboxes under one name.
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.groupLabel {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  color: var(--ink-muted);
+}
+
+// Children of a parent checkbox: indented by the box and its gap, so their
+// boxes line up under the parent's label.
+.children {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding-left: calc(16px + var(--space-2));
+}

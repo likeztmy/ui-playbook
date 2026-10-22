@@ -202,3 +202,96 @@
 .magnifiedField {
   width: 150px;
 }
+
+// Rows of a list, each selected by a bare checkbox.
+.checkList {
+  display: flex;
+  flex-direction: column;
+  width: 220px;
+  border-radius: var(--radius-md);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+.checkListRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  height: var(--control-md);
+  padding: 0 var(--space-3);
+  font-size: 13px;
+
+  & + & {
+    border-top: 1px solid var(--line);
+  }
+}
+
+.narrowRow {
+  width: 260px;
+}
+
+// A settings list beside the thing it changes.
+.settingsDemo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-6);
+}
+
+.settingsList {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--space-3);
+  width: 220px;
+
+  > button {
+    align-self: flex-end;
+  }
+}
+
+.settingsWide {
+  width: min(100%, 280px);
+}
+
+// Subordinate settings, indented under their master switch.
+.subSettings {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding-left: var(--space-4);
+}
+
+.canvas {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 140px;
+  height: 100px;
+  border-radius: var(--radius-md);
+  background-color: var(--surface);
+  box-shadow: inset 0 0 0 1px var(--line);
+
+  &[data-grid] {
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 12px 12px;
+    background-position: -1px -1px;
+  }
+
+  &[data-rulers] {
+    box-shadow:
+      inset 0 0 0 1px var(--line),
+      inset 0 12px 0 0 var(--surface-sunken),
+      inset 12px 0 0 0 var(--surface-sunken);
+  }
+}
+
+.canvasShape {
+  width: 48px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  background: var(--accent-soft);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
