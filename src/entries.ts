@@ -116,6 +116,14 @@ export const entries: Entry[] = [
     keywords: ['card', 'tile', 'grid', 'gallery', 'project', 'thumbnail', 'stagger', 'hover lift'],
   },
   {
+    slug: 'badge',
+    kind: 'component',
+    title: 'Badge',
+    summary: 'A word or two for a state or an attribute. The words carry it; colour only helps.',
+    details: 3,
+    keywords: ['badge', 'tag', 'label', 'status', 'pill', 'chip', 'dot'],
+  },
+  {
     slug: 'concentric-radius',
     kind: 'principle',
     title: 'Concentric radius',

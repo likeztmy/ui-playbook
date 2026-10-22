@@ -1,0 +1,48 @@
+// A 20px pill of label text. Status badges are a soft tint of their colour
+// with the colour itself for the words; the words carry the meaning.
+
+.badge {
+  box-sizing: border-box;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-1);
+  height: 20px;
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-full);
+  background: var(--soft, var(--fill-control));
+  color: var(--tone, var(--ink-muted));
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.success {
+  --tone: var(--success);
+  --soft: var(--success-soft);
+}
+
+.warning {
+  --tone: var(--warning);
+  --soft: var(--warning-soft);
+}
+
+.danger {
+  --tone: var(--danger);
+  --soft: var(--danger-soft);
+}
+
+.info {
+  --tone: var(--info);
+  --soft: var(--info-soft);
+}
+
+// A state, as opposed to an attribute, leads with a 6px dot.
+.dot {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: currentColor;
+}

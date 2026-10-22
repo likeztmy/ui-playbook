@@ -1,0 +1,67 @@
+---
+layout: ../../layouts/Entry.astro
+slug: badge
+---
+import { BadgeVariants, BadgeAll, BadgeWords, BadgeGreyscale, BadgeSoft, BadgeDot } from '../../demos/badge';
+
+## When to use
+
+A badge labels where something stands or what it is, in a word or two: *In review*, *Shipped*, *Beta*. It can't be clicked. Reach for something else when:
+
+- **It does something.** A filter you can toggle is a chip or a toggle button; an action is a Button.
+- **It's a count.** A number beside a tab or a nav item is a count, mono and plain.
+- **It needs a sentence.** An explanation belongs in text, an inline message or a tooltip.
+- **It's urgent.** A failed payment isn't a badge on a row; it's a message people have to see.
+
+## Variants
+
+<BadgeVariants client:visible />
+
+## Anatomy
+
+| Part | Token | Value |
+| --- | --- | --- |
+| Height | 20 | 20 |
+| Padding | `space-2` each side | 8 |
+| Shape | `radius-full` | pill |
+| Text | label, 12 / 16, weight 500 | 12 |
+| Status | `success`, `warning`, `danger`, `info` on its `*-soft` | |
+| Neutral | `ink-muted` on `fill-control` | |
+| Dot | 6, `radius-full`, the text's colour | 6 |
+| Dot to text | `space-1` | 4 |
+
+## States
+
+A badge has no interactive states. It does have tones, and each has to hold in both themes:
+
+<BadgeAll client:visible />
+
+## Details
+
+### Words say it; colour helps
+
+<BadgeWords client:visible />
+
+<BadgeGreyscale client:visible />
+
+Precision's `danger` and `warning` sit at nearly the same lightness. Without colour, the dots on the left are the same grey; the words on the right still work.
+
+### Soft, not solid
+
+<BadgeSoft client:visible />
+
+### A dot for states, none for attributes
+
+<BadgeDot client:visible />
+
+## Common mistakes
+
+- **A badge per row in every column.** If every row has one, the column is a status column; give it a header and keep the badges.
+- **Red for “new”.** Danger means something is wrong. New is `info`, or no badge at all.
+- **Truncated badges.** *In revi…* says nothing. Use a shorter state, not a narrower badge.
+- **Badges as buttons.** If it reacts to a click, people need a hover and a focus ring, and then it's a button.
+
+## Copy
+
+- One or two words, sentence case: **In review**, **Shipped**, **Beta**.
+- States as adjectives or past participles: **Failed**, **Scheduled**. Not verbs: *Fail*, *Schedule*.

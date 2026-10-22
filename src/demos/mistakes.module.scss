@@ -327,3 +327,20 @@
 .slowStagger > * {
   animation-delay: calc(var(--i, 0) * 120ms) !important;
 }
+
+// A status shown as a coloured dot alone.
+.dotOnly > span {
+  gap: 0 !important;
+  padding: 0 7px !important;
+}
+
+// Solid status badges with white text.
+.solidBadge {
+  background: var(--tone, var(--ink-muted)) !important;
+  color: var(--on-accent) !important;
+}
+
+// Not a mistake: a view of the page as someone who sees no colour.
+.greyscale {
+  filter: grayscale(1);
+}

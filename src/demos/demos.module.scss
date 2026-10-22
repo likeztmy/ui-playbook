@@ -503,3 +503,58 @@
     box-sizing: border-box;
   }
 }
+
+// ── Badges ────────────────────────────────────────────────
+
+.taskList {
+  display: flex;
+  flex-direction: column;
+  width: min(100%, 300px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+  line-height: 18px;
+
+  > li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    min-height: 36px;
+    margin: 0;
+    border-bottom: 1px solid var(--line);
+
+    > span:first-child {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
+}
+
+.badgeGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--space-3);
+  width: 100%;
+}
+
+.titledBadge {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+
+  h4 {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 15px;
+    line-height: 22px;
+    font-weight: 600;
+  }
+}
+
+.badgeGrid > * {
+  justify-content: flex-start;
+}
