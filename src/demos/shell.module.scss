@@ -10,8 +10,8 @@
   color: var(--ink);
 }
 
-// Bar height 40, the 24px theme button inset 8 from the frame's corner:
-// radius-lg 12 − 8 = radius-xs 4.
+// Bar height 40; the 24px theme button sits 8 from the frame's corner and
+// keeps its own pill shape.
 .bar {
   box-sizing: border-box;
   display: flex;

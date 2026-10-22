@@ -132,6 +132,14 @@ export const entries: Entry[] = [
     keywords: ['table', 'data table', 'grid', 'rows', 'columns', 'sort', 'select', 'bulk actions'],
   },
   {
+    slug: 'toast',
+    kind: 'component',
+    title: 'Toast',
+    summary: 'A one-line confirmation that offers Undo. Rises from below, colour on the icon only.',
+    details: 3,
+    keywords: ['toast', 'snackbar', 'notification', 'undo', 'message', 'alert'],
+  },
+  {
     slug: 'concentric-radius',
     kind: 'principle',
     title: 'Concentric radius',

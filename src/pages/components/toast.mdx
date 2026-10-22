@@ -1,0 +1,75 @@
+---
+layout: ../../layouts/Entry.astro
+slug: toast
+---
+import { ToastLive, ToastKinds, ToastUndo, ToastTone, ToastLimit } from '../../demos/toast';
+
+## When to use
+
+A toast confirms that something just happened, briefly, without stopping anyone: *Link copied*, *Deleted “Q4 roadmap”*. Its most useful job is to offer Undo. Reach for something else when:
+
+- **People must read it or decide.** A choice is a Dialog; information that has to stay is an inline message.
+- **It's about one field or one row.** Say it there: an error under the field, a badge on the row.
+- **Nothing happened that they can't see.** If the change is plain on screen, a toast repeats it.
+- **It's the only record.** Toasts vanish; anything people may need later belongs in the page or a log.
+
+## Kinds
+
+<ToastKinds client:visible />
+
+| Kind | Icon | Stays | Announced |
+| --- | --- | --- | --- |
+| Done | `success` check | 4s | politely |
+| With Undo | — | 6s | politely |
+| Needs attention | `warning` triangle | 4s | politely |
+| Failed | `danger` alert | until closed | at once (`role="alert"`) |
+
+Hovering or focusing a toast pauses its clock; F6 moves keyboard focus into the toasts.
+
+## Anatomy
+
+| Part | Token | Value |
+| --- | --- | --- |
+| Shape | `surface-raised`, `shadow-lg`, `radius-full` | pill |
+| Height | button 32 + inset 4 × 2 | 40 |
+| Inset | `space-1`; `space-4` before the text | 4 |
+| Width | fits the text, 320 to 440 | 320 |
+| Icon | Lucide 16 in the kind's colour | 16 |
+| Text | 14 / 20, `ink`, one line | 14 |
+| Actions | one pill button, then Dismiss | 32 |
+| Place | bottom centre, `z-toast` | 300 |
+
+A pill in a pill: the buttons inside are pills with an even 4px inset, so they're concentric by construction.
+
+## States
+
+<ToastLive client:visible />
+
+Toasts rise 8px out of `enter-scale` on the smooth spring and leave in `duration-fast`, sinking and fading. The newest sits lowest; older ones move up, on the same spring, to make room. Three at most; more wait their turn.
+
+## Details
+
+### Undo instead of asking
+
+<ToastUndo client:visible />
+
+### Colour on the icon only
+
+<ToastTone client:visible />
+
+### Three at most
+
+<ToastLimit client:visible />
+
+## Common mistakes
+
+- **Errors that disappear.** A failure people have to act on stays until they close it, and is announced at once.
+- **Toasts as the only feedback.** A screen reader hears it; a sighted user looking elsewhere may not. The page itself should show the change.
+- **Links and paragraphs.** One line, one action. If it needs more, it isn't a toast.
+- **Toasts on page load.** Nobody has done anything yet; there's nothing to confirm.
+
+## Copy
+
+- Say what happened, past tense, with its object: **Deleted “Q4 roadmap”**, **Link copied**.
+- Failures say what failed and why: **Couldn’t export: the file is locked**.
+- The action is one verb: **Undo**, **Retry**, **View**.

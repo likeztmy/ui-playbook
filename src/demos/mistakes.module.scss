@@ -369,3 +369,26 @@
 .nothingPinned th {
   position: sticky !important;
 }
+
+// Toasts filled with their status colour.
+.filledToasts {
+  [data-type='success'] {
+    background: var(--success) !important;
+  }
+
+  [data-type='warning'] {
+    background: var(--warning) !important;
+  }
+
+  [data-type='error'] {
+    background: var(--danger) !important;
+  }
+
+  [data-type] {
+    color: var(--on-accent) !important;
+
+    svg {
+      color: inherit !important;
+    }
+  }
+}

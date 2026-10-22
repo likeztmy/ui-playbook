@@ -483,3 +483,38 @@ test('table: header sorts and announces it, select-all goes mixed then all, name
   await wide.locator('..').evaluate((el) => (el.scrollLeft = 200));
   expect(Math.round((await name.boundingBox())!.x), 'pinned name column').toBe(Math.round(before));
 });
+
+test('toast: Undo restores, plain ones leave after 4s, errors stay and are alerts, three at most', async ({ page }) => {
+  await page.clock.install();
+  await page.goto('/components/toast');
+  await hydrateAll(page);
+  const live = page.locator('figure').filter({ hasText: 'Live · delete' });
+  await live.scrollIntoViewIfNeeded();
+
+  await live.getByRole('button', { name: 'Delete' }).first().click();
+  await expect(live.getByText('Q4 roadmap.fig', { exact: true })).toHaveCount(0);
+  await live.locator('button', { hasText: 'Undo' }).click();
+  await expect(live.getByText('Q4 roadmap.fig', { exact: true })).toBeVisible();
+
+  await live.getByRole('button', { name: 'Copy link' }).click();
+  await expect(live.getByText('Link copied')).toBeVisible();
+  await page.mouse.move(0, 0);
+  await page.clock.fastForward(4500);
+  await expect(live.getByText('Link copied')).toHaveCount(0);
+
+  await live.getByRole('button', { name: 'Export' }).click();
+  await page.mouse.move(0, 0);
+  await page.clock.fastForward(20000);
+  const error = live.locator('[data-type="error"]:has(button)').first();
+  await expect(error, 'errors wait to be closed').toBeVisible();
+  await expect(live.locator('[role="alert"]').filter({ hasText: 'Couldn’t export' }), 'announced at once').toHaveCount(1);
+  // Base UI keeps toasts aria-hidden until focus moves in (F6) and announces
+  // them through a separate live region, so find the button by its label.
+  await error.locator('button[aria-label="Dismiss"]').click();
+  await expect(error).toHaveCount(0);
+
+  const limit = page.locator('figure').filter({ hasText: 'After' }).filter({ hasText: 'Upload 6 photos' });
+  await limit.scrollIntoViewIfNeeded();
+  await limit.getByRole('button', { name: 'Upload 6 photos' }).click();
+  await expect(limit.locator('[data-type="success"]:has(button):not([data-limited])')).toHaveCount(3);
+});

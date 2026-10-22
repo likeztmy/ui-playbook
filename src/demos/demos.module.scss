@@ -587,3 +587,52 @@
     font-weight: 500;
   }
 }
+
+// ── Toasts ────────────────────────────────────────────────
+
+// A demo area that holds its own toast viewport at its bottom edge.
+.toastStage {
+  position: relative;
+  display: grid;
+  place-items: start center;
+  // Fill the demo frame's stage, so the toasts rise from its bottom edge.
+  place-self: stretch;
+  padding-bottom: 72px;
+}
+
+.toastFiles {
+  display: flex;
+  flex-direction: column;
+  width: min(100%, 300px);
+  font-size: 13px;
+
+  > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 40px;
+    border-bottom: 1px solid var(--line);
+  }
+}
+
+// A toast drawn in place, for the gallery card.
+.toastStill {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 40px;
+  padding: var(--space-1) var(--space-1) var(--space-1) var(--space-4);
+  border-radius: var(--radius-full);
+  background: var(--surface-raised);
+  box-shadow: var(--shadow-lg);
+  font-size: 14px;
+
+  > span {
+    margin-right: var(--space-4);
+  }
+}
+
+.toastStillIcon {
+  color: var(--success);
+}
