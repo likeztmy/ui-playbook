@@ -44,6 +44,14 @@ export const entries: Entry[] = [
     keywords: ['hint', 'label', 'hover', 'shortcut', 'icon button', 'title'],
   },
   {
+    slug: 'dialog',
+    kind: 'component',
+    title: 'Dialog',
+    summary: 'Stops everything for a decision or a short job. Rarely the right call.',
+    details: 4,
+    keywords: ['modal', 'alert', 'confirm', 'alert dialog', 'sheet', 'popup', 'delete'],
+  },
+  {
     slug: 'concentric-radius',
     kind: 'principle',
     title: 'Concentric radius',

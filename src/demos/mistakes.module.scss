@@ -70,3 +70,20 @@
     color: var(--ink-muted) !important;
   }
 }
+
+// Dialog buttons with the concentric formula applied past its range: 0.
+.squareActions {
+  border-radius: 0 !important;
+}
+
+// A dialog that drops in from above and climbs out at the same speed.
+.dropIn {
+  transition:
+    opacity 300ms ease,
+    translate 300ms ease !important;
+  scale: none !important;
+
+  &:is([data-starting-style], [data-ending-style]) {
+    translate: 0 -32px;
+  }
+}

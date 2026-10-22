@@ -1,0 +1,100 @@
+---
+layout: ../../layouts/Entry.astro
+slug: dialog
+---
+import { DialogConfirmLive, DialogTaskLive, DialogWording, DialogFocus, DialogCorners, DialogMotion } from '../../demos/dialog';
+
+## When to use
+
+A dialog stops everything for a decision or a short job. That interruption has to pay for itself. Reach for something else when:
+
+- **The action is common and can be undone.** Do it, then offer Undo in a Toast. Deleting a file people meant to delete needs no question.
+- **It's only information.** Say it in place: an inline message, a status in the toolbar, a Toast. A dialog with nothing to decide is an obstacle.
+- **The task is long or branches.** Give it a page or a panel. A dialog that grows steps and sub-views makes people forget where they came from.
+- **Another dialog is open.** Finish or close it first. Never stack them.
+
+## Kinds
+
+### Confirm: a decision before something permanent
+
+<DialogConfirmLive client:visible />
+
+For an uncommon action that can't be undone. An alert dialog: `dialog-sm` (400), a title that is the question, a sentence of consequence, and two buttons.
+
+- **Cancel and a verb.** The verb names the result (*Delete project*), never *OK* or *Yes*.
+- **Focus starts on Cancel**, so Enter backs out. Esc cancels too.
+- **No outside dismissal.** A click on the scrim does nothing: the decision waits for a button. Precision's README lets the scrim cancel; we follow Apple and the WAI-ARIA alert dialog instead.
+- **The one fill is `danger-fill`** when the action destroys. Apple keeps a deliberately chosen action in the default style; Precision marks it red so it reads as a stop.
+
+### Task: a short, scoped job
+
+<DialogTaskLive client:visible />
+
+For a small job that needs input: rename, invite, new project. A dialog: `dialog-md` (560), a title that names the task, the fields, then Cancel and the action.
+
+- **Focus starts in the first field**, with its text selected when editing.
+- **Enter submits; Esc cancels.** The action button stays disabled until the input is valid.
+- **The scrim cancels only an untouched dialog.** Once something is typed, a stray click outside does nothing.
+
+### Kinds side by side
+
+| Part | Confirm | Task |
+| --- | --- | --- |
+| Base UI part | `AlertDialog` | `Dialog` |
+| Width | `dialog-sm` 400 | `dialog-md` 560 |
+| Title | The question, with its object | The task, as a verb phrase |
+| Initial focus | Cancel | First field |
+| Enter | Activates the focused button | Submits |
+| Scrim click | Nothing | Cancels when untouched |
+| Fill | `danger-fill` or `primary` | `primary` |
+
+## Anatomy
+
+| Part | Token | Value |
+| --- | --- | --- |
+| Scrim | `scrim` | |
+| Panel | `surface-raised`, `shadow-lg` | |
+| Radius | `radius-xl` | 16 |
+| Padding | `space-4` | 16 |
+| Title | title, 18 / 26, weight 600 | 18 |
+| Body to actions | `space-6` | 24 |
+| Between buttons | `space-2` | 8 |
+| Button radius | `radius-md`: padding ≥ radius | 8 |
+| Layer | `z-dialog` | 200 |
+
+Buttons trail on the right: the likeliest choice last, Cancel before it.
+
+## States
+
+Open either dialog with the keyboard. Focus moves inside and is trapped there; Tab cycles through the dialog only. On close, focus returns to the button that opened it.
+
+## Details
+
+### The title is the decision
+
+<DialogWording client:visible />
+
+### Focus starts on the safe choice
+
+<DialogFocus client:visible />
+
+### Buttons keep their own corners
+
+<DialogCorners client:visible />
+
+### It appears in place, and gets out of the way
+
+<DialogMotion client:visible />
+
+## Common mistakes
+
+- **Confirming the undoable.** Every extra *Are you sure?* trains people to click through the one that matters.
+- **A dialog on arrival.** Nothing should interrupt someone who has just opened the page.
+- **Explaining the buttons.** If the body says *Click Delete to delete*, the button labels have failed.
+- **A dialog that scrolls.** Keep the title to two lines and the body to a sentence or two; longer belongs on a page.
+
+## Copy
+
+- Title: the decision or the task, specific: **Delete “Q4 roadmap”?**, **Rename project**. Never *Error* or *Are you sure?*.
+- Body: what happens, in a sentence, only if the title doesn't already say it.
+- Buttons: **Cancel**, always that word, and a verb for the action. The trigger ends in an ellipsis because more input follows: **Delete project…**

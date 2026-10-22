@@ -155,3 +155,53 @@ test('toolbar toggles: several can be pressed at once', async ({ page }) => {
   await expect(bold).toHaveAttribute('aria-pressed', 'true');
   await expect(italic).toHaveAttribute('aria-pressed', 'true');
 });
+
+test('confirm dialog: focus on Cancel, scrim does nothing, Esc cancels, focus returns', async ({ page }) => {
+  await page.goto('/components/dialog');
+  await hydrateAll(page);
+  const trigger = page.getByRole('button', { name: 'Delete project…' }).first();
+  await trigger.scrollIntoViewIfNeeded();
+  await trigger.click();
+  const dialog = page.getByRole('alertdialog');
+  await expect(dialog).toBeVisible();
+  await expect(dialog.getByRole('button', { name: 'Cancel' })).toBeFocused();
+
+  await page.mouse.click(5, 5);
+  await expect(dialog, 'scrim click does not dismiss').toBeVisible();
+
+  await page.keyboard.press('Escape');
+  await expect(dialog).toHaveCount(0);
+  await expect(trigger).toBeFocused();
+});
+
+test('confirm dialog: Delete project runs the action', async ({ page }) => {
+  await page.goto('/components/dialog');
+  await hydrateAll(page);
+  const trigger = page.getByRole('button', { name: 'Delete project…' }).first();
+  await trigger.scrollIntoViewIfNeeded();
+  await trigger.click();
+  await page.getByRole('alertdialog').getByRole('button', { name: 'Delete project' }).click();
+  await expect(page.getByText('was deleted.').first()).toBeVisible();
+});
+
+test('task dialog: field focused, Enter submits, scrim cancels only when untouched', async ({ page }) => {
+  await page.goto('/components/dialog');
+  await hydrateAll(page);
+  const trigger = page.getByRole('button', { name: 'Rename…' });
+  await trigger.scrollIntoViewIfNeeded();
+
+  await trigger.click();
+  const dialog = page.getByRole('dialog');
+  const field = dialog.getByRole('textbox', { name: 'Name' });
+  await expect(field).toBeFocused();
+  await page.mouse.click(5, 5);
+  await expect(dialog, 'untouched: scrim cancels').toHaveCount(0);
+
+  await trigger.click();
+  await field.fill('Q1 plan');
+  await page.mouse.click(5, 5);
+  await expect(dialog, 'typed: scrim keeps it open').toBeVisible();
+  await field.press('Enter');
+  await expect(dialog).toHaveCount(0);
+  await expect(page.getByText('Q1 plan')).toBeVisible();
+});

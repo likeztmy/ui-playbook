@@ -137,10 +137,10 @@
       vertical-align: top;
     }
 
-    // A three-column table ends in a value (Part · Token · Value): align it
-    // right, in one column. Wider tables compare text and stay left.
-    table:not(:has(th:nth-child(4))) th:last-child,
-    table:not(:has(th:nth-child(4))) td:last-child {
+    // The Anatomy table ends in a value column (Part · Token · Value): align
+    // it right, in one column. Tables that compare text stay left.
+    h2#anatomy + table th:last-child,
+    h2#anatomy + table td:last-child {
       padding-right: 0;
       text-align: right;
       font-variant-numeric: tabular-nums;
