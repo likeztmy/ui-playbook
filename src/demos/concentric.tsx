@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Choice } from '../ui/Dial';
+import { SegmentedControl } from '../ui/SegmentedControl';
 import { Slider } from '../ui/Slider';
 import { Compare, Tweak } from './shell';
 import s from './demos.module.scss';
@@ -54,7 +54,16 @@ export function ConcentricTweak() {
       stage={<Nest outer={outer} inner={inner} pad={pad} border={border} />}
       controls={
         <>
-          <Choice label="Inner radius" value={mode} options={['Concentric', 'Same radius'] as const} onChange={setMode} />
+          <SegmentedControl
+            label="Inner radius"
+            value={mode}
+            onValueChange={setMode}
+            segments={[
+              { value: 'Concentric', label: 'Concentric' },
+              { value: 'Same radius', label: 'Same radius' },
+            ]}
+            className={s.fill}
+          />
           <Slider label="Outer radius" value={outer} onValueChange={setOuter} max={40} unit="px" />
           <Slider label="Inset" value={pad} onValueChange={setPad} max={32} unit="px" />
           <Slider label="Border" value={border} onValueChange={setBorder} max={6} unit="px" />

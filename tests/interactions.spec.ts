@@ -376,3 +376,36 @@ test('slider: click glides to a stop, drag follows, ends stretch, keys step', as
   await expect(opacity).toHaveAttribute('aria-valuenow', '0');
   await expect(opacity).toHaveAttribute('aria-valuetext', '0%');
 });
+
+test('segmented: click and arrows choose, the thumb slides under the choice', async ({ page }) => {
+  await page.goto('/components/segmented-control');
+  await hydrateAll(page);
+  const live = page.locator('figure').filter({ hasText: 'Live · click' });
+  const group = live.getByRole('radiogroup', { name: 'View' });
+  const thumb = group.locator('[aria-hidden]').first();
+  await group.scrollIntoViewIfNeeded();
+  const under = async (name: string) => {
+    const [t, r] = [await thumb.boundingBox(), await live.getByRole('radio', { name }).boundingBox()];
+    return Math.abs(t!.x - r!.x) < 1 && Math.abs(t!.width - r!.width) < 1;
+  };
+
+  await expect(live.getByRole('radio', { name: 'Board' })).toHaveAttribute('aria-checked', 'true');
+  await live.getByRole('radio', { name: 'List' }).click();
+  await expect(live.getByRole('radio', { name: 'List' })).toHaveAttribute('aria-checked', 'true');
+  await expect(live.getByRole('img', { name: 'Tasks as list' })).toBeVisible();
+  await expect.poll(() => under('List'), { message: 'thumb under List' }).toBe(true);
+
+  await page.keyboard.press('ArrowRight');
+  await expect(live.getByRole('radio', { name: 'Timeline' })).toHaveAttribute('aria-checked', 'true');
+  await expect(live.getByRole('radio', { name: 'Timeline' })).toBeFocused();
+  await expect.poll(() => under('Timeline')).toBe(true);
+});
+
+test('segmented: icon segments are named and carry tooltips', async ({ page }) => {
+  await page.goto('/components/segmented-control');
+  await hydrateAll(page);
+  const center = page.getByRole('radio', { name: 'Align center' });
+  await center.scrollIntoViewIfNeeded();
+  await center.hover();
+  await expect(page.locator('[data-open]').filter({ hasText: 'Align center' }).last()).toBeVisible();
+});

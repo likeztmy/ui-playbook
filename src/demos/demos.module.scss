@@ -361,3 +361,43 @@
     background: var(--accent);
   }
 }
+
+// Stretches a control to its container, e.g. a segmented control in a panel.
+.fill {
+  width: 100%;
+}
+
+// Six tasks drawn as a board, a list or a timeline.
+.viewPreview {
+  position: relative;
+  display: grid;
+  gap: 6px;
+  width: 240px;
+  height: 96px;
+
+  > span {
+    border-radius: var(--radius-xs);
+    background: var(--fill-control-hover);
+  }
+
+  &[data-view='board'] {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+  }
+
+  &[data-view='list'] {
+    grid-template-rows: repeat(6, 1fr);
+    gap: 4px;
+  }
+
+  &[data-view='timeline'] {
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: repeat(6, 1fr);
+    gap: 3px;
+
+    > span {
+      grid-row: calc(var(--i) + 1);
+      grid-column: calc(var(--i) + 1) / span 2;
+    }
+  }
+}

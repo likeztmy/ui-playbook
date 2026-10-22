@@ -1,0 +1,111 @@
+@use '../styles/states' as *;
+
+// A pill track inset space-0-5 2, a pill thumb: concentric by shape. One
+// thumb slides between segments; the segments themselves never light up.
+
+.root {
+  position: relative;
+  isolation: isolate;
+  box-sizing: border-box;
+  display: inline-grid;
+  grid-auto-flow: column;
+  // Equal widths, as Apple advises: the thumb keeps its size as it moves.
+  grid-auto-columns: 1fr;
+  height: var(--control-md);
+  padding: var(--space-0-5);
+  border-radius: var(--radius-full);
+  background: var(--fill-control);
+}
+
+.thumb {
+  position: absolute;
+  inset-block: var(--space-0-5);
+  left: 0;
+  z-index: -1;
+  width: var(--w, 0px);
+  border-radius: var(--radius-full);
+  // surface-raised with a 10% white veil: still white in light, but in dark
+  // it must rise above the track, whose fill-control is already lighter
+  // than surface-raised.
+  background:
+    linear-gradient(rgb(255 255 255 / 0.1), rgb(255 255 255 / 0.1)),
+    var(--surface-raised);
+  box-shadow: var(--shadow-xs);
+  translate: var(--x, 0px) 0;
+  // Placed without motion on first paint; slides from then on.
+  [data-moving] > & {
+    transition:
+      translate var(--spring-smooth-duration) var(--ease-spring-smooth),
+      width var(--spring-smooth-duration) var(--ease-spring-smooth);
+  }
+
+  .root:not([data-ready]) > & {
+    visibility: hidden;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-moving] > & {
+      transition: none;
+    }
+  }
+}
+
+.segment {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  min-width: 0;
+  height: 100%;
+  padding: 0 var(--space-3);
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--ink-muted);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: default;
+  user-select: none;
+  outline: none;
+  // Only the colour changes on a segment; position is the thumb's job.
+  transition: color var(--duration-fast) var(--ease-out);
+
+  @include enabled-hover {
+    color: var(--ink);
+    transition-duration: var(--duration-instant);
+  }
+
+  @include focus {
+    box-shadow: var(--focus-ring);
+  }
+
+  &[data-checked] {
+    color: var(--ink);
+  }
+
+  // Before the thumb is measured (or with no script), the checked segment
+  // carries the thumb's look itself.
+  .root:not([data-ready]) > &[data-checked] {
+    background:
+      linear-gradient(rgb(255 255 255 / 0.1), rgb(255 255 255 / 0.1)),
+      var(--surface-raised);
+    box-shadow: var(--shadow-xs);
+  }
+
+  &[data-disabled] {
+    color: var(--ink-disabled);
+  }
+
+  svg {
+    flex: none;
+  }
+}
+
+// Icon-only segments: 36 wide, room around a 16px icon.
+.icons .segment {
+  width: calc(var(--control-md) - 2 * var(--space-0-5) + var(--space-2));
+  padding: 0;
+}

@@ -1,0 +1,81 @@
+---
+layout: ../../layouts/Entry.astro
+slug: segmented-control
+---
+import { SegmentedLive, SegmentedVariants, SegmentedStates, SegmentedThumb, SegmentedWidths, SegmentedRaised, SegmentedPill, SegmentedContent } from '../../demos/segmented';
+
+## When to use
+
+A segmented control picks one of two to five options that change a view or a mode, with every option in sight: *Board*, *List*, *Timeline*. Reach for something else when:
+
+- **It switches regions of a page.** Overview, Activity, Settings are Tabs.
+- **There are more than five options, or long ones.** A Select.
+- **It's on or off.** A Switch: *Show grid* isn't a choice between *On* and *Off*.
+- **The options are actions.** Buttons in a Toolbar. Apple: keep a control all choices or all actions, never a mix.
+
+### Which control
+
+| | Segmented control | Tabs | Select | Switch |
+| --- | --- | --- | --- | --- |
+| Chooses | A mode or a view | A region of the page | A value | On or off |
+| Options | 2–5, all visible | 2–6, can scroll | 5–15, in a list | One |
+| Sits | Beside what it changes | Above what it changes | In a form or panel | In a list or form |
+
+## Variants
+
+<SegmentedVariants client:visible />
+
+## Anatomy
+
+| Part | Token | Value |
+| --- | --- | --- |
+| Track | `fill-control`, `radius-full`, `control-md` | 32 |
+| Inset | `space-0-5`, all four sides | 2 |
+| Thumb | `surface-raised`, `shadow-xs`, `radius-full` | 28 |
+| Segment | equal widths, `space-3` padding | 12 |
+| Label | 13 / 500; `ink-muted`, chosen `ink` | 13 |
+| Icon segment | Lucide 16, 36 wide, with a tooltip | 16 |
+
+Its height matches the buttons beside it.
+
+## States
+
+<SegmentedStates client:visible />
+
+<SegmentedLive client:visible />
+
+It's a radio group: Tab lands on the chosen segment, and the arrow keys move and choose in one step. The thumb slides on the smooth spring; segment text only changes colour, in `duration-fast`. Before the thumb is measured, or without script, the chosen segment carries the thumb's look itself.
+
+## Details
+
+### One thumb that slides
+
+<SegmentedThumb client:visible />
+
+### Segments share one width
+
+<SegmentedWidths client:visible />
+
+### Raised, not blue
+
+<SegmentedRaised client:visible />
+
+### A pill in a pill
+
+<SegmentedPill client:visible />
+
+### Words or icons, not both
+
+<SegmentedContent client:visible />
+
+## Common mistakes
+
+- **A label that repeats the options.** *View: Board / List* needs no *View*; the words say it. Name the group for assistive tech with `aria-label`.
+- **Six segments on a narrow screen.** Past five, labels truncate and targets shrink. Use a Select.
+- **Segments that do something.** If a press doesn't leave a segment chosen, it's a button row.
+- **Changing the page's main content.** That's what Tabs are for; a segmented control belongs in a toolbar or an inspector.
+
+## Copy
+
+- Segments: nouns, one word where possible, of similar length: **Board**, **List**, **Timeline**.
+- Sentence case. Icon segments take the same nouns as tooltips: **Align left**.

@@ -100,6 +100,14 @@ export const entries: Entry[] = [
     keywords: ['range', 'dial', 'property panel', 'value', 'drag', 'rubber band', 'dialkit'],
   },
   {
+    slug: 'segmented-control',
+    kind: 'component',
+    title: 'Segmented control',
+    summary: 'One of two to five modes, all in sight. A single thumb slides to the choice.',
+    details: 5,
+    keywords: ['segmented', 'toggle group', 'radio group', 'view switcher', 'mode', 'thumb'],
+  },
+  {
     slug: 'concentric-radius',
     kind: 'principle',
     title: 'Concentric radius',

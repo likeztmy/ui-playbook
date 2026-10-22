@@ -13,10 +13,15 @@ const baseUiEntries = Object.keys(baseUi.exports ?? {})
   .filter((k) => /^\.\/[a-z-]+$/.test(k))
   .map((k) => `@base-ui/react/${k.slice(2)}`);
 
+// `astro check` and `astro build` re-optimize into Vite's cache too; give
+// the dev server a cache of its own so they can't pull it out from under it.
+const isDev = process.argv.includes('dev');
+
 export default defineConfig({
   site: 'https://ui-playbook.suspense.site',
   integrations: [react(), mdx()],
   vite: {
+    cacheDir: isDev ? 'node_modules/.vite-dev' : 'node_modules/.vite',
     optimizeDeps: {
       include: [...baseUiEntries, 'lucide-react'],
     },

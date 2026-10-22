@@ -261,3 +261,41 @@
   font-family: inherit !important;
   font-variant-numeric: proportional-nums !important;
 }
+
+// A segmented control with no thumb: the chosen segment fills itself.
+.noThumb {
+  > [class*='thumb'] {
+    display: none;
+  }
+
+  > [data-checked] {
+    background: var(--surface-raised) !important;
+    box-shadow: var(--shadow-xs);
+  }
+}
+
+// Segments as wide as their words.
+.contentWidths {
+  grid-auto-columns: auto !important;
+}
+
+// The chosen segment in the accent colour.
+.accentThumb {
+  > [class*='thumb'] {
+    background: var(--accent) !important;
+    box-shadow: none !important;
+  }
+
+  > [data-checked] {
+    color: var(--on-accent) !important;
+  }
+}
+
+// Track and thumb sharing one 8px radius over a 2px inset.
+.roundedTrack {
+  border-radius: var(--radius-md) !important;
+
+  > * {
+    border-radius: var(--radius-md) !important;
+  }
+}
