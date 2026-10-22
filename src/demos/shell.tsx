@@ -58,12 +58,14 @@ type CompareProps = {
   beforeNote: string;
   afterNote: string;
   height?: number;
+  /** One above the other, for demos too wide for half a column (tables). */
+  stacked?: boolean;
 };
 
 /** The same thing twice: the common version and the better one. */
-export function Compare({ before, after, beforeNote, afterNote, height }: CompareProps) {
+export function Compare({ before, after, beforeNote, afterNote, height, stacked }: CompareProps) {
   return (
-    <div className={s.compare}>
+    <div className={cx(s.compare, stacked && s.stacked)}>
       <div className={s.side}>
         <Frame label={<Verdict good={false} />} height={height}>
           {before}
@@ -153,15 +155,17 @@ export function StateGrid({ rows }: StateGridProps) {
 type GalleryProps = {
   label?: string;
   rows: { name: string; use: string; render: () => ReactNode }[];
+  /** Text above each live instance, for instances that need the full width. */
+  stacked?: boolean;
 };
 
 /** Variants side by side: what each one is for, and a live instance of it. */
-export function Gallery({ label = 'Variants', rows }: GalleryProps) {
+export function Gallery({ label = 'Variants', rows, stacked }: GalleryProps) {
   return (
     <Frame label={label} height={0}>
       <div className={s.gallery}>
         {rows.map((row) => (
-          <div key={row.name} className={s.galleryRow}>
+          <div key={row.name} className={cx(s.galleryRow, stacked && s.stacked)}>
             <div className={s.galleryText}>
               <span className={s.galleryName}>{row.name}</span>
               <span className={s.galleryUse}>{row.use}</span>

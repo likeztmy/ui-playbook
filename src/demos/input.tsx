@@ -17,7 +17,11 @@ function EmailField({ mode = 'onBlur' }: { mode?: 'onBlur' | 'onChange' }) {
   return (
     <TextField
       label="Email"
-      type="email"
+      // type="text": a native email check would answer first, in the
+      // browser's words and language.
+      type="text"
+      inputMode="email"
+      autoComplete="email"
       placeholder="ana@studio.com"
       description="We send the invite here."
       validate={validateEmail}
@@ -43,7 +47,7 @@ export function InputVariants() {
         {
           name: 'Text',
           use: 'A single line: a name, a title, an address.',
-          render: () => <TextField label="Project name" defaultValue="Q4 roadmap" className={s.formColumn} />,
+          render: () => <TextField label="Project name" defaultValue="Q4 roadmap" className={s.fieldWide} />,
         },
         {
           name: 'Search',
@@ -54,7 +58,7 @@ export function InputVariants() {
               placeholder="Search files"
               leading={searchIcon}
               trailing={<FieldKey keys={['⌘', 'K']} />}
-              className={s.formColumn}
+              className={s.fieldWide}
             />
           ),
         },
@@ -69,7 +73,7 @@ export function InputVariants() {
           name: 'Multiline',
           use: 'A sentence or more. Grows by dragging its corner.',
           render: () => (
-            <TextField label="Description" placeholder="What is this project for?" multiline className={s.formColumn} />
+            <TextField label="Description" placeholder="What is this project for?" multiline className={s.fieldWide} />
           ),
         },
       ]}
@@ -166,7 +170,7 @@ export function InputFocus() {
         </div>
       }
       beforeNote="The button's gapped 2px ring. Around a field it doubles the edge, crowds the label, and floats 2px off a box that's already outlined."
-      afterNote="The edge turns accent and a 3px accent-soft halo hugs it, with no gap. The field's outline is its focus: nothing floats off it, nothing shifts."
+      afterNote="The edge turns accent and a 3px halo of the accent hugs it, with no gap. The field's outline is its focus: nothing floats off it, nothing shifts."
     />
   );
 }

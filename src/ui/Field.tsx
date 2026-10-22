@@ -1,6 +1,6 @@
 import { Field } from '@base-ui/react/field';
 import { CircleAlert, Command } from 'lucide-react';
-import type { ComponentProps, ReactNode, Ref } from 'react';
+import type { ComponentProps, HTMLAttributes, ReactNode, Ref } from 'react';
 import { cx } from './cx';
 import s from './Field.module.scss';
 
@@ -29,6 +29,8 @@ type TextFieldProps = {
   readOnly?: boolean;
   name?: string;
   type?: string;
+  inputMode?: HTMLAttributes<HTMLInputElement>['inputMode'];
+  autoComplete?: string;
   inputRef?: Ref<HTMLInputElement>;
   /** Shows this error now, whatever the value: for server errors and stills. */
   error?: string;

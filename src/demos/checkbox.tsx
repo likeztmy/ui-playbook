@@ -124,13 +124,13 @@ export function CheckboxTarget() {
     <Compare
       height={140}
       before={
-        <div className={s.stack}>
+        <div className={s.leftStack}>
           <BoxOnly label="Keep me signed in" defaultChecked />
           <BoxOnly label="Show hidden files" />
         </div>
       }
       after={
-        <div className={s.stack}>
+        <div className={s.leftStack}>
           <Checkbox label="Keep me signed in" defaultChecked />
           <Checkbox label="Show hidden files" />
         </div>
@@ -195,7 +195,7 @@ export function CheckboxAlign() {
 /** A still, unlabelled box drawn with a chosen edge colour. */
 function EdgeStill({ faint }: { faint?: boolean }) {
   return (
-    <div className={s.stack}>
+    <div className={s.leftStack}>
       {['Comments', 'Mentions'].map((l, i) => (
         <label key={l} className={cs.row}>
           <BaseCheckbox.Root className={cx(cs.box, faint && m.faintEdge)} defaultChecked={i === 1}>

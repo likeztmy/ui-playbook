@@ -11,6 +11,9 @@
   // Too many to fit: scroll sideways. Never wrap, never shrink the type.
   overflow-x: auto;
   scrollbar-width: none;
+  // A tab scrolled into view by the keyboard stops short of the edge, so
+  // its focus ring isn't cut.
+  scroll-padding-inline: var(--space-2);
   // 8px of room each side for the focus ring, given back by the margin so
   // the first label still lines up with the panel. The line is a local
   // background on the content box: it scrolls with the tabs and stops

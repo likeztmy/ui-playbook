@@ -167,22 +167,23 @@ type Request = ReturnType<typeof useFakeRequest>;
 function LoadingPair({ careful }: { careful: boolean }) {
   const fast = useFakeRequest(150, careful);
   const slow = useFakeRequest(1600, careful);
-  const one = (r: Request, label: string, busyLabel: string) =>
+  // One filled button per view: Rename is secondary beside Publish.
+  const one = (r: Request, label: string, busyLabel: string, variant: 'secondary' | 'primary') =>
     careful ? (
-      <Button variant="primary" loading={r.shown} loadingLabel={busyLabel} onClick={r.run}>
+      <Button variant={variant} loading={r.shown} loadingLabel={busyLabel} onClick={r.run}>
         {label}
       </Button>
     ) : (
       // The naive version: swap the label in place, react at once, accept every press.
-      <Button variant="primary" onClick={r.run} leading={r.shown ? <span className={s.naiveSpin} /> : undefined}>
+      <Button variant={variant} onClick={r.run} leading={r.shown ? <span className={s.naiveSpin} /> : undefined}>
         {r.shown ? busyLabel : label}
       </Button>
     );
   return (
     <div className={s.stack}>
       <div className={s.row}>
-        {one(fast, 'Rename', 'Renaming')}
-        {one(slow, 'Publish', 'Publishing')}
+        {one(fast, 'Rename', 'Renaming', 'secondary')}
+        {one(slow, 'Publish', 'Publishing', 'primary')}
       </div>
       <p className={s.meter}>
         Requests sent: <b>{fast.sent + slow.sent}</b>
@@ -218,12 +219,12 @@ export function ButtonVariants() {
         },
         {
           name: 'Ghost',
-          use: 'Backing out (Cancel), and quiet actions in dense rows.',
+          use: 'Steps back: toolbars, and quiet actions in dense rows.',
           render: () => <Button variant="ghost">Cancel</Button>,
         },
         {
           name: 'Danger',
-          use: 'A destructive action among ordinary ones. Red text, no fill.',
+          use: 'A destructive action among ordinary ones. Red text on the secondary fill.',
           render: () => <Button variant="danger">Delete</Button>,
         },
         {

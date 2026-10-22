@@ -9,6 +9,7 @@ import s from './Entry.module.scss';
 const { frontmatter } = Astro.props;
 const i = entries.findIndex((e) => e.slug === frontmatter.slug);
 const entry = entries[i];
+const prev = entries[i - 1];
 const next = entries[i + 1];
 ---
 
@@ -26,13 +27,23 @@ const next = entries[i + 1];
     <div class={s.body}>
       <slot />
     </div>
-    {
-      next && (
-        <a class={s.next} href={href(next)}>
-          <span class={s.nextLabel}>Next</span>
-          <span class={s.nextTitle}>{next.title}</span>
-        </a>
-      )
-    }
+    <nav class={s.pager} aria-label="More entries">
+      {
+        prev && (
+          <a class={s.next} href={href(prev)} rel="prev">
+            <span class={s.nextLabel}>Previous</span>
+            <span class={s.nextTitle}>{prev.title}</span>
+          </a>
+        )
+      }
+      {
+        next && (
+          <a class={`${s.next} ${s.forward}`} href={href(next)} rel="next">
+            <span class={s.nextLabel}>Next</span>
+            <span class={s.nextTitle}>{next.title}</span>
+          </a>
+        )
+      }
+    </nav>
   </article>
 </Base>

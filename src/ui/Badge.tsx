@@ -17,7 +17,7 @@ type BadgeProps = {
 /** A short, unclickable label for a state or an attribute. */
 export function Badge({ children, tone = 'neutral', status, className }: BadgeProps) {
   return (
-    <span className={cx(s.badge, tone !== 'neutral' && s[tone], className)}>
+    <span className={cx(s.badge, tone !== 'neutral' && s[tone], className)} data-tone={tone}>
       {status && <span className={s.dot} aria-hidden />}
       {children}
     </span>

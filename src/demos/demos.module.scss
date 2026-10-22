@@ -394,7 +394,8 @@
   }
 
   &[data-view='timeline'] {
-    grid-template-columns: repeat(6, 1fr);
+    // Six bars two columns long, stepping one column each: seven columns.
+    grid-template-columns: repeat(7, 1fr);
     grid-template-rows: repeat(6, 1fr);
     gap: 3px;
 
@@ -426,6 +427,11 @@
   > div:first-child {
     min-height: 40px;
     border-radius: var(--radius-sm);
+
+    > * {
+      height: 40px;
+      scale: 0.6;
+    }
   }
 
   > div:last-child {
@@ -456,9 +462,9 @@
 
   &[data-art='bars'] {
     background:
-      linear-gradient(var(--accent), var(--accent)) 20px 30px / 55% 10px no-repeat,
-      linear-gradient(var(--success), var(--success)) 20px 54px / 35% 10px no-repeat,
-      linear-gradient(var(--warning), var(--warning)) 20px 78px / 70% 10px no-repeat;
+      linear-gradient(var(--accent), var(--accent)) 14% 28% / 55% 9% no-repeat,
+      linear-gradient(var(--success), var(--success)) 14% 50% / 35% 9% no-repeat,
+      linear-gradient(var(--warning), var(--warning)) 14% 72% / 70% 9% no-repeat;
   }
 
   &[data-art='swatches'] {
@@ -471,13 +477,13 @@
 
   &[data-art='phone'] {
     background:
-      linear-gradient(var(--accent-soft), var(--accent-soft)) center / 48px 88px no-repeat,
+      linear-gradient(color-mix(in srgb, var(--accent) 30%, transparent), color-mix(in srgb, var(--accent) 30%, transparent)) center / 48px 88px no-repeat,
       linear-gradient(var(--accent), var(--accent)) center 72px / 32px 8px no-repeat;
   }
 
   &[data-art='grid'] {
     background:
-      repeating-linear-gradient(90deg, var(--accent-soft) 0 16px, transparent 16px 24px) center / 136px 72px no-repeat;
+      repeating-linear-gradient(90deg, color-mix(in srgb, var(--accent) 30%, transparent) 0 16px, transparent 16px 24px) center / 136px 72px no-repeat;
   }
 
   &[data-art='type'] {
@@ -496,14 +502,11 @@
 
   &[data-art='chart'] {
     background:
-      linear-gradient(var(--accent), var(--accent)) 24px 100% / 12px 40% no-repeat,
-      linear-gradient(var(--accent), var(--accent)) 44px 100% / 12px 62% no-repeat,
-      linear-gradient(var(--accent), var(--accent)) 64px 100% / 12px 48% no-repeat,
-      linear-gradient(var(--accent), var(--accent)) 84px 100% / 12px 78% no-repeat,
-      linear-gradient(var(--success), var(--success)) 104px 100% / 12px 90% no-repeat;
-    background-origin: content-box;
-    padding: 16px 0;
-    box-sizing: border-box;
+      linear-gradient(var(--accent), var(--accent)) 22% 80% / 9% 40% no-repeat,
+      linear-gradient(var(--accent), var(--accent)) 36% 80% / 9% 62% no-repeat,
+      linear-gradient(var(--accent), var(--accent)) 50% 80% / 9% 48% no-repeat,
+      linear-gradient(var(--accent), var(--accent)) 64% 80% / 9% 78% no-repeat,
+      linear-gradient(var(--success), var(--success)) 78% 80% / 9% 90% no-repeat;
   }
 }
 
@@ -635,4 +638,25 @@
 
 .toastStillIcon {
   color: var(--success);
+}
+
+// A field at a column's width, keeping its own label gap.
+.fieldWide {
+  width: min(100%, 320px);
+}
+
+// Rows that share a left edge, e.g. checkboxes in one column.
+.leftStack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+// A row that wraps from its left edge, for gallery cells.
+.leftRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
 }

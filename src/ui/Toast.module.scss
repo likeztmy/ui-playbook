@@ -16,6 +16,7 @@
 .contained {
   position: absolute;
   bottom: var(--space-4);
+  width: min(440px, calc(100% - 2 * var(--space-4)));
 }
 
 .toast {

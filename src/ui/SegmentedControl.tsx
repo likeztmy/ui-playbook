@@ -78,7 +78,7 @@ export function SegmentedControl<T extends string>({ label, value, onValueChange
             className={cx(s.segment, segmentClassName)}
             data-pin={pin?.value === seg.value ? pin.state : undefined}
           >
-            {Icon ? <Icon size={16} strokeWidth={1.5} nonScalingStroke aria-hidden /> : seg.label}
+            {Icon ? <Icon size={16} strokeWidth={1.5} nonScalingStroke aria-hidden /> : <span className={s.text}>{seg.label}</span>}
           </Radio.Root>
         );
         // Icon segments get a tooltip with the same words as their label.

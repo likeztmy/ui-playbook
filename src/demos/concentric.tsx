@@ -27,11 +27,12 @@ const OWN_RADIUS = 8;
  */
 export function innerRadius(outer: number, pad: number, border: number) {
   const r = outer - pad - border;
-  return r > 0 ? r : OWN_RADIUS;
+  // Its own radius, but never rounder than the shape around it.
+  return r > 0 ? r : Math.min(OWN_RADIUS, outer);
 }
 
 export function ConcentricTweak() {
-  const [outer, setOuter] = useState(16);
+  const [outer, setOuter] = useState(18);
   const [pad, setPad] = useState(8);
   const [border, setBorder] = useState(0);
   const [mode, setMode] = useState<Mode>('Concentric');
@@ -45,7 +46,7 @@ export function ConcentricTweak() {
           <code className={s.readout}>
             {outer - pad - border > 0
               ? `${outer} − ${pad} − ${border} = ${inner}px`
-              : `inset ≥ radius: inner keeps its own ${inner}px`}
+              : `inset + border ≥ radius: inner keeps its own ${inner}px`}
           </code>
         ) : (
           <code className={s.readout}>inner = outer = {outer}px</code>

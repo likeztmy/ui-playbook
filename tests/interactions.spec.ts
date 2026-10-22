@@ -93,10 +93,10 @@ test('concentric: inset at or past the radius keeps the inner radius', async ({ 
   await page.goto('/principles/concentric-radius');
   await hydrateAll(page);
   const readout = page.locator('figure').first().locator('code').first();
-  await expect(readout).toHaveText('16 − 8 − 0 = 8px');
+  await expect(readout).toHaveText('18 − 8 − 0 = 10px');
   await page.getByRole('slider', { name: 'Inset' }).focus();
   await page.keyboard.press('End');
-  await expect(readout).toHaveText('inset ≥ radius: inner keeps its own 8px');
+  await expect(readout).toHaveText('inset + border ≥ radius: inner keeps its own 8px');
 });
 
 test('header theme toggle flips, persists, and relabels', async ({ page }) => {

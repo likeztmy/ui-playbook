@@ -94,9 +94,14 @@
   &[data-disabled] {
     color: var(--ink-disabled);
 
-    .icon,
-    .keys {
+    .icon {
       color: inherit;
+    }
+
+    // Shortcuts are already ink-disabled; an unavailable row's go fainter
+    // still, so ⌘Z on Undo doesn't look as live as ⌘C on Copy.
+    .keys {
+      opacity: 0.55;
     }
   }
 }
@@ -198,5 +203,6 @@
 .separator {
   height: 1px;
   margin: var(--space-1) var(--space-2);
-  background: var(--line);
+  // A step toward ink: `line` alone is ~1.1:1 on a dark raised surface.
+  background: color-mix(in srgb, var(--line), var(--ink) 10%);
 }

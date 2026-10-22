@@ -135,7 +135,7 @@ export function TabsOverflow() {
       height={140}
       before={<ProjectTabs tabs={MANY} panels={false} listClass={cx(s.narrowTabs, m.wrapTabs)} />}
       after={<ProjectTabs tabs={MANY} panels={false} listClass={s.narrowTabs} />}
-      beforeNote="Wrapped onto a second row. Now there are two lines and one bar, and the second row looks like a different set of tabs."
+      beforeNote="Wrapped onto more rows. Now there are several rows and one bar, and the rows below the first look like a different set of tabs."
       afterNote="One row that scrolls sideways; the cut-off label says there’s more. Arrow keys bring the next tab into view."
     />
   );

@@ -111,7 +111,7 @@ export function CardVariants() {
         {
           name: 'Static',
           use: 'A sample or a specimen to look at. No hover: nothing to click.',
-          render: () => <Card className={s.cardOne} stage={<Thumb art="type" />} title="Type scale" subtitle="radius-xl 18 − 8 = 10" />,
+          render: () => <Card className={s.cardOne} stage={<Thumb art="type" />} title="Type scale" subtitle="A specimen" />,
         },
       ]}
     />

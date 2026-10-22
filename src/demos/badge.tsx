@@ -51,7 +51,7 @@ export function BadgeVariants() {
           name: 'Status',
           use: 'Where something stands. A dot, then the state in words.',
           render: () => (
-            <div className={s.row}>
+            <div className={s.leftRow}>
               {TASKS.map((t) => (
                 <Badge key={t.state} tone={t.tone} status>
                   {t.state}
@@ -64,7 +64,7 @@ export function BadgeVariants() {
           name: 'Attribute',
           use: 'What something is: a role, a plan, a stage of release. No dot.',
           render: () => (
-            <div className={s.row}>
+            <div className={s.leftRow}>
               <Badge>Admin</Badge>
               <Badge tone="info">Beta</Badge>
               <Badge>Pro plan</Badge>
@@ -134,7 +134,7 @@ export function BadgeSoft() {
       height={220}
       before={<TaskList badge={(t) => <Badge tone={t.tone} status className={m.solidBadge}>{t.state}</Badge>} />}
       after={<TaskList badge={withWords} />}
-      beforeNote="Solid fills with white text. Five of them shout over the task names they describe, and a table of them becomes a patchwork."
+      beforeNote="Solid fills with the text knocked out. Five of them shout over the task names they describe, and a table of them becomes a patchwork."
       afterNote="A soft tint with the colour in the words: present when you look for it, quiet when you read the names."
     />
   );

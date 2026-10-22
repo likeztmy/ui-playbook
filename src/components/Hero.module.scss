@@ -120,6 +120,10 @@ $halo-x: 1600px;
   }
 
   input {
+
+    // A long placeholder ends in an ellipsis on a narrow screen, not a cut.
+
+    text-overflow: ellipsis;
     flex: 1;
     min-width: 0;
     height: 100%;

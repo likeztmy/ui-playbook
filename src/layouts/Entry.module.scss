@@ -131,11 +131,22 @@
   }
 }
 
+// Previous on the left, Next on the right, as documentation sites do.
+.pager {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+  margin-top: var(--space-12);
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
+}
+
 .next {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
-  margin-top: var(--space-12);
+  align-items: flex-start;
   padding: var(--space-4);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-xs);
@@ -151,6 +162,15 @@
 
   &:focus-visible {
     box-shadow: var(--shadow-xs), var(--focus-ring);
+  }
+}
+
+.forward {
+  grid-column: 2;
+  align-items: flex-end;
+
+  @media (max-width: 640px) {
+    grid-column: 1;
   }
 }
 

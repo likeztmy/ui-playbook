@@ -7,6 +7,10 @@ import { cx } from './cx';
 import { Tip, TipGroup } from './Tooltip';
 import s from './Toolbar.module.scss';
 
+
+// Tooltips sit space-1 from the panel's edge, not the tool's: tools are inset 4.
+const TIP_OFFSET = 8;
+
 function Root({ className, ...props }: ComponentProps<typeof BaseToolbar.Root>) {
   return (
     <TipGroup>
@@ -49,7 +53,7 @@ function Tool({ value, label, keys, children, className, pin, nativeTitle }: Too
   return nativeTitle ? (
     button
   ) : (
-    <Tip label={label} keys={keys}>
+    <Tip label={label} keys={keys} offset={TIP_OFFSET}>
       {button}
     </Tip>
   );
@@ -76,7 +80,7 @@ function Action({ primary, label, keys, className, ...props }: ActionProps) {
     />
   );
   return label ? (
-    <Tip label={label} keys={keys}>
+    <Tip label={label} keys={keys} offset={TIP_OFFSET}>
       {button}
     </Tip>
   ) : (

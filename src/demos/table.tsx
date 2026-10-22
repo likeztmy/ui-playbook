@@ -94,6 +94,7 @@ export function TableLive() {
 export function TableVariants() {
   return (
     <Gallery
+      stacked
       rows={[
         { name: 'Plain', use: 'A few columns to read and compare.', render: () => <Files sortable={false} /> },
         { name: 'Sortable and selectable', use: 'For acting on many rows at once.', render: () => <Files selectable /> },
@@ -127,6 +128,7 @@ export function TableNumbers() {
   const leftAligned = COLUMNS.map((c) => (c.numeric ? { ...c, numeric: false } : c));
   return (
     <Compare
+      stacked
       height={260}
       before={<Files columns={leftAligned} sortable={false} className={m.proportionalTable} />}
       after={<Files sortable={false} />}
@@ -139,6 +141,7 @@ export function TableNumbers() {
 export function TableLines() {
   return (
     <Compare
+      stacked
       height={260}
       before={<Files sortable={false} className={m.zebraTable} />}
       after={<Files sortable={false} />}
@@ -151,6 +154,7 @@ export function TableLines() {
 export function TableArrows() {
   return (
     <Compare
+      stacked
       height={260}
       before={<Files className={m.allArrows} />}
       after={<Files />}
@@ -164,6 +168,7 @@ export function TableMuted() {
   const allInk = COLUMNS.map((c) => ({ ...c, muted: false }));
   return (
     <Compare
+      stacked
       height={260}
       before={<Files columns={allInk} sortable={false} />}
       after={<Files sortable={false} />}
@@ -176,6 +181,7 @@ export function TableMuted() {
 export function TableScroll() {
   return (
     <Compare
+      stacked
       height={280}
       before={<Files columns={WIDE} sortable={false} className={cx(s.narrowTable, m.nothingPinned)} />}
       after={<Files columns={WIDE} sortable={false} stickyFirst className={s.narrowTable} />}

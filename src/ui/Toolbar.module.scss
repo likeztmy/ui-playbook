@@ -38,11 +38,20 @@
   &[data-pressed] {
     background: var(--accent-soft);
     color: var(--accent-text);
+
+    @include hover {
+      background: color-mix(in srgb, var(--accent-soft), var(--accent) 12%);
+    }
   }
 
   &[data-disabled] {
     background: transparent;
     color: var(--ink-disabled);
+
+    // Still the current tool, just unavailable: keep its place visible.
+    &[data-pressed] {
+      background: var(--accent-soft);
+    }
   }
 }
 

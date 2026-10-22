@@ -5,6 +5,9 @@
 
 .wrap {
   box-sizing: border-box;
+  // As wide as its container, so a bar of bulk actions above shares its
+  // edges; columns stretch rather than the table floating centred.
+  width: 100%;
   max-width: 100%;
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
@@ -72,6 +75,12 @@
 
   &[aria-selected='true'] td {
     background: var(--accent-soft);
+  }
+
+  // An info badge's tint is the selection's own; give it an edge in its
+  // colour so it stays a badge.
+  &[aria-selected='true'] [data-tone='info'] {
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--info) 35%, transparent);
   }
 }
 

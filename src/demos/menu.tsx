@@ -146,7 +146,7 @@ export function MenuCheck() {
       height={STILL_HEIGHT}
       before={<StillMenu itemClass={m.trailingCheck} />}
       after={<StillMenu />}
-      beforeNote="The check after the label, at the end of the label's space. It floats mid-row, far from the word it qualifies, and crowds the shortcut."
+      beforeNote="The check after the label lands wherever each label ends, so checks on different rows never line up, and it sits wedged between the label and the shortcut."
       afterNote="A leading column, as on macOS. Once any row can be checked every row keeps the column, so the labels stay on one line and the checks read top to bottom."
     />
   );
@@ -170,7 +170,7 @@ export function MenuShortcuts() {
       height={STILL_HEIGHT}
       before={<StillMenu capShortcuts />}
       after={<StillMenu />}
-      beforeNote="A box around every key: a dozen boxes in seven rows, louder than the labels they explain. In dark they read as holes in the menu."
+      beforeNote="A box around every key: a dozen boxes in six rows, louder than the labels they explain. In dark they read as holes in the menu."
       afterNote="Bare symbols a step lighter than the label, as macOS draws them. The last key sits in a fixed cell, modifiers to its left in Apple's order ⌃ ⌥ ⇧ ⌘, so the keys form one column."
     />
   );
@@ -313,7 +313,7 @@ export function MenuIconsAllOrNone() {
       height={STILL_HEIGHT}
       before={<StillMenu groups={withoutIcons(GROUPS, ['copy', 'delete'])} />}
       after={<StillMenu />}
-      beforeNote="Icons on Copy and Delete only. Labels start at two different x positions, and the iconless rows read as second-class."
+      beforeNote="Copy and Delete have no icon. Labels start at two different x positions, and the iconless rows read as second-class."
       afterNote="Every row in the group has one, so labels share one edge. When an item has no icon that clearly means it, the whole menu goes without."
     />
   );

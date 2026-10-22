@@ -24,18 +24,20 @@ type TipProps = {
   side?: 'top' | 'bottom';
   /** Start open, e.g. for a still preview. */
   defaultOpen?: boolean;
+  /** Gap from the trigger. Default space-1 4; a trigger inset in a panel adds the inset. */
+  offset?: number;
   /** The trigger: an element that forwards props and ref, such as Button. */
   children: ReactElement;
 };
 
 /** Names an icon-only control, with its shortcut. One line, never interactive. */
-export function Tip({ label, keys, side = 'top', defaultOpen, children }: TipProps) {
+export function Tip({ label, keys, side = 'top', defaultOpen, offset = 4, children }: TipProps) {
   const container = usePortalContainer();
   return (
     <Tooltip.Root defaultOpen={defaultOpen}>
       <Tooltip.Trigger render={children} delay={DELAY} />
       <Tooltip.Portal container={container}>
-        <Tooltip.Positioner className={s.positioner} side={side} sideOffset={4}>
+        <Tooltip.Positioner className={s.positioner} side={side} sideOffset={offset}>
           <Tooltip.Popup className={s.popup}>
             {label}
             {keys && <TipKeys keys={keys} />}

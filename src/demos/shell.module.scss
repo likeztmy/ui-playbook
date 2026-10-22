@@ -50,6 +50,10 @@
   @media (max-width: 640px) {
     grid-template-columns: minmax(0, 1fr);
   }
+
+  &.stacked {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 .side {
@@ -103,6 +107,11 @@
   overflow-x: auto;
   // Room for the 4px focus ring: a scroll container clips both axes.
   padding: var(--space-1);
+
+  // Too narrow for every state: it scrolls, and the fading edge says so.
+  @media (max-width: 640px) {
+    mask-image: linear-gradient(to right, var(--ink) calc(100% - 32px), transparent);
+  }
 }
 
 .row {
@@ -153,6 +162,12 @@
     grid-template-columns: minmax(0, 1fr);
     gap: var(--space-3);
   }
+}
+
+.galleryRow.stacked {
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-3);
+  align-items: start;
 }
 
 .galleryText {

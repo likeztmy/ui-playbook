@@ -1,4 +1,4 @@
-import { Check, ChevronsUpDown } from 'lucide-react';
+import { Check } from 'lucide-react';
 import { useState } from 'react';
 import { cx } from '../ui/cx';
 import { menuClasses as ms } from '../ui/Menu';
@@ -14,6 +14,14 @@ const ROLES: Option[] = [
   { value: 'commenter', label: 'Commenter' },
   { value: 'viewer', label: 'Viewer' },
 ];
+
+const ROLE_HINT: Record<string, string> = {
+  owner: 'Owners can do anything, including billing and deleting.',
+  admin: 'Admins manage members and settings, not billing.',
+  editor: 'Editors can change anything but members and billing.',
+  commenter: 'Commenters can read and comment, not edit.',
+  viewer: 'Viewers can read, nothing more.',
+};
 
 const REASONS: Option[] = [
   { value: 'price', label: 'Too expensive' },
@@ -51,7 +59,7 @@ function RoleSelect() {
   const [role, setRole] = useState<string | null>('editor');
   return (
     <div className={s.stack}>
-      <Select label="Role" options={ROLES} value={role} onValueChange={setRole} description="Editors can change anything but billing." />
+      <Select label="Role" options={ROLES} value={role} onValueChange={setRole} description={ROLE_HINT[role ?? 'editor']} />
     </div>
   );
 }
@@ -95,16 +103,10 @@ export function SelectVariants() {
 
 // ── Comparisons ──────────────────────────────────────────
 
-/** A select drawn open: its trigger, then the list. One row current, one highlighted. */
+/** A select's open list, drawn in place: one row current, one highlighted. */
 function Still({ itemClass, hot = 'commenter' }: { itemClass?: string; hot?: string }) {
   return (
     <div className={s.selectStill}>
-      <div className={ss.trigger} data-pin="focus">
-        <span className={ss.value}>Editor</span>
-        <span className={ss.chevron}>
-          <ChevronsUpDown size={16} strokeWidth={1.5} nonScalingStroke aria-hidden />
-        </span>
-      </div>
       <div className={ms.popup} style={{ minWidth: 0 }}>
         {ROLES.map((r) => (
           <div

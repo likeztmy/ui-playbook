@@ -10,7 +10,7 @@
   display: inline-grid;
   grid-auto-flow: column;
   // Equal widths, as Apple advises: the thumb keeps its size as it moves.
-  grid-auto-columns: 1fr;
+  grid-auto-columns: minmax(0, 1fr);
   height: var(--control-md);
   padding: var(--space-0-5);
   border-radius: var(--radius-full);
@@ -28,7 +28,7 @@
   // it must rise above the track, whose fill-control is already lighter
   // than surface-raised.
   background:
-    linear-gradient(rgb(255 255 255 / 0.1), rgb(255 255 255 / 0.1)),
+    linear-gradient(rgb(255 255 255 / 0.14), rgb(255 255 255 / 0.14)),
     var(--surface-raised);
   box-shadow: var(--shadow-xs);
   translate: var(--x, 0px) 0;
@@ -102,6 +102,14 @@
   svg {
     flex: none;
   }
+}
+
+// Equal widths can't stretch for a long word: it truncates rather than
+// spilling into the thumb. Keep labels short (see Copy).
+.text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 // Icon-only segments: 36 wide, room around a 16px icon.

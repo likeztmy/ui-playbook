@@ -80,8 +80,9 @@
     }
   }
 
+  // fill-control, translucent: sunken would vanish into a dark page.
   &[data-disabled] {
-    background: var(--surface-sunken);
+    background: var(--fill-control);
 
     &[data-checked] {
       background: var(--accent-soft);

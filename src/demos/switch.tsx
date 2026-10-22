@@ -193,7 +193,7 @@ export function SwitchPress() {
       before={<Switch aria-label="Show grid, before" pin="active" thumbClassName={m.rigidThumb} />}
       after={<Switch aria-label="Show grid, after" pin="active" />}
       beforeNote="Pressed, nothing moves until release. On a small control, the finger covers the only sign that the press registered."
-      afterNote="The knob stretches 4px toward where it’ll go, as on iOS and macOS, then slides over on release. Shown held; press and hold one below to feel it."
+      afterNote="The knob stretches 4px toward where it’ll go, as on iOS and macOS, then slides over on release. Shown held; press and hold a switch in the Live demo above to feel it."
     />
   );
 }

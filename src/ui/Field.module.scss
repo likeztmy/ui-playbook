@@ -41,12 +41,14 @@
     transition-duration: var(--duration-instant);
   }
 
-  // An accent edge with a 3px accent-soft halo that hugs the box, not the
-  // gapped focus-ring: the ring's 2px gap would crowd the label above.
+  // An accent edge with a 3px halo that hugs the box, not the gapped
+  // focus-ring: the ring's 2px gap would crowd the label above. Precision
+  // names accent-soft for the halo, but on a light page that is ~1.1:1 and
+  // invisible; accent at 25% carries the same idea and can be seen.
   &:focus-within,
   &[data-pin~='focus'] {
     border-color: var(--accent);
-    box-shadow: 0 0 0 3px var(--accent-soft);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent);
   }
 
   &:has(> [data-invalid]) {
@@ -54,7 +56,7 @@
 
     &:focus-within,
     &[data-pin~='focus'] {
-      box-shadow: 0 0 0 3px var(--danger-soft);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--danger) 25%, transparent);
     }
   }
 

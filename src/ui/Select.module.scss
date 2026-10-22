@@ -37,7 +37,7 @@
   &:focus-visible:not([data-popup-open]),
   &[data-pin~='focus'] {
     border-color: var(--accent);
-    box-shadow: 0 0 0 3px var(--accent-soft);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent);
   }
 
   &[data-disabled] {
