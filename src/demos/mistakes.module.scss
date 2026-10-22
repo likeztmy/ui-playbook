@@ -392,3 +392,29 @@
     }
   }
 }
+
+// Radios in a row, spaced no wider than a label's own gap.
+.tightRadios > div {
+  column-gap: var(--space-2) !important;
+}
+
+// A popup that swells from half size out of its own middle, slowly.
+.balloonPopup {
+  transform-origin: center !important;
+  transition:
+    opacity 300ms ease,
+    scale 300ms ease,
+    translate 300ms ease !important;
+
+  &[data-starting-style],
+  &[data-ending-style] {
+    scale: 0.5 !important;
+    translate: none !important;
+  }
+}
+
+// A trigger that looks the same whether its popup is open or not.
+.noOpenState[data-popup-open] {
+  background: transparent !important;
+  color: var(--ink-muted) !important;
+}

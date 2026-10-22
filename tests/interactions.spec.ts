@@ -279,6 +279,75 @@ test('checkbox: label toggles; parent goes mixed, then all on, then all off', as
   await expect(comments).toHaveAttribute('aria-checked', 'false');
 });
 
+test('radio: one Tab stop on the chosen one, arrows move and choose, a choice reveals its field', async ({ page }) => {
+  await page.goto('/components/radio');
+  await hydrateAll(page);
+  const live = page.locator('figure').filter({ hasText: 'Live · Tab in' });
+  await live.scrollIntoViewIfNeeded();
+  const two = live.getByRole('radio', { name: '2×' });
+  await expect(two).toBeChecked();
+  await two.focus();
+  await page.keyboard.press('ArrowDown');
+  await expect(live.getByRole('radio', { name: '3×' }), 'arrows choose').toBeChecked();
+  await expect(live.getByText('3,600 × 2,400 px')).toBeVisible();
+  await expect(live.getByRole('textbox', { name: 'Width' })).toHaveCount(0);
+  await live.getByText('Custom width').click();
+  await expect(live.getByRole('textbox', { name: 'Width' }), 'the follow-up appears').toBeVisible();
+
+  // The mistake: every circle is its own Tab stop.
+  const keys = page.locator('figure').filter({ hasText: 'Before' }).filter({ hasText: 'Overnight' }).nth(1);
+  await keys.scrollIntoViewIfNeeded();
+  await keys.getByRole('button').first().focus();
+  await page.keyboard.press('Tab');
+  await expect(keys.getByRole('button').nth(1)).toBeFocused();
+});
+
+test('popover: focus goes to the field and back; a stray click keeps the draft', async ({ page }) => {
+  await page.goto('/components/popover');
+  await hydrateAll(page);
+  const live = page.locator('figure').filter({ hasText: 'Live · Share' });
+  await live.scrollIntoViewIfNeeded();
+  const share = live.getByRole('button', { name: 'Share', exact: true });
+  await share.click();
+  await expect(share, 'the trigger stays pressed').toHaveAttribute('data-popup-open', '');
+  const email = live.getByRole('textbox', { name: 'Email' });
+  await expect(email).toBeFocused();
+  await page.keyboard.type('lea@acme');
+  await page.mouse.click(5, 5);
+  await expect(email).toHaveCount(0);
+  await share.click();
+  await expect(email, 'the draft is kept').toHaveValue('lea@acme');
+  await page.keyboard.press('Escape');
+  await expect(share, 'focus returns').toBeFocused();
+  await share.click();
+  await live.getByRole('button', { name: 'Invite' }).click();
+  await expect(live.getByText('Shared with Ana Ruiz, Kenji Mori, lea@acme')).toBeVisible();
+});
+
+test('combobox: forgiving match, Enter picks the first, Esc keeps the value, empty names the query', async ({ page }) => {
+  await page.goto('/components/combobox');
+  await hydrateAll(page);
+  const live = page.locator('figure').filter({ hasText: 'Live · type' });
+  await live.scrollIntoViewIfNeeded();
+  const input = live.getByRole('combobox', { name: 'Time zone' });
+  await expect(input).toHaveValue('Lisbon');
+  await input.fill('zurich');
+  await expect(live.getByRole('option')).toHaveText(['ZürichSwitzerland']);
+  await page.keyboard.press('Enter');
+  await expect(input).toHaveValue('Zürich');
+  await expect(live.getByText('Meetings shown in Zürich time')).toBeVisible();
+
+  await input.fill('japan');
+  await expect(live.getByRole('option'), 'the country is searched').toHaveText(['TokyoJapan']);
+  await page.keyboard.press('Escape');
+  await expect(input).toHaveValue('Zürich');
+  await page.keyboard.press('Escape');
+  await expect(input, 'a second Esc keeps the choice').toHaveValue('Zürich');
+
+  await input.fill('Atlantis');
+  await expect(live.getByText('No city matches “Atlantis”. Try the country instead.')).toBeVisible();
+});
+
 test('switch: takes effect at once, Space toggles, knob stretches while pressed', async ({ page }) => {
   await page.goto('/components/switch');
   await hydrateAll(page);

@@ -1,0 +1,99 @@
+// A Menu's surface with room for controls: radius-lg 10, inset space-3 12.
+// The inset is past the radius, so what's inside keeps its own corners (a
+// field is radius-lg too) instead of being cut down to fit.
+
+.positioner {
+  z-index: var(--z-dropdown);
+  outline: none;
+}
+
+.popup {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: max-content;
+  max-width: min(320px, var(--available-width));
+  padding: var(--space-3);
+  border-radius: var(--radius-lg);
+  background: var(--surface-raised);
+  box-shadow: var(--shadow-md);
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 18px;
+  outline: none;
+  // Grows out of its trigger, as a Menu does: enter-scale and enter-offset
+  // toward it on the smooth spring; closing is quicker, with no spring.
+  transform-origin: var(--transform-origin);
+  transition:
+    opacity var(--duration-base) var(--ease-out),
+    scale var(--spring-smooth-duration) var(--ease-spring-smooth),
+    translate var(--spring-smooth-duration) var(--ease-spring-smooth);
+
+  &[data-starting-style],
+  &[data-ending-style] {
+    opacity: 0;
+    scale: var(--enter-scale);
+  }
+  $shift: (
+    bottom: 0 calc(var(--enter-offset) * -1),
+    top: 0 var(--enter-offset),
+    right: calc(var(--enter-offset) * -1) 0,
+    left: var(--enter-offset) 0,
+  );
+  @each $side, $offset in $shift {
+    &[data-side='#{$side}']:is([data-starting-style], [data-ending-style]) {
+      translate: $offset;
+    }
+  }
+
+  &[data-ending-style] {
+    transition:
+      opacity var(--duration-fast) var(--ease-in),
+      scale var(--duration-fast) var(--ease-in),
+      translate var(--duration-fast) var(--ease-in);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: opacity var(--duration-fast) var(--ease-out);
+    &:is([data-starting-style], [data-ending-style]) {
+      scale: none;
+      translate: none;
+    }
+  }
+}
+
+// Title and description read as one block; space-3 separates the blocks.
+// Scoped to the popup so page prose (h2, p) can't restyle them.
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-0-5);
+}
+
+.popup .title {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  letter-spacing: normal;
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 600;
+}
+
+.popup .description {
+  margin: 0;
+  color: var(--ink-muted);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}

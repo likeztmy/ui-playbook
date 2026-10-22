@@ -44,6 +44,14 @@ export const entries: Entry[] = [
     keywords: ['hint', 'label', 'hover', 'shortcut', 'icon button', 'title'],
   },
   {
+    slug: 'popover',
+    kind: 'component',
+    title: 'Popover',
+    summary: 'A small panel from a button: a short job or an explanation. Grows from its trigger, keeps your draft.',
+    details: 4,
+    keywords: ['popover', 'popup', 'panel', 'flyout', 'share', 'picker', 'info', 'light dismiss'],
+  },
+  {
     slug: 'dialog',
     kind: 'component',
     title: 'Dialog',
@@ -68,12 +76,28 @@ export const entries: Entry[] = [
     keywords: ['dropdown', 'pop-up button', 'picker', 'options', 'form', 'choice'],
   },
   {
+    slug: 'combobox',
+    kind: 'component',
+    title: 'Combobox',
+    summary: 'A Select you can type into. Forgiving matches, the first one ready for Enter, the match in bold.',
+    details: 4,
+    keywords: ['combobox', 'autocomplete', 'typeahead', 'search', 'filter', 'chips', 'multi-select', 'picker'],
+  },
+  {
     slug: 'checkbox',
     kind: 'component',
     title: 'Checkbox',
     summary: 'On, off or mixed, sent with the form. The whole row is the target.',
     details: 4,
     keywords: ['check box', 'tick', 'mixed', 'indeterminate', 'select all', 'form', 'option'],
+  },
+  {
+    slug: 'radio',
+    kind: 'component',
+    title: 'Radio',
+    summary: 'Exactly one of a few, all in sight. One is always chosen; arrows move and choose.',
+    details: 4,
+    keywords: ['radio button', 'radio group', 'option', 'choice', 'one of', 'form'],
   },
   {
     slug: 'switch',

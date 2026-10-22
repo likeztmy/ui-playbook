@@ -1,0 +1,77 @@
+---
+layout: ../../layouts/Entry.astro
+slug: combobox
+---
+import { ComboboxLive, ComboboxVariants, ComboboxForgiving, ComboboxEnter, ComboboxMatch, ComboboxEmpty } from '../../demos/combobox';
+
+## When to use
+
+A combobox is a Select you can type into: the field filters a list as you type, and you pick from what's left. The value is always one of the list's items. Use it for:
+
+- **More than about fifteen options.** Cities, countries, time zones, people: too many to scroll, easy to name.
+- **Lists people know by name.** Typing three letters beats scanning for the right row.
+- **Several values from one list.** Assignees or labels, shown as chips in the field.
+
+Reach for something else when:
+
+- **There are fifteen or fewer.** A Select shows them all at once.
+- **Any text is a valid answer.** A text field, with suggestions if they help.
+- **It's search across a whole app.** A command menu, which runs what it finds.
+
+## Variants
+
+<ComboboxVariants client:visible />
+
+## Anatomy
+
+| Part | Token | Value |
+| --- | --- | --- |
+| Field | an Input: `control-md`, `radius-lg`, `line-strong` | 32 |
+| Trigger | chevrons, 24 × 24, 4 from the edge, `radius-sm` | 6 |
+| List | a Menu's popup and rows, as wide as the field, `space-1` below it plus 2 | 6 |
+| Current option | weight 500, `accent-text` check in the leading column | 500 |
+| Match | weight 600 | 600 |
+| Trailing detail | `ink-muted`, right-aligned, also searched | |
+| Chip | 24 tall, 4 from the edge, `radius-sm`, `fill-control` | 6 |
+| List height | at most nine rows | 296 |
+
+The field keeps its focus halo while the list is open: you're still typing in it.
+
+## States
+
+<ComboboxLive client:visible />
+
+Type and the list narrows; the first match is highlighted, so Enter picks it. Arrows move through the rest, Esc closes the list and puts back the last value, and the chevron opens the whole list for browsing.
+
+## Details
+
+### Matching forgives
+
+<ComboboxForgiving client:visible />
+
+### The first match is ready for Enter
+
+<ComboboxEnter client:visible />
+
+### Show why each row is there
+
+<ComboboxMatch client:visible />
+
+### An empty list says what was searched
+
+<ComboboxEmpty client:visible />
+
+The list opens like a Menu: from `enter-scale` on the smooth spring, closing in `duration-fast`. Filtering itself doesn't animate: rows come and go as you type, a hundred times a minute.
+
+## Common mistakes
+
+- **Accepting text that isn't in the list.** A combobox picks; if any value is fine, it's a text field with suggestions.
+- **Opening empty.** Clicking the field or the chevron shows the whole list, so people can browse before they know what to type.
+- **Sorting the matches by score.** Keep the list's own order, alphabetical or grouped, so rows don't jump as letters arrive.
+- **Chips that push the field off the row.** The chips wrap inside the field, and the input always keeps room to type.
+
+## Copy
+
+- Label: what's being chosen: **Time zone**, **Assignees**.
+- Placeholder: what you can type, not an instruction to type: **Search cities or countries**.
+- Empty: repeat the query and give a next step: **No city matches “Atlantis”. Try the country instead.**

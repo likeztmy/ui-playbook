@@ -187,6 +187,11 @@
   width: min(100%, 320px);
 }
 
+.comboNote {
+  color: var(--ink-muted);
+  font-size: 13px;
+}
+
 .narrowField {
   width: 112px;
 }
@@ -645,6 +650,11 @@
   width: min(100%, 320px);
 }
 
+.comboNote {
+  color: var(--ink-muted);
+  font-size: 13px;
+}
+
 // Rows that share a left edge, e.g. checkboxes in one column.
 .leftStack {
   display: flex;
@@ -659,4 +669,108 @@
   flex-wrap: wrap;
   align-items: center;
   gap: var(--space-2);
+}
+
+// Radio: the choice beside what it makes.
+.radioDemo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-4);
+}
+
+.radioField {
+  width: 160px;
+}
+
+// A group of one in a state grid: the row already names it.
+.bareGroup > span:first-child {
+  display: none;
+}
+
+// Popover: a trigger with what it changes beside it.
+.shareRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.shareList {
+  color: var(--ink-muted);
+  font-size: 13px;
+}
+
+.infoRow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: 14px;
+}
+
+.swatches {
+  display: flex;
+  gap: var(--space-1);
+}
+
+// A 24px target around a 16px dot; the current one is ringed, as in the
+// macOS colour well, since a check can't keep its contrast on every colour.
+.swatchButton {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: var(--control-sm);
+  height: var(--control-sm);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  cursor: pointer;
+  outline: none;
+
+  &:hover {
+    background: var(--fill-hover);
+  }
+
+  &[aria-pressed='true'] {
+    box-shadow: inset 0 0 0 2px var(--ink-muted);
+  }
+
+  &:focus-visible {
+    box-shadow: var(--focus-ring);
+  }
+}
+
+.swatch {
+  display: block;
+  width: 16px;
+  height: 16px;
+  border-radius: var(--radius-full);
+  background: var(--ink-muted);
+
+  @each $tone in info, success, warning, danger {
+    &[data-tone='#{$tone}'] {
+      background: var(--#{$tone});
+    }
+  }
+}
+
+// Combobox: the field and what its value changes.
+.comboDemo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: min(100%, 320px);
+}
+
+.comboNote {
+  color: var(--ink-muted);
+  font-size: 13px;
+}
+
+.popoverStill {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
 }

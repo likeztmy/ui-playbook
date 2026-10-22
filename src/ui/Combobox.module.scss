@@ -1,0 +1,167 @@
+// An Input you can open: the field's box with a chevron trigger at its end,
+// over a Menu's popup and rows. The list hangs under the field, as wide as
+// it, since the field has to stay visible while you type.
+
+.box {
+  padding-right: var(--space-1);
+  cursor: text;
+}
+
+.input {
+  font-size: 14px;
+}
+
+// The chevron is a 24px button, 4 from the edge on three sides like a
+// field's embedded key: radius 10 − 4 = radius-sm 6.
+.trigger {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: var(--control-sm);
+  height: var(--control-sm);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--ink-muted);
+  cursor: default;
+  outline: none;
+  transition: background-color var(--duration-fast) var(--ease-out);
+
+  &:hover,
+  &[data-popup-open] {
+    background: var(--fill-hover);
+    color: var(--ink);
+    transition-duration: var(--duration-instant);
+  }
+}
+
+// Several values: chips wrap inside the box, the input takes what's left.
+.multiple {
+  height: auto;
+  padding-block: calc(var(--space-1) - 1px);
+  padding-left: calc(var(--space-1) - 1px);
+}
+
+.chips {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 0;
+
+  .input {
+    flex: 1;
+    min-width: 80px;
+    height: var(--control-sm);
+    padding-left: var(--space-2);
+  }
+}
+
+// Chips are 24 tall, 4 from the box's edge, so they take radius-sm 6, the
+// same as an embedded key: concentric with the field.
+.chip {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-0-5);
+  height: var(--control-sm);
+  padding: 0 var(--space-0-5) 0 var(--space-2);
+  border-radius: var(--radius-sm);
+  background: var(--fill-control);
+  color: var(--ink);
+  font-size: 13px;
+  outline: none;
+  cursor: default;
+
+  &:focus-visible,
+  &[data-highlighted] {
+    background: var(--accent-soft);
+  }
+}
+
+.chipRemove {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-xs);
+  background: transparent;
+  color: var(--ink-muted);
+  cursor: default;
+
+  &:hover {
+    background: var(--fill-hover);
+    color: var(--ink);
+  }
+}
+
+.positioner {
+  z-index: var(--z-dropdown);
+  outline: none;
+}
+
+// As wide as the field; nested to outrank Menu's min-width.
+.positioner .popup {
+  width: var(--anchor-width);
+  min-width: 0;
+}
+
+.list {
+  max-height: min(296px, var(--available-height));
+  overflow-y: auto;
+  scroll-padding-block: var(--space-1);
+
+  &:empty {
+    display: none;
+  }
+}
+
+// The current option: weight 500 and an accent check, as in a Select. The
+// fill is the keyboard highlight's alone.
+.item[data-selected] {
+  font-weight: 500;
+}
+
+.item:not([data-selected]) > [class*='check'] {
+  visibility: hidden;
+}
+
+// The label is the value, so it keeps its width; the detail gives way.
+.item > [class*='text'] {
+  flex: 1 0 auto;
+}
+
+// What you typed, in the label: a step bolder, so the eye finds why each
+// row is there. The current row is 500 already; its match goes to 600.
+.match {
+  font-weight: 600;
+}
+
+// Trailing detail (a country, an email): quiet, right-aligned in one column.
+.meta {
+  min-width: 0;
+  overflow: hidden;
+  margin-left: var(--space-4);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--ink-muted);
+  font-weight: 400;
+}
+
+.group + .group {
+  margin-top: var(--space-1);
+}
+
+// Says what was searched for and what to try instead.
+.empty {
+  padding: var(--space-2);
+  color: var(--ink-muted);
+
+  &:empty {
+    display: none;
+  }
+}

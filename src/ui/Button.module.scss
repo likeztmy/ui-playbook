@@ -42,6 +42,12 @@
     }
   }
 
+  // While its menu or popover is open, the trigger stays pressed in, so
+  // the popup has a visible source.
+  &[data-popup-open] {
+    background: var(--fill-control-hover);
+  }
+
   @include focus {
     box-shadow: var(--focus-ring);
   }
@@ -68,6 +74,10 @@
   background: var(--accent);
   color: var(--on-accent);
 
+  &[data-popup-open] {
+    background: var(--accent-hover);
+  }
+
   &:not([data-disabled]) {
     @include hover {
       background: var(--accent-hover);
@@ -83,6 +93,11 @@
 .ghost {
   background: transparent;
   color: var(--ink-muted);
+
+  &[data-popup-open] {
+    background: var(--fill-control);
+    color: var(--ink);
+  }
 
   &:not([data-disabled]) {
     @include hover {
