@@ -1,0 +1,164 @@
+@use '../styles/states' as *;
+
+// Label above, the box, then one line under it: a hint or the error.
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.label {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--ink-muted);
+}
+
+// The box carries the edge so leading and trailing parts sit inside it.
+// radius-md 8, inset space-1 4 on the trailing side, 1px border: an
+// embedded key takes 8 − 4 − 1 = 3.
+.box {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--control-md);
+  padding: 0 var(--space-3);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--ink);
+  cursor: text;
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
+
+  @include hover {
+    border-color: var(--ink-muted);
+    transition-duration: var(--duration-instant);
+  }
+
+  // A tight 1px accent edge, not the gapped focus-ring: the ring's 2px gap
+  // would crowd the label above.
+  &:focus-within,
+  &[data-pin~='focus'] {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent);
+  }
+
+  &:has(> [data-invalid]) {
+    border-color: var(--danger);
+
+    &:focus-within,
+    &[data-pin~='focus'] {
+      box-shadow: 0 0 0 1px var(--danger);
+    }
+  }
+
+  &:has(> [data-disabled]) {
+    border-color: var(--line);
+    background: var(--surface-sunken);
+    color: var(--ink-disabled);
+    cursor: not-allowed;
+  }
+
+  &:has(> [readonly]) {
+    border-color: var(--line);
+    background: var(--surface-sunken);
+  }
+
+  > svg {
+    flex: none;
+    color: var(--ink-muted);
+  }
+}
+
+.trailingInset {
+  padding-right: var(--space-1);
+}
+
+.multiline {
+  align-items: stretch;
+  padding: 0;
+}
+
+.control {
+  flex: 1;
+  min-width: 0;
+  height: calc(var(--control-md) - 2px);
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+
+  &::placeholder {
+    color: var(--ink-muted);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+textarea.control {
+  height: auto;
+  min-height: 88px;
+  padding: var(--space-2) var(--space-3);
+  resize: vertical;
+  line-height: 20px;
+}
+
+// Trailing glyph or unit, quiet.
+.suffix {
+  flex: none;
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+// A shortcut key inside the field: 22px tall in a 30px content box (4px
+// each side), radius 8 − 4 − 1 = 3.
+.key {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+  height: 22px;
+  padding: 0 var(--space-1);
+  border-radius: 3px;
+  background: var(--surface-sunken);
+  box-shadow: inset 0 0 0 1px var(--line);
+  color: var(--ink-muted);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+// One line under the field: the error takes the hint's place.
+.field:has(.error) .hint {
+  display: none;
+}
+
+.hint {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--ink-muted);
+}
+
+.error {
+  display: flex;
+  // The icon stays on the first line when the message wraps.
+  align-items: flex-start;
+  gap: var(--space-1);
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--danger);
+
+  > svg {
+    flex: none;
+    margin-top: 1px;
+  }
+}

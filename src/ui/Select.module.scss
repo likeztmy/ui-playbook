@@ -1,0 +1,105 @@
+@use '../styles/states' as *;
+
+// The trigger is an Input that opens a list: same box, same edge, a 16px
+// chevron at space-2 from the right. The list is a Menu: same popup, same
+// rows. Item text sits on the trigger's text line: popup inset 4 + item
+// padding 8 = trigger padding 12, so the list can open over the trigger.
+
+.trigger {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 176px;
+  height: var(--control-md);
+  padding: 0 var(--space-2) 0 var(--space-3);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+  cursor: default;
+  user-select: none;
+  outline: none;
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
+
+  @include hover {
+    border-color: var(--ink-muted);
+    transition-duration: var(--duration-instant);
+  }
+
+  // Not while open: the list covers the trigger, and a ring would peek out.
+  &:focus-visible:not([data-popup-open]),
+  &[data-pin~='focus'] {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent);
+  }
+
+  &[data-disabled] {
+    border-color: var(--line);
+    background: var(--surface-sunken);
+    color: var(--ink-disabled);
+
+    .chevron {
+      color: inherit;
+    }
+  }
+}
+
+.value {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
+  &[data-placeholder] {
+    color: var(--ink-muted);
+  }
+}
+
+.chevron {
+  display: grid;
+  flex: none;
+  color: var(--ink-muted);
+}
+
+.positioner {
+  z-index: var(--z-dropdown);
+  outline: none;
+  user-select: none;
+}
+
+// As wide as the trigger, wider only when an option needs it. Nested to
+// outrank Menu's own min-width.
+.positioner .popup {
+  min-width: var(--anchor-width);
+}
+
+.list {
+  max-height: var(--available-height);
+  overflow-y: auto;
+  scroll-padding-block: var(--space-1);
+}
+
+// The current option: weight 500 and an accent check. No fill: the fill
+// belongs to the keyboard highlight, and the two must never be confused.
+.item[data-selected] {
+  font-weight: 500;
+}
+
+.indicator {
+  margin-left: var(--space-4);
+}
+
+.scrollArrow {
+  display: grid;
+  place-items: center;
+  height: 16px;
+  color: var(--ink-muted);
+  cursor: default;
+}

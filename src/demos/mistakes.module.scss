@@ -87,3 +87,20 @@
     translate: 0 -32px;
   }
 }
+
+// A field focused with the gapped button ring instead of a tight edge.
+.gappedFieldFocus > :is(:focus-within, [data-pin~='focus']) {
+  border-color: var(--line-strong) !important;
+  box-shadow: var(--focus-ring) !important;
+}
+
+// A key inside a field with the field's own radius.
+.sameKeyRadius {
+  border-radius: var(--radius-md) !important;
+}
+
+// The current option marked with the highlight's fill.
+.filledSelected[data-selected] {
+  background: var(--fill-active);
+  font-weight: 400 !important;
+}

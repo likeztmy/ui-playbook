@@ -2,6 +2,7 @@ import { useRef, useState, type ReactNode } from 'react';
 import { Button } from '../ui/Button';
 import { cx } from '../ui/cx';
 import { AlertDialog, Dialog, dialogClasses as ds } from '../ui/Dialog';
+import { TextField } from '../ui/Field';
 import { Compare, Frame } from './shell';
 import m from './mistakes.module.scss';
 import s from './demos.module.scss';
@@ -109,10 +110,7 @@ function RenameFlow() {
               setOpen(false);
             }}
           >
-            <label className={s.textField}>
-              <span>Name</span>
-              <input ref={input} value={draft} onChange={(e) => setDraft(e.target.value)} onFocus={(e) => e.target.select()} />
-            </label>
+            <TextField label="Name" inputRef={input} value={draft} onValueChange={setDraft} onFocus={(e) => e.target.select()} />
           </form>
         </Dialog.Popup>
       </Dialog.Root>

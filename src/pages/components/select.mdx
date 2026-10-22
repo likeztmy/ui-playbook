@@ -1,0 +1,79 @@
+---
+layout: ../../layouts/Entry.astro
+slug: select
+---
+import { SelectLive, SelectVariants, SelectCurrent, SelectAlign, SelectDefault, SelectChevron } from '../../demos/select';
+
+## When to use
+
+A Select picks one value from a short, flat list of choices that exclude each other. Apple calls it a pop-up button. Reach for something else when:
+
+- **There are two to four options.** Show them all: a segmented control or radios. Opening a list to see two words is a wasted click.
+- **There are more than about fifteen, or people know what they want.** A combobox lets them type.
+- **The options are actions.** *Duplicate*, *Archive*, *Delete* belong in a Menu: a pull-down that does something, not a value that stays.
+- **More than one can be chosen.** Checkboxes, or a Menu with checkbox items.
+
+### Select or Menu
+
+| | Select | Menu |
+| --- | --- | --- |
+| Trigger shows | The current value | A fixed label or icon |
+| Picking a row | Changes the value | Runs an action |
+| Chevron | Up and down | Down |
+| Opens | Over the trigger | Below the trigger |
+| Rows | Text only | Icons, shortcuts, submenus |
+
+## Variants
+
+<SelectVariants client:visible />
+
+## Anatomy
+
+| Part | Token | Value |
+| --- | --- | --- |
+| Trigger | as Input: `control-md`, `radius-md`, `line-strong` | 32 |
+| Chevron | 16px, `space-2` from the right | 16 |
+| List | as Menu: `radius-lg`, inset `space-1`, rows `control-md` | 12 |
+| List width | the trigger's, or wider for a long option | |
+| Current option | weight 500, `accent-text` check, no fill | |
+| Keyboard highlight | `fill-active` | |
+| Layer | `z-dropdown` | 100 |
+
+The list's text lines up with the trigger's: popup inset 4 + row padding 8 = trigger padding 12. That's what lets it open right over the trigger.
+
+## States
+
+<SelectLive client:visible />
+
+Open it with Space or the arrow keys. Type a letter to jump to the option that starts with it. Enter picks; Esc closes and keeps the old value.
+
+## Details
+
+### The current option is a check, not a fill
+
+<SelectCurrent client:visible />
+
+### It opens over the trigger
+
+<SelectAlign client:visible />
+
+### Start with a useful default
+
+<SelectDefault client:visible />
+
+### Two chevrons for a value, one for a menu
+
+<SelectChevron client:visible />
+
+## Common mistakes
+
+- **A Select for Yes / No.** Two options are a Switch or a segmented control.
+- **A Select that runs commands.** If picking a row doesn't leave a value behind, it's a Menu.
+- **An empty first option as the placeholder.** It can be picked back. Use the placeholder, and only when the field has no fair default.
+- **Long sentences as options.** Options are names. If they need explaining, use radios with descriptions.
+
+## Copy
+
+- Label: what the value is, a noun: **Role**, **Font**.
+- Options: short, sentence case, parallel in form: **Owner**, **Admin**, **Editor**.
+- Placeholder, when there is one: **Choose a reason**, not *Select…*.

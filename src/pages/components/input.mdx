@@ -1,0 +1,79 @@
+---
+layout: ../../layouts/Entry.astro
+slug: input
+---
+import { InputLive, InputVariants, InputStates, InputLabel, InputValidation, InputFocus, InputKey, InputWidth } from '../../demos/input';
+
+## When to use
+
+For text people type: a name, an address, a search, a number with a unit. Reach for something else when:
+
+- **The answer is one of a few known values.** Two to four: a segmented control or radios. Five to fifteen: a Select. More, or searchable: a combobox.
+- **The answer is on or off.** A Switch or a Checkbox.
+- **The value is a position on a range.** A Slider, often paired with a small number field.
+
+## Variants
+
+<InputVariants client:visible />
+
+- **Leading end: what the field is for.** A magnifier on a search. Nothing on a plain field: the label already says it.
+- **Trailing end: what the field offers.** A unit, a shortcut key, a clear button. One at most.
+
+## Anatomy
+
+| Part | Token | Value |
+| --- | --- | --- |
+| Height | `control-md` | 32 |
+| Radius | `radius-md` | 8 |
+| Edge | `line-strong`, 1px | |
+| Padding | `space-3` | 12 |
+| Trailing inset | `space-1` | 4 |
+| Embedded key radius | 8 − 4 − 1 | 3 |
+| Label | label, 12 / 16, weight 500, `ink-muted` | 12 |
+| Label, field, hint | `space-1` apart | 4 |
+| Focus | `accent` edge + 1px | |
+
+The label sits above, the hint or the error below. Never both: the error takes the hint's line.
+
+## States
+
+<InputStates client:visible />
+
+<InputLive client:visible />
+
+Type a partial address and Tab away: the error appears. Go back and finish it: the error clears as you type.
+
+## Details
+
+### A label above, an example inside
+
+<InputLabel client:visible />
+
+### Check when they leave, not while they type
+
+<InputValidation client:visible />
+
+### Focus is the edge, not a ring
+
+<InputFocus client:visible />
+
+### An embedded key is concentric
+
+<InputKey client:visible />
+
+### Width says how much to write
+
+<InputWidth client:visible />
+
+## Common mistakes
+
+- **A hint that repeats the label.** *Enter your email* under **Email** says nothing. Keep the line for a format, a limit, or a consequence.
+- **Errors in a toast or at the top.** Put each one under its field, where the eye already is.
+- **Clearing the field on error.** Keep what they typed; they're usually one character away.
+- **Read-only drawn as disabled.** Read-only text can still be selected and copied, so it keeps the ink colour.
+
+## Copy
+
+- Label: a noun, sentence case, no colon: **Email**, **Project name**.
+- Placeholder: an example, not an instruction: **ana@studio.com**, not *Enter your email*.
+- Error: what to do, with an example if the format is the problem: **Enter an email address, like ana@studio.com.** Never *Invalid input*.

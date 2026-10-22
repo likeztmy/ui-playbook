@@ -170,34 +170,35 @@
   line-height: 16px;
 }
 
-// A plain text field, as Input will draw it: control-md, radius-md,
-// line-strong edge, accent on focus.
-.textField {
+// Fields side by side, each at a width that suits its content.
+.fieldGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--space-4) var(--space-6);
+  width: 100%;
+  align-items: start;
+}
+
+.formColumn {
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
+  gap: var(--space-4);
+  width: min(100%, 320px);
+}
 
-  span {
-    font-size: 12px;
-    line-height: 16px;
-    font-weight: 500;
-    color: var(--ink-muted);
-  }
+.narrowField {
+  width: 112px;
+}
 
-  input {
-    box-sizing: border-box;
-    height: var(--control-md);
-    padding: 0 var(--space-3);
-    border: 1px solid var(--line-strong);
-    border-radius: var(--radius-md);
-    background: var(--surface);
-    color: var(--ink);
-    font: inherit;
-    outline: none;
+// A Select drawn open, for stills: trigger, then its list below.
+.selectStill {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 200px;
+}
 
-    &:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 1px var(--accent);
-    }
-  }
+// Half the column, so it still fits at 2×.
+.magnifiedField {
+  width: 150px;
 }

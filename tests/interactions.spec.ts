@@ -205,3 +205,45 @@ test('task dialog: field focused, Enter submits, scrim cancels only when untouch
   await expect(dialog).toHaveCount(0);
   await expect(page.getByText('Q1 plan')).toBeVisible();
 });
+
+test('input: checked on blur, not per keystroke; clears as you fix it', async ({ page }) => {
+  await page.goto('/components/input');
+  await hydrateAll(page);
+  const live = page.locator('figure').filter({ hasText: 'Live · checked' });
+  const email = live.getByRole('textbox', { name: 'Email' });
+  await email.scrollIntoViewIfNeeded();
+  await email.fill('ana@studio');
+  await expect(live.getByText('Enter an email address'), 'no error while typing').toHaveCount(0);
+  await email.press('Tab');
+  await expect(live.getByText('Enter an email address, like ana@studio.com.')).toBeVisible();
+  await expect(live.getByText('We send the invite here.'), 'error takes the hint’s line').toBeHidden();
+  await email.fill('ana@studio.com');
+  await expect(live.getByText('Enter an email address'), 'clears on fix').toHaveCount(0);
+});
+
+test('select: opens over the trigger, typeahead + Enter picks, Esc keeps the old value', async ({ page }) => {
+  await page.goto('/components/select');
+  await hydrateAll(page);
+  const live = page.locator('figure').filter({ hasText: 'Live · opens' });
+  const trigger = live.getByRole('combobox');
+  await trigger.scrollIntoViewIfNeeded();
+  await expect(trigger).toHaveText('Editor');
+
+  await trigger.click();
+  const current = page.getByRole('option', { name: 'Editor' });
+  await expect(current).toBeVisible();
+  const [t, o] = [await trigger.locator('span').first().boundingBox(), await current.locator('div, span').first().boundingBox()];
+  expect(Math.abs(t!.x - o!.x), 'option text on the trigger text').toBeLessThan(1);
+  expect(Math.abs(t!.y + t!.height / 2 - (o!.y + o!.height / 2))).toBeLessThan(1);
+
+  await page.keyboard.press('v');
+  await expect(page.getByRole('option', { name: 'Viewer' })).toHaveAttribute('data-highlighted', '');
+  await page.keyboard.press('Enter');
+  await expect(trigger).toHaveText('Viewer');
+
+  await trigger.click();
+  await page.keyboard.press('ArrowUp');
+  await page.keyboard.press('Escape');
+  await expect(trigger).toHaveText('Viewer');
+  await expect(trigger).toBeFocused();
+});

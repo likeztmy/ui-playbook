@@ -52,6 +52,22 @@ export const entries: Entry[] = [
     keywords: ['modal', 'alert', 'confirm', 'alert dialog', 'sheet', 'popup', 'delete'],
   },
   {
+    slug: 'input',
+    kind: 'component',
+    title: 'Input',
+    summary: 'A labelled field for typed text. Checked when you leave it, not while you type.',
+    details: 5,
+    keywords: ['text field', 'textarea', 'form', 'label', 'placeholder', 'validation', 'error', 'search'],
+  },
+  {
+    slug: 'select',
+    kind: 'component',
+    title: 'Select',
+    summary: 'Picks one value from a short list. Opens over its trigger, marks the current value with a check.',
+    details: 4,
+    keywords: ['dropdown', 'pop-up button', 'picker', 'options', 'form', 'choice'],
+  },
+  {
     slug: 'concentric-radius',
     kind: 'principle',
     title: 'Concentric radius',
