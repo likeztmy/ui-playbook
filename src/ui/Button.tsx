@@ -36,7 +36,7 @@ export function Button({
   onClick,
   ...props
 }: ButtonProps) {
-  const spinner = <LoaderCircle className={s.spinner} size={16} strokeWidth={1.5} absoluteStrokeWidth aria-hidden />;
+  const spinner = <LoaderCircle className={s.spinner} size={16} strokeWidth={1.5} nonScalingStroke aria-hidden />;
 
   // Idle and busy content share one grid cell, spinner included, so the
   // button is as wide as the wider of the two from the start and never jumps.

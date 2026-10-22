@@ -49,7 +49,7 @@ export function Keys({ keys, className }: { keys: string[]; className?: string }
         const Icon = KEY_ICON[k];
         return (
           <span key={i} className={s.key}>
-            {Icon ? <Icon size={12} strokeWidth={1.5} absoluteStrokeWidth aria-label={k} /> : k}
+            {Icon ? <Icon size={12} strokeWidth={1.5} nonScalingStroke aria-label={k} /> : k}
           </span>
         );
       })}
@@ -69,14 +69,14 @@ type RowProps = {
 export function RowContent({ icon: Icon, keys, checked, submenu, children }: RowProps) {
   return (
     <>
-      {Icon && <Icon className={s.icon} size={16} strokeWidth={1.5} absoluteStrokeWidth aria-hidden />}
+      {Icon && <Icon className={s.icon} size={16} strokeWidth={1.5} nonScalingStroke aria-hidden />}
       <span className={s.text}>{children}</span>
       {checked && (
         <span className={s.check}>
-          <Check size={16} strokeWidth={1.75} absoluteStrokeWidth aria-hidden />
+          <Check size={16} strokeWidth={1.75} nonScalingStroke aria-hidden />
         </span>
       )}
-      {submenu && <ChevronRight className={s.chevron} size={16} strokeWidth={1.5} absoluteStrokeWidth aria-hidden />}
+      {submenu && <ChevronRight className={s.chevron} size={16} strokeWidth={1.5} nonScalingStroke aria-hidden />}
       {keys && <Keys keys={keys} />}
     </>
   );

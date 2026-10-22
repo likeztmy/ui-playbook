@@ -19,7 +19,7 @@ const ACTIONS: [string, LucideIcon, string[]][] = [
 function IconButton({ label, Icon, ...props }: { label: string; Icon: LucideIcon } & ComponentProps<typeof Button>) {
   return (
     <Button {...props} variant="ghost" icon aria-label={label}>
-      <Icon size={16} strokeWidth={1.5} absoluteStrokeWidth aria-hidden />
+      <Icon size={16} strokeWidth={1.5} nonScalingStroke aria-hidden />
     </Button>
   );
 }

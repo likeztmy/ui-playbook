@@ -1,0 +1,4 @@
+#!/bin/sh
+# Type-check .astro, .ts and .tsx before every commit. The browser suite
+# (pnpm test:e2e) is heavier and gates `pnpm run deploy` instead.
+exec pnpm -s check

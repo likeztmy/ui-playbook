@@ -61,7 +61,7 @@ export function TipKeys({ keys }: { keys: string[] }) {
       {keys.map((k, i) => {
         const Icon = KEY_ICON[k];
         return Icon ? (
-          <Icon key={i} size={12} strokeWidth={1.5} absoluteStrokeWidth aria-label={k} />
+          <Icon key={i} size={12} strokeWidth={1.5} nonScalingStroke aria-label={k} />
         ) : (
           <span key={i}>{k}</span>
         );

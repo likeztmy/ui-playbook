@@ -36,7 +36,7 @@ function KeyHint({ keys, look }: { keys: Keys; look: Look }) {
         const Icon = MOD_ICON[k];
         return (
           <span key={i} className={s.key}>
-            {Icon ? <Icon size={12} strokeWidth={1.5} absoluteStrokeWidth aria-label={k} /> : k}
+            {Icon ? <Icon size={12} strokeWidth={1.5} nonScalingStroke aria-label={k} /> : k}
           </span>
         );
       })}
@@ -49,16 +49,16 @@ function RowBody({ row, look, checked }: { row: Row; look: Look; checked?: boole
   const { s } = look;
   const Icon = row.icon;
   const checkSlot = (indicator: ReactNode) => <span className={s.check}>{indicator}</span>;
-  const tick = <Check size={16} strokeWidth={1.75} absoluteStrokeWidth aria-hidden />;
+  const tick = <Check size={16} strokeWidth={1.75} nonScalingStroke aria-hidden />;
   const isCheck = row.kind === 'check';
   return (
     <>
       {look.check === 'left' && checkSlot(isCheck && checked ? tick : null)}
-      {look.icons && <Icon className={s.icon} size={16} strokeWidth={1.5} absoluteStrokeWidth aria-hidden />}
+      {look.icons && <Icon className={s.icon} size={16} strokeWidth={1.5} nonScalingStroke aria-hidden />}
       <span className={s.text}>{row.label}</span>
       {look.check === 'right' && isCheck && checkSlot(checked ? tick : null)}
       {row.kind === 'submenu' && (
-        <ChevronRight className={s.chevron} size={16} strokeWidth={1.5} absoluteStrokeWidth aria-hidden />
+        <ChevronRight className={s.chevron} size={16} strokeWidth={1.5} nonScalingStroke aria-hidden />
       )}
       {'keys' in row && row.keys && <KeyHint keys={row.keys} look={look} />}
     </>
@@ -69,7 +69,7 @@ function FilterRow({ look, live }: { look: Look; live: boolean }) {
   const { s } = look;
   return (
     <div className={s.inputRow}>
-      <Search className={s.inputIcon} size={16} strokeWidth={1.5} absoluteStrokeWidth aria-hidden />
+      <Search className={s.inputIcon} size={16} strokeWidth={1.5} nonScalingStroke aria-hidden />
       {live ? (
         <Menu.Input className={s.input} aria-label="Filter actions" placeholder="Search actions" />
       ) : (
@@ -179,7 +179,7 @@ export function LiveMenu({ look }: { look: Look }) {
   const body = (
     <Menu.Root>
       <Menu.Trigger render={<Button />}>
-        Edit <ChevronDown size={16} strokeWidth={1.5} absoluteStrokeWidth aria-hidden />
+        Edit <ChevronDown size={16} strokeWidth={1.5} nonScalingStroke aria-hidden />
       </Menu.Trigger>
       <Positioned look={look}>
         {look.filter && <FilterRow look={look} live />}

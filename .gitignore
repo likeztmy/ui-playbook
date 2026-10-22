@@ -28,3 +28,8 @@ pnpm-debug.log*
 
 # generated from src/tokens/precision.json
 src/styles/tokens.css
+
+# playwright
+test-results/
+playwright-report/
+shots/
