@@ -35,14 +35,13 @@ export const ui = {
     next: 'Next',
     more: 'More entries',
     details: (n: number) => `${n} ${n === 1 ? 'detail' : 'details'}`,
-    nothing: 'Nothing matches',
     clear: 'Clear search',
     other: '中文',
     otherLang: 'zh-CN',
     description: 'The small details that make interface components feel right.',
   },
   zh: {
-    lede: '让界面组件用起来顺手的那些细节，每一条都摆在一起对比。',
+    lede: '让界面组件好用的那些细节，每一条都放在一起对比着看。',
     search: '搜索组件和原则',
     components: '组件',
     principles: '原则',
@@ -54,11 +53,10 @@ export const ui = {
     next: '下一篇',
     more: '更多条目',
     details: (n: number) => `${n} 个细节`,
-    nothing: '没有匹配',
     clear: '清除搜索',
     other: 'English',
     otherLang: 'en',
-    description: '让界面组件用起来顺手的那些细节。',
+    description: '让界面组件好用的那些细节。',
   },
 } as const;
 

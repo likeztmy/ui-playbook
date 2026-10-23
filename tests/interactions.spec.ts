@@ -834,7 +834,7 @@ test('chinese edition: the header switches to the same page; untranslated entrie
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('界面不乱跳');
   await hydrateAll(page);
   await expect(page.locator('figure').first()).toContainText('改前');
-  await expect(page.getByText('同一组结果，排在屏幕上已有的行后面', { exact: false })).toBeVisible();
+  await expect(page.getByText('同样一组结果，排到已显示的行后面', { exact: false })).toBeVisible();
   await page.getByRole('link', { name: 'English' }).click();
   await expect(page).toHaveURL(/\/principles\/nothing-shifts\/?$/);
 

@@ -99,7 +99,7 @@ const groups = [
   }
 
   <div class={s.empty} id="empty" hidden>
-    <p>{t.nothing}“<span id="empty-query"></span>”{lang === 'en' && '.'}</p>
+    <p>{lang === 'zh' ? <>没有找到与“<span id="empty-query"></span>”相关的内容。</> : <>Nothing matches “<span id="empty-query"></span>”.</>}</p>
     <button type="button" id="clear">{t.clear}</button>
   </div>
 </Base>
