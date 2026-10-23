@@ -1,7 +1,14 @@
+import { existsSync, readdirSync } from 'node:fs';
 import { expect, type Page } from '@playwright/test';
 import { entries, href } from '../src/entries';
 
-export const ROUTES = ['/', ...entries.map(href), '/lab/menu', '/lab/shortcuts', '/lab/check', '/lab/hero'];
+// Chinese pages: /zh/ and whichever entries have been translated.
+const ZH = ['components', 'principles'].flatMap((kind) => {
+  const dir = new URL(`../src/pages/zh/${kind}/`, import.meta.url);
+  return existsSync(dir) ? readdirSync(dir).filter((f) => f.endsWith('.mdx')).map((f) => `/zh/${kind}/${f.replace(/\.mdx$/, '')}`) : [];
+});
+
+export const ROUTES = ['/', ...entries.map(href), '/zh/', ...ZH, '/lab/menu', '/lab/shortcuts', '/lab/check', '/lab/hero', '/lab/frames'];
 
 /**
  * Collects console errors and page exceptions from the moment it's called.

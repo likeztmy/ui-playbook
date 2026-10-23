@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, type ComponentType, type ReactNode } from 'react';
 import { PortalContainer } from '../ui/portal';
 import { Button } from '../ui/Button';
 import { CheckIcon, ContrastIcon, CrossIcon } from '../ui/icons';
@@ -8,6 +8,34 @@ import { Tip, TipGroup } from '../ui/Tooltip';
 import s from './shell.module.scss';
 
 type Theme = 'light' | 'dark';
+
+// ── Language ─────────────────────────────────────────────
+
+export type Lang = 'en' | 'zh';
+
+const LangContext = createContext<Lang>('en');
+
+/** The page's language, for a demo's notes. */
+export const useLang = () => useContext(LangContext);
+
+/**
+ * Lets an MDX page say which language a demo speaks: <Demo lang="zh" />.
+ * Each island is its own React root, so the language rides in as a prop.
+ */
+export function localized<P extends object>(Demo: ComponentType<P>) {
+  const Localized = ({ lang = 'en', ...props }: P & { lang?: Lang }) => (
+    <LangContext.Provider value={lang}>
+      <Demo {...(props as P)} />
+    </LangContext.Provider>
+  );
+  Localized.displayName = Demo.displayName ?? Demo.name;
+  return Localized;
+}
+
+const FRAME_UI = {
+  en: { before: 'Before', after: 'After', theme: 'Switch theme', slow: 'Slow motion' },
+  zh: { before: '改前', after: '改后', theme: '切换主题', slow: '慢放' },
+} as const;
 
 function pageTheme(): Theme {
   const pinned = document.documentElement.dataset.theme;
@@ -99,6 +127,7 @@ function useStartFrame(on: boolean | undefined, stage: HTMLElement | null, porta
  * Material 3's Do / Don't, and its own light/dark switch. Popups stay inside it.
  */
 export function Frame({ label, children, height = 200, className, defaultTheme, tone, slow, onSlowChange }: FrameProps) {
+  const words = FRAME_UI[useLang()];
   const [theme, setTheme] = useState<Theme | null>(defaultTheme ?? null);
   const [portal, setPortal] = useState<HTMLElement | null>(null);
   const [stage, setStage] = useState<HTMLElement | null>(null);
@@ -119,14 +148,14 @@ export function Frame({ label, children, height = 200, className, defaultTheme, 
         <span className={s.label}>{label}</span>
         <span className={s.tools}>
           {onSlowChange && (
-            <Tip label="Slow motion">
+            <Tip label={words.slow}>
               <Button variant="ghost" size="sm" aria-pressed={slow} className={s.slow} onClick={() => onSlowChange(!slow)}>
                 0.1×
               </Button>
             </Tip>
           )}
-          <Tip label="Switch theme">
-            <Button variant="ghost" size="sm" icon aria-label="Switch theme" onClick={flip}>
+          <Tip label={words.theme}>
+            <Button variant="ghost" size="sm" icon aria-label={words.theme} onClick={flip}>
               <ContrastIcon />
             </Button>
           </Tip>
@@ -173,10 +202,11 @@ export function Compare({ before, after, beforeNote, afterNote, height, stacked,
 }
 
 function Verdict({ good }: { good: boolean }) {
+  const words = FRAME_UI[useLang()];
   return (
     <span className={s.verdict} data-good={good ? '' : undefined}>
       {good ? <CheckIcon size={14} /> : <CrossIcon size={14} />}
-      {good ? 'After' : 'Before'}
+      {good ? words.after : words.before}
     </span>
   );
 }

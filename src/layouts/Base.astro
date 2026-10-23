@@ -2,6 +2,7 @@
 import '../styles/tokens.css';
 import '../styles/global.scss';
 import { ThemeToggle } from '../components/ThemeToggle';
+import { hasZh, langOf, pathIn, ui } from '../i18n';
 import s from './Base.module.scss';
 
 interface Props {
@@ -9,17 +10,27 @@ interface Props {
   description?: string;
 }
 
-const { title, description = 'The small details that make interface components feel right.' } = Astro.props;
+const lang = langOf(Astro.url.pathname);
+const t = ui[lang];
+const { title, description = t.description } = Astro.props;
 const pageTitle = title ? `${title} · UI Playbook` : 'UI Playbook';
+// The same page in the other language; a page with no Chinese yet points at the Chinese home.
+const here = Astro.url.pathname;
+const bare = pathIn(here, 'en');
+const isEntry = /^\/(components|principles)\//.test(bare);
+const other = lang === 'zh' ? bare : !isEntry || hasZh(bare) ? pathIn(bare, 'zh') : '/zh/';
+const translated = lang === 'zh' || !isEntry || hasZh(bare);
 ---
 
-<html lang="en">
+<html lang={lang === 'zh' ? 'zh-CN' : 'en'}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{pageTitle}</title>
+    {translated && <link rel="alternate" hreflang="en" href={new URL(bare, Astro.site)} />}
+    {translated && <link rel="alternate" hreflang="zh-CN" href={new URL(pathIn(bare, 'zh'), Astro.site)} />}
     <slot name="head" />
     <script is:inline>
       // Apply a saved theme before first paint. No saved theme: follow the system.
@@ -32,8 +43,11 @@ const pageTitle = title ? `${title} · UI Playbook` : 'UI Playbook';
   <body>
     <div id="root">
       <header class={s.header}>
-        <a class={s.wordmark} href="/">UI Playbook</a>
-        <ThemeToggle client:load sunClass={s.sun} moonClass={s.moon} />
+        <a class={s.wordmark} href={lang === 'zh' ? '/zh/' : '/'}>UI Playbook</a>
+        <span class={s.actions}>
+          <a class={s.lang} href={other} hreflang={t.otherLang} lang={t.otherLang}>{t.other}</a>
+          <ThemeToggle client:load sunClass={s.sun} moonClass={s.moon} lang={lang} />
+        </span>
       </header>
       <main class={s.main}>
         <slot />

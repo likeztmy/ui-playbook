@@ -3,22 +3,25 @@
 // ring k sits 24k px outside the field with radius 8 + 24k, so every ring
 // shares the field's corner centres at any width.
 import { SearchIcon } from '../ui/icons';
+import { ui, type Lang } from '../i18n';
 import s from './Hero.module.scss';
 
 const RINGS = 14;
+const { lang = 'en' } = Astro.props as { lang?: Lang };
+const t = ui[lang];
 ---
 
 <section class={s.hero}>
   <div class={s.text}>
     <h1 class={s.title}>UI Playbook</h1>
-    <p class={s.lede}>The small details that make interface components feel right, each one shown side by side.</p>
+    <p class={s.lede}>{t.lede}</p>
     <div class={s.field}>
       <div class={s.halo} aria-hidden="true">
         {Array.from({ length: RINGS }, (_, i) => <span class={s.ring} style={`--k: ${i + 1}`} />)}
       </div>
       <label class={s.search}>
         <SearchIcon />
-        <input id="search" type="search" placeholder="Search components and principles" autocomplete="off" spellcheck="false" />
+        <input id="search" type="search" placeholder={t.search} autocomplete="off" spellcheck="false" />
       </label>
     </div>
   </div>

@@ -3,7 +3,8 @@ import { useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } f
 import { Button } from '../ui/Button';
 import { cx } from '../ui/cx';
 import { TextField } from '../ui/Field';
-import { Compare } from './shell';
+import { Compare, localized, useLang } from './shell';
+import { zh as ZH } from './shift.zh';
 import m from './mistakes.module.scss';
 import s from './demos.module.scss';
 
@@ -199,23 +200,32 @@ export function DocSearch({ keep }: { keep?: boolean }) {
   );
 }
 
-export function ShiftSearch() {
+export const ShiftSearch = localized(function ShiftSearch() {
+  const zh = useLang() === 'zh';
   return (
     <Compare
       height={0}
       before={<DocSearch />}
       after={<DocSearch keep />}
       beforeNote={
-        <>
-          The best pages from the whole index land 0.7 seconds after the last key, as a group above the recent ones. By then the pointer
-          is on its way to a recent page, and the row it reaches, or the one Enter would open, is something else. A shift that late no
-          longer answers the key, and <a href="https://web.dev/articles/cls">CLS</a> counts it.
-        </>
+        zh ? (
+          ZH.searchBefore
+        ) : (
+          <>
+            The best pages from the whole index land 0.7 seconds after the last key, as a group above the recent ones. By then the pointer
+            is on its way to a recent page, and the row it reaches, or the one Enter would open, is something else. A shift that late no
+            longer answers the key, and <a href="https://web.dev/articles/cls">CLS</a> counts it.
+          </>
+        )
       }
-      afterNote="The same group, after the rows already on screen. What the reader was aiming at stays where it was; the better matches are one glance further down, and the next key can rank them first."
+      afterNote={
+        zh
+          ? ZH.searchAfter
+          : "The same group, after the rows already on screen. What the reader was aiming at stays where it was; the better matches are one glance further down, and the next key can rank them first."
+      }
     />
   );
-}
+});
 
 // ── Bold that pushes ─────────────────────────────────────
 
@@ -245,23 +255,32 @@ export function BoldNav({ reserve }: { reserve?: boolean }) {
   );
 }
 
-export function ShiftBold() {
+export const ShiftBold = localized(function ShiftBold() {
+  const zh = useLang() === 'zh';
   return (
     <Compare
       height={0}
       before={<BoldNav />}
       after={<BoldNav reserve />}
-      beforeNote="Bold glyphs are wider. Each link the pointer crosses grows, and every link after it moves along: the one being aimed at slides away."
+      beforeNote={
+        zh
+          ? ZH.boldBefore
+          : "Bold glyphs are wider. Each link the pointer crosses grows, and every link after it moves along: the one being aimed at slides away."
+      }
       afterNote={
-        <>
-          Each link also holds an invisible bold copy of its own name, so it is as wide as it will ever get (
-          <a href="https://css-tricks.com/bold-on-hover-without-the-layout-shift/">CSS-Tricks</a>). Hover by a fill instead, and the weight
-          need never change.
-        </>
+        zh ? (
+          ZH.boldAfter
+        ) : (
+          <>
+            Each link also holds an invisible bold copy of its own name, so it is as wide as it will ever get (
+            <a href="https://css-tricks.com/bold-on-hover-without-the-layout-shift/">CSS-Tricks</a>). Hover by a fill instead, and the weight
+            need never change.
+          </>
+        )
       }
     />
   );
-}
+});
 
 // ── The scroll bar you never see ─────────────────────────
 
@@ -296,30 +315,39 @@ function Members({ stable }: { stable?: boolean }) {
   );
 }
 
-export function ShiftScrollbar() {
+export const ShiftScrollbar = localized(function ShiftScrollbar() {
+  const zh = useLang() === 'zh';
   return (
     <Compare
       height={0}
       before={<Members />}
       after={<Members stable />}
       beforeNote={
-        <>
-          Type “an”: the list stops overflowing, its scroll bar goes, and every role jumps 12px right. On a Mac or a phone the bar floats
-          over the content and takes no room, so whoever built it never saw this; on Windows, and wherever bars are always shown, everyone
-          does.
-        </>
+        zh ? (
+          ZH.scrollbarBefore
+        ) : (
+          <>
+            Type “an”: the list stops overflowing, its scroll bar goes, and every role jumps 12px right. On a Mac or a phone the bar floats
+            over the content and takes no room, so whoever built it never saw this; on Windows, and wherever bars are always shown, everyone
+            does.
+          </>
+        )
       }
       afterNote={
-        <>
-          <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/scrollbar-gutter">
-            <code>scrollbar-gutter: stable</code>
-          </a>{' '}
-          keeps the bar’s room whether it’s there or not. Overlay bars take none, so it changes nothing where there was nothing to fix.
-        </>
+        zh ? (
+          ZH.scrollbarAfter
+        ) : (
+          <>
+            <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/scrollbar-gutter">
+              <code>scrollbar-gutter: stable</code>
+            </a>{' '}
+            keeps the bar’s room whether it’s there or not. Overlay bars take none, so it changes nothing where there was nothing to fix.
+          </>
+        )
       }
     />
   );
-}
+});
 
 // ── The browser holds your place ─────────────────────────
 
@@ -389,29 +417,38 @@ function Thread({ anchored }: { anchored?: boolean }) {
   );
 }
 
-export function ShiftAnchor() {
+export const ShiftAnchor = localized(function ShiftAnchor() {
+  const zh = useLang() === 'zh';
   return (
     <Compare
       height={0}
       before={<Thread />}
       after={<Thread anchored />}
       beforeNote={
-        <>
-          With <code>overflow-anchor: none</code>, the earlier messages load in above the one being read and push it down out of the
-          window: the reader lands back at the kickoff and has to find their place again.
-        </>
+        zh ? (
+          ZH.anchorBefore
+        ) : (
+          <>
+            With <code>overflow-anchor: none</code>, the earlier messages load in above the one being read and push it down out of the
+            window: the reader lands back at the kickoff and has to find their place again.
+          </>
+        )
       }
       afterNote={
-        <>
-          The default. The browser picks a message on screen as its{' '}
-          <a href="https://drafts.csswg.org/css-scroll-anchoring/">anchor</a> and scrolls by exactly what was added above it. It can’t at
-          the very top, where there is nothing above to keep, so the thread loads a little before the reader gets there. Every engine
-          anchors only since 2026 (<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/overflow-anchor">MDN</a>).
-        </>
+        zh ? (
+          ZH.anchorAfter
+        ) : (
+          <>
+            The default. The browser picks a message on screen as its{' '}
+            <a href="https://drafts.csswg.org/css-scroll-anchoring/">anchor</a> and scrolls by exactly what was added above it. It can’t at
+            the very top, where there is nothing above to keep, so the thread loads a little before the reader gets there. Every engine
+            anchors only since 2026 (<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/overflow-anchor">MDN</a>).
+          </>
+        )
       }
     />
   );
-}
+});
 
 // ── The font that arrives late ───────────────────────────
 
@@ -435,23 +472,32 @@ function FontSwap({ matched }: { matched?: boolean }) {
   );
 }
 
-export function ShiftFont() {
+export const ShiftFont = localized(function ShiftFont() {
+  const zh = useLang() === 'zh';
   return (
     <Compare
       height={0}
       before={<FontSwap />}
       after={<FontSwap matched />}
-      beforeNote="Until the web font arrives, the text is set in Arial, about 2.5% narrower than Geist. When Geist swaps in, the lines break in new places, and everything under the paragraph moves."
+      beforeNote={
+        zh
+          ? ZH.fontBefore
+          : "Until the web font arrives, the text is set in Arial, about 2.5% narrower than Geist. When Geist swaps in, the lines break in new places, and everything under the paragraph moves."
+      }
       afterNote={
-        <>
-          The fallback is Arial scaled with <code>size-adjust</code> to Geist’s width, so the swap changes the letters, not the lines (
-          <a href="https://web.dev/articles/css-size-adjust">web.dev</a>). Next.js builds such a fallback by default for the fonts it loads (
-          <a href="https://nextjs.org/docs/app/api-reference/components/font">adjustFontFallback</a>).
-        </>
+        zh ? (
+          ZH.fontAfter
+        ) : (
+          <>
+            The fallback is Arial scaled with <code>size-adjust</code> to Geist’s width, so the swap changes the letters, not the lines (
+            <a href="https://web.dev/articles/css-size-adjust">web.dev</a>). Next.js builds such a fallback by default for the fonts it loads (
+            <a href="https://nextjs.org/docs/app/api-reference/components/font">adjustFontFallback</a>).
+          </>
+        )
       }
     />
   );
-}
+});
 
 /** The search with its groups, held still. */
 export function ShiftPreview() {

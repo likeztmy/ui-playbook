@@ -825,3 +825,20 @@ test('toast: Undo restores, plain ones leave after 4s, errors stay and are alert
   await limit.getByRole('button', { name: 'Upload 6 photos' }).click();
   await expect(limit.locator('[data-type="success"]:has(button):not([data-limited])')).toHaveCount(3);
 });
+
+test('chinese edition: the header switches to the same page; untranslated entries link to English', async ({ page }) => {
+  await page.goto('/principles/nothing-shifts');
+  await page.getByRole('link', { name: '中文' }).click();
+  await expect(page).toHaveURL(/\/zh\/principles\/nothing-shifts\/?$/);
+  await expect(page.locator('html')).toHaveAttribute('lang', 'zh-CN');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('界面不乱跳');
+  await hydrateAll(page);
+  await expect(page.locator('figure').first()).toContainText('改前');
+  await expect(page.getByText('同一组结果，排在屏幕上已有的行后面', { exact: false })).toBeVisible();
+  await page.getByRole('link', { name: 'English' }).click();
+  await expect(page).toHaveURL(/\/principles\/nothing-shifts\/?$/);
+
+  await page.goto('/zh/');
+  await expect(page.getByRole('link', { name: /界面不乱跳/ })).toHaveAttribute('href', '/zh/principles/nothing-shifts');
+  await expect(page.getByRole('link', { name: /^Button/ })).toHaveAttribute('href', '/components/button');
+});

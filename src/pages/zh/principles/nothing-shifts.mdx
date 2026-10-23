@@ -1,0 +1,47 @@
+---
+layout: ../../../layouts/Entry.astro
+slug: nothing-shifts
+---
+import { ShiftSearch, ShiftBold, ShiftScrollbar, ShiftAnchor, ShiftFont } from '../../../demos/shift';
+
+## 规则
+
+**没人要求，就什么都别动。** 人是先瞄准再点击，先读再滚动；布局在他们手底下一挪，点击就落到了别处，读到哪也找不着了。浏览器自己衡量“坏位移”的标准也是这个意思：点击、轻触或按键之后 500ms 以内的位移不算，因为回应用户操作的变化是意料之中的。只有没人要求的移动才算数。
+
+<ShiftSearch lang="zh" client:visible />
+
+## 细节
+
+### 粗体更宽
+
+<ShiftBold lang="zh" client:visible />
+
+### 你看不见的滚动条
+
+<ShiftScrollbar lang="zh" client:visible />
+
+### 浏览器替你稳住位置
+
+<ShiftAnchor lang="zh" client:visible />
+
+### 迟到的字体
+
+<ShiftFont lang="zh" client:visible />
+
+## 自己量
+
+Chrome 和 Edge 会在每次位移发生时测量它：窗口里有多大比例在动，乘以动了多远（[Layout Instability API](https://web.dev/articles/cls)）。每个演示下面显示的就是这个测量，只算这个演示本身：浏览器看到了几次位移、总分多少，和 CLS 一样，不算输入后 500ms 以内的位移。一个页面在整个生命周期里应保持在 0.1 以下；一个小方块挪几个像素几乎不得分，但只要一次，就足以把错误的链接送到指针下面。其他浏览器不报告位移，所以在那里计数是隐藏的。
+
+这个测量只看得见会移动的方块。打字后出现又消失的滚动条，或者点击后半秒以内发生的位移，都不得分，却同样可能把错误的一行送到指针下面。
+
+## 什么时候不适用
+
+- **用户要求的移动。** 展开一个区域、加载更多、归档一行：布局应该立刻跟上。
+- **不改变布局的动效。** transform 能缩放或滑动一个东西而不推动别的东西；那是动画，不是位移。
+
+## 本手册在哪里用到它
+
+- [Button](/components/button)：按钮在加载时保持宽度。
+- [Tabs](/components/tabs)：当前标签改变的是颜色和指示条，不是字重。
+- [Slider](/components/slider) 和 [Card](/components/card)：数值变化时数字保持等宽。
+- [眼睛往哪看](/principles/where-the-eye-goes)：会变化的计数在变化时动一下，让眼睛看得到。

@@ -15,10 +15,11 @@ type Props = {
   /** Classes that show one icon per theme in CSS, so the first paint is right before hydration. */
   sunClass: string;
   moonClass: string;
+  lang?: 'en' | 'zh';
 };
 
 /** Flips the page theme and remembers it. Shows the theme it switches to. */
-export function ThemeToggle({ sunClass, moonClass }: Props) {
+export function ThemeToggle({ sunClass, moonClass, lang = 'en' }: Props) {
   const [theme, setTheme] = useState<Theme | null>(null);
 
   useEffect(() => {
@@ -30,7 +31,14 @@ export function ThemeToggle({ sunClass, moonClass }: Props) {
   }, []);
 
   const next: Theme = theme === 'dark' ? 'light' : 'dark';
-  const label = theme ? `Switch to ${next} theme` : 'Switch theme';
+  const label =
+    lang === 'zh'
+      ? theme
+        ? `切换到${next === 'dark' ? '深色' : '浅色'}模式`
+        : '切换主题'
+      : theme
+        ? `Switch to ${next} theme`
+        : 'Switch theme';
 
   return (
     <Tip label={label} side="bottom">

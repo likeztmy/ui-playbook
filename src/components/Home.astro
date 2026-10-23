@@ -1,0 +1,144 @@
+---
+// The gallery: hero, search, and every entry by kind. Shared by / and /zh/.
+import Base from '../layouts/Base.astro';
+import { entries, href, summaryIn, titleIn } from '../entries';
+import { linkIn, ui, type Lang } from '../i18n';
+import { ButtonPreview } from '../demos/button';
+import { MenuPreview } from '../demos/menu';
+import { ToolbarPreview } from '../demos/toolbar';
+import { ConcentricPreview } from '../demos/concentric';
+import { ErrorTimingPreview } from '../demos/error-timing';
+import { ColourPreview } from '../demos/colour';
+import { EyePreview } from '../demos/eye';
+import { HoverPreview } from '../demos/hover';
+import { ShiftPreview } from '../demos/shift';
+import { TooltipPreview } from '../demos/tooltip';
+import { DialogPreview } from '../demos/dialog';
+import { PopoverPreview } from '../demos/popover';
+import { InputPreview } from '../demos/input';
+import { SelectPreview } from '../demos/select';
+import { ComboboxPreview } from '../demos/combobox';
+import { CheckboxPreview } from '../demos/checkbox';
+import { RadioPreview } from '../demos/radio';
+import { SwitchPreview } from '../demos/switch';
+import { TabsPreview } from '../demos/tabs';
+import { SliderPreview } from '../demos/slider';
+import { SegmentedPreview } from '../demos/segmented';
+import { CardPreview } from '../demos/card';
+import { BadgePreview } from '../demos/badge';
+import { TablePreview } from '../demos/table';
+import { ToastPreview } from '../demos/toast';
+import Hero from './Hero.astro';
+import s from '../pages/index.module.scss';
+
+const { lang = 'en' } = Astro.props as { lang?: Lang };
+const t = ui[lang];
+const groups = [
+  { kind: 'component', title: t.components },
+  { kind: 'principle', title: t.principles },
+] as const;
+---
+
+<Base>
+  <Hero lang={lang} />
+
+  {
+    groups.map((g) => {
+      const items = entries.filter((e) => e.kind === g.kind);
+      return (
+        <section class={s.group} data-group>
+          <header class={s.groupHead}>
+            <h2 class={s.groupTitle}>{g.title}</h2>
+            <span class={s.count} data-count>{items.length}</span>
+          </header>
+          <div class={s.grid}>
+            {items.map((e) => (
+              <article
+                class={s.card}
+                data-card
+                data-search={[e.title, e.summary, titleIn(e, lang), summaryIn(e, lang), ...e.keywords].join(' ').toLowerCase()}
+              >
+                <a class={s.cardHead} href={linkIn(href(e), lang)}>
+                  <span class={s.cardTitle}>{titleIn(e, lang)}</span>
+                  <span class={s.cardMeta}>{t.details(e.details)}</span>
+                </a>
+                <div class={s.cardStage}>
+                  {e.slug === 'button' && <ButtonPreview client:visible />}
+                  {e.slug === 'menu' && <MenuPreview client:visible />}
+                  {e.slug === 'toolbar' && <ToolbarPreview client:visible />}
+                  {e.slug === 'tooltip' && <TooltipPreview client:visible />}
+                  {e.slug === 'dialog' && <DialogPreview />}
+                  {e.slug === 'popover' && <PopoverPreview />}
+                  {e.slug === 'input' && <InputPreview client:visible />}
+                  {e.slug === 'select' && <SelectPreview />}
+                  {e.slug === 'combobox' && <ComboboxPreview client:visible />}
+                  {e.slug === 'checkbox' && <CheckboxPreview client:visible />}
+                  {e.slug === 'radio' && <RadioPreview client:visible />}
+                  {e.slug === 'switch' && <SwitchPreview client:visible />}
+                  {e.slug === 'tabs' && <TabsPreview client:visible />}
+                  {e.slug === 'slider' && <SliderPreview client:visible />}
+                  {e.slug === 'segmented-control' && <SegmentedPreview client:visible />}
+                  {e.slug === 'card' && <CardPreview client:visible />}
+                  {e.slug === 'badge' && <BadgePreview />}
+                  {e.slug === 'table' && <TablePreview />}
+                  {e.slug === 'toast' && <ToastPreview />}
+                  {e.slug === 'concentric-radius' && <ConcentricPreview />}
+                  {e.slug === 'error-timing' && <ErrorTimingPreview />}
+                  {e.slug === 'colour-means-one-thing' && <ColourPreview client:visible />}
+                  {e.slug === 'where-the-eye-goes' && <EyePreview client:visible />}
+                  {e.slug === 'hover-forgives' && <HoverPreview />}
+                  {e.slug === 'nothing-shifts' && <ShiftPreview />}
+                </div>
+                <p class={s.cardSummary}>{summaryIn(e, lang)}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+      );
+    })
+  }
+
+  <div class={s.empty} id="empty" hidden>
+    <p>{t.nothing}“<span id="empty-query"></span>”{lang === 'en' && '.'}</p>
+    <button type="button" id="clear">{t.clear}</button>
+  </div>
+</Base>
+
+<script>
+  const input = document.getElementById('search') as HTMLInputElement;
+  const empty = document.getElementById('empty')!;
+  const emptyQuery = document.getElementById('empty-query')!;
+  const groups = [...document.querySelectorAll<HTMLElement>('[data-group]')];
+
+  function filter() {
+    const q = input.value.trim().toLowerCase();
+    let shown = 0;
+    for (const g of groups) {
+      const cards = [...g.querySelectorAll<HTMLElement>('[data-card]')];
+      let n = 0;
+      for (const c of cards) {
+        const hit = !q || c.dataset.search!.includes(q);
+        c.hidden = !hit;
+        if (hit) n++;
+      }
+      g.hidden = n === 0;
+      g.querySelector('[data-count]')!.textContent = String(n);
+      shown += n;
+    }
+    empty.hidden = shown > 0;
+    emptyQuery.textContent = input.value.trim();
+  }
+
+  input.addEventListener('input', filter);
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && input.value) {
+      input.value = '';
+      filter();
+    }
+  });
+  document.getElementById('clear')!.addEventListener('click', () => {
+    input.value = '';
+    filter();
+    input.focus();
+  });
+</script>

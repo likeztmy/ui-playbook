@@ -82,6 +82,11 @@
   margin: var(--space-3) 0 0;
   font-size: 13px;
   line-height: 18px;
+
+  &:lang(zh) {
+    line-height: 20px;
+  }
+
   color: var(--ink-muted);
 }
 

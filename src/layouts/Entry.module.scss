@@ -69,6 +69,11 @@
   font-size: 15px;
   line-height: 24px;
 
+  // Chinese sets denser than Latin at the same size; give it more lead.
+  &:lang(zh) {
+    line-height: 26px;
+  }
+
   > :global(h2) {
     margin: var(--space-12) 0 var(--space-4);
     padding-bottom: var(--space-2);

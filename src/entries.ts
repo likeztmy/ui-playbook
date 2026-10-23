@@ -214,3 +214,36 @@ export const entries: Entry[] = [
 ];
 
 export const href = (e: Entry) => `/${e.kind === 'component' ? 'components' : 'principles'}/${e.slug}`;
+
+// Chinese titles and summaries. Component names stay in English, as the
+// ecosystem names them; principles are translated.
+const zh: Record<string, { title?: string; summary: string }> = {
+  button: { summary: '立刻执行一个操作。一颗实心胶囊，按下时有回应：按下要快，弹回要柔。' },
+  menu: { summary: '从触发按钮打开的一组操作或选项：下拉菜单、右键菜单，或选择菜单。' },
+  toolbar: { summary: '浮动的一排工具，和里面的每一样东西都同心。' },
+  tooltip: { summary: '为只有图标的控件写出名字和快捷键。只有一行，永远不可点。' },
+  popover: { summary: '从按钮弹出的小面板：做一件小事，或解释一句。从触发按钮长出来，不丢你写了一半的内容。' },
+  dialog: { summary: '为一个决定或一件小事叫停一切。很少是对的选择。' },
+  input: { summary: '带标签的文本输入框。离开时才检查，打字时不打扰。' },
+  select: { summary: '从一份短列表里选一个值。盖在触发按钮上打开，用对勾标出当前值。' },
+  combobox: { summary: '能打字的 Select。匹配宽容，第一项按 Enter 就选，匹配的部分加粗。' },
+  checkbox: { summary: '开、关或半选，随表单一起提交。整行都可点。' },
+  radio: { summary: '几个选项里恰好选一个，全都摆在眼前。总有一个被选中，方向键边移动边选择。' },
+  switch: { summary: '一拨即生效的设置。标签写设置名，不写状态。' },
+  tabs: { summary: '同一样东西的几种视图，排成一行。一条墨色指示条滑到当前标签下，别的都不动。' },
+  slider: { summary: '整行都是控件。拖动时紧跟，点击时滑过去，到头还能稍微拉一下。' },
+  'segmented-control': { summary: '二到五种模式里选一种，全都摆在眼前。一个滑块滑到选中的那一段。' },
+  card: { summary: '一个边框围着灰色舞台，文字在下面。只有能打开的卡片才会浮起。' },
+  badge: { summary: '用一两个词标出状态或属性。意思靠文字，颜色只是帮衬。' },
+  table: { summary: '用同一组属性比较许多东西。用分隔线，不用斑马纹；数字靠右对齐。' },
+  toast: { summary: '一行确认，附一个撤销。从下方升起，颜色只放在图标上。' },
+  'concentric-radius': { title: '同心圆角', summary: '内圆角 = 外圆角 − 内边距。嵌套的角共用一个圆心。' },
+  'colour-means-one-thing': { title: '一种颜色只说一件事', summary: '蓝色只说“现在做这个”。当前状态靠形状和深浅表达，于是屏幕上只剩一块实心蓝，一眼就能找到。' },
+  'where-the-eye-goes': { title: '眼睛往哪看', summary: '眼睛先猜再读：它会漏掉点击之外的变化，停在看起来已经结束的地方，跳过看起来像广告的东西。' },
+  'nothing-shifts': { title: '界面不乱跳', summary: '没人要求，就什么都别动。指针下的布局一挪，点击就落到了别处。' },
+  'hover-forgives': { title: '悬停要宽容', summary: '指针正在去某个地方的路上。按它要去哪儿来判断，而不是按它碰巧经过的那一行。' },
+  'error-timing': { title: '报错的时机', summary: '等用户填完再说错了；一旦对了，马上说对了。' },
+};
+
+export const titleIn = (e: Entry, lang: 'en' | 'zh') => (lang === 'zh' && zh[e.slug]?.title) || e.title;
+export const summaryIn = (e: Entry, lang: 'en' | 'zh') => (lang === 'zh' && zh[e.slug]?.summary) || e.summary;

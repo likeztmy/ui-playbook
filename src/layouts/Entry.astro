@@ -2,45 +2,49 @@
 // Layout for every component and principle page. The MDX body supplies the
 // sections; this frame supplies the way back and the way on.
 import Base from './Base.astro';
-import { entries, href } from '../entries';
+import { entries, href, titleIn, summaryIn } from '../entries';
+import { langOf, linkIn, ui } from '../i18n';
 import { BackIcon } from '../ui/icons';
 import s from './Entry.module.scss';
 
 const { frontmatter } = Astro.props;
+const lang = langOf(Astro.url.pathname);
+const t = ui[lang];
 const i = entries.findIndex((e) => e.slug === frontmatter.slug);
 const entry = entries[i];
 const prev = entries[i - 1];
 const next = entries[i + 1];
+const isComponent = entry.kind === 'component';
 ---
 
-<Base title={entry.title} description={entry.summary}>
+<Base title={titleIn(entry, lang)} description={summaryIn(entry, lang)}>
   <article class={s.page}>
-    <a class={s.back} href="/">
+    <a class={s.back} href={lang === 'zh' ? '/zh/' : '/'}>
       <BackIcon />
-      All {entry.kind === 'component' ? 'components' : 'principles'}
+      {isComponent ? t.allComponents : t.allPrinciples}
     </a>
     <header class={s.head}>
-      <p class={s.kind}>{entry.kind === 'component' ? 'Component' : 'Principle'}</p>
-      <h1 class={s.title}>{entry.title}</h1>
-      <p class={s.summary}>{entry.summary}</p>
+      <p class={s.kind}>{isComponent ? t.component : t.principle}</p>
+      <h1 class={s.title}>{titleIn(entry, lang)}</h1>
+      <p class={s.summary}>{summaryIn(entry, lang)}</p>
     </header>
     <div class={s.body}>
       <slot />
     </div>
-    <nav class={s.pager} aria-label="More entries">
+    <nav class={s.pager} aria-label={t.more}>
       {
         prev && (
-          <a class={s.next} href={href(prev)} rel="prev">
-            <span class={s.nextLabel}>Previous</span>
-            <span class={s.nextTitle}>{prev.title}</span>
+          <a class={s.next} href={linkIn(href(prev), lang)} rel="prev">
+            <span class={s.nextLabel}>{t.previous}</span>
+            <span class={s.nextTitle}>{titleIn(prev, lang)}</span>
           </a>
         )
       }
       {
         next && (
-          <a class={`${s.next} ${s.forward}`} href={href(next)} rel="next">
-            <span class={s.nextLabel}>Next</span>
-            <span class={s.nextTitle}>{next.title}</span>
+          <a class={`${s.next} ${s.forward}`} href={linkIn(href(next), lang)} rel="next">
+            <span class={s.nextLabel}>{t.next}</span>
+            <span class={s.nextTitle}>{titleIn(next, lang)}</span>
           </a>
         )
       }
