@@ -19,7 +19,7 @@ const isComponent = entry.kind === 'component';
 
 <Base title={titleIn(entry, lang)} description={summaryIn(entry, lang)}>
   <article class={s.page}>
-    <a class={s.back} href={lang === 'zh' ? '/zh/' : '/'}>
+    <a class={s.back} href={lang === 'zh' ? '/zh' : '/'}>
       <BackIcon />
       {isComponent ? t.allComponents : t.allPrinciples}
     </a>

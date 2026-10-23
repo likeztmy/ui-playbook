@@ -838,7 +838,7 @@ test('chinese edition: the header switches to the same page; untranslated entrie
   await page.getByRole('link', { name: 'English' }).click();
   await expect(page).toHaveURL(/\/principles\/nothing-shifts\/?$/);
 
-  await page.goto('/zh/');
+  await page.goto('/zh');
   await expect(page.getByRole('link', { name: /界面不乱跳/ })).toHaveAttribute('href', '/zh/principles/nothing-shifts');
   await expect(page.getByRole('link', { name: /^Button/ })).toHaveAttribute('href', '/components/button');
 });

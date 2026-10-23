@@ -9,7 +9,7 @@ export const langOf = (pathname: string): Lang => (pathname === '/zh' || pathnam
 /** The same path in `lang`. */
 export const pathIn = (pathname: string, lang: Lang) => {
   const bare = pathname.replace(/^\/zh(?=\/|$)/, '') || '/';
-  return lang === 'zh' ? (bare === '/' ? '/zh/' : `/zh${bare}`) : bare;
+  return lang === 'zh' ? (bare === '/' ? '/zh' : `/zh${bare}`) : bare;
 };
 
 // Which pages have a Chinese version: /components/x and /principles/x.

@@ -18,7 +18,7 @@ const pageTitle = title ? `${title} · UI Playbook` : 'UI Playbook';
 const here = Astro.url.pathname;
 const bare = pathIn(here, 'en');
 const isEntry = /^\/(components|principles)\//.test(bare);
-const other = lang === 'zh' ? bare : !isEntry || hasZh(bare) ? pathIn(bare, 'zh') : '/zh/';
+const other = lang === 'zh' ? bare : !isEntry || hasZh(bare) ? pathIn(bare, 'zh') : '/zh';
 const translated = lang === 'zh' || !isEntry || hasZh(bare);
 ---
 
@@ -43,7 +43,7 @@ const translated = lang === 'zh' || !isEntry || hasZh(bare);
   <body>
     <div id="root">
       <header class={s.header}>
-        <a class={s.wordmark} href={lang === 'zh' ? '/zh/' : '/'}>UI Playbook</a>
+        <a class={s.wordmark} href={lang === 'zh' ? '/zh' : '/'}>UI Playbook</a>
         <span class={s.actions}>
           <a class={s.lang} href={other} hreflang={t.otherLang} lang={t.otherLang}>{t.other}</a>
           <ThemeToggle client:load sunClass={s.sun} moonClass={s.moon} lang={lang} />
