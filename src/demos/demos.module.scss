@@ -1145,3 +1145,50 @@
   zoom: 0.62;
   pointer-events: none;
 }
+
+// Colour cases: a sidebar with counts, and a plan summary.
+.sideNav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-0-5);
+  width: 200px;
+  font-size: 13px;
+}
+
+.sideNavRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--control-md);
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-sm);
+}
+
+.sideCount {
+  min-width: 20px;
+  padding: 0 var(--space-1);
+  border-radius: var(--radius-full);
+  background: var(--fill-control);
+  color: var(--ink-muted);
+  font-size: 12px;
+  line-height: 18px;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+.sideAlert {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-top: var(--space-2);
+  padding: 0 var(--space-2);
+  color: var(--danger);
+}
+
+.planCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-size: 14px;
+  line-height: 20px;
+}

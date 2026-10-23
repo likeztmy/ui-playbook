@@ -1,3 +1,4 @@
+import { CircleAlert } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '../ui/Button';
 import { cx } from '../ui/cx';
@@ -121,6 +122,110 @@ export function ColourGreyscale() {
         <Editor />
       </div>
     </Frame>
+  );
+}
+
+// ── More cases ───────────────────────────────────────────
+
+/** A list whose hover can borrow the selection's tint. */
+function HoverList({ hoverTint }: { hoverTint?: boolean }) {
+  const [chosen, setChosen] = useState('Pricing');
+  return (
+    <div className={s.editorList} role="listbox" aria-label="Frames">
+      {FRAMES.map((f) => (
+        <div
+          key={f}
+          role="option"
+          aria-selected={f === chosen}
+          className={cx(s.editorRow, hoverTint && m.tintHover)}
+          onClick={() => setChosen(f)}
+        >
+          <span className={s.editorThumb} aria-hidden />
+          {f}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export function ColourHover() {
+  return (
+    <Compare
+      height={200}
+      before={<HoverList hoverTint />}
+      after={<HoverList />}
+      beforeNote="With hover in the selection’s tint, every row the pointer crosses looks chosen for a moment."
+      afterNote="Hover is a neutral fill that only says “here”; the tint is kept for the row that’s chosen."
+    />
+  );
+}
+
+const NAV = [
+  ['Inbox', 12],
+  ['Mentions', 3],
+  ['Drafts', 2],
+] as const;
+
+/** A sidebar with counts, and one thing that really is wrong. */
+function Sidebar({ redCounts }: { redCounts?: boolean }) {
+  return (
+    <div className={s.sideNav}>
+      {NAV.map(([name, n]) => (
+        <div key={name} className={s.sideNavRow}>
+          <span>{name}</span>
+          <span className={cx(s.sideCount, redCounts && m.redCount)}>{n}</span>
+        </div>
+      ))}
+      <div className={s.sideAlert} role="status">
+        <CircleAlert size={14} strokeWidth={1.5} nonScalingStroke aria-hidden />
+        Payment failed
+      </div>
+    </div>
+  );
+}
+
+export function ColourRed() {
+  return (
+    <Compare
+      height={200}
+      before={<Sidebar redCounts />}
+      after={<Sidebar />}
+      beforeNote="With counts in red too, the one red that needs doing is one of four, and people learn to look past red."
+      afterNote="Counts are ink on grey: news, not trouble. Red is left to the payment that failed."
+    />
+  );
+}
+
+/** A plan summary where blue may mean more than “goes somewhere”. */
+function Plan({ blueText }: { blueText?: boolean }) {
+  const em = cx(blueText && m.blueText);
+  return (
+    <div className={s.planCard}>
+      <span>
+        Plan: <b className={em}>Pro</b>
+      </span>
+      <span>
+        Storage: <span className={em}>4.2 of 10 GB</span>
+      </span>
+      <span>
+        Renews on <span className={em}>1 December</span>.{' '}
+        <a href="#billing" onClick={(e) => e.preventDefault()}>
+          Manage billing
+        </a>
+      </span>
+    </div>
+  );
+}
+
+export function ColourLinks() {
+  return (
+    <Compare
+      height={160}
+      before={<Plan blueText />}
+      after={<Plan />}
+      beforeNote="Blue text reads as a link, so the plan name and the numbers get clicked and do nothing."
+      afterNote="Only Manage billing is blue, and it’s the only thing here that goes somewhere."
+    />
   );
 }
 
