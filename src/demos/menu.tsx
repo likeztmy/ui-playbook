@@ -167,6 +167,7 @@ export function MenuShortcuts() {
 export function MenuMotion() {
   return (
     <Compare
+      motion
       height={STILL_HEIGHT}
       before={
         <div className={s.top}>
@@ -178,7 +179,7 @@ export function MenuMotion() {
           <LiveMenu />
         </div>
       }
-      beforeNote="Grown from its own centre, the menu seems to come from nowhere."
+      beforeNote="Grown from its own centre, the menu seems to come from nowhere. At 0.96 to 1 the two starts differ by a few pixels, which is why it takes slow motion to see: the dashed box is the first frame, the dot the point it grows from."
       afterNote="Grown from the trigger’s corner, it is plainly that button’s menu."
     />
   );

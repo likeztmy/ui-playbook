@@ -49,7 +49,11 @@
   color: var(--ink-muted);
 }
 
+// Positioned for the slow-motion outline only. The frame itself stays
+// unpositioned: positioned, it became the popups' offset parent, and opening
+// a popover in slow motion scrolled the page to it.
 .stage {
+  position: relative;
   box-sizing: border-box;
   display: grid;
   place-items: center;
@@ -207,4 +211,55 @@
   min-width: 0;
   align-items: center;
   gap: var(--space-2);
+}
+
+// Slow motion: every duration token at ten times, as the Animations panel's
+// 10% speed. Popups portal into the frame, so theirs slow too.
+.frame[data-slow] {
+  --duration-fast: 1200ms;
+  --duration-base: 1800ms;
+  --spring-snappy-duration: 3940ms;
+  --spring-smooth-duration: 6180ms;
+  --spring-gentle-duration: 7920ms;
+  --stagger: 300ms;
+}
+
+.tools {
+  display: flex;
+  align-items: center;
+  gap: var(--space-0-5);
+}
+
+.slow {
+  padding: 0 var(--space-2);
+  font-family: var(--font-mono);
+  font-size: 12px;
+
+  &[aria-pressed='true'] {
+    background: var(--fill-active);
+    color: var(--ink);
+  }
+}
+
+// A popup's first frame, dashed, and the point it grows from.
+.startFrame,
+.origin {
+  position: absolute;
+  z-index: calc(var(--z-dropdown) + 1);
+  pointer-events: none;
+}
+
+.startFrame {
+  box-sizing: border-box;
+  border: 1px dashed var(--ink-muted);
+  border-radius: var(--radius-lg);
+}
+
+.origin {
+  width: 8px;
+  height: 8px;
+  margin: -4px 0 0 -4px;
+  border-radius: var(--radius-full);
+  background: var(--ink);
+  box-shadow: 0 0 0 2px var(--surface);
 }

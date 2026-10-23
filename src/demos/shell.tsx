@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { PortalContainer } from '../ui/portal';
 import { Button } from '../ui/Button';
 import { CheckIcon, ContrastIcon, CrossIcon } from '../ui/icons';
@@ -25,32 +25,112 @@ type FrameProps = {
   defaultTheme?: Theme;
   /** Tints the band: the common mistake or the better way. */
   tone?: 'bad' | 'good';
+  /** Plays its motion at a tenth of the speed and outlines a popup's first frame. */
+  slow?: boolean;
+  /** Shows the slow-motion switch in the band. */
+  onSlowChange?: (slow: boolean) => void;
 };
+
+type Box = { x: number; y: number; w: number; h: number };
+
+// Popups whose entrance is worth slowing down; tooltips and backdrops aren't.
+const POPUPS = '[role="dialog"], [role="menu"], [role="listbox"], [role="alertdialog"]';
+
+/**
+ * While `on`, outlines the first frame of each popup that opens inside
+ * `portal` and marks its transform origin. The popup's resting box is its
+ * positioner's (which is never scaled); the first frame is that box scaled
+ * by enter-scale about the origin and pushed enter-offset away from the
+ * trigger, as the popups' own starting style does.
+ */
+function useStartFrame(on: boolean | undefined, stage: HTMLElement | null, portal: HTMLElement | null) {
+  const [start, setStart] = useState<Box | null>(null);
+  const [origin, setOrigin] = useState<{ x: number; y: number } | null>(null);
+  useEffect(() => {
+    setStart(null);
+    setOrigin(null);
+    if (!on || !stage || !portal) return;
+    const measure = (el: HTMLElement) => {
+      const f = stage.getBoundingClientRect();
+      const box = (el.parentElement ?? el).getBoundingClientRect();
+      const css = getComputedStyle(el);
+      const [ox, oy] = css.transformOrigin.split(' ').map(parseFloat);
+      const scale = parseFloat(css.getPropertyValue('--enter-scale')) || 1;
+      const offset = parseFloat(css.getPropertyValue('--enter-offset')) || 0;
+      const side = el.dataset.side;
+      const [tx, ty] = side === 'bottom' ? [0, -offset] : side === 'top' ? [0, offset] : side === 'right' ? [-offset, 0] : side === 'left' ? [offset, 0] : [0, 0];
+      const o = { x: box.left - f.left + ox, y: box.top - f.top + oy };
+      setOrigin(o);
+      setStart({
+        x: o.x - ox * scale + tx,
+        y: o.y - oy * scale + ty,
+        w: box.width * scale,
+        h: box.height * scale,
+      });
+    };
+    const seen = (el: Element) => {
+      if (!(el instanceof HTMLElement) || !el.matches(POPUPS)) return;
+      if (el.hasAttribute('data-ending-style')) {
+        setStart(null);
+        setOrigin(null);
+      } else if (el.hasAttribute('data-starting-style')) {
+        // Two frames: the positioner places the popup after it mounts.
+        requestAnimationFrame(() => requestAnimationFrame(() => measure(el)));
+      }
+    };
+    const mo = new MutationObserver((records) => {
+      for (const r of records) {
+        if (r.type === 'attributes') seen(r.target as Element);
+        r.addedNodes.forEach((n) => {
+          if (!(n instanceof Element)) return;
+          seen(n);
+          n.querySelectorAll(POPUPS).forEach(seen);
+        });
+      }
+    });
+    mo.observe(portal, { subtree: true, childList: true, attributes: true, attributeFilter: ['data-starting-style', 'data-ending-style'] });
+    return () => mo.disconnect();
+  }, [on, stage, portal]);
+  return { start, origin };
+}
 
 /**
  * A demo stage with a band under it naming the scene or the verdict, after
  * Material 3's Do / Don't, and its own light/dark switch. Popups stay inside it.
  */
-export function Frame({ label, children, height = 200, className, defaultTheme, tone }: FrameProps) {
+export function Frame({ label, children, height = 200, className, defaultTheme, tone, slow, onSlowChange }: FrameProps) {
   const [theme, setTheme] = useState<Theme | null>(defaultTheme ?? null);
   const [portal, setPortal] = useState<HTMLElement | null>(null);
+  const [stage, setStage] = useState<HTMLElement | null>(null);
+  const { start, origin } = useStartFrame(slow, stage, portal);
   // Read at click time: the page theme may have changed since render.
   const flip = () => setTheme((t) => ((t ?? pageTheme()) === 'dark' ? 'light' : 'dark'));
 
   return (
-    <figure className={cx(s.frame, className)} data-theme={theme ?? undefined}>
-      <div className={s.stage} style={{ minHeight: height }}>
+    <figure className={cx(s.frame, className)} data-theme={theme ?? undefined} data-slow={slow ? '' : undefined}>
+      <div ref={setStage} className={s.stage} style={{ minHeight: height }}>
         <PortalContainer.Provider value={portal}>
           <TipGroup>{children}</TipGroup>
         </PortalContainer.Provider>
+        {start && <span className={s.startFrame} style={{ left: start.x, top: start.y, width: start.w, height: start.h }} aria-hidden />}
+        {origin && <span className={s.origin} style={{ left: origin.x, top: origin.y }} aria-hidden />}
       </div>
       <div className={s.bar} data-tone={tone}>
         <span className={s.label}>{label}</span>
-        <Tip label="Switch theme">
-          <Button variant="ghost" size="sm" icon aria-label="Switch theme" onClick={flip}>
-            <ContrastIcon />
-          </Button>
-        </Tip>
+        <span className={s.tools}>
+          {onSlowChange && (
+            <Tip label="Slow motion">
+              <Button variant="ghost" size="sm" aria-pressed={slow} className={s.slow} onClick={() => onSlowChange(!slow)}>
+                0.1×
+              </Button>
+            </Tip>
+          )}
+          <Tip label="Switch theme">
+            <Button variant="ghost" size="sm" icon aria-label="Switch theme" onClick={flip}>
+              <ContrastIcon />
+            </Button>
+          </Tip>
+        </span>
       </div>
       <div ref={setPortal} />
     </figure>
@@ -66,20 +146,24 @@ type CompareProps = {
   height?: number;
   /** One above the other, for demos too wide for half a column (tables). */
   stacked?: boolean;
+  /** Offers slow motion, shared by both sides, for demos whose point is how something moves. */
+  motion?: boolean;
 };
 
 /** The same thing twice: the common version and the better one. */
-export function Compare({ before, after, beforeNote, afterNote, height, stacked }: CompareProps) {
+export function Compare({ before, after, beforeNote, afterNote, height, stacked, motion }: CompareProps) {
+  const [slow, setSlow] = useState(false);
+  const slowing = motion ? { slow, onSlowChange: setSlow } : {};
   return (
     <div className={cx(s.compare, stacked && s.stacked)}>
       <div className={s.side}>
-        <Frame label={<Verdict good={false} />} height={height} tone="bad">
+        <Frame label={<Verdict good={false} />} height={height} tone="bad" {...slowing}>
           {before}
         </Frame>
         <p className={s.note}>{beforeNote}</p>
       </div>
       <div className={s.side}>
-        <Frame label={<Verdict good />} height={height} tone="good">
+        <Frame label={<Verdict good />} height={height} tone="good" {...slowing}>
           {after}
         </Frame>
         <p className={s.note}>{afterNote}</p>

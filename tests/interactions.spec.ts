@@ -514,6 +514,32 @@ test('radio: one Tab stop on the chosen one, arrows move and choose, a choice re
   await expect(keys.getByRole('button').nth(1)).toBeFocused();
 });
 
+test('popover origin: slow motion marks where each panel grows from, without scrolling the page', async ({ page }) => {
+  await page.goto('/components/popover');
+  await hydrateAll(page);
+  const pair = page.locator('figure').filter({ hasText: 'Before' }).first().locator('..').locator('..');
+  const [before, after] = [pair.locator('figure').nth(0), pair.locator('figure').nth(1)];
+  await before.scrollIntoViewIfNeeded();
+  await before.getByRole('button', { name: '0.1×' }).click();
+  await expect(after.getByRole('button', { name: '0.1×' })).toHaveAttribute('aria-pressed', 'true');
+  const originAt = async (f: typeof before) => {
+    await f.getByRole('button', { name: 'Share' }).click();
+    const dot = f.locator('[class*="origin"]');
+    await expect(dot).toBeVisible();
+    const y = await page.evaluate(() => scrollY);
+    const [d, p] = [(await dot.boundingBox())!, (await f.getByRole('dialog').locator('..').boundingBox())!];
+    await page.keyboard.press('Escape');
+    await expect(dot).toHaveCount(0);
+    return { dx: d.x + d.width / 2 - p.x, w: p.width, y };
+  };
+  const y0 = await page.evaluate(() => scrollY);
+  const b = await originAt(before);
+  const a = await originAt(after);
+  expect(b.dx).toBeGreaterThan(b.w / 3);
+  expect(a.dx).toBeLessThan(a.w / 6);
+  expect(b.y).toBe(y0);
+});
+
 test('popover: focus goes to the field and back; a stray click keeps the draft', async ({ page }) => {
   await page.goto('/components/popover');
   await hydrateAll(page);
