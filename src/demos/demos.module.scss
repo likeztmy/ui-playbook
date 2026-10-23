@@ -1796,8 +1796,24 @@
 .docSearchList {
   display: flex;
   flex-direction: column;
-  gap: var(--space-0-5);
-  min-height: calc(7 * 32px + 6 * 2px);
+  gap: var(--space-2);
+  // Room for both groups from the start: two heads, seven rows.
+  min-height: calc(2 * 24px + 7 * 32px + var(--space-2));
+}
+
+.docSearchGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.docSearchHead {
+  display: flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 var(--space-2);
+  color: var(--ink-muted);
+  font-size: 12px;
+  font-weight: 500;
 }
 
 .docSearchRow {

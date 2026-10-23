@@ -350,7 +350,7 @@ test('where the eye goes: only the After answers at the button; only its fold cu
   expect(await firstScreenShowsPlans(1)).toBe(true);
 });
 
-test('nothing shifts: late results reorder the Before list, join the end of the After; the After holds the gutter', async ({ page }) => {
+test('nothing shifts: late results land above the Before list, below the After; the After holds the gutter', async ({ page }) => {
   await page.goto('/principles/nothing-shifts');
   await hydrateAll(page);
   const [before, after] = [page.locator('figure').nth(0), page.locator('figure').nth(1)];
@@ -359,7 +359,7 @@ test('nothing shifts: late results reorder the Before list, join the end of the 
     await expect(f.getByRole('option').first()).toHaveText('Buttons');
   }
   await expect(before.getByRole('option').first()).toHaveText('Badges', { timeout: 2000 });
-  await expect(after.getByRole('option')).toHaveCount(7, { timeout: 2000 });
+  await expect(after.getByRole('option')).toHaveCount(4, { timeout: 2000 });
   await expect(after.getByRole('option').first()).toHaveText('Buttons');
   for (const f of [before, after]) await f.getByRole('combobox', { name: 'Search docs' }).press('Enter');
   await expect(before.getByText('Opened “Badges”')).toBeVisible();

@@ -97,7 +97,8 @@ const INDEX = [
   'Loading states', 'Motion', 'Navigation', 'Notifications', 'Pagination', 'Popovers', 'Radio buttons', 'Search', 'Select',
   'Sliders', 'Switches', 'Tabs', 'Toasts', 'Toolbars', 'Tooltips', 'Undo',
 ];
-const ROWS = 7;
+const RECENT_MAX = 4;
+const PAGES_MAX = 3;
 
 const matches = (title: string, q: string) => title.toLowerCase().includes(q.trim().toLowerCase());
 
@@ -108,30 +109,36 @@ function rank(q: string) {
   return INDEX.filter((t) => matches(t, v)).sort((a, b) => tier(a) - tier(b) || a.localeCompare(b));
 }
 
+type Group = { name: string; titles: string[] };
+
 /**
- * Docs search. Recent pages that match show at once; the full results
- * arrive 700ms after the last key. `keep` leaves the rows already shown in
- * place and adds the new ones after them.
+ * Docs search. Recent pages that match show at once; the best pages from
+ * the whole index arrive 700ms after the last key, as a group of their own.
+ * `keep` puts that group after the rows already shown instead of above them.
  */
 function DocSearch({ keep }: { keep?: boolean }) {
   const [q, setQ] = useState('');
-  const [rows, setRows] = useState(RECENT);
+  const [groups, setGroups] = useState<Group[]>([{ name: 'Recent', titles: RECENT.slice(0, RECENT_MAX) }]);
   const [active, setActive] = useState(0);
   const [opened, setOpened] = useState<string | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const id = useId();
   useEffect(() => () => clearTimeout(timer.current), []);
+  const rows = groups.flatMap((g) => g.titles);
 
   const type = (v: string) => {
     setQ(v);
     setOpened(null);
-    setRows(v.trim() ? RECENT.filter((t) => matches(t, v)) : RECENT);
+    const recent = (v.trim() ? RECENT.filter((t) => matches(t, v)) : RECENT).slice(0, RECENT_MAX);
+    const shown: Group = { name: 'Recent', titles: recent };
+    setGroups(recent.length ? [shown] : []);
     setActive(0);
     clearTimeout(timer.current);
     if (!v.trim()) return;
     timer.current = setTimeout(() => {
-      const ranked = rank(v);
-      setRows((shown) => (keep ? [...shown, ...ranked.filter((t) => !shown.includes(t))] : ranked).slice(0, ROWS));
+      const pages: Group = { name: 'Pages', titles: rank(v).filter((t) => !recent.includes(t)).slice(0, PAGES_MAX) };
+      if (!pages.titles.length) return;
+      setGroups(recent.length ? (keep ? [shown, pages] : [pages, shown]) : [pages]);
     }, 700);
   };
   const open = (title: string) => setOpened(title);
@@ -145,6 +152,7 @@ function DocSearch({ keep }: { keep?: boolean }) {
     }
   };
 
+  let i = -1;
   return (
     <Measured status={opened && `Opened “${opened}”`}>
       <div className={s.docSearch}>
@@ -161,18 +169,28 @@ function DocSearch({ keep }: { keep?: boolean }) {
           onKeyDown={onKey}
         />
         <div className={s.docSearchList} role="listbox" id={`${id}-list`} aria-label="Pages">
-          {rows.map((title, i) => (
-            <div
-              key={title}
-              id={`${id}-${i}`}
-              role="option"
-              aria-selected={i === active}
-              className={s.docSearchRow}
-              onMouseMove={() => setActive(i)}
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={() => open(title)}
-            >
-              {title}
+          {groups.map((g) => (
+            <div key={g.name} role="group" aria-labelledby={`${id}-${g.name}`} className={s.docSearchGroup}>
+              <div id={`${id}-${g.name}`} className={s.docSearchHead}>
+                {g.name}
+              </div>
+              {g.titles.map((title) => {
+                const n = ++i;
+                return (
+                  <div
+                    key={title}
+                    id={`${id}-${n}`}
+                    role="option"
+                    aria-selected={n === active}
+                    className={s.docSearchRow}
+                    onMouseMove={() => setActive(n)}
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => open(title)}
+                  >
+                    {title}
+                  </div>
+                );
+              })}
             </div>
           ))}
         </div>
@@ -189,12 +207,12 @@ export function ShiftSearch() {
       after={<DocSearch keep />}
       beforeNote={
         <>
-          The full results land 0.7 seconds after the last key, ranked above the recent pages. By then the pointer is on its way to a
-          row, and the row it reaches, or the one Enter would open, is another page. A shift that late no longer answers the key, and{' '}
-          <a href="https://web.dev/articles/cls">CLS</a> counts it.
+          The best pages from the whole index land 0.7 seconds after the last key, as a group above the recent ones. By then the pointer
+          is on its way to a recent page, and the row it reaches, or the one Enter would open, is something else. A shift that late no
+          longer answers the key, and <a href="https://web.dev/articles/cls">CLS</a> counts it.
         </>
       }
-      afterNote="Rows already on screen keep their place; what arrives late joins the end. The better order can wait for the next key, when the eye is back on the list anyway."
+      afterNote="The same group, after the rows already on screen. What the reader was aiming at stays where it was; the better matches are one glance further down, and the next key can rank them first."
     />
   );
 }
@@ -435,17 +453,24 @@ export function ShiftFont() {
   );
 }
 
-/** The search with its rows, held still. */
+/** The search with its groups, held still. */
 export function ShiftPreview() {
+  const group = (name: string, titles: string[], first?: boolean) => (
+    <div className={s.docSearchGroup}>
+      <div className={s.docSearchHead}>{name}</div>
+      {titles.map((t, i) => (
+        <div key={t} className={s.docSearchRow} aria-selected={first && i === 0}>
+          {t}
+        </div>
+      ))}
+    </div>
+  );
   return (
     <div className={cx(s.docSearch, s.shiftStill)} aria-hidden>
       <span className={s.docSearchInput}>b</span>
       <div className={s.docSearchList}>
-        {['Buttons', 'Badges', 'Breadcrumbs', 'Radio buttons', 'Keyboard shortcuts'].map((t, i) => (
-          <div key={t} className={s.docSearchRow} aria-selected={i === 0}>
-            {t}
-          </div>
-        ))}
+        {group('Recent', ['Buttons'], true)}
+        {group('Pages', ['Badges', 'Breadcrumbs', 'Radio buttons'])}
       </div>
     </div>
   );
