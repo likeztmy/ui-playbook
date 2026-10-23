@@ -1014,3 +1014,64 @@
 .anatomyCheck {
   width: 150px;
 }
+
+// Menu: files sorted from a choice menu, each with a context menu.
+.menuFiles {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 240px;
+  align-self: start;
+}
+
+.menuFilesBar {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.menuFileList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+// Dialog: one project with its two dialogs.
+.projectRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: min(100%, 420px);
+  padding: var(--space-3) var(--space-3) var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-xs);
+}
+
+.projectText {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  color: var(--ink-muted);
+  font-size: 14px;
+}
+
+// Select: an invite form.
+.inviteForm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  width: min(100%, 360px);
+}
+
+.inviteRole {
+  width: 200px;
+}
+
+.inviteSent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  color: var(--ink-muted);
+  font-size: 13px;
+}

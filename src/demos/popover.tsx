@@ -1,5 +1,5 @@
 import { ArrowDownUp, Info, ListFilter, Rows3 } from 'lucide-react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Button } from '../ui/Button';
 import { TextField } from '../ui/Field';
 import { Popover, popoverClasses as pc } from '../ui/Popover';
@@ -25,6 +25,7 @@ function Share({ keepDraft = true, noFocus, popupClass }: ShareProps) {
   const [kept, setKept] = useState('');
   const [lost, setLost] = useState('');
   const email = keepDraft ? kept : lost;
+  const field = useRef<HTMLInputElement>(null);
   const setEmail = keepDraft ? setKept : setLost;
   return (
     <div className={s.shareRow}>
@@ -45,8 +46,9 @@ function Share({ keepDraft = true, noFocus, popupClass }: ShareProps) {
           <Button
             variant="primary"
             size="sm"
-            disabled={!email.trim()}
             onClick={() => {
+              // Never disabled: an empty address sends the caret back to it.
+              if (!email.trim()) return field.current?.focus();
               setPeople((p) => [...p, email.trim()]);
               setEmail('');
               setOpen(false);
@@ -56,7 +58,7 @@ function Share({ keepDraft = true, noFocus, popupClass }: ShareProps) {
           </Button>
         }
       >
-        <TextField label="Email" placeholder="name@acme.com" value={email} onValueChange={setEmail} type="text" inputMode="email" autoComplete="off" />
+        <TextField label="Email" placeholder="name@acme.com" value={email} onValueChange={setEmail} type="text" inputMode="email" autoComplete="off" inputRef={field} />
       </Popover>
       <span className={s.shareList}>Shared with {people.join(', ')}</span>
     </div>
@@ -65,7 +67,7 @@ function Share({ keepDraft = true, noFocus, popupClass }: ShareProps) {
 
 export function PopoverLive() {
   return (
-    <Frame label="Live · Share, type an address, Invite" height={300}>
+    <Frame label="Share" height={300}>
       <div className={s.top}>
         <Share />
       </div>
@@ -163,7 +165,7 @@ export function PopoverOrigin() {
       height={300}
       before={
         <div className={s.top}>
-          <Share popupClass={m.balloonPopup} />
+          <Share popupClass={m.centerScale} />
         </div>
       }
       after={
@@ -171,8 +173,8 @@ export function PopoverOrigin() {
           <Share />
         </div>
       }
-      beforeNote="Swells from half size out of its own middle, slowly, both ways. It seems to come from nowhere, and closing makes you wait for it."
-      afterNote="Grows from the trigger’s corner, from 0.96, on the smooth spring; it leaves in duration-fast. You see where it came from and where it went."
+      beforeNote="Grown from its own centre, the panel seems to come from nowhere."
+      afterNote="Grown from the trigger’s corner, it is plainly that button’s panel."
     />
   );
 }
@@ -191,8 +193,8 @@ export function PopoverFocus() {
           <Share />
         </div>
       }
-      beforeNote="Open it and type: nothing, focus is still on Share. Press Esc and press Tab: focus starts over from the top of the page."
-      afterNote="Focus moves to the field, so you can type at once. Esc or a click outside closes it and puts focus back on Share."
+      beforeNote="Focus stays behind: keystrokes go to the page, and after closing, Tab starts again from the top."
+      afterNote="Focus goes to the field and comes back to Share, so keyboard work carries on where it was."
     />
   );
 }
@@ -243,8 +245,8 @@ export function PopoverTrigger() {
           <ViewBar />
         </div>
       }
-      beforeNote="Open Sort and move the pointer away. Three identical icons, and nothing says which one this panel belongs to."
-      afterNote="The trigger stays filled while its popover is open, as a macOS toolbar button stays pressed: the panel has a visible source."
+      beforeNote="Three identical icons, and nothing says which one this panel belongs to."
+      afterNote="The trigger stays filled while its popover is open, as a macOS toolbar button stays pressed."
     />
   );
 }
@@ -263,8 +265,8 @@ export function PopoverDraft() {
           <Share />
         </div>
       }
-      beforeNote="Type half an address, click outside by accident, open it again: the field is empty. A light dismiss shouldn’t cost the work."
-      afterNote="A click outside closes it, but the draft is kept for the next open. Invite clears it, because then the job is done."
+      beforeNote="A light dismiss shouldn’t cost the work."
+      afterNote="Closing keeps the draft; Invite clears it, because then the job is done."
     />
   );
 }

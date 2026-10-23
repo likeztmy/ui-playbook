@@ -154,6 +154,24 @@ test('context menu: opens on right-click, no shortcuts, nothing dimmed', async (
   await page.keyboard.press('Escape');
 });
 
+test('menu scene: Duplicate and Delete act on the file; Sort reorders', async ({ page }) => {
+  await page.goto('/components/menu');
+  await hydrateAll(page);
+  const scene = page.locator('figure').first();
+  const names = () => scene.getByRole('listitem').evaluateAll((rows) => rows.map((r) => r.querySelector('[class*=fileName]')?.textContent));
+  await scene.getByText('Metrics').click({ button: 'right' });
+  await page.getByRole('menuitem', { name: 'Duplicate' }).click();
+  await expect.poll(names).toContain('Metrics copy');
+  await scene.getByText('Brand guide').click({ button: 'right' });
+  await page.getByRole('menuitem', { name: 'Delete' }).click();
+  await expect.poll(names).not.toContain('Brand guide');
+  await scene.getByRole('button', { name: /^Sort:/ }).click();
+  await page.getByRole('menuitemradio', { name: 'Name' }).click();
+  await scene.getByRole('button', { name: /^Sort:/ }).click();
+  await page.getByRole('menuitemradio', { name: 'Ascending' }).click();
+  await expect.poll(names).toEqual(['Metrics', 'Metrics copy', 'Q4 roadmap']);
+});
+
 test('choice menu: picking a value closes and relabels the trigger', async ({ page }) => {
   await page.goto('/components/menu');
   await hydrateAll(page);
@@ -185,7 +203,7 @@ test('toolbar toggles: several can be pressed at once', async ({ page }) => {
 test('confirm dialog: focus on Cancel, scrim does nothing, Esc cancels, focus returns', async ({ page }) => {
   await page.goto('/components/dialog');
   await hydrateAll(page);
-  const trigger = page.getByRole('button', { name: 'Delete project…' }).first();
+  const trigger = page.locator('figure').first().getByRole('button', { name: 'Delete…' });
   await trigger.scrollIntoViewIfNeeded();
   await trigger.click();
   const dialog = page.getByRole('alertdialog');
@@ -203,7 +221,7 @@ test('confirm dialog: focus on Cancel, scrim does nothing, Esc cancels, focus re
 test('confirm dialog: Delete project runs the action', async ({ page }) => {
   await page.goto('/components/dialog');
   await hydrateAll(page);
-  const trigger = page.getByRole('button', { name: 'Delete project…' }).first();
+  const trigger = page.locator('figure').first().getByRole('button', { name: 'Delete…' });
   await trigger.scrollIntoViewIfNeeded();
   await trigger.click();
   await page.getByRole('alertdialog').getByRole('button', { name: 'Delete project' }).click();
@@ -298,7 +316,7 @@ test('error timing: only “on leaving, cleared on fix” is quiet while typing 
 test('select: opens over the trigger, typeahead + Enter picks, Esc keeps the old value', async ({ page }) => {
   await page.goto('/components/select');
   await hydrateAll(page);
-  const live = page.locator('figure').filter({ hasText: 'Live · opens' });
+  const live = page.locator('figure').first();
   const trigger = live.getByRole('combobox');
   await trigger.scrollIntoViewIfNeeded();
   await expect(trigger).toHaveText('Editor');
@@ -323,6 +341,11 @@ test('select: opens over the trigger, typeahead + Enter picks, Esc keeps the old
   await page.keyboard.press('Escape');
   await expect(trigger).toHaveText('Viewer');
   await expect(trigger).toBeFocused();
+
+  await expect(page.locator('[role="listbox"][data-open]'), 'closed before moving on').toHaveCount(0);
+  await live.getByRole('textbox', { name: 'Email' }).fill('lea@acme.com');
+  await live.getByRole('button', { name: 'Send invite' }).click();
+  await expect(live.getByText('Invited lea@acme.com as Viewer')).toBeVisible();
 });
 
 test('checkbox: label toggles; parent goes mixed, then all on, then all off', async ({ page }) => {
@@ -373,7 +396,7 @@ test('radio: one Tab stop on the chosen one, arrows move and choose, a choice re
 test('popover: focus goes to the field and back; a stray click keeps the draft', async ({ page }) => {
   await page.goto('/components/popover');
   await hydrateAll(page);
-  const live = page.locator('figure').filter({ hasText: 'Live · Share' });
+  const live = page.locator('figure').first();
   await live.scrollIntoViewIfNeeded();
   const share = live.getByRole('button', { name: 'Share', exact: true });
   await share.click();

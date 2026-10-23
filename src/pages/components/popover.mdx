@@ -4,46 +4,11 @@ slug: popover
 ---
 import { PopoverLive, PopoverVariants, PopoverOrigin, PopoverFocus, PopoverTrigger, PopoverDraft } from '../../demos/popover';
 
-## When to use
-
-A popover is a small panel that opens from a button and holds controls or detail about it. The page stays usable around it, and a click outside puts it away. Use it for:
-
-- **A short job beside its source.** *Share* with a field and an *Invite* button; a filter's options under the Filter button.
-- **An explanation someone asked for.** An info button beside a term, with a paragraph a tooltip couldn't hold.
-- **A small picker.** Colours, a date, an emoji: pick one and it closes.
-
-Reach for something else when:
-
-- **It's a list of actions or one choice from a list.** A Menu, or a Select in a form.
-- **It only names a control.** A Tooltip: one line, never clickable.
-- **The job needs focus or can't be lost.** A Dialog, which blocks the page until it's done or cancelled.
-- **It would need scrolling.** A panel or a page of its own.
-
-## Variants
-
-<PopoverVariants client:visible />
-
-## Anatomy
-
-| Part | Token | Value |
-| --- | --- | --- |
-| Popup | `surface-raised`, `shadow-md`, `radius-lg` | 10 |
-| Inset | `space-3`, past the radius: inner parts keep their own | 12 |
-| Width | as wide as its content, at most 320 | 320 |
-| Gap to trigger | 6 | 6 |
-| Title | 13 / 18, 600 | 13 |
-| Description | 13 / 18, `ink-muted`, `space-0-5` under the title | 2 |
-| Between blocks | `space-3` | 12 |
-| Actions | right-aligned, small buttons, `space-2` apart | 8 |
-| Trigger while open | `fill-control-hover`; a ghost button takes `fill-control` | |
-
-No arrow. Like a Menu, the popover grows from its trigger's corner, and the pressed trigger says where it came from.
-
-## States
-
 <PopoverLive client:visible />
 
-Click *Share* and focus lands in the field. Type an address and click *Invite*, or click outside and open it again: what you typed is still there. Esc closes it and puts focus back on *Share*.
+## When to use
+
+A popover is a small panel that opens from a button and holds controls or detail about it: a short job beside its source, an explanation someone asked for, a small picker. A list of actions is a Menu; a control's name is a Tooltip; a job that mustn't be lost is a Dialog; anything that would scroll wants a panel of its own.
 
 ## Details
 
@@ -64,6 +29,26 @@ Click *Share* and focus lands in the field. Type an address and click *Invite*, 
 <PopoverDraft client:visible />
 
 It opens from `enter-scale` and `enter-offset` on the smooth spring, and closes in `duration-fast` with no spring. With reduced motion it only fades.
+
+## Variants
+
+<PopoverVariants client:visible />
+
+## Anatomy
+
+| Part | Token | Value |
+| --- | --- | --- |
+| Popup | `surface-raised`, `shadow-md`, `radius-lg` | 10 |
+| Inset | `space-3`, past the radius: inner parts keep their own | 12 |
+| Width | as wide as its content, at most 320 | 320 |
+| Gap to trigger | 6 | 6 |
+| Title | 13 / 18, 600 | 13 |
+| Description | 13 / 18, `ink-muted`, `space-0-5` under the title | 2 |
+| Between blocks | `space-3` | 12 |
+| Actions | right-aligned, small buttons, `space-2` apart | 8 |
+| Trigger while open | `fill-control-hover`; a ghost button takes `fill-control` | |
+
+No arrow. Like a Menu, the popover grows from its trigger's corner, and the pressed trigger says where it came from.
 
 ## Common mistakes
 

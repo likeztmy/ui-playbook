@@ -4,14 +4,11 @@ slug: select
 ---
 import { SelectLive, SelectVariants, SelectCurrent, SelectAlign, SelectDefault, SelectChevron } from '../../demos/select';
 
+<SelectLive client:visible />
+
 ## When to use
 
-A Select picks one value from a short, flat list of choices that exclude each other. Apple calls it a pop-up button. Reach for something else when:
-
-- **There are two to four options.** Show them all: a segmented control or radios. Opening a list to see two words is a wasted click.
-- **There are more than about fifteen, or people know what they want.** A combobox lets them type.
-- **The options are actions.** *Duplicate*, *Archive*, *Delete* belong in a Menu: a pull-down that does something, not a value that stays.
-- **More than one can be chosen.** Checkboxes, or a Menu with checkbox items.
+A Select picks one value from a short, flat list of choices that exclude each other; Apple calls it a pop-up button. Two to four options are better all in sight as a Segmented control or Radios; past about fifteen, a Combobox lets people type; actions belong in a Menu; several values want Checkboxes.
 
 ### Select or Menu
 
@@ -22,6 +19,24 @@ A Select picks one value from a short, flat list of choices that exclude each ot
 | Chevron | Up and down | Down |
 | Opens | Over the trigger | Below the trigger |
 | Rows | Text only | Icons, shortcuts, submenus |
+
+## Details
+
+### The current option is a check, not a fill
+
+<SelectCurrent client:visible />
+
+### It opens over the trigger
+
+<SelectAlign client:visible />
+
+### Start with a useful default
+
+<SelectDefault client:visible />
+
+### Two chevrons for a value, one for a menu
+
+<SelectChevron client:visible />
 
 ## Variants
 
@@ -43,27 +58,7 @@ Opened over the trigger, the list shifts left so the current option's text lands
 
 ## States
 
-<SelectLive client:visible />
-
-Open it with Space or the arrow keys. Type a letter to jump to the option that starts with it. Enter picks; Esc closes and keeps the old value.
-
-## Details
-
-### The current option is a check, not a fill
-
-<SelectCurrent client:visible />
-
-### It opens over the trigger
-
-<SelectAlign client:visible />
-
-### Start with a useful default
-
-<SelectDefault client:visible />
-
-### Two chevrons for a value, one for a menu
-
-<SelectChevron client:visible />
+Space or the arrow keys open it; a typed letter jumps to the option that starts with it. Enter picks; Esc closes and keeps the old value.
 
 ## Common mistakes
 

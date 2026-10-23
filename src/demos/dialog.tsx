@@ -60,36 +60,41 @@ function DeleteFlow({
   );
 }
 
-export function DialogConfirmLive() {
-  return (
-    <Frame label="Confirm · a rare action that can’t be undone" height={160}>
-      <DeleteFlow />
-    </Frame>
-  );
-}
-
-/** Rename in a task dialog: one field, Enter submits, Esc cancels. */
-function RenameFlow() {
+/** A project you can rename in a task dialog or delete behind a confirm. */
+function Projects() {
   const [name, setName] = useState(PROJECT);
   const [draft, setDraft] = useState(name);
-  const [open, setOpen] = useState(false);
+  const [renaming, setRenaming] = useState(false);
+  const [deleted, setDeleted] = useState(false);
   const input = useRef<HTMLInputElement>(null);
-  const dirty = draft !== name;
+  const cancel = useRef<HTMLButtonElement>(null);
+  if (deleted)
+    return (
+      <div className={s.stack}>
+        <p className={s.meter}>
+          <b>{name}</b> was deleted.
+        </p>
+        <Button size="sm" onClick={() => setDeleted(false)}>
+          Reset demo
+        </Button>
+      </div>
+    );
   return (
-    <div className={s.stack}>
-      <p className={s.meter}>
-        Project: <b>{name}</b>
-      </p>
+    <div className={s.projectRow}>
+      <span className={s.projectText}>
+        <span className={s.fileName}>{name}</span>
+        <span className={s.fileMeta}>24 files</span>
+      </span>
       <Dialog.Root
-        open={open}
+        open={renaming}
         onOpenChange={(o) => {
-          setOpen(o);
+          setRenaming(o);
           if (o) setDraft(name);
         }}
         // Typed input survives a stray click outside; an untouched dialog doesn't need to.
-        disablePointerDismissal={dirty}
+        disablePointerDismissal={draft !== name}
       >
-        <Dialog.Trigger render={<Button />}>Rename…</Dialog.Trigger>
+        <Dialog.Trigger render={<Button size="sm" />}>Rename…</Dialog.Trigger>
         <Dialog.Popup
           title="Rename project"
           initialFocus={input}
@@ -107,21 +112,37 @@ function RenameFlow() {
             onSubmit={(e) => {
               e.preventDefault();
               setName(draft.trim());
-              setOpen(false);
+              setRenaming(false);
             }}
           >
             <TextField label="Name" inputRef={input} value={draft} onValueChange={setDraft} onFocus={(e) => e.target.select()} />
           </form>
         </Dialog.Popup>
       </Dialog.Root>
+      <AlertDialog.Root>
+        <AlertDialog.Trigger render={<Button size="sm" variant="danger" />}>Delete…</AlertDialog.Trigger>
+        <AlertDialog.Popup
+          title={`Delete “${name}”?`}
+          description="The project and its 24 files are deleted for everyone. This can’t be undone."
+          initialFocus={cancel}
+          actions={
+            <>
+              <AlertDialog.Close render={<Button ref={cancel} />}>Cancel</AlertDialog.Close>
+              <AlertDialog.Close render={<Button variant="danger-fill" />} onClick={() => setDeleted(true)}>
+                Delete project
+              </AlertDialog.Close>
+            </>
+          }
+        />
+      </AlertDialog.Root>
     </div>
   );
 }
 
-export function DialogTaskLive() {
+export function DialogScene() {
   return (
-    <Frame label="Task · a short job with one field" height={160}>
-      <RenameFlow />
+    <Frame label="Project" height={160}>
+      <Projects />
     </Frame>
   );
 }
@@ -156,8 +177,8 @@ export function DialogWording() {
       height={220}
       before={<Still title="Are you sure?" description="This action cannot be undone." actions={[['Cancel', 'secondary'], ['OK', 'primary']]} />}
       after={<Still {...AFTER_TEXT} actions={[['Cancel', 'secondary'], ['Delete project', 'danger-fill']]} />}
-      beforeNote="Sure of what? The title names nothing, the body adds nothing, and OK could mean “do it” or “understood”. Blue says go."
-      afterNote="The title is the decision, with its object. The body says the consequence. The button repeats the verb, in danger."
+      beforeNote="Sure of what? OK could mean “do it” or “understood”, and blue says go."
+      afterNote="The title is the decision with its object; the button repeats the verb, so the answer reads without the question."
     />
   );
 }
@@ -168,20 +189,13 @@ export function DialogFocus() {
       height={140}
       before={<DeleteFlow focus="delete" />}
       after={<DeleteFlow />}
-      beforeNote="Opens with Delete project focused. Someone pressing Enter to get past an expected prompt deletes the project."
-      afterNote="Focus starts on Cancel, the safe choice: Enter backs out. Deleting takes a deliberate Tab or click."
-    />
-  );
-}
-
-export function DialogCorners() {
-  return (
-    <Compare
-      height={220}
-      before={<Still {...AFTER_TEXT} actions={[['Cancel', 'secondary'], ['Delete project', 'danger-fill']]} actionClass={m.squareActions} />}
-      after={<Still {...AFTER_TEXT} actions={[['Cancel', 'secondary'], ['Delete project', 'danger-fill']]} />}
-      beforeNote="The concentric formula applied blindly: radius-xl 18 − padding 20 is below 0, so the buttons go square and look foreign to the rest of the product."
-      afterNote="Padding is more than the radius, so the arcs no longer meet and the formula has nothing to keep equal. The buttons keep their own pill."
+      beforeNote={
+        <>
+          Enter pressed out of habit, to get past a prompt, deletes the project. Answers to frequent prompts become reflexes (
+          <a href="https://alistapart.com/article/neveruseawarning/">Aza Raskin</a>).
+        </>
+      }
+      afterNote="Enter backs out; deleting takes a deliberate Tab or click."
     />
   );
 }
@@ -192,8 +206,13 @@ export function DialogMotion() {
       height={140}
       before={<DeleteFlow popupClass={m.dropIn} />}
       after={<DeleteFlow />}
-      beforeNote="Drops 32px from above over 300ms, and climbs back out just as slowly. A big move for a box that appears in place."
-      afterNote="Grows from enter-scale (0.96) on the gentle spring, fading in over duration-base; leaves in duration-fast, ease-in, no spring. The scrim fades with it."
+      beforeNote={
+        <>
+          A 50px journey for a box that belongs in place, as in{' '}
+          <a href="https://getbootstrap.com/docs/5.3/components/modal/">Bootstrap’s modal</a>.
+        </>
+      }
+      afterNote="Nothing travels: the dialog grows where it will sit, and the eye is already there."
     />
   );
 }

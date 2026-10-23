@@ -24,7 +24,7 @@ export const entries: Entry[] = [
     kind: 'component',
     title: 'Menu',
     summary: 'Actions or choices that open from a trigger: pull-down, context menu, or choice.',
-    details: 9,
+    details: 8,
     keywords: ['dropdown', 'pull-down', 'context menu', 'right-click', 'sort', 'choice', 'shortcut', 'popup'],
   },
   {
@@ -56,7 +56,7 @@ export const entries: Entry[] = [
     kind: 'component',
     title: 'Dialog',
     summary: 'Stops everything for a decision or a short job. Rarely the right call.',
-    details: 4,
+    details: 3,
     keywords: ['modal', 'alert', 'confirm', 'alert dialog', 'sheet', 'popup', 'delete'],
   },
   {

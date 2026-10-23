@@ -3,26 +3,23 @@ layout: ../../layouts/Entry.astro
 slug: menu
 ---
 import {
+  MenuScene,
   MenuLive,
-  MenuContextLive,
-  MenuChoiceLive,
   MenuIconsAllOrNone,
   MenuContextShortcuts,
   MenuUnavailable,
   MenuHighlight,
   MenuDanger,
-  MenuCheck, MenuConcentric,
+  MenuCheck,
   MenuShortcuts,
   MenuMotion,
 } from '../../demos/menu';
 
+<MenuScene client:visible />
+
 ## When to use
 
-A menu holds actions or choices that don't need a permanent place on screen. Reach for something else when:
-
-- **There are one or two items.** Opening a menu is a cost; show them as buttons, or a switch for an on/off setting. Three is the least worth hiding.
-- **It's a form field's value.** Use a Select: it sits in the form, shows the value, and submits with it.
-- **People will search for the action.** A Command menu (type to filter) scales to dozens of actions; a menu past about 15 items is hard to scan.
+A menu holds actions or choices that don't need a permanent place on screen. One or two items are better as buttons; a form field's value is a Select; and once people search for an action, past about fifteen items, it wants a command menu.
 
 ## Kinds
 
@@ -40,8 +37,6 @@ Opened from a labelled button such as *Edit* or a *More* icon. Lists the command
 
 ### Context menu: actions on one object
 
-<MenuContextLive client:visible />
-
 Opened by right-click or long-press on a thing: a file, a row, a selection. It's already the shortcut, so it carries only the handful of actions that apply to this object now.
 
 - **Three groups at most**, most-used first, destructive last. No title.
@@ -50,8 +45,6 @@ Opened by right-click or long-press on a thing: a file, a row, a selection. It's
 - **Unavailable actions are hidden**, not dimmed: the menu lists what this object can do.
 
 ### Choice: picking one value
-
-<MenuChoiceLive client:visible />
 
 Opened from a trigger that shows the current value (*Sort: Modified*). Each row is a value, not a command.
 
@@ -71,28 +64,6 @@ Opened from a trigger that shows the current value (*Sort: Modified*). Each row 
 | Submenu | One level, for a repeated term | One level | Rarely |
 | Group label | When sections are distinct | Rarely | To name independent choices |
 | Ellipsis | When more input follows | When more input follows | Never |
-
-## Anatomy
-
-| Part | Token | Value |
-| --- | --- | --- |
-| Popup radius | `radius-lg` | 10 |
-| Popup inset | `space-1` | 4 |
-| Width | the widest row; at least 160 | |
-| Separator | inset `space-2` each side, past the popup's | 12 |
-| Item radius | `radius-sm` = 10 − 4 | 6 |
-| Item height | `control-md` | 32 |
-| Item padding, icon gap | `space-2` | 8 |
-| Label | body-sm size, 13 / 18 | 13 |
-| Shortcut | bare symbols, `ink-disabled`; last key in a fixed cell | 14 |
-| Label to shortcut | `space-6`, at least | 24 |
-| Surface | `surface-raised`, `shadow-md` | |
-
-Icons are Lucide at 16px in `ink-muted`, turning `ink` on the highlighted row. Checkmarks lead the row, as on macOS: once any row in a menu can be checked, every row keeps that 16px column so the labels stay aligned. Submenu chevrons and shortcuts end the row.
-
-## States
-
-Use the pull-down above from the keyboard. Arrows move the highlight, Right opens *Move to*, and Space toggles *Snap to grid* without closing the menu. *Undo* can be reached but not run: disabled items in a pull-down stay focusable so a screen reader still announces them. Pointer and keyboard share one highlight (`data-highlighted`), with no transition in either direction.
 
 ## Details
 
@@ -120,10 +91,6 @@ Use the pull-down above from the keyboard. Arrows move the highlight, Right open
 
 <MenuCheck client:visible />
 
-### Item corners are concentric with the popup
-
-<MenuConcentric client:visible />
-
 ### Shortcuts are bare symbols in a column
 
 <MenuShortcuts client:visible />
@@ -135,6 +102,28 @@ Check your fonts for the symbols before setting shortcuts in them. Geist has no 
 <MenuMotion client:visible />
 
 Opening grows from `enter-scale` (0.96) and `enter-offset` (4px) toward the trigger on the smooth spring, its origin at the trigger. Closing takes `duration-fast` with `ease-in`, no spring: once the user has chosen, nothing should hold them up. With reduced motion, only a short fade remains.
+
+## Anatomy
+
+| Part | Token | Value |
+| --- | --- | --- |
+| Popup radius | `radius-lg` | 10 |
+| Popup inset | `space-1` | 4 |
+| Width | the widest row; at least 160 | |
+| Separator | inset `space-2` each side, past the popup's | 12 |
+| Item radius | `radius-sm` = 10 − 4, [concentric](/principles/concentric-radius) with the popup | 6 |
+| Item height | `control-md` | 32 |
+| Item padding, icon gap | `space-2` | 8 |
+| Label | body-sm size, 13 / 18 | 13 |
+| Shortcut | bare symbols, `ink-disabled`; last key in a fixed cell | 14 |
+| Label to shortcut | `space-6`, at least | 24 |
+| Surface | `surface-raised`, `shadow-md` | |
+
+Icons are Lucide at 16px in `ink-muted`, turning `ink` on the highlighted row. Checkmarks lead the row, as on macOS: once any row in a menu can be checked, every row keeps that 16px column so the labels stay aligned. Submenu chevrons and shortcuts end the row.
+
+## States
+
+Arrows move the highlight, Right opens a submenu, and Space toggles a checkbox item without closing the menu. Disabled items in a pull-down stay focusable, so a screen reader still announces them. Pointer and keyboard share one highlight (`data-highlighted`), with no transition in either direction.
 
 ## Common mistakes
 

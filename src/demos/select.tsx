@@ -1,6 +1,8 @@
 import { Check } from 'lucide-react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import { Button } from '../ui/Button';
 import { cx } from '../ui/cx';
+import { TextField } from '../ui/Field';
 import { menuClasses as ms } from '../ui/Menu';
 import { Select, selectClasses as ss, type Option, type OptionGroup } from '../ui/Select';
 import { Compare, Frame, Gallery } from './shell';
@@ -55,19 +57,48 @@ const FONTS: OptionGroup[] = [
   },
 ];
 
-function RoleSelect() {
+/** Invite someone with a role; the Select is one field among others. */
+function Invite() {
+  const [email, setEmail] = useState('');
   const [role, setRole] = useState<string | null>('editor');
+  const [sent, setSent] = useState<{ email: string; role: string }[]>([]);
+  const field = useRef<HTMLInputElement>(null);
+  const label = (v: string | null) => ROLES.find((r) => r.value === v)?.label ?? '';
   return (
-    <div className={s.stack}>
-      <Select label="Role" options={ROLES} value={role} onValueChange={setRole} description={ROLE_HINT[role ?? 'editor']} />
-    </div>
+    <form
+      className={s.inviteForm}
+      onSubmit={(e) => {
+        e.preventDefault();
+        // Never disabled: an empty address sends the caret back to it.
+        if (!email.trim()) return field.current?.focus();
+        setSent((l) => [...l, { email: email.trim(), role: label(role) }]);
+        setEmail('');
+      }}
+    >
+      <TextField label="Email" placeholder="ana@studio.com" type="text" inputMode="email" autoComplete="off" value={email} onValueChange={setEmail} inputRef={field} />
+      <Select label="Role" options={ROLES} value={role} onValueChange={setRole} description={ROLE_HINT[role ?? 'editor']} className={s.inviteRole} />
+      <div>
+        <Button type="submit" variant="primary">
+          Send invite
+        </Button>
+      </div>
+      {sent.length > 0 && (
+        <div className={s.inviteSent}>
+          {sent.map((x, i) => (
+            <span key={i}>
+              Invited {x.email} as {x.role}
+            </span>
+          ))}
+        </div>
+      )}
+    </form>
   );
 }
 
 export function SelectLive() {
   return (
-    <Frame label="Live · opens over its trigger" height={200}>
-      <RoleSelect />
+    <Frame label="Invite people" height={260}>
+      <Invite />
     </Frame>
   );
 }
@@ -132,8 +163,8 @@ export function SelectCurrent() {
       height={260}
       before={<Still itemClass={m.filledSelected} />}
       after={<Still />}
-      beforeNote="The current option is filled, and so is the row under the keyboard. Two grey rows: which one is chosen, and which one will Enter choose?"
-      afterNote="Current: a leading check in accent and weight 500, no fill. The fill means one thing only, where the keyboard is. Both read at a glance."
+      beforeNote="With the current option filled like the keyboard’s row, two fills compete and Enter’s target is a guess."
+      afterNote="The fill means one thing, where the keyboard is; the check marks the value."
     />
   );
 }
@@ -144,8 +175,8 @@ export function SelectAlign() {
       height={220}
       before={<Select label="Role" options={ROLES} defaultValue="commenter" alignItemWithTrigger={false} />}
       after={<Select label="Role" options={ROLES} defaultValue="commenter" />}
-      beforeNote="Drops below like a menu. The current option is somewhere down the list, and the pointer has to travel to it before it can move to a neighbour."
-      afterNote="Opens over the trigger with the current option on the trigger's text, as on macOS. The neighbours are a row away. On touch it drops below instead."
+      beforeNote="Dropped below like a menu, the current option is somewhere down the list, a pointer’s journey away."
+      afterNote="Over the trigger, as on macOS, the current option sits under the pointer and its neighbours a row away. On touch it drops below instead."
     />
   );
 }
@@ -156,8 +187,14 @@ export function SelectDefault() {
       height={160}
       before={<Select label="Role" options={ROLES} placeholder="Select…" />}
       after={<Select label="Role" options={ROLES} defaultValue="editor" />}
-      beforeNote="Select… makes everyone stop and choose, even though nearly every invite is for an editor. And the form can now fail for a field nobody cared about."
-      afterNote="Editor is chosen already. Most people move on; the rest change it. Apple's guidance: give a pop-up a useful default."
+      beforeNote="“Select…” stops everyone, and the form can now fail on a field nobody cared about."
+      afterNote={
+        <>
+          Most people move on; the rest change it.{' '}
+          <a href="https://developer.apple.com/design/human-interface-guidelines/pop-up-buttons">Apple</a> asks for a useful default in a pop-up
+          button.
+        </>
+      }
     />
   );
 }
@@ -168,8 +205,8 @@ export function SelectChevron() {
       height={160}
       before={<Select label="Role" options={ROLES} defaultValue="editor" chevron="down" />}
       after={<Select label="Role" options={ROLES} defaultValue="editor" />}
-      beforeNote="A single down chevron, the same as a menu button. It reads as “more actions here”, not “one of several values”."
-      afterNote="Up-and-down chevrons, as macOS draws a pop-up button: the value can move either way through a list. A menu button keeps the single chevron."
+      beforeNote="A single down chevron is a menu button’s: more actions here."
+      afterNote="Up and down, as macOS draws a pop-up button: one of several values."
     />
   );
 }
