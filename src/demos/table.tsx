@@ -85,7 +85,7 @@ function Files({ columns = COLUMNS, selectable, sortable = true, stickyFirst, cl
 
 export function TableLive() {
   return (
-    <Frame label="Live · sort by a header, select rows to act on them" height={0}>
+    <Frame label="Files" height={0}>
       <Files selectable />
     </Frame>
   );

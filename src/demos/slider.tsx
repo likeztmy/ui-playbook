@@ -35,7 +35,7 @@ export function SliderLive() {
   const [opacity, setOpacity] = useState(OPACITY.initial);
   const [columns, setColumns] = useState(COLUMNS.initial);
   return (
-    <Frame label="Live · drag, click, pull past an end, or use the arrow keys" height={260}>
+    <Frame label="Properties" height={260}>
       <div className={s.settingsDemo}>
         <SliderPanel className={s.sliderPanel}>
           <Slider label="Radius" value={radius} onValueChange={setRadius} max={48} />

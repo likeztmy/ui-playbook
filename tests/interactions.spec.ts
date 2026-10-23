@@ -10,16 +10,16 @@ test('tooltip waits delay-tooltip, then neighbours swap instantly', async ({ pag
   await page.goto('/components/tooltip');
   await hydrateAll(page);
   const live = page.locator('figure').first();
-  const undo = live.getByRole('button', { name: 'Undo' });
-  await undo.scrollIntoViewIfNeeded();
+  const zoomOut = live.getByRole('button', { name: 'Zoom out' });
+  await zoomOut.scrollIntoViewIfNeeded();
 
-  await undo.hover();
+  await zoomOut.hover();
   await page.waitForTimeout(250);
-  await expect(openTip(page, 'Undo'), 'still waiting at 250ms').toHaveCount(0);
-  await expect(openTip(page, 'Undo'), 'open after 500ms').toBeVisible({ timeout: 1000 });
+  await expect(openTip(page, 'Zoom out'), 'still waiting at 250ms').toHaveCount(0);
+  await expect(openTip(page, 'Zoom out'), 'open after 500ms').toBeVisible({ timeout: 1000 });
 
-  await live.getByRole('button', { name: 'Redo' }).hover();
-  const redo = openTip(page, 'Redo');
+  await live.getByRole('button', { name: 'Zoom in' }).hover();
+  const redo = openTip(page, 'Zoom in');
   await expect(redo, 'neighbour opens at once').toBeVisible({ timeout: 150 });
   await expect(redo).toHaveAttribute('data-instant', /.+/);
 });
@@ -186,6 +186,23 @@ test('choice menu: picking a value closes and relabels the trigger', async ({ pa
   await menu.getByRole('menuitemradio', { name: 'Name' }).click();
   await expect(menu).toHaveCount(0);
   await expect(page.getByRole('button', { name: /^Sort: Name/ })).toBeVisible();
+});
+
+test('toolbar canvas: a letter picks the tool, one shape returns to Select, Undo takes it back', async ({ page }) => {
+  await page.goto('/components/toolbar');
+  await hydrateAll(page);
+  const scene = page.locator('figure').first();
+  const board = scene.getByRole('application', { name: 'Canvas' });
+  const shapes = scene.locator('[aria-label="rect"]');
+  await expect(shapes).toHaveCount(1);
+  await board.focus();
+  await page.keyboard.press('r');
+  await expect(scene.getByRole('button', { name: 'Rectangle' })).toHaveAttribute('aria-pressed', 'true');
+  await board.click({ position: { x: 400, y: 120 } });
+  await expect(shapes).toHaveCount(2);
+  await expect(scene.getByRole('button', { name: 'Select' })).toHaveAttribute('aria-pressed', 'true');
+  await scene.getByRole('button', { name: 'Undo' }).click();
+  await expect(shapes).toHaveCount(1);
 });
 
 test('toolbar toggles: several can be pressed at once', async ({ page }) => {
@@ -480,7 +497,7 @@ test('popover: focus goes to the field and back; a stray click keeps the draft',
 test('combobox: forgiving match, Enter picks the first, Esc keeps the value, empty names the query', async ({ page }) => {
   await page.goto('/components/combobox');
   await hydrateAll(page);
-  const live = page.locator('figure').filter({ hasText: 'Live · type' });
+  const live = page.locator('figure').first();
   await live.scrollIntoViewIfNeeded();
   const input = live.getByRole('combobox', { name: 'Time zone' });
   await expect(input).toHaveValue('Lisbon');
@@ -557,7 +574,7 @@ test('tabs: arrows open, Home/End jump, bar sits under the current tab, nothing 
 test('slider: click glides to a stop, drag follows, ends stretch, keys step', async ({ page }) => {
   await page.goto('/components/slider');
   await hydrateAll(page);
-  const live = page.locator('figure').filter({ hasText: 'Live · drag' });
+  const live = page.locator('figure').first();
   const radius = live.getByRole('slider', { name: 'Radius' });
   const opacity = live.getByRole('slider', { name: 'Opacity' });
   const columns = live.getByRole('slider', { name: 'Columns' });
@@ -635,7 +652,7 @@ test('segmented: icon segments are named and carry tooltips', async ({ page }) =
 test('card: opens as one target, More opens its own menu, only live cards lift', async ({ page }) => {
   await page.goto('/components/card');
   await hydrateAll(page);
-  const live = page.locator('figure').filter({ hasText: 'Live · hover' });
+  const live = page.locator('figure').first();
   const open = live.getByRole('button', { name: 'Brand refresh', exact: true });
   await open.scrollIntoViewIfNeeded();
 
@@ -675,7 +692,7 @@ test('card: a refreshed number swaps in digit by digit', async ({ page }) => {
 test('table: header sorts and announces it, select-all goes mixed then all, name stays pinned', async ({ page }) => {
   await page.goto('/components/table');
   await hydrateAll(page);
-  const live = page.locator('figure').filter({ hasText: 'Live · sort' });
+  const live = page.locator('figure').first();
   const table = live.getByRole('table', { name: 'Files' });
   await table.scrollIntoViewIfNeeded();
   const firstName = () => table.locator('tbody tr').first().locator('td').nth(1).innerText();

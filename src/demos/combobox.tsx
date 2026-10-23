@@ -77,7 +77,7 @@ function TimeZone() {
 
 export function ComboboxLive() {
   return (
-    <Frame label="Live · type “sao”, “zur” or a country, then Enter" height={400}>
+    <Frame label="Time zone" height={400}>
       <div className={s.top}>
         <TimeZone />
       </div>

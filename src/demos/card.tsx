@@ -67,7 +67,7 @@ function Replayable({ children }: { children: (key: number) => ReactNode }) {
 export function CardLive() {
   const [opened, setOpened] = useState<string | null>(null);
   return (
-    <Frame label="Live · hover, open, or use More" height={420}>
+    <Frame label="Projects" height={420}>
       <div className={cx(s.stack, s.cardArea)}>
         <Replayable>
           {(n) => (
@@ -142,20 +142,16 @@ export function CardStates() {
 
 // ── Comparisons ──────────────────────────────────────────
 
-export function CardStage() {
-  const card = (stageClassName?: string) => (
-    <div className={s.magnify}>
-      <Card className={s.cardSmall} stage={<Thumb art="swatches" />} title="Brand refresh" stageClassName={stageClassName} />
-    </div>
-  );
+export function CardAnatomy() {
   return (
-    <Compare
-      height={300}
-      before={card(m.sameStageRadius)}
-      after={card()}
-      beforeNote="The stage copies the card's 18px corner. With an 8px inset its corners swell toward the card's, and the gap is wider at the corners. Shown at 2×."
-      afterNote="radius-xl 18 − space-2 8 = radius-lg 10. The gap is the same at the corners as along the sides. Shown at 2×."
-    />
+    <Frame label="Stage" height={0}>
+      <figure className={s.anatomyItem}>
+        <div className={s.magnify}>
+          <Card className={s.cardSmall} stage={<Thumb art="swatches" />} title="Brand refresh" />
+        </div>
+        <figcaption className={s.anatomyCaption}>radius-xl 18 − space-2 8 = radius-lg 10: the gap is as wide at the corners as along the sides. Shown at 2×.</figcaption>
+      </figure>
+    </Frame>
   );
 }
 
@@ -177,7 +173,7 @@ export function CardLift() {
       height={240}
       before={<Card className={cx(s.cardOne, m.bigLift)} stage={<Thumb art="phone" />} title="Onboarding" subtitle="Edited 3 days ago" onOpen={() => {}} />}
       after={<Card className={s.cardOne} stage={<Thumb art="phone" />} title="Onboarding" subtitle="Edited 3 days ago" onOpen={() => {}} />}
-      beforeNote="Up to 1.05 with a heavy shadow, easing over 300ms. In a grid the neighbours seem to shrink, and sweeping across leaves a wake of moving cards."
+      beforeNote="The same spring, up to 1.05 with a heavy shadow. In a grid the neighbours seem to shrink, and sweeping across leaves a wake of moving cards."
       afterNote="hover-lift 1.01 and shadow-sm on the gentle spring: enough to say “this one”, too little to disturb the grid."
     />
   );

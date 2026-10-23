@@ -22,11 +22,6 @@
   scale: 0.9 !important;
 }
 
-// Uneven inset: corners can't share a centre.
-.unevenInset {
-  padding: var(--space-1) var(--space-3) !important;
-}
-
 // The current tool as a solid fill: louder than the action it supports.
 .solidPressed[data-pressed] {
   background: var(--accent) !important;
@@ -241,10 +236,6 @@
   }
 }
 
-// A card stage with the card's own 18px radius.
-.sameStageRadius {
-  border-radius: var(--radius-xl) !important;
-}
 
 // A static card that lifts on hover anyway.
 .fakeLift:hover {
@@ -252,16 +243,10 @@
   box-shadow: var(--shadow-sm) !important;
 }
 
-// A big, slow hover lift.
+// A big hover lift, on the usual spring.
 .bigLift:is(:hover, [data-pin~='hover']) {
   scale: 1.05 !important;
   box-shadow: var(--shadow-lg) !important;
-}
-
-.bigLift {
-  transition:
-    scale 300ms ease,
-    box-shadow 300ms ease !important;
 }
 
 // Cards staggered 120ms apart with no cap.

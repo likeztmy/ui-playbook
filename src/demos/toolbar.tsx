@@ -1,16 +1,10 @@
 import { Toolbar } from '../ui/Toolbar';
-import { EllipseIcon, PenIcon, PlusIcon, PointerIcon, RectIcon, TextIcon } from '../ui/icons';
+import { PlusIcon, RectIcon } from '../ui/icons';
 import { Bold, Italic, Redo2, Underline, Undo2 } from 'lucide-react';
+import { CanvasScene, TOOLS } from './canvas';
 import { Compare, Frame, Gallery, StateGrid, statePin } from './shell';
 import m from './mistakes.module.scss';
-
-const TOOLS = [
-  ['select', 'Select', <PointerIcon />, 'V'],
-  ['rect', 'Rectangle', <RectIcon />, 'R'],
-  ['ellipse', 'Ellipse', <EllipseIcon />, 'O'],
-  ['text', 'Text', <TextIcon />, 'T'],
-  ['pen', 'Pen', <PenIcon />, 'P'],
-] as const;
+import s from './demos.module.scss';
 
 function DrawToolbar({ rootClass, toolClass, nativeTitle }: { rootClass?: string; toolClass?: string; nativeTitle?: boolean }) {
   return (
@@ -36,21 +30,27 @@ export function ToolbarPreview() {
 }
 
 export function ToolbarLive() {
-  return (
-    <Frame label="Live" height={140}>
-      <DrawToolbar />
-    </Frame>
-  );
+  return <CanvasScene />;
 }
 
-export function ToolbarInset() {
+export function ToolbarAnatomy() {
   return (
-    <Compare
-      before={<DrawToolbar rootClass={m.unevenInset} />}
-      after={<DrawToolbar />}
-      beforeNote="4px top and bottom, 12px at the sides. The end tools sit off the pill's centre, so the ends look stretched and the gap bulges at each end."
-      afterNote="4px on every side: a pill in a pill, concentric by shape. Height falls out of it too: 32 + 4 × 2 = 40."
-    />
+    <Frame label="Inset" height={0}>
+      <figure className={s.anatomyItem}>
+        <div className={s.magnify}>
+          <Toolbar.Root aria-label="Tools, magnified">
+            <Toolbar.Tools defaultValue={['select']} aria-label="Tools">
+              {TOOLS.slice(0, 3).map(([value, label, icon]) => (
+                <Toolbar.Tool key={value} value={value} label={label}>
+                  {icon}
+                </Toolbar.Tool>
+              ))}
+            </Toolbar.Tools>
+          </Toolbar.Root>
+        </div>
+        <figcaption className={s.anatomyCaption}>4 on every side: a pill in a pill, so the centres coincide and the height falls out of it, 32 + 4 × 2 = 40.</figcaption>
+      </figure>
+    </Frame>
   );
 }
 
@@ -60,7 +60,7 @@ export function ToolbarPressed() {
       before={<DrawToolbar toolClass={m.solidPressed} />}
       after={<DrawToolbar />}
       beforeNote="The current tool is filled with the accent, the same weight as Create. Two things now shout for attention."
-      afterNote="A tint (accent-soft) and a blue icon (accent-text) mark the mode. The one solid fill is left for the action."
+      afterNote="A tint and a blue icon mark the mode; the one solid fill is left for Create. The tint is mixed a little toward the accent, so it is also a shade and still reads in greyscale and in dark mode."
     />
   );
 }

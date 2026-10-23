@@ -32,7 +32,7 @@ export const entries: Entry[] = [
     kind: 'component',
     title: 'Toolbar',
     summary: 'A floating panel of tools, concentric with everything inside it.',
-    details: 3,
+    details: 2,
     keywords: ['panel', 'palette', 'tools', 'toggle', 'inset'],
   },
   {
@@ -136,7 +136,7 @@ export const entries: Entry[] = [
     kind: 'component',
     title: 'Card',
     summary: 'A frame around a grey stage, words beneath. Only cards that open lift.',
-    details: 5,
+    details: 4,
     keywords: ['card', 'tile', 'grid', 'gallery', 'project', 'thumbnail', 'stagger', 'hover lift'],
   },
   {

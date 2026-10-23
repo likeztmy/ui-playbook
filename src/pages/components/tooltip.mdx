@@ -4,36 +4,11 @@ slug: tooltip
 ---
 import { TooltipLive, TooltipGrouping, TooltipInverse } from '../../demos/tooltip';
 
-## When to use
-
-- **Icon-only controls.** Every one gets a tooltip with the same words as its `aria-label`, plus its shortcut.
-- **Truncated text.** A name cut off with an ellipsis can show in full on hover.
-
-Reach for something else when:
-
-- **The control already has a label.** A button that says *Save* needs no tooltip saying *Save*.
-- **The content is interactive or long.** Links, buttons and paragraphs belong in a Popover.
-- **People must see it.** Tooltips never appear on touch screens; put essential text on the page.
-
-## Anatomy
-
-| Part | Token | Value |
-| --- | --- | --- |
-| Ground and text | `ink` on `bg`, inverse | |
-| Radius | `radius-sm` | 6 |
-| Padding | `space-1` × `space-2` | 4 × 8 |
-| Text | label size, 12 / 16, weight 500 | 12 |
-| Offset from trigger | `space-1` | 4 |
-| Delay | `delay-tooltip` | 500ms |
-| Layer | `z-tooltip` | 400 |
-
-One line: the control's name, then its shortcut as glyphs, dimmed. It sits above the trigger and flips below when there's no room.
-
-## States
-
 <TooltipLive client:visible />
 
-Hover a button and wait; then slide along the row. Tab to a button and the tooltip shows on focus too. Touch devices don't get tooltips at all, so nothing a user must know can live only in one.
+## When to use
+
+A tooltip names an icon-only control, with the same words as its `aria-label` and its shortcut, or shows a truncated name in full. A control with a visible label needs none; links, buttons and paragraphs belong in a Popover; and since touch screens never show tooltips, anything people must see belongs on the page.
 
 ## Details
 
@@ -46,6 +21,24 @@ Hover a button and wait; then slide along the row. Tab to a button and the toolt
 <TooltipInverse client:visible />
 
 It fades in over `duration-fast` and doesn't travel: a label appearing where you're already looking needs no direction.
+
+## Anatomy
+
+| Part | Token | Value |
+| --- | --- | --- |
+| Ground and text | `ink` on `bg`, inverse | |
+| Radius | `radius-sm` | 6 |
+| Padding | `space-1` × `space-2` | 4 × 8 |
+| Text | label size, 12 / 16, weight 500 | 12 |
+| Offset from trigger | `space-1`; from a toolbar's edge, not the tool's | 4 |
+| Delay | `delay-tooltip` | 500ms |
+| Layer | `z-tooltip` | 400 |
+
+One line: the control's name, then its shortcut as glyphs, dimmed. It sits above the trigger and flips below when there's no room.
+
+## States
+
+Hover shows it after the delay, keyboard focus shows it too, and Esc hides it. A disabled button shows none, so if people need to know why it's off, say so on the page.
 
 ## Common mistakes
 

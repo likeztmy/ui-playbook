@@ -3,7 +3,8 @@ import type { ComponentProps } from 'react';
 import { Button } from '../ui/Button';
 import { cx } from '../ui/cx';
 import { Tip, TipGroup, TipKeys, tooltipClasses as ts } from '../ui/Tooltip';
-import { Compare, Frame } from './shell';
+import { CanvasScene } from './canvas';
+import { Compare } from './shell';
 import m from './mistakes.module.scss';
 import s from './demos.module.scss';
 
@@ -43,11 +44,7 @@ export function TooltipPreview() {
 }
 
 export function TooltipLive() {
-  return (
-    <Frame label="Live" height={140}>
-      <Row />
-    </Frame>
-  );
+  return <CanvasScene />;
 }
 
 export function TooltipGrouping() {

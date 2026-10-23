@@ -1624,3 +1624,105 @@
     pointer-events: auto;
   }
 }
+
+// Toolbar and Tooltip: a small canvas editor, tools at the bottom, view at the top.
+.sketch {
+  position: relative;
+  width: 100%;
+  height: 320px;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  background-color: var(--surface-sunken);
+  background-image: radial-gradient(var(--line) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+.sketchBoard {
+  position: absolute;
+  inset: 0;
+  outline: none;
+
+  &:not([data-tool='select']) {
+    cursor: crosshair;
+  }
+
+  &:focus-visible {
+    box-shadow: inset 0 0 0 1px var(--accent);
+  }
+}
+
+.sketchLayer {
+  position: absolute;
+  inset: 0;
+  transform-origin: 0 0;
+  transition: scale var(--duration-base) var(--ease-out);
+}
+
+.sketchShape {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  cursor: default;
+
+  &[data-selected] {
+    outline: 1px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  svg {
+    width: 64px;
+    height: 32px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+}
+
+.sketch_rect {
+  width: 96px;
+  height: 64px;
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px var(--line-strong);
+}
+
+.sketch_ellipse {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px var(--line-strong);
+}
+
+.sketch_text {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.sketchTools {
+  position: absolute;
+  bottom: var(--space-3);
+  left: 50%;
+  translate: -50% 0;
+}
+
+.sketchView {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+}
+
+.sketchZoom {
+  min-width: 40px;
+  padding-right: var(--space-2);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  color: var(--ink-muted);
+}

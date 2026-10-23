@@ -4,14 +4,33 @@ slug: table
 ---
 import { TableLive, TableVariants, TableStates, TableNumbers, TableLines, TableArrows, TableMuted, TableScroll } from '../../demos/table';
 
+<TableLive client:visible />
+
 ## When to use
 
-A table is for comparing many things by the same attributes, and for acting on several at once. Reach for something else when:
+A table is for comparing many things by the same attributes, and for acting on several at once. Three things are a list; things chosen by sight are Cards; one thing's details are a description list; and rows that need paragraphs want their own page.
 
-- **There are only a few things.** Three files are a list; a table's header and lines cost more than they give.
-- **People choose by sight.** Projects and templates browsed by thumbnail are Cards.
-- **It's one thing's details.** Fields of a single record are a description list: label, value, label, value.
-- **Rows need paragraphs.** A table cell holds a value. Long text belongs on the row's own page.
+## Details
+
+### Numbers line up on the right
+
+<TableNumbers client:visible />
+
+### Lines, not stripes
+
+<TableLines client:visible />
+
+### One arrow: the sorted column's
+
+<TableArrows client:visible />
+
+### Secondary columns step back
+
+<TableMuted client:visible />
+
+### The name stays when the rest scroll
+
+<TableScroll client:visible />
 
 ## Variants
 
@@ -37,31 +56,7 @@ A table is page content, not a layer: it takes a line edge, never a shadow.
 
 <TableStates client:visible />
 
-<TableLive client:visible />
-
 Sorting is a button in the header; the header carries `aria-sort`, so a screen reader announces the order. Click again to reverse it. The select-all box goes mixed when some rows are chosen, and a click on it then selects them all. The bar above names the count and enables the bulk actions.
-
-## Details
-
-### Numbers line up on the right
-
-<TableNumbers client:visible />
-
-### Lines, not stripes
-
-<TableLines client:visible />
-
-### One arrow: the sorted column's
-
-<TableArrows client:visible />
-
-### Secondary columns step back
-
-<TableMuted client:visible />
-
-### The name stays when the rest scroll
-
-<TableScroll client:visible />
 
 ## Common mistakes
 

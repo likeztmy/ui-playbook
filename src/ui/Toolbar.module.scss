@@ -4,6 +4,7 @@
 // Both are radius-full, so the centres coincide without any arithmetic.
 
 .toolbar {
+  --tool-current: color-mix(in srgb, var(--accent-soft), var(--accent) 16%);
   box-sizing: border-box;
   display: inline-flex;
   align-items: center;
@@ -34,13 +35,15 @@
     box-shadow: var(--focus-ring);
   }
 
-  // The current tool: a soft tint and blue icon, the toolbar's only colour.
+  // The current tool: a tint and a blue icon, the toolbar's only colour.
+  // The tint carries some accent so it is also a shade: it still reads in
+  // greyscale and in dark mode, where accent-soft alone is darker than the panel.
   &[data-pressed] {
-    background: var(--accent-soft);
+    background: var(--tool-current);
     color: var(--accent-text);
 
     @include hover {
-      background: color-mix(in srgb, var(--accent-soft), var(--accent) 12%);
+      background: color-mix(in srgb, var(--tool-current), var(--accent) 8%);
     }
   }
 
@@ -50,7 +53,7 @@
 
     // Still the current tool, just unavailable: keep its place visible.
     &[data-pressed] {
-      background: var(--accent-soft);
+      background: var(--tool-current);
     }
   }
 }
