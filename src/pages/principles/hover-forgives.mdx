@@ -1,0 +1,36 @@
+---
+layout: ../../layouts/Entry.astro
+slug: hover-forgives
+---
+import { HoverSubmenu, HoverReveal } from '../../demos/hover';
+
+## The rule
+
+**The pointer is always on its way somewhere.** Judge what it wants by where it's heading and how long it stays, not by what it happens to be over this instant. Something that opens on contact and closes on the first pixel of departure makes people steer through tunnels.
+
+<HoverSubmenu client:visible />
+
+Steering through a path takes longer the longer and narrower the path is: the steering law, Fitts's law for tunnels ([Accot and Zhai, CHI 1997](https://www.chi1997.chistatic.hosting.acm.org/proceedings/paper/ja.html)). A cascading menu is exactly that path, one row high. The triangle widens it to the whole space between the pointer and the submenu.
+
+## Details
+
+### Actions that appear on hover
+
+<HoverReveal client:visible />
+
+Revealed actions have a second cost: nobody knows they're there until they hover. Keep the ones people need often in sight, quietly; reveal only the extras. On a touch screen nothing hovers, so they're always shown (`@media (hover: none)`).
+
+### How long to wait
+
+[NN/g's timings](https://www.nngroup.com/articles/timing-exposing-content/) for hover: feedback within 0.1 seconds; wait 0.3 to 0.5 seconds for the pointer to settle before revealing anything; keep what was revealed until the pointer has been away from both the trigger and the content for more than half a second. The wait is a tax on every hover, so a [tooltip](/components/tooltip) group pays it once: after the first tip, neighbours open at once.
+
+## When it doesn't apply
+
+- **Clicks.** A popover with controls opens on click, so there's no hover to forgive; a [Popover](/components/popover) that opened on hover would close as the pointer headed for its field.
+- **Essentials.** Hover never hides the only way to do something. It can speed up what's already reachable.
+
+## Where the playbook applies it
+
+- [Menu](/components/menu): submenus keep a safe area, from Base UI's `safePolygon`.
+- [Tooltip](/components/tooltip): one wait, then neighbours follow the pointer.
+- [Card](/components/card): the More button is always in sight.

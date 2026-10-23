@@ -8,6 +8,7 @@ import { ConcentricPreview } from '../demos/concentric';
 import { ErrorTimingPreview } from '../demos/error-timing';
 import { ColourPreview } from '../demos/colour';
 import { EyePreview } from '../demos/eye';
+import { HoverPreview } from '../demos/hover';
 import { TooltipPreview } from '../demos/tooltip';
 import { DialogPreview } from '../demos/dialog';
 import { PopoverPreview } from '../demos/popover';
@@ -78,6 +79,7 @@ const groups = [
                   {e.slug === 'error-timing' && <ErrorTimingPreview />}
                   {e.slug === 'colour-means-one-thing' && <ColourPreview client:visible />}
                   {e.slug === 'where-the-eye-goes' && <EyePreview client:visible />}
+                  {e.slug === 'hover-forgives' && <HoverPreview />}
                 </div>
                 <p class={s.cardSummary}>{e.summary}</p>
               </article>

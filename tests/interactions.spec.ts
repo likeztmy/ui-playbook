@@ -309,6 +309,21 @@ test('colour: one solid blue in the After editor; the frame list answers arrow k
   await expect(after.getByRole('option', { name: 'Onboarding' })).toBeFocused();
 });
 
+test('hover forgives: a diagonal to the submenu closes it in Before, holds in After', async ({ page }) => {
+  await page.goto('/principles/hover-forgives');
+  await hydrateAll(page);
+  for (const [side, holds] of [['Before', false], ['After', true]] as const) {
+    const f = page.locator('figure').filter({ hasText: side }).filter({ hasText: 'Move to' }).first();
+    await f.scrollIntoViewIfNeeded();
+    const move = (await f.getByText('Move to', { exact: true }).boundingBox())!;
+    await page.mouse.move(move.x + 60, move.y + move.height / 2, { steps: 4 });
+    const archive = (await f.getByText('Archive', { exact: true }).boundingBox())!;
+    await page.mouse.move(archive.x + 20, archive.y + archive.height / 2, { steps: 12 });
+    await expect(f.getByText('Archive', { exact: true })).toHaveCount(holds ? 1 : 0);
+    await page.mouse.move(5, 5);
+  }
+});
+
 test('error timing: only “on leaving, cleared on fix” is quiet while typing and clears on the fix', async ({ page }) => {
   await page.goto('/principles/error-timing');
   await hydrateAll(page);

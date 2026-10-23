@@ -188,6 +188,14 @@ export const entries: Entry[] = [
     keywords: ['visual hierarchy', 'hierarchy', 'scanning', 'grouping', 'gestalt', 'information scent', 'labels', 'guidance', 'layout'],
   },
   {
+    slug: 'hover-forgives',
+    kind: 'principle',
+    title: 'Hover forgives',
+    summary: 'The pointer is on its way somewhere. Judge it by where it’s heading, not by the row it happens to cross.',
+    details: 2,
+    keywords: ['hover', 'submenu', 'safe triangle', 'menu aim', 'diagonal problem', 'steering law', 'hover intent', 'tooltip delay', 'touch'],
+  },
+  {
     slug: 'error-timing',
     kind: 'principle',
     title: 'Error timing',

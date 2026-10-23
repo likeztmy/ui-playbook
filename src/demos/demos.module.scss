@@ -1291,3 +1291,110 @@
     font-weight: 500;
   }
 }
+
+// Hover forgives: a menu with a hover submenu, and the safe triangle.
+.aimDemo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.aimStage {
+  position: relative;
+  width: 340px;
+  height: 236px;
+}
+
+.aimMenu {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 170px;
+}
+
+// Beside the Move to row: popup inset 4 + one row 32, less the submenu's inset.
+.aimSub {
+  position: absolute;
+  top: calc(var(--control-md));
+  left: 166px;
+  width: 140px;
+}
+
+.aimArea {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+  pointer-events: none;
+}
+
+.aimFoot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-height: 20px;
+}
+
+.aimStatus {
+  color: var(--ink-muted);
+  font-size: 13px;
+}
+
+// File tiles whose More button appears on hover.
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(2, 150px);
+  gap: var(--space-3);
+}
+
+.tile {
+  position: relative;
+  padding: var(--space-2);
+  border-radius: var(--radius-xl);
+  background: var(--surface);
+  box-shadow: var(--shadow-xs);
+}
+
+.tileContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-6);
+}
+
+.tileThumb {
+  display: grid;
+  place-items: center;
+  height: 72px;
+  border-radius: var(--radius-lg);
+  background: var(--surface-sunken);
+  color: var(--ink-muted);
+}
+
+.tileName {
+  padding: 0 var(--space-1) var(--space-1);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.tileMore {
+  position: absolute;
+  top: var(--space-1);
+  right: var(--space-1);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--duration-fast) var(--ease-out);
+
+  &[data-shown],
+  &:focus-visible {
+    opacity: 1;
+    pointer-events: auto;
+    transition-duration: var(--duration-instant);
+  }
+
+  // Nothing hovers on a touch screen: the button is always there.
+  @media (hover: none) {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
