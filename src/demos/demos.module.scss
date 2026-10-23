@@ -1193,21 +1193,7 @@
   line-height: 20px;
 }
 
-// Where the eye goes: a settings page with a title, sections and one action.
-.settingsPage {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-8);
-  width: min(100%, 460px);
-}
-
-.settingsHead {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-3);
-}
-
+// Where the eye goes: titles, sections and rows shared by its pages.
 .settingsTitle {
   font-size: 20px;
   line-height: 28px;
@@ -1239,23 +1225,262 @@
   color: var(--ink-muted);
 }
 
-// Eight checkout fields: one even list, or two groups.
-.checkoutFlat,
-.checkoutGroup {
+// Where the eye goes: a product page with the cart in the far corner.
+.shop {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: var(--space-6);
+  width: 100%;
+  font-size: 14px;
 }
 
-.checkoutFlat,
-.checkoutGrouped {
+.shopBar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--line);
+}
+
+.shopBrand {
+  font-weight: 600;
+}
+
+.shopNav {
+  display: flex;
+  gap: var(--space-4);
+  color: var(--ink-muted);
+
+  @media (max-width: 480px) {
+    display: none;
+  }
+}
+
+.shopCart {
+  position: relative;
+  margin-left: auto;
+}
+
+.shopCount {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 16px;
+  padding: 0 4px;
+  border-radius: var(--radius-full);
+  background: var(--ink);
+  color: var(--surface);
+  font-size: 10px;
+  line-height: 16px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+// Each new count springs once; the key remounts it.
+.shopBump {
+  animation: shopBump var(--spring-snappy-duration) var(--ease-spring-snappy);
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@keyframes shopBump {
+  from {
+    scale: 1.6;
+  }
+}
+
+.shopBody {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-6);
+}
+
+.shopImage {
+  display: grid;
+  place-items: center;
+  width: 160px;
+  aspect-ratio: 1;
+  border-radius: var(--radius-lg);
+  background: var(--surface-sunken);
+  color: var(--ink-disabled);
+}
+
+.shopInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1);
+  flex: 1 1 180px;
+}
+
+.shopName {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+}
+
+.shopPrice {
+  font-variant-numeric: tabular-nums;
+}
+
+.shopBlurb {
+  margin-bottom: var(--space-3);
+  color: var(--ink-muted);
+}
+
+// Wide enough for either label, so Added doesn't shift it.
+.shopAdd {
+  min-width: 112px;
+}
+
+// A pricing page in a window one screen tall; scroll bars hide until used.
+.floorPane {
+  width: 100%;
+  height: 260px;
+  overflow-y: auto;
+  scrollbar-width: none;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  font-size: 13px;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  &:focus-visible {
+    outline: 1px solid var(--accent);
+  }
+}
+
+.floorHero {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  height: 260px;
+  padding: var(--space-6);
+  background: var(--surface-sunken);
+  text-align: center;
+}
+
+.floorHeroShort {
+  height: 168px;
+}
+
+.floorTitle {
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.floorLead {
+  margin-bottom: var(--space-2);
+  color: var(--ink-muted);
+  text-wrap: balance;
+}
+
+.floorPlans {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+}
+
+.floorPlan {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-0-5);
+  padding: var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+}
+
+.floorPlanName {
+  font-weight: 600;
+}
+
+.floorPlanPrice {
+  font-size: 16px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+
+  span {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--ink-muted);
+  }
+}
+
+.floorPlanLine {
+  color: var(--ink-muted);
+}
+
+.floorFaq {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: 0 var(--space-4) var(--space-6);
+  color: var(--ink-muted);
+}
+
+// A billing page, with a notice about the card.
+.billing {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  width: 100%;
+  font-size: 14px;
+}
+
+.billingCard {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.billingExpiring {
+  color: var(--warning);
+}
+
+.billingWarn {
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--warning-soft);
+  color: var(--warning);
+  font-size: 13px;
+  line-height: 18px;
+}
+
+// A contact form: label, field and hint 4 apart; fields 20 apart.
+.contact {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
   width: min(100%, 260px);
 }
 
-.checkoutGrouped {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-8);
+.contactEven {
+  gap: var(--space-3);
+}
+
+// Check it yourself: the same page twice, blurred.
+.squint {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-6);
+  width: 100%;
+  transition: filter var(--duration-fast) var(--ease-out);
+
+  > * {
+    zoom: 0.8;
+  }
 }
 
 // A help centre's navigation.

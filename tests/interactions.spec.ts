@@ -309,6 +309,30 @@ test('colour: one solid blue in the After editor; the frame list answers arrow k
   await expect(after.getByRole('option', { name: 'Onboarding' })).toBeFocused();
 });
 
+test('where the eye goes: only the After answers at the button; only its fold cuts a plan', async ({ page }) => {
+  await page.goto('/principles/where-the-eye-goes');
+  await hydrateAll(page);
+  const [before, after] = [page.locator('figure').nth(0), page.locator('figure').nth(1)];
+  await before.getByRole('button', { name: 'Add to cart' }).click();
+  await expect(before.getByRole('button', { name: 'Cart, 1 items' })).toBeVisible();
+  await expect(before.getByRole('button', { name: 'Add to cart' })).toBeVisible();
+  const add = after.getByRole('button', { name: 'Add to cart' });
+  const width = (await add.boundingBox())!.width;
+  await add.click();
+  await expect(after.getByRole('button', { name: 'Added' })).toBeVisible();
+  expect((await after.getByRole('button', { name: 'Added' }).boundingBox())!.width).toBe(width);
+  const firstScreenShowsPlans = (n: number) =>
+    page
+      .getByRole('region', { name: 'Pricing page' })
+      .nth(n)
+      .evaluate((pane) => {
+        const plan = pane.querySelector('[class*="floorPlanName"]')!.getBoundingClientRect();
+        return plan.top < pane.getBoundingClientRect().bottom;
+      });
+  expect(await firstScreenShowsPlans(0)).toBe(false);
+  expect(await firstScreenShowsPlans(1)).toBe(true);
+});
+
 test('hover forgives: a diagonal to the submenu closes it in Before, holds in After', async ({ page }) => {
   await page.goto('/principles/hover-forgives');
   await hydrateAll(page);

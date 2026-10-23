@@ -183,9 +183,9 @@ export const entries: Entry[] = [
     slug: 'where-the-eye-goes',
     kind: 'principle',
     title: 'Where the eye goes',
-    summary: 'One way in, then steps down: weight, space and words guide the scan before any arrow does.',
-    details: 3,
-    keywords: ['visual hierarchy', 'hierarchy', 'scanning', 'grouping', 'gestalt', 'information scent', 'labels', 'guidance', 'layout'],
+    summary: 'The eye guesses before it reads: it misses changes away from the click, stops where a page looks finished and skips what looks like an ad.',
+    details: 4,
+    keywords: ['visual hierarchy', 'change blindness', 'false floor', 'illusion of completeness', 'banner blindness', 'proximity', 'gestalt', 'information scent', 'squint test', 'scanning'],
   },
   {
     slug: 'hover-forgives',

@@ -376,10 +376,26 @@
   color: var(--accent-text) !important;
 }
 
-// A page with no type hierarchy: title and headings set like body text.
-.flatType :is([class*='settingsTitle'], [class*='settingsHeading']) {
-  font-size: 14px !important;
-  line-height: 20px !important;
-  font-weight: 400 !important;
-  letter-spacing: normal !important;
+
+// A notice dressed as a promotion: a bright band, a sparkle, a close button.
+.promoBand {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-xl);
+  background: linear-gradient(110deg, var(--accent), oklch(0.55 0.2 300));
+  color: var(--on-accent);
+  font-size: 13px;
+  line-height: 18px;
+
+  > span {
+    flex: 1 1 160px;
+  }
+}
+
+// Label, field and hint as far apart as one field from the next.
+.evenField {
+  gap: var(--space-3) !important;
 }

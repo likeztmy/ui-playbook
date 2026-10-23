@@ -2,37 +2,45 @@
 layout: ../../layouts/Entry.astro
 slug: where-the-eye-goes
 ---
-import { EyeEntry, EyeGroups, EyeFrontLoad, EyeScent } from '../../demos/eye';
+import { EyeChange, EyeFloor, EyeBanner, EyeProximity, EyeScent, EyeSquint } from '../../demos/eye';
 
 ## The rule
 
-**Give the eye one way in, then steps down.** People don't read a screen, they scan it: they land on the strongest thing, sort what's near into groups, skim the first words of each line, and follow whichever label promises what they came for. A layout that guides does it with weight, space and words, before any arrow or hint.
+**The eye guesses before it reads.** It watches the spot it's working on and misses what changes elsewhere. It stops where the page looks finished, skips whatever looks like an ad, sorts by distance before it reads a word, and follows the label that promises what it came for. A layout that guides works with those guesses.
 
-<EyeEntry client:visible />
+<EyeChange client:visible />
 
 ## Details
 
-### Groups before items
+### It stops at what looks like an end
 
-<EyeGroups client:visible />
+<EyeFloor client:visible />
 
-### The word that differs comes first
+### It skips what looks like an ad
 
-<EyeFrontLoad client:visible />
+<EyeBanner client:visible />
 
-### Labels that say what's behind them
+### It sorts before it reads
+
+<EyeProximity client:visible />
+
+### It follows the words’ promise
 
 <EyeScent client:visible />
 
+## Check it yourself
+
+<EyeSquint client:visible />
+
+Blur a screen until the words go, and what's left is what the eye lands on first: the [squint test](https://www.nngroup.com/videos/squint-test/). It measures weight, not trust. Blurred, the promo band is the loudest thing on the Billing page, and it's still the part people skip.
+
 ## When it doesn't apply
 
-- **Long reading.** An article wants calm text with headings, not a ladder of weights; scanning patterns are for pages people work in.
-- **Loud isn't strong.** A heading or notice styled like a promotion, bright and boxed, gets skipped as one ([NN/g](https://www.nngroup.com/articles/banner-blindness-old-and-new-findings/)). The way in is the strongest thing in the interface's own voice.
+- **Long reading.** An article read from the top is read, not scanned; calm text with headings serves it better than a ladder of weights.
+- **A change the user is waiting for.** When the eye is already on the cart, say after opening it, a count that changes in place is seen without help.
 
 ## Where the playbook applies it
 
-- [Input](/components/input): a label above, one line under, nothing that competes with the field.
-- [Menu](/components/menu): groups by separators, the destructive one last.
-- [Switch](/components/switch): labels on one edge, switches in one column.
-- [Table](/components/table): secondary columns step back, so names lead.
-- [Colour means one thing](/principles/colour-means-one-thing): the same rule, for colour.
+- [Toast](/components/toast): news about one field or row belongs beside it, not in a corner.
+- [Input](/components/input): label, field and hint 4 apart.
+- [Colour means one thing](/principles/colour-means-one-thing): one solid accent, so the way in is easy to find.

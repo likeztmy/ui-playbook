@@ -1,153 +1,250 @@
-import { useState } from 'react';
+import { Check, CreditCard, ShoppingBag, Sparkles, X } from 'lucide-react';
+import { useRef, useState } from 'react';
 import { Button } from '../ui/Button';
 import { cx } from '../ui/cx';
 import { TextField } from '../ui/Field';
-import { Switch } from '../ui/Switch';
-import { Compare } from './shell';
+import { SegmentedControl } from '../ui/SegmentedControl';
+import { Slider } from '../ui/Slider';
+import { Compare, Tweak } from './shell';
 import m from './mistakes.module.scss';
 import s from './demos.module.scss';
 
-const NN_LAYER = 'https://www.nngroup.com/articles/layer-cake-pattern-scanning/';
+// ── It misses what changes elsewhere ─────────────────────
 
-// ── One entry point ──────────────────────────────────────
-
-/** A project's settings: a title, three sections, one action. */
-function ProjectSettings({ flat }: { flat?: boolean }) {
+/** A product page. `near` puts the feedback where the click was, too. */
+function Shop({ near }: { near?: boolean }) {
+  const [count, setCount] = useState(0);
+  const [added, setAdded] = useState(false);
+  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const add = () => {
+    setCount((c) => c + 1);
+    if (!near) return;
+    setAdded(true);
+    clearTimeout(timer.current);
+    timer.current = setTimeout(() => setAdded(false), 2000);
+  };
   return (
-    <div className={cx(s.settingsPage, flat && m.flatType)}>
-      <div className={s.settingsHead}>
-        <span className={s.settingsTitle}>Project settings</span>
-        <Button variant="primary" size="sm">
-          Save changes
+    <div className={s.shop}>
+      <div className={s.shopBar}>
+        <span className={s.shopBrand}>Field Supply</span>
+        <span className={s.shopNav} aria-hidden>
+          <span>Bags</span>
+          <span>Bottles</span>
+          <span>Journals</span>
+        </span>
+        <Button variant="ghost" size="sm" aria-label={`Cart, ${count} items`} className={s.shopCart}>
+          <ShoppingBag size={16} strokeWidth={1.5} nonScalingStroke aria-hidden />
+          {count > 0 && (
+            <span key={near ? count : undefined} className={cx(s.shopCount, near && s.shopBump)}>
+              {count}
+            </span>
+          )}
         </Button>
       </div>
-      <section className={s.settingsSection}>
-        <span className={s.settingsHeading}>General</span>
-        <TextField label="Name" defaultValue="Q4 roadmap" />
-        <Switch label="Public link" description="Anyone with the link can view." defaultChecked />
-      </section>
-      <section className={s.settingsSection}>
-        <span className={s.settingsHeading}>Members</span>
-        {[
-          ['Ana Ruiz', 'Owner'],
-          ['Kenji Mori', 'Editor'],
-        ].map(([name, role]) => (
-          <div key={name} className={s.memberRow}>
-            <span>{name}</span>
-            <span className={s.memberRole}>{role}</span>
-          </div>
-        ))}
-      </section>
-      <section className={s.settingsSection}>
-        <span className={s.settingsHeading}>Danger zone</span>
-        <div className={s.memberRow}>
-          <span>Delete this project and its 24 files.</span>
-          <Button size="sm" variant="danger">
-            Delete…
+      <div className={s.shopBody}>
+        <div className={s.shopImage} aria-hidden>
+          <ShoppingBag size={40} strokeWidth={1} nonScalingStroke />
+        </div>
+        <div className={s.shopInfo}>
+          <span className={s.shopName}>Canvas tote</span>
+          <span className={s.shopPrice}>$38</span>
+          <span className={s.shopBlurb}>Waxed canvas, leather handles. Ships in 2 days.</span>
+          <Button variant="primary" onClick={add} className={s.shopAdd}>
+            {added ? (
+              <>
+                <Check size={16} strokeWidth={2} nonScalingStroke aria-hidden />
+                Added
+              </>
+            ) : (
+              'Add to cart'
+            )}
           </Button>
         </div>
-      </section>
+      </div>
     </div>
   );
 }
 
-export function EyeEntry() {
+export function EyeChange() {
   return (
     <Compare
       stacked
       height={0}
-      before={<ProjectSettings flat />}
-      after={<ProjectSettings />}
-      beforeNote="Every line weighs the same, so nothing says where to start; the eye reads top to bottom and hopes."
-      afterNote={
+      before={<Shop />}
+      after={<Shop near />}
+      beforeNote={
         <>
-          The title lands first, then the three headings, then the fields: one way in, then steps down. Headings stand out by weight and
-          space, not by shouting; made too loud, they get skipped as promotions (
-          <a href={NN_LAYER}>NN/g</a>).
+          The count changes in the corner while the eye is on the button. A change outside the point of focus, with no motion to pull the
+          eye, goes unseen: <a href="https://www.nngroup.com/articles/change-blindness-definition/">change blindness</a>. Was it added? The
+          only way to know is to look away from the button.
         </>
       }
+      afterNote="The button answers where the click was, and the count moves as it changes, so the eye that glances up finds it. The button keeps its width, so nothing shifts under the pointer."
     />
   );
 }
 
-// ── Groups before items ──────────────────────────────────
+// ── It stops at what looks like an end ───────────────────
 
-const SHIPPING = ['Full name', 'Street', 'Postal code', 'City'];
-const BILLING = ['Card number', 'Expiry', 'Name on card', 'Billing postal code'];
+const PLANS = [
+  ['Solo', '$0', 'One person, three projects.'],
+  ['Team', '$12', 'Per seat. Shared projects and roles.'],
+  ['Business', '$24', 'Per seat. SSO, audit log, support.'],
+] as const;
 
-function Checkout({ grouped }: { grouped?: boolean }) {
-  const fields = (labels: string[]) => labels.map((l) => <TextField key={l} label={l} />);
-  return grouped ? (
-    <div className={s.checkoutGrouped}>
-      <div className={s.checkoutGroup}>{fields(SHIPPING)}</div>
-      <div className={s.checkoutGroup}>{fields(BILLING)}</div>
+/** A pricing page in a short window. `cut` lets the fold fall through the plans. */
+function Pricing({ cut }: { cut?: boolean }) {
+  return (
+    <div className={s.floorPane} tabIndex={0} role="region" aria-label="Pricing page">
+      <div className={cx(s.floorHero, cut && s.floorHeroShort)}>
+        <span className={s.floorTitle}>Simple pricing</span>
+        <span className={s.floorLead}>One plan per team. Change or cancel any time.</span>
+        <Button variant="primary" size="sm">
+          Start free
+        </Button>
+      </div>
+      <div className={s.floorPlans}>
+        {PLANS.map(([name, price, line]) => (
+          <div key={name} className={s.floorPlan}>
+            <span className={s.floorPlanName}>{name}</span>
+            <span className={s.floorPlanPrice}>
+              {price}
+              <span> / month</span>
+            </span>
+            <span className={s.floorPlanLine}>{line}</span>
+          </div>
+        ))}
+      </div>
+      <div className={s.floorFaq}>
+        <span className={s.settingsHeading}>Questions</span>
+        <span>Can I change plans later? Yes, from Billing, at any time.</span>
+        <span>Do you offer refunds? Within 30 days, no questions asked.</span>
+      </div>
     </div>
-  ) : (
-    <div className={s.checkoutFlat}>{fields([...SHIPPING, ...BILLING])}</div>
   );
 }
 
-export function EyeGroups() {
+export function EyeFloor() {
   return (
     <Compare
       height={0}
-      before={<Checkout />}
-      after={<Checkout grouped />}
-      beforeNote="Evenly spaced, eight fields read as one list: where does shipping end and paying begin?"
-      afterNote={
+      before={<Pricing />}
+      after={<Pricing cut />}
+      beforeNote={
         <>
-          Space inside a group smaller than between groups, and the eye sorts the fields before reading a word. A shared region, a card or
-          a fill, groups even more strongly (<a href="https://www.nngroup.com/articles/common-region/">NN/g</a>).
+          The band ends where the window does, and the first screen looks finished: the{' '}
+          <a href="https://www.nngroup.com/videos/illusion-completeness/">illusion of completeness</a>. Scroll bars that hide until used, as
+          on the Mac and on phones, leave no other hint.
         </>
       }
+      afterNote="The fold cuts through the plans. Half a card can only mean there is more, so the page asks to be scrolled without an arrow saying so."
     />
   );
 }
 
-// ── The word that differs comes first ────────────────────
+// ── It skips what looks like an ad ───────────────────────
 
-const ALERTS = [
-  ['mentions', 'Mentions', 'Send me an email when someone mentions me', 'When someone @-mentions you.'],
-  ['assigned', 'Assignments', 'Send me an email when a task is assigned to me', 'When a task is given to you.'],
-  ['comments', 'Comments', 'Send me an email when someone comments on my file', 'On files you own.'],
-  ['digest', 'Weekly digest', 'Send me an email with a weekly summary', 'Every Monday morning.'],
+const NOTICE = 'Your card expires on 31 Oct. Update it to keep your plan.';
+
+function Billing({ inline }: { inline?: boolean }) {
+  return (
+    <div className={s.billing}>
+      {!inline && (
+        <div className={m.promoBand}>
+          <Sparkles size={16} strokeWidth={1.5} nonScalingStroke aria-hidden />
+          <span>{NOTICE}</span>
+          <Button size="sm">Update card</Button>
+          <X size={16} strokeWidth={1.5} nonScalingStroke aria-label="Dismiss" />
+        </div>
+      )}
+      <span className={s.settingsTitle}>Billing</span>
+      <section className={s.settingsSection}>
+        <span className={s.settingsHeading}>Plan</span>
+        <div className={s.memberRow}>
+          <span>Team · 5 seats</span>
+          <span className={s.memberRole}>$60 / month</span>
+        </div>
+      </section>
+      <section className={s.settingsSection}>
+        <span className={s.settingsHeading}>Payment method</span>
+        <div className={s.memberRow}>
+          <span className={s.billingCard}>
+            <CreditCard size={16} strokeWidth={1.5} nonScalingStroke aria-hidden />
+            Visa •••• 4242
+            <span className={inline ? s.billingExpiring : s.memberRole}>Expires 10/26</span>
+          </span>
+          {inline && <Button size="sm">Update card</Button>}
+        </div>
+        {inline && <span className={s.billingWarn}>{NOTICE}</span>}
+      </section>
+      <section className={s.settingsSection}>
+        <span className={s.settingsHeading}>Invoices</span>
+        {['1 Oct', '1 Sep'].map((d) => (
+          <div key={d} className={s.memberRow}>
+            <span>{d}</span>
+            <span className={s.memberRole}>$60.00</span>
+          </div>
+        ))}
+      </section>
+    </div>
+  );
+}
+
+export function EyeBanner() {
+  return (
+    <Compare
+      height={0}
+      before={<Billing />}
+      after={<Billing inline />}
+      beforeNote={
+        <>
+          A bright, rounded band with a sparkle and a close button is how promotions look, and people have learned to look past them: in
+          NN/g’s eye-tracking, <a href="https://www.nngroup.com/articles/banner-blindness-old-and-new-findings/">banner blindness</a> holds
+          for anything ad-shaped, whatever it says.
+        </>
+      }
+      afterNote="The same words, in the interface’s own voice, beside the card they’re about. The eye reaches them on its way through Payment method, the one place it goes when it cares about the card."
+    />
+  );
+}
+
+// ── It sorts before it reads ─────────────────────────────
+
+const CONTACT = [
+  ['Name', undefined],
+  ['Email', undefined],
+  ['Phone', 'Only for questions about delivery.'],
+  ['Company', undefined],
 ] as const;
 
-function EmailAlerts({ frontLoaded }: { frontLoaded?: boolean }) {
-  const [on, setOn] = useState<string[]>(['mentions', 'assigned']);
+function Contact({ tight }: { tight?: boolean }) {
   return (
-    <div className={s.settingsList}>
-      {ALERTS.map(([key, word, sentence, detail]) => (
-        <Switch
-          key={key}
-          label={frontLoaded ? word : sentence}
-          description={frontLoaded ? detail : undefined}
-          checked={on.includes(key)}
-          onCheckedChange={(v) => setOn((l) => (v ? [...l, key] : l.filter((x) => x !== key)))}
-        />
+    <div className={cx(s.contact, !tight && s.contactEven)}>
+      {CONTACT.map(([label, hint]) => (
+        <TextField key={label} label={label} description={hint} className={tight ? undefined : m.evenField} />
       ))}
     </div>
   );
 }
 
-export function EyeFrontLoad() {
+export function EyeProximity() {
   return (
     <Compare
       height={0}
-      before={<EmailAlerts />}
-      after={<EmailAlerts frontLoaded />}
-      beforeNote="Each label starts “Send me an email”, so the eye skips the start it has already seen and has to reach the end of every line."
+      before={<Contact />}
+      after={<Contact tight />}
+      beforeNote="Every gap is 12. Each label sits as near the field above as the one below, and the line about delivery could belong to Phone or to Company: the eye groups by distance before it reads a word."
       afterNote={
         <>
-          The word that differs comes first, and what they share moves to the group or the description. Lead with the information-bearing
-          words (<a href={NN_LAYER}>NN/g</a>).
+          4 between a label, its field and its hint; 20 between fields. Inside a group the space is clearly smaller than between groups, so
+          each label points one way (<a href="https://www.nngroup.com/articles/gestalt-proximity/">NN/g, proximity</a>).
         </>
       }
     />
   );
 }
 
-// ── Labels that smell of what's behind them ──────────────
+// ── It follows the words' promise ────────────────────────
 
 const VAGUE = ['Getting started', 'Resources', 'Solutions', 'Account', 'More'];
 const SPECIFIC = ['Getting started', 'Invoices and refunds', 'Team and roles', 'Import and export', 'API'];
@@ -184,10 +281,55 @@ export function EyeScent() {
   );
 }
 
+// ── Check it yourself ────────────────────────────────────
+
+type Squinted = 'Billing' | 'Pricing';
+
+export function EyeSquint() {
+  const [blur, setBlur] = useState(4);
+  const [page, setPage] = useState<Squinted>('Billing');
+  return (
+    <Tweak
+      height={0}
+      readout={<code className={s.readout}>filter: blur({blur}px)</code>}
+      stage={
+        <div className={s.squint} style={{ filter: blur ? `blur(${blur}px)` : undefined }} aria-hidden>
+          {page === 'Billing' ? (
+            <>
+              <Billing />
+              <Billing inline />
+            </>
+          ) : (
+            <>
+              <Pricing />
+              <Pricing cut />
+            </>
+          )}
+        </div>
+      }
+      controls={
+        <>
+          <SegmentedControl
+            label="Page"
+            value={page}
+            onValueChange={setPage}
+            segments={[
+              { value: 'Billing', label: 'Billing' },
+              { value: 'Pricing', label: 'Pricing' },
+            ]}
+            className={s.fill}
+          />
+          <Slider label="Blur" value={blur} onValueChange={setBlur} max={10} unit="px" />
+        </>
+      }
+    />
+  );
+}
+
 export function EyePreview() {
   return (
     <div className={s.colourStill}>
-      <ProjectSettings />
+      <Shop near />
     </div>
   );
 }
