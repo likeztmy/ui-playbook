@@ -4,14 +4,11 @@ slug: tabs
 ---
 import { TabsLive, TabsVariants, TabsStates, TabsWeight, TabsIndicator, TabsOverflow, TabsCounts } from '../../demos/tabs';
 
+<TabsLive client:visible />
+
 ## When to use
 
-Tabs switch between views of one thing: a project's *Overview*, *Issues* and *Settings*. Each tab replaces a region of the page, and every view is about the same object. Reach for something else when:
-
-- **It changes how one control shows its content.** *List* or *Board* for the same items is a segmented control.
-- **Each view is a place of its own.** Pages with their own URL and history are navigation links, even if they're styled like tabs.
-- **There are more than about six.** Apple suggests another way past six: a sidebar, or a Select for the view.
-- **The content is a sequence.** Steps that must be done in order belong in a stepper or a flow, not in tabs people can skip around.
+Tabs switch between views of one thing, each replacing a region of the page. A mode of one control is a Segmented control; views with their own URL are navigation; past about six, a sidebar or a Select; steps in order want a flow.
 
 ### Tabs or segmented control
 
@@ -21,6 +18,24 @@ Tabs switch between views of one thing: a project's *Overview*, *Issues* and *Se
 | Looks like | Labels on a line, a bar under the current one | A filled track with a raised segment |
 | Count | 2 to about 6, can scroll | 2 to 5, never scrolls |
 | Sits | Above the content it changes | Beside the thing it changes, often in a toolbar |
+
+## Details
+
+### Weight stays put
+
+<TabsWeight client:visible />
+
+### The bar is ink, not blue
+
+<TabsIndicator client:visible />
+
+### One row that scrolls
+
+<TabsOverflow client:visible />
+
+### Counts beside the label, not in it
+
+<TabsCounts client:visible />
 
 ## Variants
 
@@ -46,27 +61,7 @@ The bar sits on the line, under the label's full width. Tabs have no side paddin
 
 <TabsStates client:visible />
 
-<TabsLive client:visible />
-
-Tab into the row and use ← →: each arrow moves to the next tab and opens it, since the panels appear at once. Home and End jump to the ends. Tab again moves into the panel. The bar slides to the new tab and takes its width on the smooth spring (`ease-spring-smooth`), with a hint of overshoot.
-
-## Details
-
-### Weight stays put
-
-<TabsWeight client:visible />
-
-### The bar is ink, not blue
-
-<TabsIndicator client:visible />
-
-### One row that scrolls
-
-<TabsOverflow client:visible />
-
-### Counts beside the label, not in it
-
-<TabsCounts client:visible />
+Each arrow moves to the next tab and opens it, since the panels appear at once; Home and End jump to the ends, and Tab moves into the panel. The bar slides to the new tab and takes its width on the smooth spring (`ease-spring-smooth`).
 
 ## Common mistakes
 

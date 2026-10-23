@@ -117,15 +117,6 @@
   line-height: 20px;
 }
 
-// A switch placed right after its label instead of in a column.
-.inlineSwitch {
-  justify-content: flex-start !important;
-
-  > :first-child {
-    flex: none !important;
-  }
-}
-
 // A knob that doesn't respond to the press.
 .rigidThumb {
   width: 16px !important;
@@ -250,15 +241,6 @@
   }
 }
 
-// Track and thumb sharing one 8px radius over a 2px inset.
-.roundedTrack {
-  border-radius: var(--radius-md) !important;
-
-  > * {
-    border-radius: var(--radius-md) !important;
-  }
-}
-
 // A card stage with the card's own 18px radius.
 .sameStageRadius {
   border-radius: var(--radius-xl) !important;
@@ -352,9 +334,9 @@
   }
 }
 
-// Radios in a row, spaced no wider than a label's own gap.
+// Radios in a row, 16px apart, as Bootstrap's inline radios.
 .tightRadios > div {
-  column-gap: var(--space-2) !important;
+  column-gap: var(--space-4) !important;
 }
 
 // A trigger that looks the same whether its popup is open or not.

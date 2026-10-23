@@ -41,7 +41,7 @@ function ExportSize() {
 
 export function RadioLive() {
   return (
-    <Frame label="Live · Tab in, then arrows choose" height={240}>
+    <Frame label="Export" height={240}>
       <ExportSize />
     </Frame>
   );
@@ -130,8 +130,8 @@ export function RadioDefault() {
           ))}
         </RadioGroup>
       }
-      beforeNote="Nothing chosen. The form can go out with no shipping at all, and once you pick one there’s no way back to none: the empty start was a state no one can return to."
-      afterNote="The safe, common choice is already on. One is always chosen, which is what a radio group promises; if “none” is a real answer, it gets its own radio."
+      beforeNote="Once one is picked there’s no way back to none, so the empty start is a state nobody can return to, and the form can go out without an answer."
+      afterNote="The safe, common choice is already on; if “none” is a real answer, it gets its own radio."
     />
   );
 }
@@ -174,8 +174,12 @@ export function RadioKeys() {
           ))}
         </RadioGroup>
       }
-      beforeNote="Each circle is a button. Tab stops on every one, arrows do nothing, and a screen reader hears three toggles, not one choice of three."
-      afterNote="One Tab stop, on the chosen radio. Arrows move and choose at once; Tab again leaves the group. This is how every native radio group behaves."
+      beforeNote="Each circle is a button: Tab stops on every one, and a screen reader hears three toggles rather than one choice of three."
+      afterNote={
+        <>
+          One Tab stop, on the chosen radio, and arrows that move and choose: the <a href="https://www.w3.org/WAI/ARIA/apg/patterns/radio/">radio group</a> every platform shares.
+        </>
+      }
     />
   );
 }
@@ -200,8 +204,12 @@ export function RadioColumn() {
           ))}
         </RadioGroup>
       }
-      beforeNote="In a row, each label sits as close to the next circle as to its own, and the row wraps wherever it likes. Which circle is “Actual size”?"
-      afterNote="One column: circles line up, labels start on one edge, and the eye reads straight down. Keep a row for two or three single words."
+      beforeNote={
+        <>
+          Spaced 16px apart, as <a href="https://getbootstrap.com/docs/5.3/forms/checks-radios/#inline">Bootstrap’s inline radios</a> are, each label sits nearly as close to the next circle as to its own, and the row wraps wherever it likes.
+        </>
+      }
+      afterNote="One column: circles line up and the eye reads straight down. A row suits two or three single words."
     />
   );
 }
@@ -233,8 +241,8 @@ export function RadioShape() {
           ))}
         </RadioGroup>
       }
-      beforeNote="Square boxes promise any combination. Check PNG and PDF quietly turns off; people learn the rule only by breaking it."
-      afterNote="Circles say one of these before anything is clicked. Square for any number, round for exactly one: the shape is the rule."
+      beforeNote="Square boxes promise any combination, and this set quietly unchecks the last one."
+      afterNote="Round says “one of these” before anything is clicked."
     />
   );
 }

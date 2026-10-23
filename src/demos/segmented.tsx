@@ -54,7 +54,7 @@ function ViewPreview({ view }: { view: View }) {
 export function SegmentedLive() {
   const [view, setView] = useState<View>('board');
   return (
-    <Frame label="Live · click, or Tab in and use the arrow keys" height={240}>
+    <Frame label="Tasks" height={240}>
       <div className={s.stack}>
         <SegmentedControl label="View" value={view} onValueChange={setView} segments={VIEWS} />
         <ViewPreview view={view} />
@@ -116,8 +116,8 @@ export function SegmentedThumb() {
       height={120}
       before={<Own label="View" segments={VIEWS} initial="board" className={m.noThumb} />}
       after={<Own label="View" segments={VIEWS} initial="board" />}
-      beforeNote="Each segment fills itself when chosen. The old one goes out and the new one comes on in the same frame: the eye sees a blink, not a move."
-      afterNote="One thumb slides to the new segment on the smooth spring. The eye follows it, so the change has a from and a to."
+      beforeNote="Each segment fills in place, so the old goes off as the new comes on: a blink, not a move."
+      afterNote="One thumb slides on the smooth spring, so the change has a from and a to."
     />
   );
 }
@@ -134,8 +134,12 @@ export function SegmentedWidths() {
       height={120}
       before={<Own label="Filter" segments={UNEVEN} initial="all" className={m.contentWidths} />}
       after={<Own label="Filter" segments={UNEVEN} initial="all" />}
-      beforeNote="Each segment as wide as its word. All is a stub beside Assigned to me, and the thumb grows and shrinks as it travels."
-      afterNote="Equal widths, as Apple advises: the control reads as one balanced object and the thumb keeps its size. Choose words of similar length."
+      beforeNote="As wide as their words, the segments look unrelated, and the thumb changes size as it travels."
+      afterNote={
+        <>
+          Equal widths feel balanced, <a href="https://developer.apple.com/design/human-interface-guidelines/segmented-controls">Apple</a> notes; choose words of similar length.
+        </>
+      }
     />
   );
 }
@@ -146,29 +150,27 @@ export function SegmentedRaised() {
       height={120}
       before={<Own label="Theme" segments={THEMES} initial="dark" className={m.accentThumb} />}
       after={<Own label="Theme" segments={THEMES} initial="dark" />}
-      beforeNote="The chosen segment in accent blue. It's a state, not an action, yet it's the loudest thing near it and looks like a button to press."
-      afterNote="A raised thumb, surface-raised with shadow-xs, and ink text. It says “this one” in the control's own greys; blue stays with actions."
+      beforeNote="In accent blue, the chosen segment looks like a button to press."
+      afterNote={
+        <>
+          A raised thumb says “this one” in the control’s own greys. <a href="/principles/colour-means-one-thing">Colour means one thing</a>.
+        </>
+      }
     />
   );
 }
 
-export function SegmentedPill() {
+/** The track and thumb, magnified. */
+export function SegmentedAnatomy() {
   return (
-    <Compare
-      height={120}
-      before={
-        <div className={s.magnify}>
-          <Own label="View" segments={VIEWS} initial="list" className={m.roundedTrack} />
-        </div>
-      }
-      after={
+    <Frame label="At 2×" height={0}>
+      <figure className={s.anatomyItem}>
         <div className={s.magnify}>
           <Own label="View" segments={VIEWS} initial="list" />
         </div>
-      }
-      beforeNote="Track and thumb both radius-md 8 with a 2px inset. The thumb's corners swell toward the track's. Shown at 2×."
-      afterNote="A pill in a pill with an even 2px inset: concentric by shape, no arithmetic. Shown at 2×."
-    />
+        <figcaption className={s.anatomyCaption}>A pill in a pill with an even 2px inset: concentric by shape, no arithmetic.</figcaption>
+      </figure>
+    </Frame>
   );
 }
 
@@ -198,8 +200,12 @@ export function SegmentedContent() {
           initial="list"
         />
       }
-      beforeNote="Two icons and a word. The word outweighs the icons, the segments look unrelated, and the control reads as two things."
-      afterNote="All icons, each with a tooltip naming it; or all words. Apple: text or images, not a mix."
+      beforeNote="A word beside icons outweighs them, and the control reads as two things."
+      afterNote={
+        <>
+          All icons with tooltips, or all words: <a href="https://developer.apple.com/design/human-interface-guidelines/segmented-controls">Apple</a> warns that a mix reads as disconnected.
+        </>
+      }
     />
   );
 }

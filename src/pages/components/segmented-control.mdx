@@ -2,16 +2,13 @@
 layout: ../../layouts/Entry.astro
 slug: segmented-control
 ---
-import { SegmentedLive, SegmentedVariants, SegmentedStates, SegmentedThumb, SegmentedWidths, SegmentedRaised, SegmentedPill, SegmentedContent } from '../../demos/segmented';
+import { SegmentedLive, SegmentedVariants, SegmentedStates, SegmentedThumb, SegmentedWidths, SegmentedRaised, SegmentedContent, SegmentedAnatomy } from '../../demos/segmented';
+
+<SegmentedLive client:visible />
 
 ## When to use
 
-A segmented control picks one of two to five options that change a view or a mode, with every option in sight: *Board*, *List*, *Timeline*. Reach for something else when:
-
-- **It switches regions of a page.** Overview, Activity, Settings are Tabs.
-- **There are more than five options, or long ones.** A Select.
-- **It's on or off.** A Switch: *Show grid* isn't a choice between *On* and *Off*.
-- **The options are actions.** Buttons in a Toolbar. Apple: keep a control all choices or all actions, never a mix.
+A segmented control picks one of two to five options that change a view or a mode, with every option in sight. Regions of a page are Tabs; more or longer options want a Select; on or off is a Switch; actions are buttons in a Toolbar.
 
 ### Which control
 
@@ -20,6 +17,24 @@ A segmented control picks one of two to five options that change a view or a mod
 | Chooses | A mode or a view | A region of the page | A value | On or off |
 | Options | 2–5, all visible | 2–6, can scroll | 5–15, in a list | One |
 | Sits | Beside what it changes | Above what it changes | In a form or panel | In a list or form |
+
+## Details
+
+### One thumb that slides
+
+<SegmentedThumb client:visible />
+
+### Segments share one width
+
+<SegmentedWidths client:visible />
+
+### Raised, not blue
+
+<SegmentedRaised client:visible />
+
+### Words or icons, not both
+
+<SegmentedContent client:visible />
 
 ## Variants
 
@@ -38,35 +53,13 @@ A segmented control picks one of two to five options that change a view or a mod
 
 Its height matches the buttons beside it.
 
+<SegmentedAnatomy client:visible />
+
 ## States
 
 <SegmentedStates client:visible />
 
-<SegmentedLive client:visible />
-
-It's a radio group: Tab lands on the chosen segment, and the arrow keys move and choose in one step. The thumb slides on the smooth spring; segment text only changes colour, in `duration-fast`. Before the thumb is measured, or without script, the chosen segment carries the thumb's look itself.
-
-## Details
-
-### One thumb that slides
-
-<SegmentedThumb client:visible />
-
-### Segments share one width
-
-<SegmentedWidths client:visible />
-
-### Raised, not blue
-
-<SegmentedRaised client:visible />
-
-### A pill in a pill
-
-<SegmentedPill client:visible />
-
-### Words or icons, not both
-
-<SegmentedContent client:visible />
+It's a radio group: Tab lands on the chosen segment, and the arrow keys move and choose in one step. The thumb slides on the smooth spring; segment text only changes colour, in `duration-fast`. Without script, the chosen segment carries the thumb's look itself.
 
 ## Common mistakes
 

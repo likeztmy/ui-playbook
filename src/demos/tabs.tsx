@@ -45,7 +45,7 @@ function ProjectTabs({ tabs = PROJECT, defaultValue = 'overview', listClass, tab
 
 export function TabsLive() {
   return (
-    <Frame label="Live · arrows move and open, Home and End jump" height={180}>
+    <Frame label="Project" height={180}>
       <ProjectTabs />
     </Frame>
   );
@@ -111,8 +111,8 @@ export function TabsWeight() {
       height={120}
       before={<ProjectTabs panels={false} tabClass={m.boldActiveTab} />}
       after={<ProjectTabs panels={false} />}
-      beforeNote="The current tab turns bold. Bold is wider, so every tab after it shifts sideways each time you switch. Click along the row and watch Settings move."
-      afterNote="Every tab is weight 500 all the time; only the colour changes. Nothing moves except the bar."
+      beforeNote="Bold is wider, so each switch shifts every tab after it."
+      afterNote="Weight 500 all the time; only the colour changes, so nothing moves but the bar."
     />
   );
 }
@@ -123,8 +123,16 @@ export function TabsIndicator() {
       height={120}
       before={<ProjectTabs panels={false} listClass={m.accentTabs} />}
       after={<ProjectTabs panels={false} />}
-      beforeNote="An accent bar and accent text. The current tab is the one place you can’t usefully click, yet it’s the bluest thing in the row."
-      afterNote="Ink, the colour of the content below. Blue stays with things that act, and the current tab reads as “here”, not “press”."
+      beforeNote={
+        <>
+          The current tab is the one place you can’t usefully click, yet it’s the bluest thing in the row. <a href="https://github.com/material-components/material-components-android/blob/master/docs/components/Tabs.md">Material</a> draws it in the primary colour.
+        </>
+      }
+      afterNote={
+        <>
+          Ink, the colour of the content below: “here”, not “press”. <a href="/principles/colour-means-one-thing">Colour means one thing</a>.
+        </>
+      }
     />
   );
 }
@@ -135,8 +143,8 @@ export function TabsOverflow() {
       height={140}
       before={<ProjectTabs tabs={MANY} panels={false} listClass={cx(s.narrowTabs, m.wrapTabs)} />}
       after={<ProjectTabs tabs={MANY} panels={false} listClass={s.narrowTabs} />}
-      beforeNote="Wrapped onto more rows. Now there are several rows and one bar, and the rows below the first look like a different set of tabs."
-      afterNote="One row that scrolls sideways; the cut-off label says there’s more. Arrow keys bring the next tab into view."
+      beforeNote="Wrapped onto several rows, the rows below the first read as another set of tabs."
+      afterNote="One row that scrolls; the cut-off label says there’s more."
     />
   );
 }
@@ -147,8 +155,8 @@ export function TabsCounts() {
       height={120}
       before={<ProjectTabs panels={false} parenCounts />}
       after={<ProjectTabs panels={false} />}
-      beforeNote="“Issues (12)”: the number is part of the label, as loud as the word, and the label grows and shrinks as issues are closed."
-      afterNote="A quiet mono chip beside the label. The name stays the name, and digits keep their width as the count changes."
+      beforeNote="The number is as loud as the word, and the label changes width as issues close."
+      afterNote="A quiet chip beside the label, in digits that keep their width."
     />
   );
 }

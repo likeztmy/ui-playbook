@@ -396,7 +396,7 @@ test('checkbox: label toggles; parent goes mixed, then all on, then all off', as
 test('radio: one Tab stop on the chosen one, arrows move and choose, a choice reveals its field', async ({ page }) => {
   await page.goto('/components/radio');
   await hydrateAll(page);
-  const live = page.locator('figure').filter({ hasText: 'Live · Tab in' });
+  const live = page.locator('figure').first();
   await live.scrollIntoViewIfNeeded();
   const two = live.getByRole('radio', { name: '2×' });
   await expect(two).toBeChecked();
@@ -465,7 +465,7 @@ test('combobox: forgiving match, Enter picks the first, Esc keeps the value, emp
 test('switch: takes effect at once, Space toggles, knob stretches while pressed', async ({ page }) => {
   await page.goto('/components/switch');
   await hydrateAll(page);
-  const live = page.locator('figure').filter({ hasText: 'Live · takes effect' });
+  const live = page.locator('figure').first();
   const rulers = live.getByRole('switch', { name: 'Show rulers' });
   const canvas = live.getByRole('img', { name: 'Canvas preview' });
   await rulers.scrollIntoViewIfNeeded();
@@ -492,7 +492,7 @@ test('switch: takes effect at once, Space toggles, knob stretches while pressed'
 test('tabs: arrows open, Home/End jump, bar sits under the current tab, nothing shifts', async ({ page }) => {
   await page.goto('/components/tabs');
   await hydrateAll(page);
-  const live = page.locator('figure').filter({ hasText: 'Live · arrows' });
+  const live = page.locator('figure').first();
   const tab = (name: string) => live.getByRole('tab', { name });
   await tab('Overview').scrollIntoViewIfNeeded();
   const settingsX = (await tab('Settings').boundingBox())!.x;
@@ -563,7 +563,7 @@ test('slider: click glides to a stop, drag follows, ends stretch, keys step', as
 test('segmented: click and arrows choose, the thumb slides under the choice', async ({ page }) => {
   await page.goto('/components/segmented-control');
   await hydrateAll(page);
-  const live = page.locator('figure').filter({ hasText: 'Live · click' });
+  const live = page.locator('figure').first();
   const group = live.getByRole('radiogroup', { name: 'View' });
   const thumb = group.locator('[aria-hidden]').first();
   await group.scrollIntoViewIfNeeded();

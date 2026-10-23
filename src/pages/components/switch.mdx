@@ -2,21 +2,13 @@
 layout: ../../layouts/Entry.astro
 slug: switch
 ---
-import { SwitchLive, SwitchVariants, SwitchStates, SwitchImmediate, SwitchLabel, SwitchColumn, SwitchPress } from '../../demos/switch';
+import { SwitchLive, SwitchVariants, SwitchStates, SwitchImmediate, SwitchLabel, SwitchPress, SwitchAnatomy } from '../../demos/switch';
+
+<SwitchLive client:visible />
 
 ## When to use
 
-A switch turns a setting on or off, and the change happens the moment it flips: no Save, no confirmation. Use it for:
-
-- **Settings that apply at once.** *Autosave*, *Show grid*, *Notifications*.
-- **A setting that governs others.** A switch has more weight than a checkbox, so Apple suggests it for the main setting over a group.
-
-Reach for something else when:
-
-- **The choice waits for Save or Submit.** That's a Checkbox.
-- **The change is risky.** A switch can't ask first. Use a Button, and confirm if it can't be undone.
-- **There are more than two states.** A segmented control or a Select.
-- **It's in a toolbar.** Apple keeps switches in the window body; a toolbar uses a toggle button.
+A switch turns a setting on or off, and the change happens the moment it flips: no Save, no confirmation. A choice that waits for Save is a Checkbox; a risky change is a Button that can confirm; more than two states want a Segmented control or a Select; a toolbar uses a toggle button.
 
 ### Switch or Checkbox
 
@@ -27,6 +19,20 @@ Reach for something else when:
 | Mixed state | None | A dash, for a parent |
 | Hierarchy | Master over a group | Parent with indented children |
 | Placement | Trailing in lists, leading in forms | Leading, always |
+
+## Details
+
+### It takes effect, or it's a checkbox
+
+<SwitchImmediate client:visible />
+
+### The label names the setting, not the state
+
+<SwitchLabel client:visible />
+
+### The knob answers the press
+
+<SwitchPress client:visible />
 
 ## Variants
 
@@ -49,31 +55,13 @@ Pick one placement per context and keep it: trailing in settings lists, leading 
 
 A pill around a circle with an even inset is concentric by construction: no radius to calculate.
 
+<SwitchAnatomy client:visible />
+
 ## States
 
 <SwitchStates client:visible />
 
-<SwitchLive client:visible />
-
-Click a switch or its label; Tab to one and press Space. The canvas changes on the same frame. The knob moves on the snappy spring (`ease-spring-snappy`): it answers the finger directly, so no overshoot. The track's colour fades in `duration-fast`.
-
-## Details
-
-### It takes effect, or it's a checkbox
-
-<SwitchImmediate client:visible />
-
-### The label names the setting, not the state
-
-<SwitchLabel client:visible />
-
-### Switches form a column
-
-<SwitchColumn client:visible />
-
-### The knob answers the press
-
-<SwitchPress client:visible />
+Space toggles the focused switch. The knob moves on the snappy spring (`ease-spring-snappy`): it answers the finger directly, so no overshoot. The track's colour fades in `duration-fast`.
 
 ## Common mistakes
 

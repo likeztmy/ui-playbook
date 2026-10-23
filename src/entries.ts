@@ -104,7 +104,7 @@ export const entries: Entry[] = [
     kind: 'component',
     title: 'Switch',
     summary: 'A setting that takes effect the moment it flips. Label names the setting, never the state.',
-    details: 4,
+    details: 3,
     keywords: ['toggle', 'on off', 'setting', 'preference', 'knob'],
   },
   {
@@ -128,7 +128,7 @@ export const entries: Entry[] = [
     kind: 'component',
     title: 'Segmented control',
     summary: 'One of two to five modes, all in sight. A single thumb slides to the choice.',
-    details: 5,
+    details: 4,
     keywords: ['segmented', 'toggle group', 'radio group', 'view switcher', 'mode', 'thumb'],
   },
   {

@@ -4,20 +4,31 @@ slug: radio
 ---
 import { RadioLive, RadioVariants, RadioStates, RadioDefault, RadioKeys, RadioColumn, RadioShape } from '../../demos/radio';
 
+<RadioLive client:visible />
+
 ## When to use
 
-A radio group picks exactly one of a few options, all in sight, and the choice waits for the form to be sent. Use it for:
+A radio group picks exactly one of a few options, all in sight, and the choice waits for the form to be sent. More than five want a Select; a choice that switches a view at once is a Segmented control; options that combine are Checkboxes; a single on/off is a Checkbox or a Switch.
 
-- **Two to five options worth reading side by side.** *Standard*, *Express*, *Overnight*, each with its price.
-- **Options that need a line of explanation.** A description under each label says what it does.
-- **A choice that needs one more value.** *Custom width* shows its field only while chosen.
+## Details
 
-Reach for something else when:
+### One is chosen from the start
 
-- **There are more than five.** A Select keeps the list out of the way until it's needed.
-- **It switches a view at once.** A Segmented control, in a toolbar or a header.
-- **Any number can be on.** Checkboxes.
-- **It's one option, on or off.** A Checkbox in a form, a Switch for a setting.
+<RadioDefault client:visible />
+
+### One Tab stop; arrows choose
+
+<RadioKeys client:visible />
+
+### A column, not a row
+
+<RadioColumn client:visible />
+
+### Round means one
+
+<RadioShape client:visible />
+
+Pressed, the circle dips to 0.9. The dot springs in from 0.4 on the smooth spring; the fill fades in `duration-fast`. The old dot fades out quickly. With reduced motion it only fades.
 
 ## Variants
 
@@ -43,29 +54,7 @@ The label wraps the circle, so the whole row is one target, as on a Checkbox.
 
 <RadioStates client:visible />
 
-<RadioLive client:visible />
-
-Tab lands on the chosen radio. The arrow keys move and choose in one step, wrapping at the ends; Tab again leaves the group. Pick *Custom width* and its field appears under it.
-
-## Details
-
-### One is chosen from the start
-
-<RadioDefault client:visible />
-
-### One Tab stop; arrows choose
-
-<RadioKeys client:visible />
-
-### A column, not a row
-
-<RadioColumn client:visible />
-
-### Round means one
-
-<RadioShape client:visible />
-
-Pressed, the circle dips to 0.9. The dot springs in from 0.4 on the smooth spring; the fill fades in `duration-fast`. The old dot fades out quickly. With reduced motion it only fades.
+Tab lands on the chosen radio; the arrow keys move and choose in one step, wrapping at the ends.
 
 ## Common mistakes
 

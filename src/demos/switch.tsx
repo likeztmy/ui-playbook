@@ -19,7 +19,7 @@ export function SwitchLive() {
   const [grid, setGrid] = useState(true);
   const [rulers, setRulers] = useState(false);
   return (
-    <Frame label="Live · takes effect the moment it flips" height={220}>
+    <Frame label="Canvas" height={220}>
       <div className={s.settingsDemo}>
         <div className={s.settingsList}>
           <Switch label="Show grid" checked={grid} onCheckedChange={setGrid} />
@@ -124,8 +124,12 @@ export function SwitchImmediate() {
       height={200}
       before={<DeferredSwitch />}
       after={<ImmediateOrForm />}
-      beforeNote="Flip it and the grid stays hidden until Save. The switch says on while the canvas says off: two answers to one question."
-      afterNote="It flips, the grid appears. A switch is a light switch. When a choice should wait for Save, that’s a Checkbox."
+      beforeNote="Until Save, the switch says on while the canvas says off: two answers to one question."
+      afterNote={
+        <>
+          A switch is a light switch. A choice that waits for Save is a Checkbox, as <a href="https://developer.apple.com/design/human-interface-guidelines/toggles">Apple’s toggles</a> split them.
+        </>
+      }
     />
   );
 }
@@ -149,8 +153,8 @@ export function SwitchLabel() {
           <Switch label="Show grid" defaultChecked />
         </div>
       }
-      beforeNote="The label reports the state, so it changes when you flip it. Is “Grid off” what it is, or what pressing it will do?"
-      afterNote="The label names the setting and never changes; the switch alone shows the state, by colour and by the knob’s side."
+      beforeNote="Is “Grid off” what it is, or what pressing it will do?"
+      afterNote="The label names the setting and never changes; the knob’s side and colour show the state."
     />
   );
 }
@@ -162,27 +166,19 @@ const SETTINGS: [string, boolean][] = [
   ['Show rulers', false],
 ];
 
-export function SwitchColumn() {
+/** Settings with their switches in one column, held still. */
+export function SwitchAnatomy() {
   return (
-    <Compare
-      height={200}
-      before={
-        <div className={cx(s.settingsList, s.settingsWide)}>
-          {SETTINGS.map(([l, on]) => (
-            <Switch key={l} label={l} defaultChecked={on} className={m.inlineSwitch} />
-          ))}
-        </div>
-      }
-      after={
+    <Frame label="A settings list" height={0}>
+      <figure className={s.anatomyItem}>
         <div className={cx(s.settingsList, s.settingsWide)}>
           {SETTINGS.map(([l, on]) => (
             <Switch key={l} label={l} defaultChecked={on} />
           ))}
         </div>
-      }
-      beforeNote="Each switch after its own label, so they start wherever the words end. Scanning for what’s on means reading every line."
-      afterNote="One column at the right edge: the states read top to bottom at a glance, and the labels line up on the left."
-    />
+        <figcaption className={s.anatomyCaption}>Labels on the left edge, switches in one column on the right: what’s on reads top to bottom.</figcaption>
+      </figure>
+    </Frame>
   );
 }
 
@@ -192,8 +188,8 @@ export function SwitchPress() {
       height={120}
       before={<Switch aria-label="Show grid, before" pin="active" thumbClassName={m.rigidThumb} />}
       after={<Switch aria-label="Show grid, after" pin="active" />}
-      beforeNote="Pressed, nothing moves until release. On a small control, the finger covers the only sign that the press registered."
-      afterNote="The knob stretches 4px toward where it’ll go, as on iOS and macOS, then slides over on release. Shown held; press and hold a switch in the Live demo above to feel it."
+      beforeNote="On a small control, the finger covers the only sign that the press registered."
+      afterNote="The knob stretches 4px toward where it’ll go, as on iOS and macOS, then slides over on release."
     />
   );
 }
