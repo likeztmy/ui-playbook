@@ -1,0 +1,35 @@
+---
+layout: ../../layouts/Entry.astro
+slug: colour-means-one-thing
+---
+import { ColourOneBlue, ColourGreyscale } from '../../demos/colour';
+
+## The rule
+
+**Each colour says one thing.** Blue says “do this now”. Where it also marks what's chosen, it stays a pale tint behind a shape that says it on its own, so one solid blue is left on the screen and the eye goes straight to it.
+
+<ColourOneBlue client:visible />
+
+Precision keeps the accent as the interface's only hue, for the action at hand and the current selection. Each status colour has one meaning of its own too: `danger` is something wrong, never “new”.
+
+## Details
+
+### It still reads without colour
+
+<ColourGreyscale client:visible />
+
+The bar under the tab, the raised segment and the row's shade say what's current with no colour at all, which is what lets the blue stay rare. Colour alone can't carry a meaning anyway ([WCAG 1.4.1](https://www.w3.org/WAI/WCAG22/Understanding/use-of-color.html)).
+
+## When it doesn't apply
+
+- **Content.** A chart's categories, a label colour someone picked, a photo: there the colour is the information, and the interface stays grey around it.
+- **Status beside status.** A list of states can show red, amber and green together, because each is one meaning and each comes with its word.
+
+## Where the playbook applies it
+
+- [Tabs](/components/tabs): the current tab's bar is ink.
+- [Segmented control](/components/segmented-control): the chosen segment is raised, not filled.
+- [Toolbar](/components/toolbar): the current tool is a tint.
+- [Select](/components/select) and [Menu](/components/menu): the current value is a check, the fill is the keyboard's.
+- [Badge](/components/badge) and [Toast](/components/toast): the colour sits in the words or the icon.
+- [Button](/components/button): one filled button per view.

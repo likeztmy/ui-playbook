@@ -175,7 +175,11 @@ export function BadgeWords() {
           <a href="https://www.w3.org/WAI/WCAG22/Understanding/use-of-color.html">WCAG</a> asks that colour never be the only signal.
         </>
       }
-      afterNote="The words carry the state, and they can be searched; the colour only speeds the scan."
+      afterNote={
+        <>
+          The words carry the state, and they can be searched; the colour only speeds the scan. <a href="/principles/colour-means-one-thing">Colour means one thing</a>.
+        </>
+      }
     />
   );
 }

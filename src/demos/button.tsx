@@ -197,7 +197,11 @@ export function OnePrimary() {
         </div>
       }
       beforeNote="Cancel weighs as much as the action it backs out of."
-      afterNote="Blue says go; a destructive confirm is a stop, so its one fill is danger."
+      afterNote={
+        <>
+          Blue says go; a destructive confirm is a stop, so its one fill is danger. <a href="/principles/colour-means-one-thing">Colour means one thing</a>.
+        </>
+      }
     />
   );
 }

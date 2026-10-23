@@ -1075,3 +1075,73 @@
   color: var(--ink-muted);
   font-size: 13px;
 }
+
+// Colour means one thing: an editor with every kind of "current".
+.editor {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: min(100%, 560px);
+  padding: var(--space-3);
+  border-radius: var(--radius-xl);
+  background: var(--surface);
+  box-shadow: var(--shadow-xs);
+}
+
+.editorBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+// The toolbar sits in the editor's chrome, not floating over a canvas.
+.editor .editorTools {
+  box-shadow: none;
+  background: var(--surface-sunken);
+}
+
+.editorList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-0-5);
+  outline: none;
+}
+
+.editorRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  height: var(--control-md);
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  cursor: default;
+  outline: none;
+
+  &:hover {
+    background: var(--fill-hover);
+  }
+
+  &[aria-selected='true'] {
+    background: var(--accent-soft);
+  }
+
+  &:focus-visible {
+    box-shadow: var(--focus-ring);
+  }
+}
+
+.editorThumb {
+  width: 24px;
+  height: 16px;
+  border-radius: var(--radius-xs);
+  background: var(--fill-control);
+}
+
+// The editor as a home-page thumbnail.
+.colourStill {
+  zoom: 0.62;
+  pointer-events: none;
+}

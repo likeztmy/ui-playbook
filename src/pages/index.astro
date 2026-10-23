@@ -6,6 +6,7 @@ import { MenuPreview } from '../demos/menu';
 import { ToolbarPreview } from '../demos/toolbar';
 import { ConcentricPreview } from '../demos/concentric';
 import { ErrorTimingPreview } from '../demos/error-timing';
+import { ColourPreview } from '../demos/colour';
 import { TooltipPreview } from '../demos/tooltip';
 import { DialogPreview } from '../demos/dialog';
 import { PopoverPreview } from '../demos/popover';
@@ -74,6 +75,7 @@ const groups = [
                   {e.slug === 'toast' && <ToastPreview />}
                   {e.slug === 'concentric-radius' && <ConcentricPreview />}
                   {e.slug === 'error-timing' && <ErrorTimingPreview />}
+                  {e.slug === 'colour-means-one-thing' && <ColourPreview client:visible />}
                 </div>
                 <p class={s.cardSummary}>{e.summary}</p>
               </article>

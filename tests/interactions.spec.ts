@@ -287,6 +287,28 @@ test('input: a failed submit focuses the first error with the caret at the end; 
   await expect(email, 'nothing is lost').toHaveValue('zoe@laurent.de');
 });
 
+test('colour: one solid blue in the After editor; the frame list answers arrow keys', async ({ page }) => {
+  await page.goto('/principles/colour-means-one-thing');
+  await hydrateAll(page);
+  const after = page.locator('figure').nth(1);
+  await after.scrollIntoViewIfNeeded();
+  const solidAccent = () =>
+    after.evaluate((root) => {
+      const accent = getComputedStyle(root).getPropertyValue('--accent').trim();
+      const probe = document.createElement('i');
+      probe.style.color = accent;
+      root.append(probe);
+      const rgb = getComputedStyle(probe).color;
+      probe.remove();
+      return [...root.querySelectorAll('*')].filter((el) => getComputedStyle(el).backgroundColor === rgb).length;
+    });
+  expect(await solidAccent(), 'only Publish is filled with the accent').toBe(1);
+  await after.getByRole('option', { name: 'Pricing' }).focus();
+  await page.keyboard.press('ArrowDown');
+  await expect(after.getByRole('option', { name: 'Onboarding' })).toHaveAttribute('aria-selected', 'true');
+  await expect(after.getByRole('option', { name: 'Onboarding' })).toBeFocused();
+});
+
 test('error timing: only “on leaving, cleared on fix” is quiet while typing and clears on the fix', async ({ page }) => {
   await page.goto('/principles/error-timing');
   await hydrateAll(page);
@@ -337,12 +359,13 @@ test('select: opens over the trigger, typeahead + Enter picks, Esc keeps the old
   await expect(trigger).toHaveText('Viewer');
 
   await trigger.click();
+  await expect(trigger, 'open before the keys').toHaveAttribute('aria-expanded', 'true');
   await page.keyboard.press('ArrowUp');
   await page.keyboard.press('Escape');
   await expect(trigger).toHaveText('Viewer');
   await expect(trigger).toBeFocused();
 
-  await expect(page.locator('[role="listbox"][data-open]'), 'closed before moving on').toHaveCount(0);
+  await expect(trigger, 'closed before moving on').toHaveAttribute('aria-expanded', 'false');
   await live.getByRole('textbox', { name: 'Email' }).fill('lea@acme.com');
   await live.getByRole('button', { name: 'Send invite' }).click();
   await expect(live.getByText('Invited lea@acme.com as Viewer')).toBeVisible();

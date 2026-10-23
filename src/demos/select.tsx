@@ -164,7 +164,11 @@ export function SelectCurrent() {
       before={<Still itemClass={m.filledSelected} />}
       after={<Still />}
       beforeNote="With the current option filled like the keyboard’s row, two fills compete and Enter’s target is a guess."
-      afterNote="The fill means one thing, where the keyboard is; the check marks the value."
+      afterNote={
+        <>
+          The fill means one thing, where the keyboard is; the check marks the value. <a href="/principles/colour-means-one-thing">Colour means one thing</a>.
+        </>
+      }
     />
   );
 }

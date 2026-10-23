@@ -163,7 +163,11 @@ export function ToastTone() {
           A slab of colour reads as an alarm whatever it says. <a href="https://github.com/CodeSeven/toastr">toastr</a> fills each toast this way.
         </>
       }
-      afterNote="The words do the talking; the icon tells the kind at a glance."
+      afterNote={
+        <>
+          The words do the talking; the icon tells the kind at a glance. <a href="/principles/colour-means-one-thing">Colour means one thing</a>.
+        </>
+      }
     />
   );
 }

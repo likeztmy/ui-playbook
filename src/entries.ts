@@ -172,6 +172,14 @@ export const entries: Entry[] = [
     keywords: ['border radius', 'corners', 'nesting', 'padding', 'inset'],
   },
   {
+    slug: 'colour-means-one-thing',
+    kind: 'principle',
+    title: 'Colour means one thing',
+    summary: 'Blue says “do this now”. Current states speak in shape and shade, so one solid blue is left to find.',
+    details: 1,
+    keywords: ['colour', 'color', 'accent', 'selected', 'current', 'pop-out', 'preattentive', 'greyscale', 'wcag'],
+  },
+  {
     slug: 'error-timing',
     kind: 'principle',
     title: 'Error timing',

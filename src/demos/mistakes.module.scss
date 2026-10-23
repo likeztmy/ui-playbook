@@ -371,3 +371,9 @@
   line-height: 16px;
   color: var(--ink-muted);
 }
+
+// The chosen row in solid accent, like every other "current".
+.loudRow[aria-selected='true'] {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
