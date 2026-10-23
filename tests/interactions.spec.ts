@@ -132,7 +132,7 @@ test('header theme toggle flips, persists, and relabels', async ({ page }) => {
 
 test('home search filters and names the empty state', async ({ page }) => {
   await page.goto('/');
-  await page.getByRole('searchbox').fill('menu');
+  await page.getByRole('searchbox').fill('slider');
   await expect(page.locator('[data-card]:visible')).toHaveCount(1);
   await page.getByRole('searchbox').fill('zzz');
   await expect(page.getByText('Nothing matches')).toBeVisible();

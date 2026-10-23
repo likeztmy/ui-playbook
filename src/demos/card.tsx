@@ -204,7 +204,8 @@ export function CardStagger() {
 
 function NumberCard({ animated }: { animated: boolean }) {
   const [v, setV] = useState('65.78');
-  const next = () => setV((Math.random() * 99).toFixed(2));
+  // Always two digits before the point, so the number never changes width.
+  const next = () => setV((10 + Math.random() * 89).toFixed(2));
   return (
     <Card
       className={s.cardOne}
