@@ -1912,29 +1912,40 @@
   scrollbar-gutter: stable;
 }
 
-// Release notes, read from the middle; a screenshot above loads late.
-.anchorPane {
+// A chat thread opened at its end; earlier messages load near the top.
+.threadPane {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
   width: 100%;
-  height: 200px;
+  height: 220px;
   overflow-y: auto;
-  padding: 0 var(--space-4);
+  padding: var(--space-3);
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
   font-size: 13px;
-  line-height: 20px;
-
-  p {
-    margin: var(--space-3) 0;
-  }
+  line-height: 18px;
 
   &:focus-visible {
     outline: 1px solid var(--accent);
   }
 }
 
-.anchorImage {
-  border-radius: var(--radius-sm);
-  background: var(--surface-sunken);
+.threadTop {
+  padding: var(--space-2) 0;
+  color: var(--ink-muted);
+  font-size: 12px;
+  text-align: center;
+}
+
+.threadLine {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-0-5);
+}
+
+.threadWho {
+  font-weight: 600;
 }
 
 // A paragraph set first in the fallback, then in Geist.

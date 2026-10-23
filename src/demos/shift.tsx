@@ -1,5 +1,5 @@
 import { Archive, RotateCcw } from 'lucide-react';
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { Button } from '../ui/Button';
 import { cx } from '../ui/cx';
 import { TextField } from '../ui/Field';
@@ -294,35 +294,68 @@ export function ShiftScrollbar() {
 
 // ── The browser holds your place ─────────────────────────
 
-const ARTICLE = [
-  'Release notes are read twice: once when they land, and once months later by someone trying to find out when a thing changed.',
-  'Write for the second reader. Lead with what changed for them, not with what the team did, and link each change to its issue.',
-  'A screenshot earns its place when the change is visual. One per change, cropped to the part that moved, with the old version beside it if the difference is small.',
-  'Keep the date in the heading. Readers scanning months of notes look for dates first and titles second.',
-  'And say what to do: if a setting moved, name its new home; if a shortcut changed, give the new one.',
+type Line = readonly [who: string, text: string];
+
+const THREAD: Line[] = [
+  ['Priya', 'Draft is up. Comments welcome.'],
+  ['Kenji', 'Left a few on the welcome screen.'],
+  ['Ana', 'Most of them taken. One question back to you.'],
+  ['Kenji', 'Answered.'],
+  ['Ana', 'Pushed the new onboarding copy.'],
+  ['Kenji', 'Reading it now.'],
+  ['Kenji', 'Step two still says “workspace”; we call it a team everywhere else.'],
+  ['Ana', 'Good catch. Fixed.'],
+  ['Priya', 'Can we drop the third screen? Nobody reads it.'],
+  ['Ana', 'Sure, if the invite step moves up.'],
+  ['Kenji', 'Moved. Screenshots in the doc.'],
+  ['Priya', 'Looks right. Ship it Thursday?'],
+  ['Ana', 'Thursday.'],
 ];
 
-function Article({ anchored }: { anchored?: boolean }) {
+const EARLIER: Line[] = [
+  ['Priya', 'Kickoff notes are in the doc.'],
+  ['Ana', 'I’ll take the copy.'],
+  ['Kenji', 'I’ll take the screenshots.'],
+  ['Priya', 'First draft by Monday?'],
+  ['Ana', 'Monday works.'],
+];
+
+/** A chat thread, opened at its latest message; earlier ones load when the reader nears the top. */
+function ThreadPane({ anchored }: { anchored?: boolean }) {
   const pane = useRef<HTMLDivElement>(null);
-  const [loaded, setLoaded] = useState(false);
+  const [earlier, setEarlier] = useState(false);
+  const loading = useRef(false);
+  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  useLayoutEffect(() => {
+    pane.current!.scrollTop = pane.current!.scrollHeight;
+    return () => clearTimeout(timer.current);
+  }, []);
+  // Load a screen before the top, as threads do: at offset zero the browser has no anchor to keep.
+  const onScroll = () => {
+    const el = pane.current!;
+    if (earlier || loading.current || el.scrollTop > el.clientHeight) return;
+    loading.current = true;
+    timer.current = setTimeout(() => setEarlier(true), 150);
+  };
+  const lines = earlier ? [...EARLIER, ...THREAD] : THREAD;
+  return (
+    <div ref={pane} className={cx(s.threadPane, !anchored && m.noAnchor)} onScroll={onScroll} tabIndex={0} role="log" aria-label="Onboarding thread">
+      <div className={s.threadTop}>{earlier ? 'Start of the thread' : 'Loading earlier messages…'}</div>
+      {lines.map(([who, text]) => (
+        <div key={text} className={s.threadLine}>
+          <span className={s.threadWho}>{who}</span>
+          <span>{text}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function Thread({ anchored }: { anchored?: boolean }) {
   const [run, setRun] = useState(0);
-  useEffect(() => {
-    setLoaded(false);
-    // Start mid-article, as if the reader had scrolled; the screenshot above loads late.
-    requestAnimationFrame(() => pane.current && (pane.current.scrollTop = 190));
-    const t = setTimeout(() => setLoaded(true), 1200);
-    return () => clearTimeout(t);
-  }, [run]);
   return (
     <Measured onReplay={() => setRun((n) => n + 1)}>
-      <div ref={pane} className={cx(s.anchorPane, !anchored && m.noAnchor)} tabIndex={0} role="region" aria-label="Release notes">
-        <p>{ARTICLE[0]}</p>
-        <p>{ARTICLE[1]}</p>
-        <div className={s.anchorImage} style={{ height: loaded ? 120 : 0 }} aria-hidden />
-        {ARTICLE.slice(2).map((p) => (
-          <p key={p}>{p}</p>
-        ))}
-      </div>
+      <ThreadPane key={run} anchored={anchored} />
     </Measured>
   );
 }
@@ -331,20 +364,20 @@ export function ShiftAnchor() {
   return (
     <Compare
       height={0}
-      before={<Article />}
-      after={<Article anchored />}
+      before={<Thread />}
+      after={<Thread anchored />}
       beforeNote={
         <>
-          With <code>overflow-anchor: none</code>, a screenshot that loads above the line being read pushes the line out of the window.
-          Ads and images loading late are why the browser learned to stop this.
+          With <code>overflow-anchor: none</code>, the earlier messages load in above the one being read and push it down out of the
+          window: the reader lands back at the kickoff and has to find their place again.
         </>
       }
       afterNote={
         <>
-          The default. The browser picks a line on screen as its{' '}
-          <a href="https://developer.chrome.com/blog/scroll-anchoring">anchor</a> and scrolls by exactly what grew above it, so nothing
-          seems to move. Every engine does it only since 2026 (
-          <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/overflow-anchor">MDN</a>); it works as long as nothing turns it off.
+          The default. The browser picks a message on screen as its{' '}
+          <a href="https://drafts.csswg.org/css-scroll-anchoring/">anchor</a> and scrolls by exactly what was added above it. It can’t at
+          the very top, where there is nothing above to keep, so the thread loads a little before the reader gets there. Every engine
+          anchors only since 2026 (<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/overflow-anchor">MDN</a>).
         </>
       }
     />

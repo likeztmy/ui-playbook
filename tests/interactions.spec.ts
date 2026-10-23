@@ -374,6 +374,27 @@ test('nothing shifts: new mail pushes the Before list, waits behind a pill in th
   expect(await gutter(1)).toBe('stable');
 });
 
+test('nothing shifts: earlier messages push the Before thread, the After keeps its place', async ({ page }) => {
+  await page.goto('/principles/nothing-shifts');
+  await hydrateAll(page);
+  const threads = page.getByRole('log', { name: 'Onboarding thread' });
+  const topLine = (n: number) =>
+    threads.nth(n).evaluate((p) => {
+      const top = p.getBoundingClientRect().top;
+      return [...p.children].find((c) => c.getBoundingClientRect().bottom > top + 2)!.textContent;
+    });
+  for (const n of [0, 1]) {
+    const pane = threads.nth(n);
+    await pane.scrollIntoViewIfNeeded();
+    await pane.hover();
+    await page.mouse.wheel(0, -260);
+    await expect(pane.getByText('Kickoff notes are in the doc.')).toHaveCount(1, { timeout: 2000 });
+    await page.waitForTimeout(200);
+  }
+  expect(await topLine(0)).not.toBe(await topLine(1));
+  expect(await topLine(1)).not.toContain('Kickoff');
+});
+
 test('hover forgives: a diagonal to the submenu closes it in Before, holds in After', async ({ page }) => {
   await page.goto('/principles/hover-forgives');
   await hydrateAll(page);
