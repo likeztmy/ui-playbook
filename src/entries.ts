@@ -180,6 +180,14 @@ export const entries: Entry[] = [
     keywords: ['colour', 'color', 'accent', 'selected', 'current', 'pop-out', 'preattentive', 'greyscale', 'wcag'],
   },
   {
+    slug: 'where-the-eye-goes',
+    kind: 'principle',
+    title: 'Where the eye goes',
+    summary: 'One way in, then steps down: weight, space and words guide the scan before any arrow does.',
+    details: 3,
+    keywords: ['visual hierarchy', 'hierarchy', 'scanning', 'grouping', 'gestalt', 'information scent', 'labels', 'guidance', 'layout'],
+  },
+  {
     slug: 'error-timing',
     kind: 'principle',
     title: 'Error timing',

@@ -1192,3 +1192,102 @@
   font-size: 14px;
   line-height: 20px;
 }
+
+// Where the eye goes: a settings page with a title, sections and one action.
+.settingsPage {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  width: min(100%, 460px);
+}
+
+.settingsHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.settingsTitle {
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.settingsSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.settingsHeading {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+}
+
+.memberRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  font-size: 14px;
+}
+
+.memberRole {
+  color: var(--ink-muted);
+}
+
+// Eight checkout fields: one even list, or two groups.
+.checkoutFlat,
+.checkoutGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.checkoutFlat,
+.checkoutGrouped {
+  width: min(100%, 260px);
+}
+
+.checkoutGrouped {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+// A help centre's navigation.
+.helpNav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-0-5);
+  width: 220px;
+  font-size: 14px;
+}
+
+.helpHeading {
+  margin-bottom: var(--space-2);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink-muted);
+}
+
+.helpLink {
+  display: flex;
+  align-items: center;
+  height: var(--control-md);
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-sm);
+  color: var(--ink);
+
+  &:hover {
+    background: var(--fill-hover);
+  }
+
+  &[aria-current='page'] {
+    background: var(--fill-active);
+    font-weight: 500;
+  }
+}

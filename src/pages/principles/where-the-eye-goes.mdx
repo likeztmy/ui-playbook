@@ -1,0 +1,38 @@
+---
+layout: ../../layouts/Entry.astro
+slug: where-the-eye-goes
+---
+import { EyeEntry, EyeGroups, EyeFrontLoad, EyeScent } from '../../demos/eye';
+
+## The rule
+
+**Give the eye one way in, then steps down.** People don't read a screen, they scan it: they land on the strongest thing, sort what's near into groups, skim the first words of each line, and follow whichever label promises what they came for. A layout that guides does it with weight, space and words, before any arrow or hint.
+
+<EyeEntry client:visible />
+
+## Details
+
+### Groups before items
+
+<EyeGroups client:visible />
+
+### The word that differs comes first
+
+<EyeFrontLoad client:visible />
+
+### Labels that say what's behind them
+
+<EyeScent client:visible />
+
+## When it doesn't apply
+
+- **Long reading.** An article wants calm text with headings, not a ladder of weights; scanning patterns are for pages people work in.
+- **Loud isn't strong.** A heading or notice styled like a promotion, bright and boxed, gets skipped as one ([NN/g](https://www.nngroup.com/articles/banner-blindness-old-and-new-findings/)). The way in is the strongest thing in the interface's own voice.
+
+## Where the playbook applies it
+
+- [Input](/components/input): a label above, one line under, nothing that competes with the field.
+- [Menu](/components/menu): groups by separators, the destructive one last.
+- [Switch](/components/switch): labels on one edge, switches in one column.
+- [Table](/components/table): secondary columns step back, so names lead.
+- [Colour means one thing](/principles/colour-means-one-thing): the same rule, for colour.
