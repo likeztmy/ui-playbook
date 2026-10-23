@@ -23,10 +23,15 @@ type FrameProps = {
   className?: string;
   /** Start pinned to a theme instead of following the page. */
   defaultTheme?: Theme;
+  /** Tints the band: the common mistake or the better way. */
+  tone?: 'bad' | 'good';
 };
 
-/** A demo stage with its own light/dark switch. Popups stay inside it. */
-export function Frame({ label, children, height = 200, className, defaultTheme }: FrameProps) {
+/**
+ * A demo stage with a band under it naming the scene or the verdict, after
+ * Material 3's Do / Don't, and its own light/dark switch. Popups stay inside it.
+ */
+export function Frame({ label, children, height = 200, className, defaultTheme, tone }: FrameProps) {
   const [theme, setTheme] = useState<Theme | null>(defaultTheme ?? null);
   const [portal, setPortal] = useState<HTMLElement | null>(null);
   // Read at click time: the page theme may have changed since render.
@@ -34,18 +39,18 @@ export function Frame({ label, children, height = 200, className, defaultTheme }
 
   return (
     <figure className={cx(s.frame, className)} data-theme={theme ?? undefined}>
-      <div className={s.bar}>
+      <div className={s.stage} style={{ minHeight: height }}>
+        <PortalContainer.Provider value={portal}>
+          <TipGroup>{children}</TipGroup>
+        </PortalContainer.Provider>
+      </div>
+      <div className={s.bar} data-tone={tone}>
         <span className={s.label}>{label}</span>
         <Tip label="Switch theme">
           <Button variant="ghost" size="sm" icon aria-label="Switch theme" onClick={flip}>
             <ContrastIcon />
           </Button>
         </Tip>
-      </div>
-      <div className={s.stage} style={{ minHeight: height }}>
-        <PortalContainer.Provider value={portal}>
-          <TipGroup>{children}</TipGroup>
-        </PortalContainer.Provider>
       </div>
       <div ref={setPortal} />
     </figure>
@@ -68,13 +73,13 @@ export function Compare({ before, after, beforeNote, afterNote, height, stacked 
   return (
     <div className={cx(s.compare, stacked && s.stacked)}>
       <div className={s.side}>
-        <Frame label={<Verdict good={false} />} height={height}>
+        <Frame label={<Verdict good={false} />} height={height} tone="bad">
           {before}
         </Frame>
         <p className={s.note}>{beforeNote}</p>
       </div>
       <div className={s.side}>
-        <Frame label={<Verdict good />} height={height}>
+        <Frame label={<Verdict good />} height={height} tone="good">
           {after}
         </Frame>
         <p className={s.note}>{afterNote}</p>
