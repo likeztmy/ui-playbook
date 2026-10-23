@@ -350,6 +350,30 @@ test('where the eye goes: only the After answers at the button; only its fold cu
   expect(await firstScreenShowsPlans(1)).toBe(true);
 });
 
+test('nothing shifts: new mail pushes the Before list, waits behind a pill in the After; the After holds the gutter', async ({ page }) => {
+  await page.goto('/principles/nothing-shifts');
+  await hydrateAll(page);
+  const [before, after] = [page.locator('figure').nth(0), page.locator('figure').nth(1)];
+  const billing = (f: typeof before) => f.getByRole('button', { name: 'Archive “Your October invoice”' });
+  await billing(before).scrollIntoViewIfNeeded();
+  const y = (await billing(before).boundingBox())!.y;
+  await billing(before).hover();
+  await expect(before.getByText('Lunch on Friday?')).toBeVisible({ timeout: 2000 });
+  expect((await billing(before).boundingBox())!.y).toBeGreaterThan(y + 40);
+  await billing(after).scrollIntoViewIfNeeded();
+  const ya = (await billing(after).boundingBox())!.y;
+  await billing(after).hover();
+  await expect(after.getByRole('button', { name: '2 new messages' })).toBeVisible({ timeout: 2000 });
+  expect((await billing(after).boundingBox())!.y).toBe(ya);
+  await after.getByRole('button', { name: '2 new messages' }).click();
+  await expect(after.getByText('Lunch on Friday?')).toBeVisible();
+
+  // Headless Chromium hides scroll bars, so check the gutter is held rather than measure the jump.
+  const gutter = (n: number) => page.getByRole('region', { name: 'Members' }).nth(n).evaluate((l) => getComputedStyle(l).scrollbarGutter);
+  expect(await gutter(0)).toBe('auto');
+  expect(await gutter(1)).toBe('stable');
+});
+
 test('hover forgives: a diagonal to the submenu closes it in Before, holds in After', async ({ page }) => {
   await page.goto('/principles/hover-forgives');
   await hydrateAll(page);

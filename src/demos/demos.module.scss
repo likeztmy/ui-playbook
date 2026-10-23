@@ -1726,3 +1726,249 @@
   text-align: right;
   color: var(--ink-muted);
 }
+
+// Nothing shifts: each demo over a foot with its live shift score.
+.shiftDemo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: 100%;
+}
+
+.shiftStage {
+  display: flex;
+  justify-content: center;
+}
+
+.shiftFoot {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: var(--control-sm);
+
+  > :first-child {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+.shiftScore {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-muted);
+
+  &[data-shifted] {
+    color: var(--danger);
+  }
+}
+
+// An inbox; new mail either lands in the list or waits behind a pill.
+// Room for all seven rows from the start, so the page around it never moves.
+.inbox {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 280px;
+  font-size: 13px;
+}
+
+.inboxRow {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: var(--space-3);
+  height: 40px;
+  padding: 0 var(--space-1) 0 var(--space-3);
+  border-bottom: 1px solid var(--line);
+
+  @media (max-width: 480px) {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+
+    .inboxFrom {
+      display: none;
+    }
+  }
+}
+
+.inboxFrom {
+  font-weight: 500;
+}
+
+.inboxSubject {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.inboxTime {
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+// Floats over the list: it takes no room until it's clicked.
+.inboxPill {
+  position: absolute;
+  top: var(--space-1);
+  left: 50%;
+  z-index: 1;
+  translate: -50% 0;
+  box-shadow: var(--shadow-md);
+
+  &[data-still] {
+    display: inline-flex;
+    align-items: center;
+    height: var(--control-sm);
+    padding: 0 var(--space-3);
+    border-radius: var(--radius-full);
+    background: var(--surface-raised);
+    font-size: 13px;
+    font-weight: 500;
+  }
+}
+
+.shiftStill {
+  zoom: 0.8;
+  width: 420px;
+  min-height: 0;
+  pointer-events: none;
+}
+
+// A project nav that bolds the hovered and current link.
+.boldNav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+  font-size: 14px;
+
+  a {
+    padding: var(--space-1) 0;
+    color: var(--ink-muted);
+    text-decoration: none;
+
+    &:hover,
+    &[aria-current='page'] {
+      color: var(--ink);
+      font-weight: 600;
+    }
+  }
+}
+
+// Each link also holds its name in bold, invisible, so its width never changes.
+.boldReserve a {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+
+  &::after {
+    content: attr(data-text);
+    height: 0;
+    overflow: hidden;
+    visibility: hidden;
+    font-weight: 600;
+    user-select: none;
+    pointer-events: none;
+  }
+}
+
+// A member list with an always-shown (classic) scroll bar.
+.members {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: min(100%, 260px);
+}
+
+.membersList {
+  height: 168px;
+  overflow-y: auto;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+
+  > * {
+    height: 32px;
+  }
+
+  // Styling the bar makes WebKit and Blink draw a classic one, even on a Mac.
+  &::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border: 3px solid transparent;
+    border-radius: var(--radius-full);
+    background: var(--line-strong);
+    background-clip: padding-box;
+  }
+
+  &:focus-visible {
+    outline: 1px solid var(--accent);
+  }
+}
+
+.membersStable {
+  scrollbar-gutter: stable;
+}
+
+// Release notes, read from the middle; a screenshot above loads late.
+.anchorPane {
+  width: 100%;
+  height: 200px;
+  overflow-y: auto;
+  padding: 0 var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  line-height: 20px;
+
+  p {
+    margin: var(--space-3) 0;
+  }
+
+  &:focus-visible {
+    outline: 1px solid var(--accent);
+  }
+}
+
+.anchorImage {
+  border-radius: var(--radius-sm);
+  background: var(--surface-sunken);
+}
+
+// A paragraph set first in the fallback, then in Geist.
+@font-face {
+  font-family: 'Geist Fallback';
+  src: local('Arial'), local('Helvetica'), local('Liberation Sans');
+  size-adjust: 102.5%;
+}
+
+// 254 wide, the paragraph is three lines in Arial and four in Geist.
+.fontCard {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  width: 254px;
+  // Four lines, the gap and the button: the card keeps its size while its contents move.
+  min-height: calc(20px * 4 + var(--space-3) + var(--control-sm));
+}
+
+.fontPara {
+  margin: 0;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.fontPlain {
+  font-family: Arial, Helvetica, 'Liberation Sans', sans-serif;
+}
+
+.fontMatched {
+  font-family: 'Geist Fallback', sans-serif;
+}
+
+.fontWeb {
+  font-family: var(--font-sans);
+}

@@ -188,6 +188,14 @@ export const entries: Entry[] = [
     keywords: ['visual hierarchy', 'change blindness', 'false floor', 'illusion of completeness', 'banner blindness', 'proximity', 'gestalt', 'information scent', 'squint test', 'scanning'],
   },
   {
+    slug: 'nothing-shifts',
+    kind: 'principle',
+    title: 'Nothing shifts',
+    summary: 'Nothing moves unless it was asked to. A layout that shifts under the pointer sends the click somewhere else.',
+    details: 4,
+    keywords: ['layout shift', 'cls', 'cumulative layout shift', 'scrollbar-gutter', 'scroll anchoring', 'overflow-anchor', 'size-adjust', 'font fallback', 'bold', 'misclick'],
+  },
+  {
     slug: 'hover-forgives',
     kind: 'principle',
     title: 'Hover forgives',

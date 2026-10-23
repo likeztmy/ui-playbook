@@ -1,0 +1,47 @@
+---
+layout: ../../layouts/Entry.astro
+slug: nothing-shifts
+---
+import { ShiftInbox, ShiftBold, ShiftScrollbar, ShiftAnchor, ShiftFont } from '../../demos/shift';
+
+## The rule
+
+**Nothing moves unless it was asked to.** People aim before they click and read before they scroll; a layout that moves under them sends the click somewhere else and loses their place. The browser's own measure of a bad shift says the same: it leaves out any shift within 500ms of a click, a tap or a key, because a change that answers the user is expected. Only the unasked move counts.
+
+<ShiftInbox client:visible />
+
+## Details
+
+### Bold is wider
+
+<ShiftBold client:visible />
+
+### The scroll bar you never see
+
+<ShiftScrollbar client:visible />
+
+### The browser holds your place
+
+<ShiftAnchor client:visible />
+
+### The font that arrives late
+
+<ShiftFont client:visible />
+
+## Measure it
+
+Chrome and Edge measure every shift as it happens: how much of the window moved, times how far ([Layout Instability API](https://web.dev/articles/cls)). Under each demo is that measure for the demo alone: how many shifts the browser saw, and their score, leaving out shifts within 500ms of input, as CLS does. A page should stay at 0.1 or less across its whole life; a small box moving a few pixels scores almost nothing, and it takes only one to put the wrong link under the pointer. Other browsers don't report shifts, so there the count is hidden.
+
+The measure only sees boxes that move. A scroll bar that comes and goes after typing, or a shift that lands within half a second of a click, scores nothing and can still put the wrong row under the pointer.
+
+## When it doesn't apply
+
+- **A move the user asked for.** Opening a section, loading more, archiving a row: the layout should follow at once.
+- **Motion that doesn't move the layout.** A transform scales or slides a thing without pushing anything else; it is animation, not a shift.
+
+## Where the playbook applies it
+
+- [Button](/components/button): a button keeps its width while it loads.
+- [Tabs](/components/tabs): the current tab changes colour and bar, not weight.
+- [Slider](/components/slider) and [Card](/components/card): digits keep their width as values change.
+- [Where the eye goes](/principles/where-the-eye-goes): a count that changes moves where the eye can see it.
