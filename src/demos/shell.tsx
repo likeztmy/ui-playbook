@@ -34,7 +34,7 @@ export function localized<P extends object>(Demo: ComponentType<P>) {
 
 const FRAME_UI = {
   en: { before: 'Before', after: 'After', theme: 'Switch theme', slow: 'Slow motion' },
-  zh: { before: '改前', after: '改后', theme: '切换主题', slow: '慢放' },
+  zh: { before: 'Before', after: 'After', theme: '切换主题', slow: '慢放' },
 } as const;
 
 function pageTheme(): Theme {

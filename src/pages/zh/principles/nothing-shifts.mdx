@@ -6,9 +6,9 @@ import { ShiftSearch, ShiftBold, ShiftScrollbar, ShiftAnchor, ShiftFont } from '
 
 ## 规则
 
-**用户没让它动，就别动。** 人总是先瞄准再点，先看清再滚。手底下的布局一挪，点击就落到了别处，读到哪儿也找不着了。
+**用户没要求，界面就别动。** 人都是先瞄准再点，先看清再滚。东西在手底下一挪，点击就落空了，读到哪儿也找不回来。
 
-浏览器衡量布局位移，用的也是这个思路：点击、触摸或按键后 500 ms 内发生的位移，不计入。这时的变化是在回应操作，用户料得到。真正算数的，是没人要求的那种移动。
+浏览器判断 layout shift 也是这个标准：点击、触摸、按键之后 500 ms 内的 shift 不计分。这时界面是在回应操作，用户心里有数。只有不请自来的 shift 才算。
 
 <ShiftSearch lang="zh" client:visible />
 
@@ -18,11 +18,11 @@ import { ShiftSearch, ShiftBold, ShiftScrollbar, ShiftAnchor, ShiftFont } from '
 
 <ShiftBold lang="zh" client:visible />
 
-### 看不见的滚动条
+### 你看不见的滚动条
 
 <ShiftScrollbar lang="zh" client:visible />
 
-### 浏览器会替你记住位置
+### 浏览器会帮你稳住位置
 
 <ShiftAnchor lang="zh" client:visible />
 
@@ -30,24 +30,24 @@ import { ShiftSearch, ShiftBold, ShiftScrollbar, ShiftAnchor, ShiftFont } from '
 
 <ShiftFont lang="zh" client:visible />
 
-## 动手量一量
+## 自己测一测
 
-Chrome 和 Edge 会实时测量每一次位移：窗口里移动的面积占比，乘以移动的距离（[Layout Instability API](https://web.dev/articles/cls)）。每个演示下方显示的就是这个值，只统计演示内部：浏览器记到了几次位移，总分多少。和 CLS 一样，输入后 500 ms 内的位移不计。
+Chrome 和 Edge 会实时测出每一次 shift 的分数：移动区域占 viewport 的比例，乘以移动距离占 viewport 的比例（[Layout Instability API](https://web.dev/articles/cls)）。每个演示下面的数字就是它，只算演示内部：shift 了几次，总分多少。和 CLS 一样，输入后 500 ms 内的不算。
 
-整个页面的分数应该一直保持在 0.1 以下。一个小方块挪几个像素，几乎不得分。可只要挪一次，指针底下就可能换成另一个链接。
+整个页面的 CLS 要一直压在 0.1 以内。一个小元素挪几个像素，几乎不得分；可只要挪一次，指针底下就可能换成另一个链接。
 
-其他浏览器不提供这项数据，所以看不到计数。
+其他浏览器拿不到这项数据，所以不显示。
 
-这个测量只认会移动的盒子。打字后滚动条一闪而过，点击后半秒内发生的位移，都算零分，但一样会让指针落到错的那一行上。
+这个分数只看元素有没有移动。打字时滚动条一闪而过，或者 shift 发生在点击后半秒内，都是零分，照样会让人点错。
 
-## 什么时候不适用
+## 不适用的情况
 
-- **用户主动要的变化。** 展开一个区域、加载更多、归档一行，布局就该马上跟着变。
-- **不影响布局的动画。** transform 只让元素自己缩放或移动，不会推开别的东西。这是动画，不是位移。
+- **用户自己要的变化。** 展开一段内容、加载更多、归档一行，布局就该马上跟上。
+- **不影响布局的动画。** 用 transform 缩放或平移，不会推开别的元素。这是动画，不是 layout shift。
 
 ## 本手册里的应用
 
-- [Button](/components/button)：加载时宽度不变。
-- [Tabs](/components/tabs)：切换标签只改颜色和指示条，不改字重。
-- [Slider](/components/slider) 和 [Card](/components/card)：数值变化时，数字宽度不变。
-- [眼睛先看哪里](/principles/where-the-eye-goes)：计数变化时带一点动效，让人注意到。
+- [Button](/components/button)：loading 时宽度不变。
+- [Tabs](/components/tabs)：切换时只变颜色和指示条，不变字重。
+- [Slider](/components/slider) 和 [Card](/components/card)：数字变化时宽度不变。
+- [眼睛先看哪里](/principles/where-the-eye-goes)：计数变化时带一点动画，让人注意到。
