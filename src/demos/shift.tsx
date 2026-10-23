@@ -1,5 +1,5 @@
-import { Archive, RotateCcw } from 'lucide-react';
-import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
+import { RotateCcw } from 'lucide-react';
+import { useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { Button } from '../ui/Button';
 import { cx } from '../ui/cx';
 import { TextField } from '../ui/Field';
@@ -89,101 +89,112 @@ function Measured({ children, status, onReplay }: { children: ReactNode; status?
 
 // ── Nothing moves unasked ────────────────────────────────
 
-type Mail = readonly [from: string, subject: string, time: string];
-
-const MAIL: Mail[] = [
-  ['Ana Ruiz', 'Q4 roadmap review', '9:41'],
-  ['Billing', 'Your October invoice', '9:12'],
-  ['Kenji Mori', 'Re: brand guide', 'Yesterday'],
-  ['Issues', '3 issues assigned to you', 'Yesterday'],
-  ['Weekly digest', 'What happened this week', 'Mon'],
+const RECENT = ['Buttons', 'Colour tokens', 'Dialogs', 'Menus', 'Spacing', 'Typography'];
+const INDEX = [
+  ...RECENT,
+  'Badges', 'Breadcrumbs', 'Cards', 'Checkboxes', 'Colour contrast', 'Combobox', 'Dark mode', 'Data tables', 'Date picker',
+  'Drag and drop', 'Empty states', 'Error messages', 'Focus rings', 'Forms', 'Icons', 'Inputs', 'Keyboard shortcuts',
+  'Loading states', 'Motion', 'Navigation', 'Notifications', 'Pagination', 'Popovers', 'Radio buttons', 'Search', 'Select',
+  'Sliders', 'Switches', 'Tabs', 'Toasts', 'Toolbars', 'Tooltips', 'Undo',
 ];
+const ROWS = 7;
 
-const NEW: Mail[] = [
-  ['Priya Shah', 'Lunch on Friday?', '9:58'],
-  ['Calendar', 'Design review moved to 3 pm', '9:57'],
-];
+const matches = (title: string, q: string) => title.toLowerCase().includes(q.trim().toLowerCase());
 
-/** An inbox where two messages arrive while the pointer rests on it. `hold` keeps them behind a pill. */
-function Inbox({ hold }: { hold?: boolean }) {
-  const [mail, setMail] = useState(MAIL);
-  const [waiting, setWaiting] = useState(false);
-  const [archived, setArchived] = useState<string | null>(null);
-  const [run, setRun] = useState(0);
-  const arrived = useRef(false);
+/** The server's ranking: titles that start with the query, then words that do, then the rest; A–Z within each. */
+function rank(q: string) {
+  const v = q.trim().toLowerCase();
+  const tier = (t: string) => (t.toLowerCase().startsWith(v) ? 0 : t.toLowerCase().split(' ').some((w) => w.startsWith(v)) ? 1 : 2);
+  return INDEX.filter((t) => matches(t, v)).sort((a, b) => tier(a) - tier(b) || a.localeCompare(b));
+}
+
+/**
+ * Docs search. Recent pages that match show at once; the full results
+ * arrive 700ms after the last key. `keep` leaves the rows already shown in
+ * place and adds the new ones after them.
+ */
+function DocSearch({ keep }: { keep?: boolean }) {
+  const [q, setQ] = useState('');
+  const [rows, setRows] = useState(RECENT);
+  const [active, setActive] = useState(0);
+  const [opened, setOpened] = useState<string | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-
+  const id = useId();
   useEffect(() => () => clearTimeout(timer.current), []);
-  const arrive = () => {
-    if (arrived.current) return;
+
+  const type = (v: string) => {
+    setQ(v);
+    setOpened(null);
+    setRows(v.trim() ? RECENT.filter((t) => matches(t, v)) : RECENT);
+    setActive(0);
+    clearTimeout(timer.current);
+    if (!v.trim()) return;
     timer.current = setTimeout(() => {
-      arrived.current = true;
-      if (hold) setWaiting(true);
-      else setMail((list) => [...NEW, ...list]);
+      const ranked = rank(v);
+      setRows((shown) => (keep ? [...shown, ...ranked.filter((t) => !shown.includes(t))] : ranked).slice(0, ROWS));
     }, 700);
   };
-  const replay = () => {
-    clearTimeout(timer.current);
-    arrived.current = false;
-    setMail(MAIL);
-    setWaiting(false);
-    setArchived(null);
-    setRun((n) => n + 1);
+  const open = (title: string) => setOpened(title);
+  const onKey = (e: React.KeyboardEvent) => {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      const d = e.key === 'ArrowDown' ? 1 : -1;
+      setActive((i) => (i + d + rows.length) % Math.max(rows.length, 1));
+    } else if (e.key === 'Enter' && rows[active]) {
+      open(rows[active]);
+    }
   };
 
   return (
-    <Measured status={archived && `Archived “${archived}”`} onReplay={replay}>
-      <div key={run} className={s.inbox} onPointerEnter={arrive} onPointerLeave={() => clearTimeout(timer.current)}>
-        {waiting && (
-          <Button
-            size="sm"
-            className={s.inboxPill}
-            onClick={() => {
-              setMail((list) => [...NEW, ...list]);
-              setWaiting(false);
-            }}
-          >
-            2 new messages
-          </Button>
-        )}
-        {mail.map(([from, subject, time]) => (
-          <div key={subject} className={s.inboxRow}>
-            <span className={s.inboxFrom}>{from}</span>
-            <span className={s.inboxSubject}>{subject}</span>
-            <span className={s.inboxTime}>{time}</span>
-            <Button
-              variant="ghost"
-              size="sm"
-              icon
-              aria-label={`Archive “${subject}”`}
-              onClick={() => {
-                setMail((list) => list.filter((x) => x[1] !== subject));
-                setArchived(subject);
-              }}
+    <Measured status={opened && `Opened “${opened}”`}>
+      <div className={s.docSearch}>
+        <input
+          className={s.docSearchInput}
+          role="combobox"
+          aria-label="Search docs"
+          aria-expanded
+          aria-controls={`${id}-list`}
+          aria-activedescendant={rows[active] ? `${id}-${active}` : undefined}
+          placeholder="Search docs"
+          value={q}
+          onChange={(e) => type(e.target.value)}
+          onKeyDown={onKey}
+        />
+        <div className={s.docSearchList} role="listbox" id={`${id}-list`} aria-label="Pages">
+          {rows.map((title, i) => (
+            <div
+              key={title}
+              id={`${id}-${i}`}
+              role="option"
+              aria-selected={i === active}
+              className={s.docSearchRow}
+              onMouseMove={() => setActive(i)}
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => open(title)}
             >
-              <Archive size={16} strokeWidth={1.5} nonScalingStroke aria-hidden />
-            </Button>
-          </div>
-        ))}
+              {title}
+            </div>
+          ))}
+        </div>
       </div>
     </Measured>
   );
 }
 
-export function ShiftInbox() {
+export function ShiftSearch() {
   return (
     <Compare
-      stacked
       height={0}
-      before={<Inbox />}
-      after={<Inbox hold />}
+      before={<DocSearch />}
+      after={<DocSearch keep />}
       beforeNote={
         <>
-          The new messages land while the pointer is already on its way to an Archive button, and the button it reaches belongs to
-          another message. This is the shift <a href="https://web.dev/articles/cls">CLS</a> counts against a page: one nobody asked for.
+          The full results land 0.7 seconds after the last key, ranked above the recent pages. By then the pointer is on its way to a
+          row, and the row it reaches, or the one Enter would open, is another page. A shift that late no longer answers the key, and{' '}
+          <a href="https://web.dev/articles/cls">CLS</a> counts it.
         </>
       }
-      afterNote="The messages wait behind a pill that floats over the list and takes no room. The list moves when the pill is clicked, which is a move the reader asked for, and the browser’s own measure leaves it out."
+      afterNote="Rows already on screen keep their place; what arrives late joins the end. The better order can wait for the next key, when the eye is back on the list anyway."
     />
   );
 }
@@ -424,20 +435,18 @@ export function ShiftFont() {
   );
 }
 
-/** The inbox with its pill, held still. */
+/** The search with its rows, held still. */
 export function ShiftPreview() {
   return (
-    <div className={cx(s.inbox, s.shiftStill)} aria-hidden>
-      <span className={s.inboxPill} data-still="">
-        2 new messages
-      </span>
-      {MAIL.slice(0, 4).map(([from, subject, time]) => (
-        <div key={subject} className={s.inboxRow}>
-          <span className={s.inboxFrom}>{from}</span>
-          <span className={s.inboxSubject}>{subject}</span>
-          <span className={s.inboxTime}>{time}</span>
-        </div>
-      ))}
+    <div className={cx(s.docSearch, s.shiftStill)} aria-hidden>
+      <span className={s.docSearchInput}>b</span>
+      <div className={s.docSearchList}>
+        {['Buttons', 'Badges', 'Breadcrumbs', 'Radio buttons', 'Keyboard shortcuts'].map((t, i) => (
+          <div key={t} className={s.docSearchRow} aria-selected={i === 0}>
+            {t}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

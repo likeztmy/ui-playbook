@@ -1763,75 +1763,63 @@
   }
 }
 
-// An inbox; new mail either lands in the list or waits behind a pill.
-// Room for all seven rows from the start, so the page around it never moves.
-.inbox {
-  position: relative;
+// Docs search: a field over a list of pages, room for seven rows from the start.
+.docSearch {
   display: flex;
   flex-direction: column;
-  width: 100%;
-  min-height: 280px;
+  gap: var(--space-2);
+  width: min(100%, 280px);
   font-size: 13px;
 }
 
-.inboxRow {
-  display: grid;
-  grid-template-columns: 112px minmax(0, 1fr) auto auto;
-  align-items: center;
-  gap: var(--space-3);
-  height: 40px;
-  padding: 0 var(--space-1) 0 var(--space-3);
-  border-bottom: 1px solid var(--line);
+.docSearchInput {
+  box-sizing: border-box;
+  height: var(--control-md);
+  padding: 0 var(--space-3);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  line-height: 30px;
+  outline: none;
 
-  @media (max-width: 480px) {
-    grid-template-columns: minmax(0, 1fr) auto auto;
+  &:focus {
+    border-color: var(--accent);
+  }
 
-    .inboxFrom {
-      display: none;
-    }
+  @media (pointer: coarse) {
+    font-size: 16px;
   }
 }
 
-.inboxFrom {
-  font-weight: 500;
+.docSearchList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-0-5);
+  min-height: calc(7 * 32px + 6 * 2px);
 }
 
-.inboxSubject {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
+.docSearchRow {
+  display: flex;
+  align-items: center;
+  height: 32px;
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-sm);
+  cursor: default;
 
-.inboxTime {
-  color: var(--ink-muted);
-  font-variant-numeric: tabular-nums;
-}
-
-// Floats over the list: it takes no room until it's clicked.
-.inboxPill {
-  position: absolute;
-  top: var(--space-1);
-  left: 50%;
-  z-index: 1;
-  translate: -50% 0;
-  box-shadow: var(--shadow-md);
-
-  &[data-still] {
-    display: inline-flex;
-    align-items: center;
-    height: var(--control-sm);
-    padding: 0 var(--space-3);
-    border-radius: var(--radius-full);
-    background: var(--surface-raised);
-    font-size: 13px;
-    font-weight: 500;
+  &[aria-selected='true'] {
+    background: var(--fill-active);
   }
 }
 
 .shiftStill {
   zoom: 0.8;
-  width: 420px;
   min-height: 0;
+
+  > :last-child {
+    min-height: 0;
+  }
   pointer-events: none;
 }
 

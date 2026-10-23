@@ -2,13 +2,13 @@
 layout: ../../layouts/Entry.astro
 slug: nothing-shifts
 ---
-import { ShiftInbox, ShiftBold, ShiftScrollbar, ShiftAnchor, ShiftFont } from '../../demos/shift';
+import { ShiftSearch, ShiftBold, ShiftScrollbar, ShiftAnchor, ShiftFont } from '../../demos/shift';
 
 ## The rule
 
 **Nothing moves unless it was asked to.** People aim before they click and read before they scroll; a layout that moves under them sends the click somewhere else and loses their place. The browser's own measure of a bad shift says the same: it leaves out any shift within 500ms of a click, a tap or a key, because a change that answers the user is expected. Only the unasked move counts.
 
-<ShiftInbox client:visible />
+<ShiftSearch client:visible />
 
 ## Details
 
