@@ -1301,7 +1301,8 @@
 
 .aimStage {
   position: relative;
-  width: 340px;
+  // Menu 170 and submenu 140, overlapping by the submenu's 4px inset.
+  width: 310px;
   height: 236px;
 }
 
