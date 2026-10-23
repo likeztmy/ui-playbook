@@ -116,7 +116,7 @@ type Group = { name: string; titles: string[] };
  * the whole index arrive 700ms after the last key, as a group of their own.
  * `keep` puts that group after the rows already shown instead of above them.
  */
-function DocSearch({ keep }: { keep?: boolean }) {
+export function DocSearch({ keep }: { keep?: boolean }) {
   const [q, setQ] = useState('');
   const [groups, setGroups] = useState<Group[]>([{ name: 'Recent', titles: RECENT.slice(0, RECENT_MAX) }]);
   const [active, setActive] = useState(0);
@@ -221,7 +221,7 @@ export function ShiftSearch() {
 
 const NAV = ['Overview', 'Issues', 'Pull requests', 'Releases', 'Settings'];
 
-function BoldNav({ reserve }: { reserve?: boolean }) {
+export function BoldNav({ reserve }: { reserve?: boolean }) {
   const [current, setCurrent] = useState('Issues');
   return (
     <Measured>

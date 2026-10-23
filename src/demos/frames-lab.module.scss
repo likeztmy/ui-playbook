@@ -1,0 +1,218 @@
+// Three directions for the Before/After frame, on the same two cases.
+// A frame sets its own background and ink so a [data-theme] on it repaints.
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+
+  @media (max-width: 640px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.verdict {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  color: var(--danger);
+
+  &[data-good] {
+    color: var(--success);
+  }
+}
+
+.caption {
+  margin: var(--space-3) 0 0;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--ink-muted);
+  text-wrap: pretty;
+}
+
+// A: the stage, then a tinted band naming the verdict, then the caption
+// under the card, as Material 3's Do / Don't.
+.a {
+  margin: 0;
+  min-width: 0;
+}
+
+.aCard {
+  overflow: clip;
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-xs);
+  color: var(--ink);
+}
+
+.aStage {
+  display: grid;
+  place-items: center;
+  padding: var(--space-6);
+}
+
+.aBand {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 36px;
+  padding: 0 var(--space-2) 0 var(--space-3);
+  background: var(--danger-soft);
+
+  &[data-good] {
+    background: var(--success-soft);
+  }
+}
+
+// B: no bar. The stage is the card; the verdict is a chip in its corner and
+// the theme switch appears on hover.
+.b {
+  margin: 0;
+  min-width: 0;
+}
+
+.bStage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  padding: var(--space-12) var(--space-6) var(--space-6);
+  border-radius: var(--radius-xl);
+  background: var(--surface-sunken);
+  color: var(--ink);
+}
+
+.bChip {
+  position: absolute;
+  top: var(--space-3);
+  left: var(--space-3);
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-full);
+  background: var(--surface);
+  box-shadow: var(--shadow-xs);
+}
+
+.bTheme {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--ease-out);
+
+  .bStage:hover &,
+  &:focus-visible {
+    opacity: 1;
+  }
+
+  @media (hover: none) {
+    opacity: 1;
+  }
+}
+
+// C: one card for the pair. A shared head names both columns; each column
+// ends in its own note, inside the card, under a hairline.
+.c {
+  margin: 0;
+  min-width: 0;
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-xs);
+  color: var(--ink);
+}
+
+.cHead {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  align-items: center;
+  height: 40px;
+  padding: 0 var(--space-2) 0 var(--space-4);
+  border-bottom: 1px solid var(--line);
+
+  > :nth-child(2) {
+    padding-left: var(--space-4);
+  }
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr auto;
+
+    > :nth-child(2) {
+      display: none;
+    }
+  }
+}
+
+.cTheme {
+  grid-column: -2;
+}
+
+// The columns share rows (subgrid), so both stages and both notes line up.
+.cBody {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: 1fr auto;
+
+  @media (max-width: 640px) {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+  }
+}
+
+.cCol {
+  display: grid;
+  grid-row: span 2;
+  grid-template-rows: subgrid;
+  min-width: 0;
+
+  @media (max-width: 640px) {
+    display: flex;
+    flex-direction: column;
+    grid-row: auto;
+  }
+
+  & + & {
+    border-left: 1px solid var(--line);
+
+    @media (max-width: 640px) {
+      border-top: 1px solid var(--line);
+      border-left: 0;
+    }
+  }
+}
+
+// On a phone the second column's verdict moves down to it.
+.cMobileVerdict {
+  display: none;
+  padding: var(--space-3) var(--space-4) 0;
+
+  @media (max-width: 640px) {
+    display: block;
+  }
+}
+
+.cStage {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  padding: var(--space-6);
+}
+
+.cNote {
+  margin: 0;
+  padding: var(--space-3) var(--space-4) var(--space-4);
+  border-top: 1px solid var(--line);
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--ink-muted);
+  text-wrap: pretty;
+}

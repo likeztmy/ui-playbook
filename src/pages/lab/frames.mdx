@@ -1,0 +1,25 @@
+---
+layout: ../../layouts/Lab.astro
+title: Before / After frame
+---
+import { FramesA, FramesB, FramesC } from '../../demos/frames-lab';
+
+The same two cases from Nothing shifts, in three frames. Today's frame: a 40px bar with the verdict and a theme switch, the stage, and the note outside.
+
+## A · Do / Don't band
+
+After Material 3's guidelines: the stage, a tinted band naming the verdict, the caption under the card.
+
+<FramesA client:visible />
+
+## B · Quiet stage
+
+No bar: the sunken stage is the card, the verdict a chip in its corner, the theme switch on hover.
+
+<FramesB client:visible />
+
+## C · One card for the pair
+
+A shared head names both columns; each note sits inside the card under its own stage.
+
+<FramesC client:visible />
