@@ -1,4 +1,4 @@
-"""Read-only document acceptance for topic-backlog Review 1.
+"""Read-only document acceptance for topic-backlog Reviews 1 and 2.
 
 Run from any directory, optionally passing an older Markdown file to show
 regressions. These checks validate the document contract, not source truth.
@@ -21,7 +21,8 @@ REMOVED = {'undo': 'Undo instead of asking', 'copy': 'Words can invert a state',
            'disabled': 'A disabled action needs an explanation', 'errors': 'Errors need a next step',
            'password': 'Password field', 'upload': 'File upload', 'breadcrumb': 'Breadcrumbs',
            'pagination': 'Pagination', 'empty': 'Empty state', 'accordion': 'Accordion',
-           'mobile': 'Compare in one viewport'}
+           'mobile': 'Compare in one viewport', 'density': 'Density is not just padding',
+           'otp': 'One-time code'}
 
 
 def entries():
@@ -60,9 +61,9 @@ class BacklogReviewTests(unittest.TestCase):
         self.assertEqual(len({e['title'] for e in ROWS}), len(ROWS))
 
     def test_revision_counts(self):
-        self.assertEqual(len(ROWS), 37)
+        self.assertEqual(len(ROWS), 35)
         self.assertEqual(Counter(e['fields']['Kind'] for e in ROWS),
-                         {'component': 10, 'principle': 20, 'site': 7})
+                         {'component': 9, 'principle': 19, 'site': 7})
 
     def test_priority_formula_and_tool_bonus(self):
         for row in ROWS:
@@ -118,8 +119,15 @@ class BacklogReviewTests(unittest.TestCase):
 
     def test_raycast_and_linear_scope(self):
         command = BY_ID['command']['chunk']
-        self.includes(command, '↵', '⌘K', '右侧', '2019-12-19', 'menu.mdx:40', 'focus 或 view', '只改变 Open / ↵')
+        self.includes(command, '↵', '⌘K', '右侧', '2019-12-19', 'menu.mdx:40', 'focus 或 view')
         self.assertNotIn('只切换动作是否按当前对象分组', command)
+
+    def test_command_follows_current_item(self):
+        command = BY_ID['command']
+        self.includes(command['fields']['The Before'], '全局动作', '高亮')
+        self.includes(command['fields']['Demo idea'], '当前项目', '↵', '第一个动作')
+        self.assertNotIn('仍要进入动作面板再选 Open', command['chunk'])
+        self.assertNotIn('Open 仍展开所有动作', command['chunk'])
 
     def test_edge_target_replaces_settings_row(self):
         target = BY_ID['target']['chunk']
@@ -133,14 +141,26 @@ class BacklogReviewTests(unittest.TestCase):
     def test_api_claims_match_contract(self):
         self.assertIn('只变 snapOnStep', BY_ID['number']['chunk'])
         self.assertNotIn('只变是否按该 locale 解释输入', BY_ID['number']['chunk'])
-        self.includes(BY_ID['otp']['chunk'], 'input-paste', 'onValueComplete', 'normalizeValue')
-        self.assertNotIn('只变 paste 是否分发', BY_ID['otp']['chunk'])
 
-    def test_modes_and_density_match_sources(self):
+    def test_modes_match_source(self):
         self.includes(BY_ID['mode']['chunk'], 'Photoshop', 'Reply All', '至少两个视觉指标', 'cursor shape')
         self.assertNotIn('指针旁', BY_ID['mode']['fields']['Demo idea'])
-        self.assertIn('视觉强调程度', BY_ID['density']['fields']['Demo idea'])
-        self.assertNotIn('只改变分隔线', BY_ID['density']['fields']['Demo idea'])
+
+    def test_review2_score_rationales(self):
+        for key in ['preview', 'origin', 'frequency', 'filters', 'interrupt', 'type', 'target', 'number']:
+            self.assertIn('Score rationale', BY_ID[key]['fields'], key)
+            self.assertTrue(BY_ID[key]['fields']['Score rationale'].strip(), key)
+
+    def test_review2_score_limits(self):
+        for key, axis, value in [('preview', 2, 4), ('interrupt', 2, 4),
+                                 ('origin', 1, 4), ('frequency', 1, 4), ('filters', 1, 3),
+                                 ('type', 1, 2), ('target', 1, 3), ('number', 0, 3)]:
+            self.assertEqual(BY_ID[key]['scores'][axis], value, key)
+        self.includes(BY_ID['target']['chunk'], 'needs a feasibility spike before planning', 'Pointer Lock')
+        self.assertIn('timed glyph flash', BY_ID['type']['fields']['Demo idea'])
+
+    def test_frequency_pointer_application_is_inference(self):
+        self.includes(BY_ID['frequency']['chunk'], 'keyboard-initiated', 'pointer click', 'inference')
 
     def test_defaults_controlled_finding(self):
         self.assertEqual(BY_ID['defaults']['scores'][1], 3)
@@ -152,12 +172,17 @@ class BacklogReviewTests(unittest.TestCase):
         self.assertIn('no named product', BY_ID['carousel']['fields']['The Before'])
         self.assertIn('Current-product checks requested in Review 1', TAIL)
 
-    def test_motion_distinct_sources(self):
+    def test_carousel_describes_one_discount(self):
+        self.assertIn('那一项折扣', BY_ID['carousel']['fields']['The mechanism'])
+        self.assertNotIn('每项 offer', BY_ID['carousel']['fields']['The mechanism'])
+
+    def test_motion_shares_source_but_changes_leaving_path(self):
         interrupt = BY_ID['interrupt']['fields']['Primary sources']
         origin = BY_ID['origin']['fields']['Primary sources']
         urls = lambda text: set(re.findall(r'\]\((https?://[^)]+)\)', text))
-        self.assertFalse(urls(interrupt) & urls(origin))
-        self.includes(origin, 'm2.material.io', 'archived')
+        self.assertEqual(urls(interrupt) & urls(origin), {'https://developer.apple.com/videos/play/wwdc2018/803/'})
+        self.includes(BY_ID['origin']['fields']['Demo idea'], '离场路径', '右侧', '下方')
+        self.assertNotIn('卡片', BY_ID['origin']['fields']['Demo idea'])
 
     def test_colour_primary_source_and_access_limits(self):
         self.assertRegex(BY_ID['colour']['fields']['Primary sources'],
