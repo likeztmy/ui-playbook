@@ -2,7 +2,7 @@
 import '../styles/tokens.css';
 import '../styles/global.scss';
 import { ThemeToggle } from '../components/ThemeToggle';
-import { hasZh, langOf, pathIn, ui } from '../i18n';
+import { ZH_LIVE, hasZh, langOf, pathIn, ui } from '../i18n';
 import s from './Base.module.scss';
 
 interface Props {
@@ -19,7 +19,7 @@ const here = Astro.url.pathname;
 const bare = pathIn(here, 'en');
 const isEntry = /^\/(components|principles)\//.test(bare);
 const other = lang === 'zh' ? bare : !isEntry || hasZh(bare) ? pathIn(bare, 'zh') : '/zh';
-const translated = lang === 'zh' || !isEntry || hasZh(bare);
+const translated = ZH_LIVE && (lang === 'zh' || !isEntry || hasZh(bare));
 ---
 
 <html lang={lang === 'zh' ? 'zh-CN' : 'en'}>
@@ -45,7 +45,7 @@ const translated = lang === 'zh' || !isEntry || hasZh(bare);
       <header class={s.header}>
         <a class={s.wordmark} href={lang === 'zh' ? '/zh' : '/'}>UI Playbook</a>
         <span class={s.actions}>
-          <a class={s.lang} href={other} hreflang={t.otherLang} lang={t.otherLang}>{t.other}</a>
+          {ZH_LIVE && <a class={s.lang} href={other} hreflang={t.otherLang} lang={t.otherLang}>{t.other}</a>}
           <ThemeToggle client:load sunClass={s.sun} moonClass={s.moon} lang={lang} />
         </span>
       </header>

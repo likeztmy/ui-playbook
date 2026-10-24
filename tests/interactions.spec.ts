@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { hydrateAll } from './helpers';
+import { hydrateAll, ZH_PUBLISHED } from './helpers';
 
 // Each test pins one behaviour a playbook page claims. If a page says it,
 // the component has to do it.
@@ -826,7 +826,16 @@ test('toast: Undo restores, plain ones leave after 4s, errors stay and are alert
   await expect(limit.locator('[data-type="success"]:has(button):not([data-limited])')).toHaveCount(3);
 });
 
+test('chinese edition, unpublished: no language link and no /zh pages', async ({ page }) => {
+  test.skip(ZH_PUBLISHED, 'the Chinese edition is published');
+  await page.goto('/principles/nothing-shifts');
+  await expect(page.getByRole('link', { name: '中文' })).toHaveCount(0);
+  await expect(page.locator('link[hreflang]')).toHaveCount(0);
+  expect((await page.request.get('/zh/principles/nothing-shifts')).status()).toBe(404);
+});
+
 test('chinese edition: the header switches to the same page; untranslated entries link to English', async ({ page }) => {
+  test.skip(!ZH_PUBLISHED, 'the Chinese edition is not published');
   await page.goto('/principles/nothing-shifts');
   await page.getByRole('link', { name: '中文' }).click();
   await expect(page).toHaveURL(/\/zh\/principles\/nothing-shifts\/?$/);

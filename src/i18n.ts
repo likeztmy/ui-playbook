@@ -4,6 +4,14 @@
 
 export type Lang = 'en' | 'zh';
 
+/**
+ * Whether the Chinese edition is published. While false, its pages wait in
+ * src/pages/_zh (Astro builds nothing under an underscore), the header shows
+ * no language link and pages declare no hreflang. To publish: rename
+ * src/pages/_zh to src/pages/zh and set this to true.
+ */
+export const ZH_LIVE = false;
+
 export const langOf = (pathname: string): Lang => (pathname === '/zh' || pathname.startsWith('/zh/') ? 'zh' : 'en');
 
 /** The same path in `lang`. */
@@ -12,7 +20,7 @@ export const pathIn = (pathname: string, lang: Lang) => {
   return lang === 'zh' ? (bare === '/' ? '/zh' : `/zh${bare}`) : bare;
 };
 
-// Which pages have a Chinese version: /components/x and /principles/x.
+// Which pages have a published Chinese version: /components/x and /principles/x.
 const zhPages = new Set(
   Object.keys(import.meta.glob('./pages/zh/{components,principles}/*.mdx')).map((p) => p.replace('./pages/zh', '').replace(/\.mdx$/, '')),
 );

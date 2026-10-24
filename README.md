@@ -39,6 +39,17 @@ pnpm shoot /components/menu --theme dark --selector figure   # headless screensh
 
 States that StateGrid pins use `data-pin` (see `src/styles/_states.scss`), so component styles write `@include hover { … }` rather than `&:hover`.
 
+## Chinese edition
+
+English is the source. The Chinese edition is unpublished: its pages wait in `src/pages/_zh/`, which Astro doesn't build, and `ZH_LIVE` in `src/i18n.ts` is `false`, so no page shows the language link.
+
+- A page: `src/pages/_zh/<components|principles>/<slug>.mdx`, with `lang="zh"` on each demo.
+- Demo notes: `src/demos/<name>.zh.tsx`, wired into the demo with `localized` and `useLang` (see `shift.tsx`).
+- Home titles and summaries: the `zh` table at the end of `src/entries.ts`.
+- Chrome strings: `ui.zh` in `src/i18n.ts`.
+
+To publish, rename `src/pages/_zh` to `src/pages/zh` and set `ZH_LIVE` to `true`. Entries with no Chinese page then link to English.
+
 ## Syncing the design system
 
 Precision lives as a Design System artifact (claude.ai/artifact/KF1A98gMkmBjWbeyZ4njh9). To take an update, copy its `project/tokens.json` over `src/tokens/precision.json` unchanged. `scripts/build-tokens.mjs` handles the rest:
