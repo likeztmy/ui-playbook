@@ -831,14 +831,14 @@ test('chinese edition: the header switches to the same page; untranslated entrie
   await page.getByRole('link', { name: '中文' }).click();
   await expect(page).toHaveURL(/\/zh\/principles\/nothing-shifts\/?$/);
   await expect(page.locator('html')).toHaveAttribute('lang', 'zh-CN');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('界面不乱跳');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('保持布局稳定');
   await hydrateAll(page);
   await expect(page.locator('figure').first().getByRole('button', { name: '切换主题' })).toBeVisible();
-  await expect(page.getByText('同一组结果，排在已有的行下面', { exact: false })).toBeVisible();
+  await expect(page.getByText('同一组结果排在已有内容下方', { exact: false })).toBeVisible();
   await page.getByRole('link', { name: 'English' }).click();
   await expect(page).toHaveURL(/\/principles\/nothing-shifts\/?$/);
 
   await page.goto('/zh');
-  await expect(page.getByRole('link', { name: /界面不乱跳/ })).toHaveAttribute('href', '/zh/principles/nothing-shifts');
+  await expect(page.getByRole('link', { name: /保持布局稳定/ })).toHaveAttribute('href', '/zh/principles/nothing-shifts');
   await expect(page.getByRole('link', { name: /^Button/ })).toHaveAttribute('href', '/components/button');
 });

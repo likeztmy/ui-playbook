@@ -240,7 +240,7 @@ const zh: Record<string, { title?: string; summary: string }> = {
   'concentric-radius': { title: '同心圆角', summary: '内圆角 = 外圆角 − 内边距。嵌套的圆角共用同一个圆心。' },
   'colour-means-one-thing': { title: '颜色只表达一件事', summary: '蓝色只表示“现在就做这个”。当前状态靠形状和深浅区分，屏幕上只剩一块实心蓝，一眼就能找到。' },
   'where-the-eye-goes': { title: '眼睛先看哪里', summary: '眼睛先猜后读：点击之外的变化会漏看，看似结束的地方会停下，像广告的东西会跳过。' },
-  'nothing-shifts': { title: '界面不乱跳', summary: '用户没要求，界面就别动。指针底下的东西一挪，点击就落空了。' },
+  'nothing-shifts': { title: '保持布局稳定', summary: '不要在用户没操作的时候移动内容。指针下的内容一旦移动，点击就会落到别处。' },
   'hover-forgives': { title: '悬停要留余地', summary: '指针正在去某个地方的路上。要看它往哪儿去，而不是它碰巧经过了哪一行。' },
   'error-timing': { title: '报错的时机', summary: '等用户填完再说哪里错了；一旦改对，马上告诉他。' },
 };
