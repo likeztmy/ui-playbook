@@ -1,0 +1,55 @@
+---
+layout: ../../layouts/Entry.astro
+slug: how-waiting-feels
+---
+import { WaitFlash, WaitStall, WaitRibbing, WaitLabor, WaitSkeleton, WaitOptimistic } from '../../demos/wait';
+
+## The rule
+
+**A wait is judged by how it feels, not how long it is.** The same second can pass unnoticed or drag, depending on what the screen does with it. Sometimes the fix is to show more: a skeleton, the work being done. Sometimes it's to show less: nothing at all for a quick request, or the result before the server has answered.
+
+<WaitFlash client:visible />
+
+## Three limits
+
+| Time | What it feels like | What it wants |
+| --- | --- | --- |
+| Under 0.1 s | Instant: the user did it | Nothing but the result |
+| Under 1 s | A pause, but the thought holds | Nothing, or a quiet sign that appears late |
+| Up to 10 s | Attention starts to drift | A spinner or skeleton; for long, known work, progress |
+| Over 10 s | The user goes elsewhere | A percent-done bar, a time left, and a way to cancel |
+
+The thresholds are [NN/g's](https://www.nngroup.com/articles/response-times-3-important-limits/), unchanged since Miller (1968) and Card et al. (1991).
+
+## Details
+
+### The end counts most
+
+<WaitStall client:visible />
+
+### A bar that moves backwards feels faster
+
+<WaitRibbing client:visible />
+
+### Show the work
+
+<WaitLabor client:visible />
+
+### Skeleton for a page, spinner for a part
+
+<WaitSkeleton client:visible />
+
+### Don't wait at all
+
+<WaitOptimistic client:visible />
+
+## When it doesn't apply
+
+- **The wait is the point.** A countdown before an irreversible send is a chance to stop it, and should be seen in full.
+- **Honesty about failure.** Showing a result early is fine only if a failure is shown just as clearly when it comes.
+
+## Where the playbook applies it
+
+- [Button](/components/button): `delay-loading` before the spinner, and the label's width reserved so nothing shifts.
+- [Toast](/components/toast): Undo after the action, instead of a confirmation before it.
+- [Nothing shifts](/principles/nothing-shifts): a skeleton holds the space its content will take.

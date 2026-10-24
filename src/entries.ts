@@ -196,6 +196,14 @@ export const entries: Entry[] = [
     keywords: ['layout shift', 'cls', 'cumulative layout shift', 'scrollbar-gutter', 'scroll anchoring', 'overflow-anchor', 'size-adjust', 'font fallback', 'bold', 'misclick'],
   },
   {
+    slug: 'how-waiting-feels',
+    kind: 'principle',
+    title: 'How waiting feels',
+    summary: 'A wait is judged by how it feels. Show nothing for a quick one, the work for a slow one, and the result before the server answers.',
+    details: 5,
+    keywords: ['loading', 'spinner', 'skeleton', 'progress bar', 'optimistic', 'perceived performance', 'labor illusion', 'peak-end', 'response time', 'delay'],
+  },
+  {
     slug: 'hover-forgives',
     kind: 'principle',
     title: 'Hover forgives',

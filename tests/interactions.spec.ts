@@ -851,3 +851,35 @@ test('chinese edition: the header switches to the same page; untranslated entrie
   await expect(page.getByRole('link', { name: /保持布局稳定/ })).toHaveAttribute('href', '/zh/principles/nothing-shifts');
   await expect(page.getByRole('link', { name: /^Button/ })).toHaveAttribute('href', '/components/button');
 });
+
+test('how waiting feels: a quick refresh shows no spinner in the After; once shown it stays; a star fills at once and rolls back on failure', async ({ page }) => {
+  await page.goto('/principles/how-waiting-feels');
+  await hydrateAll(page);
+  const [before, after] = [page.locator('figure').nth(0), page.locator('figure').nth(1)];
+  const spinner = (f: typeof before) => f.getByRole('button', { name: 'Refresh' }).locator('[class*="waitSpin"]');
+
+  // Request 1 takes 160 ms: the Before flashes a spinner, the After shows none.
+  await before.getByRole('button', { name: 'Refresh' }).click();
+  await expect(spinner(before)).toHaveCount(1);
+  await after.getByRole('button', { name: 'Refresh' }).click();
+  await expect(spinner(after)).toHaveCount(0);
+  await expect(after.getByText('Updated once')).toBeVisible();
+  await expect(spinner(after)).toHaveCount(0);
+  // Request 2 takes 340 ms: past the 300 ms delay, so the spinner shows, and holds until 800 ms.
+  await after.getByRole('button', { name: 'Refresh' }).click();
+  await expect(spinner(after)).toHaveCount(1, { timeout: 600 });
+  await page.waitForTimeout(250);
+  await expect(spinner(after)).toHaveCount(1);
+  await expect(after.getByText('Updated 2 times')).toBeVisible({ timeout: 1500 });
+
+  const stars = page.locator('figure').filter({ has: page.getByRole('checkbox', { name: 'Fail the next request' }) }).nth(1);
+  await stars.scrollIntoViewIfNeeded();
+  const q4 = stars.getByRole('button', { name: /Star Q4 roadmap|Unstar Q4 roadmap/ });
+  await q4.click();
+  await expect(q4).toHaveAttribute('aria-pressed', 'true', { timeout: 100 });
+  await stars.getByRole('checkbox', { name: 'Fail the next request' }).click();
+  await q4.click();
+  await expect(q4).toHaveAttribute('aria-pressed', 'false');
+  await expect(q4).toHaveAttribute('aria-pressed', 'true', { timeout: 2000 });
+  await expect(stars.getByText('Couldn’t unstar “Q4 roadmap”. Try again.')).toBeVisible();
+});
