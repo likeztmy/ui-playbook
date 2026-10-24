@@ -834,7 +834,7 @@ test('chinese edition: the header switches to the same page; untranslated entrie
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('保持布局稳定');
   await hydrateAll(page);
   await expect(page.locator('figure').first().getByRole('button', { name: '切换主题' })).toBeVisible();
-  await expect(page.getByText('同一组结果排在已有内容下方', { exact: false })).toBeVisible();
+  await expect(page.getByText('同样的结果放到已有内容下面', { exact: false })).toBeVisible();
   await page.getByRole('link', { name: 'English' }).click();
   await expect(page).toHaveURL(/\/principles\/nothing-shifts\/?$/);
 

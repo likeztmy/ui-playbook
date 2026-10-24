@@ -1,28 +1,29 @@
-// Chinese notes for the Nothing shifts demos. Plain, spec-style Chinese
-// written from the meaning: full sentences, no slogans, an English term
-// given once beside its Chinese name. The demos stay in English, so the
-// notes name what's on screen as it appears there.
+// Chinese notes for the Nothing shifts demos. Plain spoken Chinese written
+// from the meaning: no stiff connectors (随之, 依次, 因此, 作为), no noun
+// repeated where a pronoun or nothing will do, an English term given once
+// beside its Chinese name. The demos stay in English, so the notes name
+// what's on screen as it appears there.
 
 export const zh = {
   searchBefore: (
     <>
-      完整搜索结果在最后一次按键 0.7 秒后才返回，作为一组插在 Recent 上方。这时指针正移向某个最近浏览的页面，落下时那一行已经换成了别的内容，按
-      Enter 打开的也不是原来那一页。这次偏移离按键太远，不再算作对按键的响应，<a href="https://web.dev/articles/cls">CLS</a> 会把它计入。
+      完整结果要等最后一次按键 0.7 秒后才回来，整组插在 Recent 上面。这时鼠标正要去点某个最近看过的页面，等它落下，那一行已经换成了别的；按 Enter
+      打开的也不是原来那页。离按键这么久才发生的偏移，已经不算对按键的响应，<a href="https://web.dev/articles/cls">CLS</a> 会把它算进去。
     </>
   ),
-  searchAfter: '同一组结果排在已有内容下方。用户正要点的那一行位置不变；更匹配的结果就在下面，下一次按键时再排到前面。',
-  boldBefore: '粗体比常规字体宽。指针经过时，链接依次变宽，后面的链接随之右移，用户正要点的链接也跟着移走了。',
+  searchAfter: '同样的结果放到已有内容下面。正要点的那一行留在原地，更匹配的结果就在下面，下次按键时再排到前面。',
+  boldBefore: '加粗后字会变宽。鼠标划过导航时，每个链接都会撑宽一点，把后面的链接往右推，想点的那个就被推走了。',
   boldAfter: (
     <>
-      每个链接内放一份不可见的粗体文字，预先占住加粗后的宽度（
+      每个链接里藏一份看不见的粗体文字，先把加粗后的宽度占住（
       <a href="https://css-tricks.com/bold-on-hover-without-the-layout-shift/">CSS-Tricks</a>
-      ）。更简单的做法是悬停时只改变背景色，不改变字重。
+      ）。更省事的办法是悬停时只换背景色，字重不变。
     </>
   ),
   scrollbarBefore: (
     <>
-      输入 “an” 后列表不再溢出，滚动条消失，右侧 Owner、Editor 一列整体右移 12px。Mac 和手机上的滚动条浮在内容上方，不占宽度，开发者自己很少遇到这个问题。但在
-      Windows 等始终显示滚动条的环境中，每个用户都会遇到。
+      输入 “an” 后列表不再溢出，滚动条消失，右边 Owner、Editor 那一列整体往右跳了 12px。Mac 和手机上的滚动条浮在内容上，不占宽度，所以开发者自己很少碰到。可在
+      Windows 这类一直显示滚动条的系统上，每个用户都会看到。
     </>
   ),
   scrollbarAfter: (
@@ -30,27 +31,27 @@ export const zh = {
       <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/scrollbar-gutter">
         <code>scrollbar-gutter: stable</code>
       </a>{' '}
-      会始终为滚动条预留宽度，不论它是否出现。浮动滚动条本身不占宽度，所以这条规则对它没有影响。
+      会一直给滚动条留出位置，不管它有没有出现。浮动滚动条本来就不占宽度，这条规则对它没有影响。
     </>
   ),
   anchorBefore: (
     <>
-      设置 <code>overflow-anchor: none</code>
-      后，较早的消息加载出来，插在正在阅读的消息上方，把它推出了可见区域。用户回到了对话开头，需要重新寻找刚才读到的位置。
+      设成 <code>overflow-anchor: none</code>
+      后，更早的消息加载出来，插在正在读的那条上面，把它顶出了屏幕。用户一下子回到对话开头，只能重新找刚才读到哪儿。
     </>
   ),
   anchorAfter: (
     <>
-      这是浏览器的默认行为，称为滚动锚定（<a href="https://drafts.csswg.org/css-scroll-anchoring/">scroll anchoring</a>
-      ）。浏览器在屏幕上选一条消息作为锚点，上方增加了多少内容，就同步滚动多少，所以阅读位置保持不变。滚动到最顶部时没有锚点可选，锚定不会生效，因此聊天应用会在用户滚到顶部之前就开始加载。主流浏览器从
-      2026 年起才全部支持这项功能（<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/overflow-anchor">MDN</a>）。
+      这是浏览器的默认行为，叫滚动锚定（<a href="https://drafts.csswg.org/css-scroll-anchoring/">scroll anchoring</a>
+      ）。浏览器会在屏幕上挑一条消息当锚点，上面多出多少内容，就跟着往下滚多少，所以正在读的位置不变。滚到最顶上时没有锚点可挑，锚定就不起作用了，所以聊天应用都会在用户滚到顶之前开始加载。主流浏览器到
+      2026 年才全部支持（<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/overflow-anchor">MDN</a>）。
     </>
   ),
-  fontBefore: '网页字体加载完成前，文字先用 Arial 显示，它比 Geist 窄约 2.5%。换成 Geist 后换行位置改变，段落下方的内容随之移动。',
+  fontBefore: '网页字体加载完之前，文字先用 Arial 显示，它比 Geist 窄 2.5% 左右。换成 Geist 后，换行的位置变了，段落下面的内容都跟着动。',
   fontAfter: (
     <>
-      这里的后备字体（fallback font）仍是 Arial，但用 <code>size-adjust</code> 缩放到与 Geist 同宽。切换字体时只有字形变化，换行位置不变（
-      <a href="https://web.dev/articles/css-size-adjust">web.dev</a>）。Next.js 加载字体时默认会生成这样的后备字体（
+      这里的后备字体（fallback font）还是 Arial，只是用 <code>size-adjust</code> 缩放到和 Geist 一样宽。换字体时字形变了，换行不变（
+      <a href="https://web.dev/articles/css-size-adjust">web.dev</a>）。Next.js 加载字体时默认就会生成这种后备字体（
       <a href="https://nextjs.org/docs/app/api-reference/components/font">adjustFontFallback</a>）。
     </>
   ),

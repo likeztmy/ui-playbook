@@ -8,7 +8,7 @@ import { ShiftSearch, ShiftBold, ShiftScrollbar, ShiftAnchor, ShiftFont } from '
 
 **不要在用户没操作的时候移动页面内容。** 用户点击前会先瞄准，滚动前会先看清。内容一挪，点击就可能落到别处，刚才读到的位置也找不到了。
 
-浏览器衡量布局偏移（layout shift）用的是同一个标准。点击、触摸或按键后 500 ms 内发生的偏移不计分，因为那是界面在响应操作，用户有预期。只有用户没有触发的偏移才会计分。
+浏览器衡量布局偏移（layout shift）也是这个思路。点击、触摸或按键后 500 ms 内的偏移不算分，那是界面在响应操作，用户心里有准备。只有用户没碰时发生的偏移才算分。
 
 <ShiftSearch lang="zh" client:visible />
 
@@ -32,22 +32,22 @@ import { ShiftSearch, ShiftBold, ShiftScrollbar, ShiftAnchor, ShiftFont } from '
 
 ## 自己测量
 
-Chrome 和 Edge 会实时测量每一次偏移，分数等于移动区域占视口的比例，乘以移动距离占视口的比例（[Layout Instability API](https://web.dev/articles/cls)）。每个演示下方显示的就是这个分数，只统计演示内部：偏移了几次，总分是多少。和 CLS 一样，输入后 500 ms 内的偏移不计。
+Chrome 和 Edge 会实时测出每一次偏移的分数：移动区域占视口的比例，乘以移动距离占视口的比例（[Layout Instability API](https://web.dev/articles/cls)）。每个演示下面的数字就是它，只算演示里面的：偏移了几次，一共多少分。和 CLS 一样，输入后 500 ms 内的偏移不算。
 
-整个页面的 CLS 应保持在 0.1 以下。小元素移动几个像素，几乎不得分，但一次就足以让指针下换成另一个链接。
+整个页面的 CLS 最好一直在 0.1 以下。小元素挪几个像素几乎不得分，可只要挪一次，鼠标下面就可能换成另一个链接。
 
-其他浏览器不提供这项数据，因此不显示计数。
+其他浏览器拿不到这个数据，所以不显示。
 
-这个指标只统计元素的位置变化。打字时滚动条出现又消失，或者偏移发生在点击后半秒内，都不得分，但同样会让用户点错。
+这个分数只看元素的位置有没有变。打字时滚动条一出一没，或者点击后半秒内的偏移，都不算分，可照样会让人点错。
 
 ## 不适用的情况
 
-- **用户触发的变化。** 展开内容、加载更多、归档一行，布局应该立即跟着变化。
-- **不影响布局的动画。** 用 transform 缩放或平移元素，不会推动其他内容。这是动画，不是布局偏移。
+- **用户自己触发的变化。** 展开内容、加载更多、归档一行，布局就该马上跟着变。
+- **不影响布局的动画。** 用 transform 缩放或平移元素，不会推开别的内容。这算动画，不算布局偏移。
 
 ## 本手册中的应用
 
 - [Button](/components/button)：加载时宽度不变。
-- [Tabs](/components/tabs)：切换时只改变颜色和指示条，不改变字重。
+- [Tabs](/components/tabs)：切换时只换颜色和指示条，不改字重。
 - [Slider](/components/slider) 和 [Card](/components/card)：数字变化时宽度不变。
-- [眼睛先看哪里](/principles/where-the-eye-goes)：计数变化时带一点动画，让用户注意到。
+- [眼睛先看哪里](/principles/where-the-eye-goes)：计数变化时带一点动画，让人注意到。
