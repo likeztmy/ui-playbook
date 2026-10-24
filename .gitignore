@@ -33,3 +33,6 @@ src/styles/tokens.css
 test-results/
 playwright-report/
 shots/
+
+# Agent worktrees and their run state (codex-delegate)
+.claude/worktrees/
