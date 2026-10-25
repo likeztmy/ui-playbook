@@ -7,14 +7,6 @@ import s from './demos.module.scss';
 
 const ic = { size: 16, strokeWidth: 1.5, nonScalingStroke: true, 'aria-hidden': true } as const;
 
-/** A duration token in ms and an easing token, read at call time so slow motion applies. */
-function token(el: Element, duration: string, easing: string) {
-  const css = getComputedStyle(el);
-  // The build minifies 618ms to .618s, so read the unit too.
-  const raw = css.getPropertyValue(duration).trim();
-  return { duration: parseFloat(raw) * (raw.endsWith('ms') ? 1 : 1000), easing: css.getPropertyValue(easing).trim() };
-}
-
 // ── Second thoughts ──────────────────────────────────────
 
 const SLIDES = [
