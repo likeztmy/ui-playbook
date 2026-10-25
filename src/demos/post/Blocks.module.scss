@@ -84,12 +84,30 @@
   }
 }
 
+// The source follows the title on the same line.
+.credit::before {
+  content: ' · ';
+}
+
 .image {
+  overflow: hidden;
   width: 100%;
   border-radius: var(--radius-md);
-  // A hairline so a pale image keeps its edge on a white page.
-  outline: 1px solid light-dark(oklch(0 0 0 / 0.1), oklch(1 0 0 / 0.1));
-  outline-offset: -1px;
+
+  &,
+  img {
+    // A hairline so a pale image keeps its edge on a white page.
+    outline: 1px solid light-dark(oklch(0 0 0 / 0.1), oklch(1 0 0 / 0.1));
+    outline-offset: -1px;
+  }
+
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    object-fit: cover;
+  }
 }
 
 .table {

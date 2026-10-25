@@ -1216,3 +1216,74 @@ test('post: a conversation opens to its unread message; earlier ones fold into a
   await page.getByRole('button', { name: 'Back' }).click();
   await expect(page.locator('[data-row="roadmap"]')).not.toHaveAttribute('data-unread', '');
 });
+
+test('post: compose picks and types recipients, sends with ⌘↵, and Undo brings the message back to finish', async ({ page }) => {
+  await page.goto('/lab/mail-one');
+  await hydrateAll(page);
+  const app = page.locator('[class*="_app_"]');
+  const sound = async (step: string) => expect(await layoutProblems(app, { fill: ['section[aria-label="New message"]', 'section[aria-label="Conversations"]'] }), step).toEqual([]);
+  await page.getByRole('navigation', { name: 'Folders' }).getByRole('button', { name: 'Compose' }).click();
+  const composer = page.getByRole('region', { name: 'New message' });
+  const to = composer.getByRole('combobox', { name: 'To' });
+  await expect(to).toBeFocused();
+  // Send with no one to send it to: said under To, and focus goes there.
+  await composer.getByRole('button', { name: 'Send' }).click();
+  await expect(composer.getByRole('alert')).toHaveText('Add a recipient');
+  await expect(to).toBeFocused();
+  // A suggestion picked with Enter; a typed address checked only once it's a chip.
+  await to.fill('pri');
+  await expect(page.getByRole('option', { name: /Priya Natarajan/ })).toBeVisible();
+  await sound('suggesting');
+  await to.press('Enter');
+  await to.fill('sam@lee');
+  await expect(composer.locator('[data-invalid]')).toHaveCount(0);
+  await to.press(',');
+  await expect(composer.locator('[data-invalid]')).toHaveText('sam@lee');
+  // Backspace selects the last chip, then removes it.
+  await to.press('Backspace');
+  await expect(composer.locator('[data-selected]')).toHaveText('sam@lee');
+  await to.press('Backspace');
+  await expect(composer.locator('[data-invalid]')).toHaveCount(0);
+  await composer.getByRole('textbox', { name: 'Subject' }).fill('Beta invite list');
+  await composer.getByRole('textbox', { name: 'Message' }).click();
+  await page.keyboard.type('Here is the list.');
+  await expect(composer.getByText('Saved')).toBeVisible();
+  await sound('written');
+  await page.keyboard.press('ControlOrMeta+Enter');
+  await expect(page.getByText('Message sent')).toBeVisible();
+  await expect(composer).toHaveCount(0);
+  await page.getByRole('navigation', { name: 'Folders' }).getByRole('button', { name: 'Sent' }).click();
+  await expect(page.getByRole('list').getByText('Beta invite list')).toBeVisible();
+  // Undo: the message leaves Sent and the composer is back as it was.
+  await page.getByRole('button', { name: 'Undo', exact: true }).click();
+  await expect(composer.getByRole('textbox', { name: 'Subject' })).toHaveValue('Beta invite list');
+  await expect(composer.getByText('Priya Natarajan')).toBeVisible();
+  await expect(composer.getByRole('textbox', { name: 'Message' })).toBeFocused();
+  // Back keeps it as a draft, and focus returns to Compose.
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('navigation', { name: 'Folders' }).getByRole('button', { name: 'Compose' })).toBeFocused();
+  await page.getByRole('navigation', { name: 'Folders' }).getByRole('button', { name: /Drafts/ }).click();
+  await expect(page.getByRole('region', { name: 'Drafts' }).getByText('Beta invite list')).toBeVisible();
+  // Drafts outlive a reload.
+  await page.reload();
+  await hydrateAll(page);
+  await page.getByRole('navigation', { name: 'Folders' }).getByRole('button', { name: /Drafts/ }).click();
+  await expect(page.getByRole('region', { name: 'Drafts' }).getByText('Beta invite list')).toBeVisible();
+});
+
+test('post: R replies at the foot of the conversation, to the sender, and the reply joins it on send', async ({ page }) => {
+  await page.goto('/lab/mail-one');
+  await hydrateAll(page);
+  await page.locator('[data-row="lunch"] [class*="_main_"]').click();
+  const conversation = page.getByRole('region', { name: 'Conversation' });
+  const before = await conversation.getByRole('article').count();
+  await page.keyboard.press('r');
+  const reply = conversation.getByRole('region', { name: 'Reply' });
+  await expect(reply.getByRole('textbox', { name: 'Message' })).toBeFocused();
+  await expect(reply.getByText('Daniel Brooks')).toBeVisible();
+  await page.keyboard.type('See you there.');
+  await page.keyboard.press('ControlOrMeta+Enter');
+  await expect(reply).toHaveCount(0);
+  await expect(conversation.getByRole('article', { name: /^You/ }).last()).toContainText('See you there.');
+  expect(await conversation.getByRole('article').count()).toBeGreaterThanOrEqual(before);
+});

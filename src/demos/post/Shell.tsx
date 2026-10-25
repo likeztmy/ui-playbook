@@ -1,18 +1,23 @@
-import { ChevronDown, Search, X } from 'lucide-react';
-import { useEffect, useRef, useState, type KeyboardEvent, type RefObject } from 'react';
+import { ChevronDown, Pencil, Search, X } from 'lucide-react';
+import { useEffect, useRef, useState, type ReactElement, type RefObject } from 'react';
 import { Button } from '../../ui/Button';
 import { Menu } from '../../ui/Menu';
+import { Tip } from '../../ui/Tooltip';
 import { ToastProvider } from '../../ui/Toast';
+import { Composer, preloadBody } from './Composer';
 import { Conversation } from './Conversation';
+import { DraftList } from './DraftList';
 import { FOLDERS, FOLDER_NAME } from './folders';
 import { List } from './List';
+import type { Folder } from './model';
+import { useCompose, type Compose } from './useCompose';
 import { usePost, type Post } from './usePost';
 import s from './Shell.module.scss';
 
 const ic = { size: 16, strokeWidth: 1.5, nonScalingStroke: true, 'aria-hidden': true } as const;
 
-/** Gmail's keys: J older, K newer, X tick, E archive, S star, U back, / search. */
-function useKeys(post: Post, rows: RefObject<Map<string, HTMLButtonElement>>, search: RefObject<HTMLInputElement | null>) {
+/** Gmail's keys: J older, K newer, X tick, E archive, S star, U back, / search; C compose, R reply, A reply all, F forward. */
+function useKeys(post: Post, compose: Compose, rows: RefObject<Map<string, HTMLButtonElement>>, search: RefObject<HTMLInputElement | null>) {
   const moved = useRef(false);
   // Focus follows a conversation the keyboard moved to.
   useEffect(() => {
@@ -21,7 +26,13 @@ function useKeys(post: Post, rows: RefObject<Map<string, HTMLButtonElement>>, se
   }, [post.open, rows]);
 
   return (e: KeyboardEvent) => {
-    if (e.metaKey || e.ctrlKey || e.altKey || (e.target as HTMLElement).closest('input, textarea, [role="dialog"], [role="menu"]')) return;
+    if (e.metaKey || e.ctrlKey || e.altKey || compose.writing) return;
+    if (
+      (e.target as HTMLElement).closest(
+        'input, textarea, [contenteditable="true"], [role="dialog"], [role="menu"], section[aria-label="Reply"], section[aria-label="Forward"]',
+      )
+    )
+      return;
     const row = (e.target as HTMLElement).closest('[data-row]')?.getAttribute('data-row');
     const id = row ?? post.open?.id;
     const c = post.mail.find((x) => x.id === id);
@@ -44,6 +55,10 @@ function useKeys(post: Post, rows: RefObject<Map<string, HTMLButtonElement>>, se
       },
       u: post.close,
       '/': () => search.current?.focus(),
+      c: compose.compose,
+      r: () => post.open && compose.reply(post.open, 'reply'),
+      a: () => post.open && compose.reply(post.open, 'replyAll'),
+      f: () => post.open && compose.reply(post.open, 'forward'),
     };
     if (!act[e.key]) return;
     e.preventDefault();
@@ -54,13 +69,58 @@ function useKeys(post: Post, rows: RefObject<Map<string, HTMLButtonElement>>, se
 
 function Shell({ onToasts }: { onToasts: (el: HTMLDivElement | null) => void }) {
   const post = usePost();
+  const compose = useCompose(post);
   const rows = useRef(new Map<string, HTMLButtonElement>());
   const search = useRef<HTMLInputElement>(null);
-  const keys = useKeys(post, rows, search);
-  const reading = !!post.open;
+  const composeButton = useRef<HTMLButtonElement>(null);
+  const keys = useKeys(post, compose, rows, search);
+  // On the whole page, as Gmail's are: they work before anything in the app has focus.
+  const latestKeys = useRef(keys);
+  latestKeys.current = keys;
+  useEffect(() => {
+    const on = (e: KeyboardEvent) => latestKeys.current(e);
+    document.addEventListener('keydown', on);
+    return () => document.removeEventListener('keydown', on);
+  }, []);
+  const reading = !!post.open || !!compose.writing;
+
+  useEffect(() => {
+    preloadBody();
+  }, []);
+
+  // Back from a conversation puts focus on its row; leaving a new message, on Compose. Never on <body>.
+  const was = useRef<{ open?: string; writing: boolean }>({ writing: false });
+  useEffect(() => {
+    if (!compose.writing && !post.open) {
+      if (was.current.open) rows.current.get(was.current.open)?.focus({ preventScroll: true });
+      else if (was.current.writing) composeButton.current?.focus();
+    }
+    was.current = { open: post.open?.id, writing: !!compose.writing };
+  }, [compose.writing, post.open]);
+
+  const go = (f: Folder) => {
+    compose.leave();
+    post.go(f);
+  };
+
+  const main = compose.writing ? (
+    <Composer key={compose.writing.id} d={compose.writing} compose={compose} page onBack={() => compose.close(compose.writing!.id)} />
+  ) : post.open ? (
+    <Conversation key={post.open.id} post={post} compose={compose} c={post.open} single />
+  ) : post.folder === 'drafts' && !post.query ? (
+    <DraftList compose={compose} />
+  ) : (
+    <List post={post} rows={rows} />
+  );
+
+  const composeTip = (button: ReactElement) => (
+    <Tip label="Compose" keys={['C']}>
+      {button}
+    </Tip>
+  );
 
   return (
-    <div className={s.app} data-view={reading ? 'message' : 'list'} onKeyDown={keys}>
+    <div className={s.app} data-view={reading ? 'message' : 'list'}>
       <header className={s.top}>
         <span className={s.brand}>Post</span>
         <span className={s.phoneOnly}>
@@ -71,7 +131,7 @@ function Shell({ onToasts }: { onToasts: (el: HTMLDivElement | null) => void }) 
             </Menu.Trigger>
             <Menu.Popup>
               {FOLDERS.map((f) => (
-                <Menu.Item key={f.id} icon={f.icon} onClick={() => post.go(f.id)}>
+                <Menu.Item key={f.id} icon={f.icon} onClick={() => go(f.id)}>
                   {FOLDER_NAME[f.id]}
                 </Menu.Item>
               ))}
@@ -85,7 +145,10 @@ function Shell({ onToasts }: { onToasts: (el: HTMLDivElement | null) => void }) 
             value={post.query}
             placeholder="Search mail"
             aria-label="Search mail"
-            onChange={(e) => post.search(e.target.value)}
+            onChange={(e) => {
+              compose.leave();
+              post.search(e.target.value);
+            }}
             onKeyDown={(e) => {
               if (e.key === 'Escape') post.search('');
               e.stopPropagation();
@@ -97,19 +160,33 @@ function Shell({ onToasts }: { onToasts: (el: HTMLDivElement | null) => void }) 
             </Button>
           )}
         </label>
+        <span className={s.phoneOnly}>
+          {composeTip(
+            <Button variant="ghost" icon aria-label="Compose" className={s.phoneCompose} onClick={compose.compose}>
+              <Pencil {...ic} />
+            </Button>,
+          )}
+        </span>
       </header>
       <nav className={s.side} aria-label="Folders">
-        {FOLDERS.map((f) => (
-          <button key={f.id} type="button" className={s.folder} aria-current={post.folder === f.id || undefined} onClick={() => post.go(f.id)}>
-            <f.icon {...ic} />
-            <span>{FOLDER_NAME[f.id]}</span>
-            {f.id === 'inbox' && post.unreadCount > 0 && <span className={s.folderCount}>{post.unreadCount}</span>}
-          </button>
-        ))}
+        {composeTip(
+          <Button ref={composeButton} className={s.compose} onClick={compose.compose}>
+            <Pencil {...ic} />
+            Compose
+          </Button>,
+        )}
+        {FOLDERS.map((f) => {
+          const count = f.id === 'inbox' ? post.unreadCount : f.id === 'drafts' ? compose.drafts.length : 0;
+          return (
+            <button key={f.id} type="button" className={s.folder} aria-current={post.folder === f.id || undefined} onClick={() => go(f.id)}>
+              <f.icon {...ic} />
+              <span>{FOLDER_NAME[f.id]}</span>
+              {count > 0 && <span className={s.folderCount}>{count}</span>}
+            </button>
+          );
+        })}
       </nav>
-      <main className={s.main}>
-        {post.open ? <Conversation key={post.open.id} post={post} c={post.open} single /> : <List post={post} rows={rows} />}
-      </main>
+      <main className={s.main}>{main}</main>
       {/* Toasts rise in their own layer, out of the app's grid. */}
       <div ref={onToasts} className={s.toastLayer} data-overlay />
     </div>

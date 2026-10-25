@@ -1,0 +1,143 @@
+@use '../../styles/states' as *;
+
+// One line of the composer's head: the label, the chips and their input, then anything trailing.
+.field {
+  position: relative;
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr) auto;
+  // Label and trailing buttons sit on the first line of chips, however many lines they wrap to.
+  align-items: start;
+  min-height: 44px;
+  border-bottom: 1px solid var(--line);
+}
+
+.label {
+  // Centred on the first line of chips: 9px above them, half of their 26px, less half of 20px.
+  padding-top: 12px;
+  color: var(--ink-muted);
+  line-height: 20px;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 0;
+  // 9 + 26 + 9: one line of chips is the field's 44px.
+  padding: 9px 0;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  height: 26px;
+  padding: 0 2px 0 var(--space-2);
+  border-radius: var(--radius-full);
+  background: var(--fill-control);
+  font-size: 13px;
+  white-space: nowrap;
+
+  // Picked by Backspace: the next Backspace removes it.
+  &[data-selected] {
+    box-shadow: 0 0 0 2px var(--accent);
+  }
+
+  &[data-invalid] {
+    background: var(--danger-soft);
+    color: var(--danger);
+  }
+}
+
+.remove {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  // Quieter than the name it removes; a malformed chip's stays its red.
+  color: var(--ink-muted);
+  cursor: pointer;
+
+  [data-invalid] > & {
+    color: inherit;
+  }
+
+  @include hover {
+    background: var(--fill-control-hover);
+    color: var(--ink);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+}
+
+.error {
+  grid-column: 2 / -1;
+  margin: -4px 0 var(--space-2);
+  color: var(--danger);
+  font-size: 13px;
+}
+
+.input {
+  flex: 1 0 64px;
+  min-width: 0;
+  height: 26px;
+  border: 0;
+  outline: none;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+}
+
+// Under the field, at the chips' left edge.
+.list {
+  position: absolute;
+  z-index: var(--z-dropdown);
+  top: calc(100% + 4px);
+  left: 64px;
+  width: min(360px, 100% - 64px);
+  margin: 0;
+  padding: var(--space-1);
+  border-radius: var(--radius-lg);
+  background: var(--surface-raised);
+  box-shadow: var(--shadow-lg);
+  list-style: none;
+}
+
+.option {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  grid-template-areas: 'avatar name' 'avatar email';
+  column-gap: var(--space-2);
+  align-items: center;
+  padding: 6px var(--space-2);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+
+  > :first-child {
+    grid-area: avatar;
+  }
+
+  &[aria-selected='true'] {
+    background: var(--fill-hover);
+  }
+}
+
+.name,
+.email {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.email {
+  grid-area: email;
+  color: var(--ink-muted);
+  font-size: 12px;
+}

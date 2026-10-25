@@ -1,0 +1,19 @@
+// Written in the same type the message will be read in.
+.body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.prose {
+  flex: 1;
+  min-height: 160px;
+  padding: var(--space-4) 0;
+  outline: none;
+
+  // The editor wraps list items' text in paragraphs; they sit tight, as in a sent message.
+  li > p {
+    margin: 0;
+  }
+}

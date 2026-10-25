@@ -25,12 +25,18 @@ const LIST: Person[] = [
 
 export const PEOPLE: Record<string, Person> = Object.fromEntries(LIST.map((p) => [p.id, p]));
 
-export const person = (id: string) => PEOPLE[id] ?? { id, name: id, email: `${id}@example.com` };
+const BY_EMAIL: Record<string, Person> = Object.fromEntries(LIST.map((p) => [p.email, p]));
+
+/** Someone by id; an address typed in that matches no one stands for itself. */
+export const person = (id: string): Person => PEOPLE[id] ?? BY_EMAIL[id] ?? { id, name: id, email: id.includes('@') ? id : `${id}@example.com` };
+
+/** Everyone you can write to, for suggestions. */
+export const CONTACTS = LIST.filter((p) => !p.me);
 
 /** How someone is named in running text: "me" for the reader, a person by first name, a company in full. */
 export const shortName = (id: string) => {
   const p = person(id);
-  return p.me ? 'me' : p.org ? p.name : p.name.split(' ')[0];
+  return p.me ? 'me' : p.org || p.name.includes('@') ? p.name : p.name.split(' ')[0];
 };
 
 /** Who wrote in a conversation, oldest first, each once: "Mira, me, Priya". At most three names. */

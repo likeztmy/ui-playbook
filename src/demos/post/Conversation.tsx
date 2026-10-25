@@ -1,9 +1,12 @@
-import { Archive, ArchiveRestore, ChevronLeft, ChevronRight, Mail, Star } from 'lucide-react';
+import { Archive, ArchiveRestore, ChevronLeft, ChevronRight, Forward, Mail, Reply, ReplyAll, Star } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { Button } from '../../ui/Button';
 import { Tip, TipGroup } from '../../ui/Tooltip';
+import { Composer } from './Composer';
 import { Message } from './Message';
-import type { Conversation as Conv } from './model';
+import { latest, type Conversation as Conv } from './model';
+import { person } from './people';
+import type { Compose } from './useCompose';
 import type { Post } from './usePost';
 import s from './Conversation.module.scss';
 
@@ -33,18 +36,26 @@ function rows(c: Conv, open: Set<string>, unfolded: boolean): Row[] {
 }
 
 /** One conversation: its bar, its subject, and its messages, opened to the first unread. */
-export function Conversation({ post, c, single }: { post: Post; c: Conv; single: boolean }) {
+export function Conversation({ post, compose, c, single }: { post: Post; compose: Compose; c: Conv; single: boolean }) {
   const [open, setOpen] = useState(() => startOpen(c));
   const [unfolded, setUnfolded] = useState(false);
   const first = useRef<HTMLButtonElement>(null);
   const firstOpen = c.messages.findIndex((m) => open.has(m.id));
   const i = post.list.findIndex((x) => x.id === c.id);
+  const reply = compose.replyIn(c.id);
+  const last = latest(c);
+  // Reply all only when there's someone besides the sender to reach.
+  const many = new Set([last.from, ...last.to, ...(last.cc ?? [])].filter((p) => !person(p).me)).size > 1;
 
   // Arriving: scroll to the first open message and put focus on it.
   useEffect(() => {
     first.current?.scrollIntoView({ block: 'nearest' });
     first.current?.focus({ preventScroll: true });
   }, []);
+
+  // A message that arrives while the conversation is open (your own reply, sent) opens.
+  const newest = latest(c).id;
+  useEffect(() => setOpen((o) => (o.has(newest) ? o : new Set([...o, newest]))), [newest]);
 
   const toggle = (id: string) =>
     setOpen((o) => {
@@ -114,7 +125,13 @@ export function Conversation({ post, c, single }: { post: Post; c: Conv; single:
           <header className={s.head}>
             <h1 className={s.subject}>{c.subject}</h1>
             <Tip label={c.starred ? 'Unstar' : 'Star'} keys={['S']}>
-              <Button variant="ghost" icon aria-label={c.starred ? 'Unstar' : 'Star'} aria-pressed={!!c.starred} onClick={() => post.star([c.id], !c.starred)}>
+              <Button
+                variant="ghost"
+                icon
+                aria-label={c.starred ? 'Unstar' : 'Star'}
+                aria-pressed={!!c.starred}
+                onClick={() => post.star([c.id], !c.starred)}
+              >
                 <Star {...ic} className={s.star} data-on={c.starred ? '' : undefined} />
               </Button>
             </Tip>
@@ -122,12 +139,7 @@ export function Conversation({ post, c, single }: { post: Post; c: Conv; single:
           <div className={s.messages}>
             {rows(c, open, unfolded).map((r) =>
               r.kind === 'run' ? (
-                <button
-                  key={`run-${r.from}`}
-                  type="button"
-                  className={s.run}
-                  onClick={() => setUnfolded(true)}
-                >
+                <button key={`run-${r.from}`} type="button" className={s.run} onClick={() => setUnfolded(true)}>
                   <span className={s.runCount}>{r.count}</span>
                   earlier messages
                 </button>
@@ -142,6 +154,34 @@ export function Conversation({ post, c, single }: { post: Post; c: Conv; single:
               ),
             )}
           </div>
+          {reply ? (
+            <Composer key={reply.id} d={reply} compose={compose} />
+          ) : (
+            <TipGroup>
+              <div className={s.answer}>
+                <Tip label="Reply" keys={['R']}>
+                  <Button onClick={() => compose.reply(c, 'reply')}>
+                    <Reply {...ic} />
+                    Reply
+                  </Button>
+                </Tip>
+                {many && (
+                  <Tip label="Reply all" keys={['A']}>
+                    <Button onClick={() => compose.reply(c, 'replyAll')}>
+                      <ReplyAll {...ic} />
+                      Reply all
+                    </Button>
+                  </Tip>
+                )}
+                <Tip label="Forward" keys={['F']}>
+                  <Button onClick={() => compose.reply(c, 'forward')}>
+                    <Forward {...ic} />
+                    Forward
+                  </Button>
+                </Tip>
+              </div>
+            </TipGroup>
+          )}
         </div>
       </div>
     </section>

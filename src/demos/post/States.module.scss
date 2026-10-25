@@ -39,3 +39,8 @@
     border-bottom: 0;
   }
 }
+
+// A field shown on its own, inset as it is in the composer.
+.padded {
+  padding: 0 var(--space-4);
+}

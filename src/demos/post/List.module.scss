@@ -161,6 +161,11 @@
 }
 
 // The message count: quieter than the names, one step down.
+// A draft's marker, where a sent conversation names its people.
+.draft {
+  color: var(--danger);
+}
+
 .count {
   color: var(--ink-muted);
   font-size: 12px;

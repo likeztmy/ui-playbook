@@ -1,11 +1,13 @@
-import type { Block, Inline } from "./model";
-import s from "./Blocks.module.scss";
+import type { Block, Inline } from './model';
+import s from './Blocks.module.scss';
+
+export { s as blocksClasses };
 
 function Text({ runs }: { runs: Inline[] }) {
   return (
     <>
       {runs.map((r, i) => {
-        if (typeof r === "string") return r;
+        if (typeof r === 'string') return r;
         if (r.href)
           return (
             <a key={i} href={r.href} onClick={(e) => e.preventDefault()}>
@@ -13,6 +15,13 @@ function Text({ runs }: { runs: Inline[] }) {
             </a>
           );
         if (r.code) return <code key={i}>{r.text}</code>;
+        if (r.italic && r.bold)
+          return (
+            <strong key={i}>
+              <em>{r.text}</em>
+            </strong>
+          );
+        if (r.italic) return <em key={i}>{r.text}</em>;
         return <strong key={i}>{r.text}</strong>;
       })}
     </>
@@ -21,16 +30,16 @@ function Text({ runs }: { runs: Inline[] }) {
 
 function One({ b }: { b: Block }) {
   switch (b.kind) {
-    case "p":
+    case 'p':
       return (
         <p>
           <Text runs={b.text} />
         </p>
       );
-    case "h":
+    case 'h':
       return <h4 className={s.heading}>{b.text}</h4>;
-    case "ul":
-    case "ol": {
+    case 'ul':
+    case 'ol': {
       const List = b.kind;
       return (
         <List>
@@ -42,35 +51,40 @@ function One({ b }: { b: Block }) {
         </List>
       );
     }
-    case "quote":
+    case 'quote':
       return (
         <blockquote>
           <Text runs={b.text} />
         </blockquote>
       );
-    case "code":
+    case 'code':
       return (
         <pre>
           <code>{b.text}</code>
         </pre>
       );
-    case "image":
-      // Holds its box before anything loads, so the text below never moves.
+    case 'image':
+      // Holds its box before anything loads, so the text below never moves; the tint shows until the picture arrives.
       return (
         <figure className={s.figure}>
           <div
             className={s.image}
-            role="img"
-            aria-label={b.alt}
+            role={b.src ? undefined : 'img'}
+            aria-label={b.src ? undefined : b.alt}
             style={{
               aspectRatio: b.ratio,
               backgroundImage: `linear-gradient(160deg, ${b.tint})`,
             }}
-          />
-          <figcaption>{b.alt}</figcaption>
+          >
+            {b.src && <img src={b.src} alt={b.alt} loading="lazy" decoding="async" />}
+          </div>
+          <figcaption>
+            {b.alt}
+            {b.credit && <span className={s.credit}>{b.credit}</span>}
+          </figcaption>
         </figure>
       );
-    case "table": {
+    case 'table': {
       const right = b.head.map((_, j) => quantity(b.rows.map((r) => r[j])));
       // Scrolls inside its own box, never widening the message.
       return (
@@ -79,7 +93,7 @@ function One({ b }: { b: Block }) {
             <thead>
               <tr>
                 {b.head.map((c, i) => (
-                  <th key={i} data-num={right[i] ? "" : undefined}>
+                  <th key={i} data-num={right[i] ? '' : undefined}>
                     {c}
                   </th>
                 ))}
@@ -89,7 +103,7 @@ function One({ b }: { b: Block }) {
               {b.rows.map((row, i) => (
                 <tr key={i}>
                   {row.map((c, j) => (
-                    <td key={j} data-num={right[j] ? "" : undefined}>
+                    <td key={j} data-num={right[j] ? '' : undefined}>
                       {c}
                     </td>
                   ))}
@@ -100,9 +114,9 @@ function One({ b }: { b: Block }) {
         </div>
       );
     }
-    case "rule":
+    case 'rule':
       return <hr />;
-    case "signature":
+    case 'signature':
       return (
         <p className={s.signature}>
           {b.lines.map((l, i) => (
@@ -115,19 +129,11 @@ function One({ b }: { b: Block }) {
 
 /** A message's body, set for reading. */
 /** A column of quantities (amounts, counts, changes), right-aligned so their digits line up. Dates and times aren't quantities. */
-const quantity = (cells: string[]) =>
-  cells.some(Boolean) &&
-  cells.every((c) => !c || /^[+\-−$€£]?[\d.,]+%?$/.test(c));
+const quantity = (cells: string[]) => cells.some(Boolean) && cells.every((c) => !c || /^[+\-−$€£]?[\d.,]+%?$/.test(c));
 
-export function Blocks({
-  blocks,
-  className,
-}: {
-  blocks: Block[];
-  className?: string;
-}) {
+export function Blocks({ blocks, className }: { blocks: Block[]; className?: string }) {
   return (
-    <div className={[s.prose, className].filter(Boolean).join(" ")}>
+    <div className={[s.prose, className].filter(Boolean).join(' ')}>
       {blocks.map((b, i) => (
         <One key={i} b={b} />
       ))}

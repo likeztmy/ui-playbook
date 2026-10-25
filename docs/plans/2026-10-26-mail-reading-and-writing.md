@@ -35,7 +35,50 @@ Empty and loading: a conversation's messages arrive at once; images load into fi
 - **Drafts and sending.** "Saved" appears after a pause in typing, not on every key; Send with ⌘↵; the sent toast offers Undo for a few seconds.
 - **Replies** open inline at the foot of the conversation, quoting the message they answer behind "···".
 
-State transitions for writing come with phase 2's plan.
+### Reference behaviour (checked 2026-10-26)
+
+- Gmail ("Write and send email", support.google.com/mail/answer/9259768): "Gmail automatically saves messages you're working on in a label named Drafts"; recipients can be added with "+" or "@" and a contact's name in the text; Undo is offered in the "Message sent" notification, for 5, 10, 20 or 30 seconds (support.google.com/mail/answer/2819488).
+- Outlook: an @mention adds the person to To (support.microsoft.com, checked earlier the same day).
+
+### Where it lives
+
+- **New message**: takes the main area in place of the list, as an open conversation does, with the same bar on top (Back, then Discard). Owner's call, 2026-10-26: Gmail's docked window can already grow to fill the window, and one place for writing is simpler than a window over the list. The same on a phone.
+- **Reply / Reply all / Forward**: inline at the foot of the conversation, under the message answered.
+
+### State transitions
+
+| Trigger | Main area | Focus | Feedback | Way back |
+| --- | --- | --- | --- | --- |
+| Compose (button, C) | Composer replaces the list in the main area | To field | — | Back (Esc): to the list, saved to Drafts if anything was written; focus back on Compose |
+| Reply (button, R) / Reply all (A) | Reply opens at the conversation's foot, scrolled into view; To filled; the answered message quoted behind "···" | Body | — | Discard, or Close (kept as a draft on that conversation) |
+| Forward (F) | As Reply, To empty, the original quoted open; its attachments carried | To field | — | As Reply |
+| Type in To / Cc / Bcc | Suggestions from people in the mail (Combobox) | Stays in field; arrows move the highlight | — | Esc closes suggestions |
+| Enter / Tab / comma / paste of several addresses | Each becomes a chip | Field, after the chips | An invalid address is a red chip, marked when you leave it, not while typing | × on the chip; Backspace on empty field selects the last chip, again removes it |
+| Select text, ⌘B / ⌘I / toolbar | Mark applied; toolbar button shows pressed | Stays in text, selection kept | — | ⌘Z |
+| ⌘K or link button | Popover at the selection with the URL field | URL field | — | Esc: back to the text with the selection as it was |
+| `**text**`, `- `, `1. `, `> ` | Turns into bold, list, quote as typed | Caret stays | — | ⌘Z undoes the conversion, leaving the typed characters |
+| `@` or `+` and a name | Suggestions at the caret | Arrows/Enter pick | Mention appears in text; the person joins To as a chip | Remove the chip in To (the mention text stays) |
+| Attach (button) / drop a file | File card with its own progress; drop target highlights while dragging over the composer | Unchanged | Progress per file | × cancels or removes |
+| Send (button, ⌘↵) with nothing in To | Composer stays | To field | "Add a recipient" under To | — |
+| Send while a file is uploading | Composer stays | Send button | Button reads "Sending when ready…" and sends when the upload finishes | Click again to cancel the wait |
+| Send | Composer closes; a reply joins the conversation at once; the message goes to Sent | Back where it was (the conversation, or the list) | Toast "Message sent", Undo for 5 s | Undo: the message leaves Sent/the conversation and the composer reopens as it was, caret at the end |
+| Pause in typing (≈1 s) | — | — | Footer "Saved" | — |
+| Discard (trash) | Composer closes | Back where it was | Toast "Draft discarded", Undo | Undo reopens it |
+| Open a draft in Drafts | Composer with its content (a reply draft opens in its conversation) | End of body | — | Back |
+
+Empty states: Drafts with none says "No drafts"; Sent with none says "Nothing sent yet".
+
+Other decisions (owner, 2026-10-26): Markdown input rules only for lists and quotes; Send during an upload waits and sends; drafts are kept in localStorage, so they survive a reload (the rest of the sample mail resets).
+
+Deviation, kept: recipient suggestions open under the field at the chips' left edge, not under the caret as Gmail's do, so names and addresses line up with the chips they become.
+
+### Build order
+
+1. Composer shell, recipients chips, send / undo / Drafts folder, reply inline.
+2. TipTap body: toolbar, shortcuts, Markdown input rules, link popover.
+3. @mentions into To; attachments with simulated progress.
+
+Each step ships, deployed, with its rows in `/lab/mail-states` and its flows under `layoutProblems`. TipTap is fetched right after the app's first render: never on the reading path, but in hand before anyone writes, so keys typed straight after R land in the body.
 
 ## Gaps this opens in the playbook
 

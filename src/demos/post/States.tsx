@@ -1,21 +1,22 @@
-import { ToastProvider } from "../../ui/Toast";
-import { CONVERSATIONS } from "./conversations";
-import { Line } from "./Line";
-import { Message } from "./Message";
-import type { Conversation } from "./model";
-import { usePost } from "./usePost";
-import s from "./States.module.scss";
+import { ToastProvider } from '../../ui/Toast';
+import { CONVERSATIONS } from './conversations';
+import { Line } from './Line';
+import { Message } from './Message';
+import { RecipientField } from './RecipientField';
+import type { Conversation } from './model';
+import { usePost } from './usePost';
+import s from './States.module.scss';
 
 const byId = (id: string) => CONVERSATIONS.find((c) => c.id === id)!;
 
 // The rows that differ in what they carry: a count, a star, a long subject, an archived row, a search match.
 const KINDS: { name: string; c: Conversation; query?: string }[] = [
-  { name: "Read", c: byId("invoice") },
-  { name: "Unread thread", c: byId("roadmap") },
-  { name: "Starred", c: byId("review") },
-  { name: "Company sender", c: byId("gym") },
-  { name: "Archived", c: byId("oncall") },
-  { name: "Search match", c: byId("lisbon"), query: "lisbon" },
+  { name: 'Read', c: byId('invoice') },
+  { name: 'Unread thread', c: byId('roadmap') },
+  { name: 'Starred', c: byId('review') },
+  { name: 'Company sender', c: byId('gym') },
+  { name: 'Archived', c: byId('oncall') },
+  { name: 'Search match', c: byId('lisbon'), query: 'lisbon' },
 ];
 
 const STATES: {
@@ -24,23 +25,15 @@ const STATES: {
   checked?: boolean;
   current?: boolean;
 }[] = [
-  { name: "Rest" },
-  { name: "Hover", pin: "hover" },
-  { name: "Ticked", checked: true },
-  { name: "Ticked, hover", checked: true, pin: "hover" },
-  { name: "Open", current: true },
+  { name: 'Rest' },
+  { name: 'Hover', pin: 'hover' },
+  { name: 'Ticked', checked: true },
+  { name: 'Ticked, hover', checked: true, pin: 'hover' },
+  { name: 'Open', current: true },
 ];
 
 /** One row held in one state: its own Post, with the state written over it. */
-function Row({
-  c,
-  query = "",
-  st,
-}: {
-  c: Conversation;
-  query?: string;
-  st: (typeof STATES)[number];
-}) {
+function Row({ c, query = '', st }: { c: Conversation; query?: string; st: (typeof STATES)[number] }) {
   const post = usePost([c]);
   const still = {
     ...post,
@@ -55,12 +48,19 @@ function Row({
   );
 }
 
-const roadmap = byId("roadmap").messages;
+const roadmap = byId('roadmap').messages;
 // A message's header in each of its states, from a plain reply to one with quoted text, copies and files.
 const MESSAGES = [
-  { name: "Reply with quote", m: roadmap[1] },
-  { name: "Copies and a file", m: roadmap[3] },
-  { name: "Company sender", m: byId("gym").messages[0] },
+  { name: 'Reply with quote', m: roadmap[1] },
+  { name: 'Copies and a file', m: roadmap[3] },
+  { name: 'Company sender', m: byId('gym').messages[0] },
+];
+
+// The recipients field: nothing yet; a contact and a malformed address; more than fit one line.
+const CHIPS = [
+  [],
+  ['mira@northwind.example', 'sam@lee'],
+  ['mira@northwind.example', 'priya@northwind.example', 'jonas@northwind.example', 'hana@northwind.example', 'chidi@northwind.example'],
 ];
 
 export function PostStates() {
@@ -88,12 +88,9 @@ export function PostStates() {
             </div>
           ))}
         </div>
-        <div
-          className={s.grid}
-          style={{ gridTemplateColumns: "120px repeat(3, 560px)" }}
-        >
+        <div className={s.grid} style={{ gridTemplateColumns: '120px repeat(3, 560px)' }}>
           <span />
-          {["Collapsed", "Collapsed, unread", "Open"].map((n) => (
+          {['Collapsed', 'Collapsed, unread', 'Open'].map((n) => (
             <span key={n} className={s.head}>
               {n}
             </span>
@@ -102,24 +99,32 @@ export function PostStates() {
             <div key={name} className={s.row}>
               <span className={s.name}>{name}</span>
               <div className={s.statesCell}>
-                <Message
-                  m={{ ...m, unread: false }}
-                  open={false}
-                  onToggle={() => {}}
-                />
+                <Message m={{ ...m, unread: false }} open={false} onToggle={() => {}} />
               </div>
               <div className={s.statesCell}>
-                <Message
-                  m={{ ...m, unread: true }}
-                  open={false}
-                  onToggle={() => {}}
-                />
+                <Message m={{ ...m, unread: true }} open={false} onToggle={() => {}} />
               </div>
               <div className={s.statesCell}>
                 <Message m={m} open onToggle={() => {}} />
               </div>
             </div>
           ))}
+        </div>
+        <div className={s.grid} style={{ gridTemplateColumns: '120px repeat(3, 360px)' }}>
+          <span />
+          {['Empty', 'Known and malformed', 'Wrapping'].map((n) => (
+            <span key={n} className={s.head}>
+              {n}
+            </span>
+          ))}
+          <div className={s.row}>
+            <span className={s.name}>Recipients</span>
+            {CHIPS.map((value, i) => (
+              <div key={i} className={`${s.statesCell} ${s.padded}`}>
+                <RecipientField label="To" value={value} onChange={() => {}} />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </ToastProvider>

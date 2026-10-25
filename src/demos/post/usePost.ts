@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useToast } from '../../ui/Toast';
 import { CONVERSATIONS } from './conversations';
-import { inFolder, plain, unread, type Conversation, type Folder } from './model';
+import { inFolder, plain, unread, type Conversation, type Folder, type Message } from './model';
 import { person } from './people';
 
 /** Post's state and the actions on it. Views read it and call its actions; they hold only view state. */
@@ -64,6 +64,22 @@ export function usePost(seed: Conversation[] = CONVERSATIONS) {
 
   const star = (ids: string[], on: boolean) => update(ids, (c) => ({ ...c, starred: on }));
 
+  /** Puts a sent message at the end of its conversation, or starts a conversation in Sent. Returns how to take it back. */
+  const deliver = (m: Message, subject: string, into?: string) => {
+    const now = new Date();
+    const time = `${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}`;
+    const was = into ? mail.find((c) => c.id === into) : undefined;
+    const id = was?.id ?? `c-${m.id}`;
+    if (was) setMail((all) => all.map((c) => (c.id === id ? { ...c, day: 0, time, messages: [...c.messages, m] } : c)));
+    else setMail((all) => [{ id, subject: subject.trim() || '(no subject)', folder: 'sent', day: 0, time, messages: [m] }, ...all]);
+    return () =>
+      setMail((all) =>
+        was
+          ? all.map((c) => (c.id === id ? { ...c, day: was.day, time: was.time, messages: c.messages.filter((x) => x.id !== m.id) } : c))
+          : all.filter((c) => c.id !== id),
+      );
+  };
+
   const go = (f: Folder) => {
     setFolder(f);
     setQuery('');
@@ -93,6 +109,7 @@ export function usePost(seed: Conversation[] = CONVERSATIONS) {
     archive: (ids: string[]) => move(ids, 'archive'),
     unarchive: (ids: string[]) => move(ids, 'inbox'),
     star,
+    deliver,
     setUnread,
     go,
     unreadCount: mail.filter((c) => c.folder === 'inbox' && unread(c)).length,

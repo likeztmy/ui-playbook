@@ -8,7 +8,17 @@ const ul = (...items: string[]): Block => ({ kind: 'ul', items: items.map((i) =>
 const ol = (...items: string[]): Block => ({ kind: 'ol', items: items.map((i) => [i]) });
 const sign = (...lines: string[]): Block => ({ kind: 'signature', lines });
 const pdf = (name: string, size: string): Attachment => ({ name, size, kind: 'pdf' });
-const photo = (name: string, tint: string): Attachment => ({ name, size: '2.4 MB', kind: 'image', tint });
+/** A photo of an artwork; the file in public/post/ shares its name. Every one is public domain (CC0). */
+const photo = (name: string, size: string, tint: string, ratio: number, alt: string, credit: string): Attachment => ({
+  name: `${name}.jpg`,
+  size,
+  kind: 'image',
+  tint,
+  src: `/post/${name}.webp`,
+  alt,
+  ratio,
+  credit,
+});
 
 const msg = (id: string, from: string, to: string[], at: string, body: Block[], more: Partial<Message> = {}): Message => ({
   id,
@@ -65,7 +75,16 @@ export const CONVERSATIONS: Conversation[] = [
         'Thu 9:41',
         [
           p('Thanks both. Settled:'),
-          { kind: 'table', head: ['Milestone', 'Owner', 'Date'], rows: [['Offline sync', 'Platform', '14 Nov'], ['Design partner beta', 'Product', '28 Nov'], ['Everyone', 'Product', '12 Dec'], ['Search', 'Platform', '20 Jan']] },
+          {
+            kind: 'table',
+            head: ['Milestone', 'Owner', 'Date'],
+            rows: [
+              ['Offline sync', 'Platform', '14 Nov'],
+              ['Design partner beta', 'Product', '28 Nov'],
+              ['Everyone', 'Product', '12 Dec'],
+              ['Search', 'Platform', '20 Jan'],
+            ],
+          },
           p('The final version is attached. I’ll walk through it on Monday.'),
           sign('Mira'),
         ],
@@ -87,7 +106,14 @@ export const CONVERSATIONS: Conversation[] = [
         'Thu 8:15',
         [
           p('Your booking is confirmed. Booking reference ', { text: 'K7Q2', bold: true }, '.'),
-          { kind: 'table', head: ['', 'Flight', 'Departs', 'Arrives'], rows: [['Out', 'AT 412', 'Thu 14 Nov 07:25', '10:05'], ['Back', 'AT 419', 'Sun 17 Nov 18:40', '21:15']] },
+          {
+            kind: 'table',
+            head: ['', 'Flight', 'Departs', 'Arrives'],
+            rows: [
+              ['Out', 'AT 412', 'Thu 14 Nov 07:25', '10:05'],
+              ['Back', 'AT 419', 'Sun 17 Nov 18:40', '21:15'],
+            ],
+          },
           p('Check-in opens 24 hours before departure. ', { text: 'Manage your booking', href: '#' }),
           sign('Atlas Travel'),
         ],
@@ -109,7 +135,15 @@ export const CONVERSATIONS: Conversation[] = [
         'Wed 16:02',
         [
           p('Your October invoice is available.'),
-          { kind: 'table', head: ['Item', 'Qty', 'Amount'], rows: [['Team plan', '4 seats', '$48.00'], ['Tax', '', '$0.00'], ['Total', '', '$48.00']] },
+          {
+            kind: 'table',
+            head: ['Item', 'Qty', 'Amount'],
+            rows: [
+              ['Team plan', '4 seats', '$48.00'],
+              ['Tax', '', '$0.00'],
+              ['Total', '', '$48.00'],
+            ],
+          },
           p('It will be charged to the card ending 4242 on 1 November.'),
         ],
         { attachments: [pdf('Invoice-2041.pdf', '84 KB')] },
@@ -157,7 +191,18 @@ export const CONVERSATIONS: Conversation[] = [
         'ferro',
         ['me'],
         'Tue 8:02',
-        [{ kind: 'table', head: ['Item', 'Price'], rows: [['Flat white', '$4.20'], ['Almond croissant', '$5.20'], ['Total', '$9.40']] }, p('Thanks for stopping by.')],
+        [
+          {
+            kind: 'table',
+            head: ['Item', 'Price'],
+            rows: [
+              ['Flat white', '$4.20'],
+              ['Almond croissant', '$5.20'],
+              ['Total', '$9.40'],
+            ],
+          },
+          p('Thanks for stopping by.'),
+        ],
         { unread: true },
       ),
     ],
@@ -176,7 +221,16 @@ export const CONVERSATIONS: Conversation[] = [
         'Tue 9:30',
         [
           p('Four slots are booked for Friday. Can you take the systems design one?'),
-          { kind: 'table', head: ['Time', 'Session', 'Interviewer'], rows: [['10:00', 'Intro', 'Hana'], ['11:00', 'Coding', 'Chidi'], ['14:00', 'Systems design', '—'], ['15:30', 'Team chat', 'Mira']] },
+          {
+            kind: 'table',
+            head: ['Time', 'Session', 'Interviewer'],
+            rows: [
+              ['10:00', 'Intro', 'Hana'],
+              ['11:00', 'Coding', 'Chidi'],
+              ['14:00', 'Systems design', '—'],
+              ['15:30', 'Team chat', 'Mira'],
+            ],
+          },
           sign('Hana'),
         ],
         { cc: ['mira'], unread: true },
@@ -191,22 +245,20 @@ export const CONVERSATIONS: Conversation[] = [
     day: 3,
     time: 'Mon',
     messages: [
-      msg(
-        'review-1',
-        'priya',
-        ['me'],
-        'Mon 15:40',
-        [
-          p('Mostly small things. Three worth fixing before the beta:'),
-          ol('The empty state needs a next step, not just “Nothing here”.', 'Numbers in the usage table should line up on the right.', 'The save toast covers the primary button on small screens.'),
-          { kind: 'image', alt: 'The usage table, numbers aligned left', tint: 'oklch(0.9 0.03 250), oklch(0.82 0.05 260)', ratio: 16 / 7 },
-          p('For the table, this is all it takes:'),
-          { kind: 'code', text: 'td.number {\n  text-align: right;\n  font-variant-numeric: tabular-nums;\n}' },
-          { kind: 'quote', text: ['Line up what people compare.'] },
-          p('Happy to pair on it tomorrow.'),
-          sign('Priya'),
-        ],
-      ),
+      msg('review-1', 'priya', ['me'], 'Mon 15:40', [
+        p('Mostly small things. Three worth fixing before the beta:'),
+        ol(
+          'The empty state needs a next step, not just “Nothing here”.',
+          'Numbers in the usage table should line up on the right.',
+          'The save toast covers the primary button on small screens.',
+        ),
+        { kind: 'image', alt: 'The usage table, numbers aligned left', tint: 'oklch(0.9 0.03 250), oklch(0.82 0.05 260)', ratio: 16 / 7 },
+        p('For the table, this is all it takes:'),
+        { kind: 'code', text: 'td.number {\n  text-align: right;\n  font-variant-numeric: tabular-nums;\n}' },
+        { kind: 'quote', text: ['Line up what people compare.'] },
+        p('Happy to pair on it tomorrow.'),
+        sign('Priya'),
+      ]),
     ],
   },
   {
@@ -223,8 +275,17 @@ export const CONVERSATIONS: Conversation[] = [
         'Mon 7:00',
         [
           h('The case for slower software'),
-          { kind: 'image', alt: 'A lake at dawn', tint: 'oklch(0.85 0.06 220), oklch(0.7 0.08 260)', ratio: 2 },
-          p('Three essays on doing less, and one on doing it well. Read time: 12 minutes.'),
+          {
+            kind: 'image',
+            alt: 'Claude Monet, Stacks of Wheat (End of Summer), 1890–91',
+            credit: 'Art Institute of Chicago, CC0',
+            src: '/post/stacks-of-wheat.webp',
+            tint: 'oklch(0.8 0.05 80), oklch(0.68 0.07 300)',
+            ratio: 1600 / 945,
+          },
+          p(
+            'Monet painted the same two stacks of wheat for a year, one light at a time. Three essays on doing less, and one on doing it well. Read time: 12 minutes.',
+          ),
           h('In this issue'),
           ul('Why the fastest teams ship less', 'Defaults are a decision', 'A short history of the undo button'),
           p({ text: 'Read on the web', href: '#' }),
@@ -254,7 +315,12 @@ export const CONVERSATIONS: Conversation[] = [
     folder: 'inbox',
     day: 3,
     time: 'Mon',
-    messages: [msg('books-1', 'books', ['me'], 'Mon 13:02', [p('Thinking in Systems is on its way and arrives Thursday.'), p({ text: 'Track your parcel', href: '#' })])],
+    messages: [
+      msg('books-1', 'books', ['me'], 'Mon 13:02', [
+        p('Thinking in Systems is on its way and arrives Thursday.'),
+        p({ text: 'Track your parcel', href: '#' }),
+      ]),
+    ],
   },
   {
     id: 'offsite',
@@ -263,16 +329,68 @@ export const CONVERSATIONS: Conversation[] = [
     day: 4,
     time: 'Sun',
     messages: [
-      msg('offsite-1', 'sam', ['me', 'mira', 'priya', 'jonas', 'hana', 'chidi'], 'Sat 19:20', [p('Shared album is up. 148 photos, mostly of the lake.'), sign('Sam')], {
-        attachments: [photo('lake.jpg', 'oklch(0.82 0.06 220), oklch(0.66 0.08 250)'), photo('boat.jpg', 'oklch(0.86 0.05 200), oklch(0.7 0.07 230)')],
-      }),
-      msg('offsite-2', 'sam', ['me', 'mira', 'priya', 'jonas', 'hana', 'chidi'], 'Sun 10:02', [p('Added the ones from the boat too.')], {
-        attachments: [
-          photo('dock.jpg', 'oklch(0.84 0.05 60), oklch(0.7 0.08 40)'),
-          photo('team.jpg', 'oklch(0.86 0.05 150), oklch(0.7 0.07 170)'),
-          photo('sunset.jpg', 'oklch(0.82 0.09 50), oklch(0.66 0.12 25)'),
-        ],
-      }),
+      msg(
+        'offsite-1',
+        'sam',
+        ['me', 'mira', 'priya', 'jonas', 'hana', 'chidi'],
+        'Sat 19:20',
+        [p('Shared album is up: 148 photos, mostly of the lake. Attached the postcards from Saturday’s museum stop.'), sign('Sam')],
+        {
+          attachments: [
+            photo(
+              'water-lilies',
+              '1.8 MB',
+              'oklch(0.7 0.06 230), oklch(0.6 0.07 160)',
+              1600 / 1536,
+              'Claude Monet, Water Lilies, 1906',
+              'Art Institute of Chicago, CC0',
+            ),
+            photo(
+              'great-wave',
+              '2.1 MB',
+              'oklch(0.9 0.03 85), oklch(0.5 0.1 255)',
+              1600 / 1076,
+              'Katsushika Hokusai, Under the Wave off Kanagawa, c. 1830–32',
+              'The Met, CC0',
+            ),
+          ],
+        },
+      ),
+      msg(
+        'offsite-2',
+        'sam',
+        ['me', 'mira', 'priya', 'jonas', 'hana', 'chidi'],
+        'Sun 10:02',
+        [p('And the three I nearly forgot, from the gift shop.')],
+        {
+          attachments: [
+            photo(
+              'red-fuji',
+              '2.3 MB',
+              'oklch(0.6 0.12 35), oklch(0.55 0.1 245)',
+              1600 / 1103,
+              'Katsushika Hokusai, South Wind, Clear Sky (Red Fuji), c. 1830–32',
+              'The Met, CC0',
+            ),
+            photo(
+              'sudden-shower',
+              '2.2 MB',
+              'oklch(0.6 0.06 220), oklch(0.75 0.06 80)',
+              1098 / 1600,
+              'Utagawa Hiroshige, Sudden Shower over Shin-Ōhashi Bridge and Atake, 1857',
+              'The Met, CC0',
+            ),
+            photo(
+              'dance-class',
+              '2.6 MB',
+              'oklch(0.7 0.05 160), oklch(0.6 0.05 60)',
+              1484 / 1600,
+              'Edgar Degas, The Dance Class, 1874',
+              'The Met, CC0',
+            ),
+          ],
+        },
+      ),
     ],
   },
   {
@@ -282,8 +400,15 @@ export const CONVERSATIONS: Conversation[] = [
     day: 4,
     time: 'Sun',
     messages: [
-      msg('retro-1', 'chidi', ['me', 'lena', 'jonas'], 'Fri 17:10', [p('Three themes came up:'), ol('Review queues', 'Flaky tests', 'Unclear owners'), p('Ideas welcome before Monday.'), sign('Chidi')]),
-      msg('retro-2', 'lena', ['chidi', 'me', 'jonas'], 'Sat 9:44', [p('On owners: a one-line “who decides” at the top of each doc would have saved us a week.')]),
+      msg('retro-1', 'chidi', ['me', 'lena', 'jonas'], 'Fri 17:10', [
+        p('Three themes came up:'),
+        ol('Review queues', 'Flaky tests', 'Unclear owners'),
+        p('Ideas welcome before Monday.'),
+        sign('Chidi'),
+      ]),
+      msg('retro-2', 'lena', ['chidi', 'me', 'jonas'], 'Sat 9:44', [
+        p('On owners: a one-line “who decides” at the top of each doc would have saved us a week.'),
+      ]),
       msg('retro-3', 'jonas', ['chidi', 'me', 'lena'], 'Sun 11:30', [p('Flaky tests: I’ll quarantine the worst five on Monday and post the list.')]),
     ],
   },
@@ -309,7 +434,11 @@ export const CONVERSATIONS: Conversation[] = [
         'Sat 14:25',
         [
           p('Left eleven comments. The main ones:'),
-          ol('Step two asks for a team name before anyone knows why.', 'The progress bar restarts when you go back.', 'Empty states again: each should name the next step.'),
+          ol(
+            'Step two asks for a team name before anyone knows why.',
+            'The progress bar restarts when you go back.',
+            'Empty states again: each should name the next step.',
+          ),
           sign('Lena'),
         ],
         { unread: true },
@@ -345,7 +474,15 @@ export const CONVERSATIONS: Conversation[] = [
           h('The cost of a click'),
           p('Every extra step loses a share of the people who reach it. This week: how three products cut a step, and what it cost them.'),
           { kind: 'image', alt: 'A funnel chart, narrowing at each step', tint: 'oklch(0.88 0.05 140), oklch(0.74 0.08 160)', ratio: 2.2 },
-          { kind: 'table', head: ['Product', 'Steps before', 'Steps after', 'Completion'], rows: [['Checkout', '5', '3', '+11%'], ['Signup', '4', '2', '+18%'], ['Export', '3', '1', '+6%']] },
+          {
+            kind: 'table',
+            head: ['Product', 'Steps before', 'Steps after', 'Completion'],
+            rows: [
+              ['Checkout', '5', '3', '+11%'],
+              ['Signup', '4', '2', '+18%'],
+              ['Export', '3', '1', '+6%'],
+            ],
+          },
           p({ text: 'Read the full issue', href: '#' }),
           { kind: 'rule' },
           sign('The Weekly Diff', 'Unsubscribe'),
@@ -368,7 +505,9 @@ export const CONVERSATIONS: Conversation[] = [
     folder: 'sent',
     day: 1,
     time: '18:40',
-    messages: [msg('feedback-1', 'me', ['hana'], 'Wed 18:40', [p('Strong on trade-offs, a little quick on failure modes. I’d move forward.'), sign('Alex')])],
+    messages: [
+      msg('feedback-1', 'me', ['hana'], 'Wed 18:40', [p('Strong on trade-offs, a little quick on failure modes. I’d move forward.'), sign('Alex')]),
+    ],
   },
   {
     id: 'oncall',

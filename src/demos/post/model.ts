@@ -1,6 +1,6 @@
 // Post, the In practice mail app: its data types and the pure helpers that read them.
 
-export type Folder = 'inbox' | 'starred' | 'sent' | 'archive';
+export type Folder = 'inbox' | 'starred' | 'sent' | 'drafts' | 'archive';
 
 export type Person = {
   id: string;
@@ -13,7 +13,7 @@ export type Person = {
 };
 
 /** A run of text, plain or with one mark. */
-export type Inline = string | { text: string; href?: string; bold?: boolean; code?: boolean };
+export type Inline = string | { text: string; href?: string; bold?: boolean; italic?: boolean; code?: boolean };
 
 /** One block of a message's body. Typed, so nothing arrives as raw HTML. */
 export type Block =
@@ -22,7 +22,8 @@ export type Block =
   | { kind: 'ul' | 'ol'; items: Inline[][] }
   | { kind: 'quote'; text: Inline[] }
   | { kind: 'code'; text: string }
-  | { kind: 'image'; alt: string; tint: string; ratio: number }
+  /** `tint` is the placeholder's colours, shown until `src` loads (or instead of it); `credit` follows the alt in the caption. */
+  | { kind: 'image'; alt: string; tint: string; ratio: number; src?: string; credit?: string }
   | { kind: 'table'; head: string[]; rows: string[][] }
   | { kind: 'rule' }
   | { kind: 'signature'; lines: string[] };
@@ -31,8 +32,13 @@ export type Attachment = {
   name: string;
   size: string;
   kind: 'pdf' | 'image' | 'doc' | 'sheet';
-  /** For an image: the colours of its placeholder. */
+  /** For an image: the colours of its placeholder, shown until `src` loads. */
   tint?: string;
+  src?: string;
+  /** For an image: what it shows, its width over height, and where it comes from. */
+  alt?: string;
+  ratio?: number;
+  credit?: string;
 };
 
 export type Message = {
@@ -54,7 +60,7 @@ export type Message = {
 export type Conversation = {
   id: string;
   subject: string;
-  folder: Exclude<Folder, 'starred'>;
+  folder: Exclude<Folder, 'starred' | 'drafts'>;
   starred?: boolean;
   /** Days ago the newest message came; 0 is today. */
   day: number;
@@ -65,11 +71,12 @@ export type Conversation = {
 
 export const unread = (c: Conversation) => c.messages.some((m) => m.unread);
 export const latest = (c: Conversation) => c.messages[c.messages.length - 1];
-export const inFolder = (c: Conversation, f: Folder) => (f === 'starred' ? !!c.starred : c.folder === f);
+/** Sent holds every conversation you wrote in, as Gmail's does; drafts aren't conversations. */
+export const inFolder = (c: Conversation, f: Folder) =>
+  f === 'starred' ? !!c.starred : f === 'sent' ? c.folder === 'sent' || c.messages.some((m) => m.from === 'me') : c.folder === f;
 
 /** The date section a conversation falls in. */
-export const section = (c: Conversation) =>
-  c.day === 0 ? 'Today' : c.day === 1 ? 'Yesterday' : c.day < 7 ? 'This week' : 'Earlier';
+export const section = (c: Conversation) => (c.day === 0 ? 'Today' : c.day === 1 ? 'Yesterday' : c.day < 7 ? 'This week' : 'Earlier');
 
 /** A conversation's plain text, for search and the list's snippet. */
 export const plain = (blocks: Block[]): string =>
