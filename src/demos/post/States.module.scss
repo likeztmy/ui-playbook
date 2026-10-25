@@ -1,0 +1,41 @@
+// The state matrix (lab): every kind of row and message header, each state held still.
+
+.states {
+  display: grid;
+  gap: var(--space-8);
+  overflow-x: auto;
+  padding-bottom: var(--space-4);
+}
+
+.grid {
+  display: grid;
+  gap: var(--space-3);
+  align-items: start;
+  width: max-content;
+}
+
+.row {
+  display: contents;
+}
+
+.head,
+.name {
+  color: var(--ink-muted);
+  font-size: 12px;
+}
+
+.name {
+  align-self: center;
+}
+
+.statesCell {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  container-type: inline-size;
+
+  > [role='listitem'] {
+    border-bottom: 0;
+  }
+}

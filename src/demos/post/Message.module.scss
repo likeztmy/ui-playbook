@@ -1,0 +1,158 @@
+@use '../../styles/states' as *;
+
+// Avatar, then everything else on one left edge: the body starts under the name.
+$indent: calc(36px + var(--space-3));
+
+.message {
+  padding: var(--space-4) 0 var(--space-5);
+}
+
+.head {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr) auto;
+  align-items: start;
+  gap: var(--space-3);
+}
+
+.who {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.sender {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 var(--space-2);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+
+  &:focus-visible {
+    border-radius: var(--radius-sm);
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+}
+
+.address {
+  color: var(--ink-muted);
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.time {
+  color: var(--ink-muted);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.body {
+  margin: var(--space-4) 0 0 $indent;
+}
+
+// A designed newsletter keeps to its own box and width, apart from the conversation.
+.letter {
+  max-width: 600px;
+  padding: var(--space-6);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--bg);
+}
+
+.fold {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 18px;
+  margin-top: var(--space-3);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: var(--fill-control);
+  color: var(--ink-muted);
+  cursor: pointer;
+
+  @include hover {
+    background: var(--fill-control-hover);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+}
+
+.quoted {
+  margin-top: var(--space-3);
+  padding-left: var(--space-3);
+  border-left: 2px solid var(--line);
+  color: var(--ink-muted);
+}
+
+// Collapsed: one line, avatar and name on the open messages' columns.
+.collapsed {
+  display: grid;
+  grid-template-columns: 28px auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-3) 0 var(--space-3) 4px;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+
+  @include hover {
+    background: var(--fill-hover);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: inset 0 0 0 2px var(--accent);
+  }
+
+  .name {
+    font-weight: 500;
+  }
+
+  // Unread: the name in bold and the snippet in ink, as in the list.
+  &[data-unread] .name {
+    font-weight: 600;
+  }
+
+  &[data-unread] .snippet {
+    color: var(--ink);
+  }
+}
+
+.snippet {
+  overflow: hidden;
+  color: var(--ink-muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// Narrow: the body takes the full width under the header.
+@container (max-width: 760px) {
+  .body {
+    margin-left: 0;
+  }
+
+  // The name is enough on a phone; the recipients list has the address.
+  .address {
+    display: none;
+  }
+}

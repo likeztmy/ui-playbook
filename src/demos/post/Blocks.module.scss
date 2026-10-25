@@ -1,0 +1,140 @@
+// A message's body: a reading measure, and every kind of block at home in it.
+.prose {
+  max-width: 68ch;
+  font-size: 15px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+
+  > * {
+    margin: 0 0 var(--space-3);
+  }
+
+  > :last-child {
+    margin-bottom: 0;
+  }
+
+  a {
+    color: var(--accent-text);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in oklch, currentColor 40%, transparent);
+    text-underline-offset: 2px;
+  }
+
+  ul,
+  ol {
+    padding-left: 1.4em;
+  }
+
+  li + li {
+    margin-top: var(--space-1);
+  }
+
+  blockquote {
+    padding-left: var(--space-3);
+    border-left: 2px solid var(--line-strong);
+    color: var(--ink-muted);
+  }
+
+  code {
+    padding: 1px 4px;
+    border-radius: var(--radius-sm);
+    background: var(--fill-control);
+    font-family: var(--font-mono);
+    font-size: 0.88em;
+  }
+
+  pre {
+    overflow-x: auto;
+    padding: var(--space-3);
+    border-radius: var(--radius-md);
+    background: var(--surface-sunken);
+    line-height: 1.5;
+
+    code {
+      padding: 0;
+      background: none;
+    }
+  }
+
+  hr {
+    height: 1px;
+    border: 0;
+    background: var(--line);
+  }
+}
+
+// Headings inside a message: a step up in weight, not in size; space above more than below.
+.heading {
+  margin: var(--space-5) 0 var(--space-1);
+  font-size: 15px;
+  font-weight: 600;
+
+  &:first-child {
+    margin-top: 0;
+  }
+}
+
+.figure {
+  margin: 0 0 var(--space-3);
+
+  figcaption {
+    margin-top: var(--space-1);
+    color: var(--ink-muted);
+    font-size: 13px;
+  }
+}
+
+.image {
+  width: 100%;
+  border-radius: var(--radius-md);
+  // A hairline so a pale image keeps its edge on a white page.
+  outline: 1px solid light-dark(oklch(0 0 0 / 0.1), oklch(1 0 0 / 0.1));
+  outline-offset: -1px;
+}
+
+.table {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  th,
+  td {
+    padding: var(--space-2) var(--space-3);
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  [data-num] {
+    text-align: right;
+  }
+
+  th {
+    color: var(--ink-muted);
+    font-weight: 500;
+  }
+
+  tr:last-child td {
+    border-bottom: 0;
+  }
+}
+
+// Signatures recede: the message is what was written above them.
+.signature {
+  display: flex;
+  flex-direction: column;
+  color: var(--ink-muted);
+  font-size: 14px;
+}

@@ -1,0 +1,66 @@
+@use '../../styles/states' as *;
+
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink-muted);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+
+  @include hover {
+    color: var(--ink);
+  }
+
+  &:focus-visible {
+    border-radius: var(--radius-sm);
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+}
+
+// Label and names in two columns, one line per person.
+.lists {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 260px;
+}
+
+.group {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+  gap: var(--space-2);
+  font-size: 13px;
+}
+
+.label {
+  color: var(--ink-muted);
+}
+
+.people {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.name {
+  font-weight: 500;
+}
+
+.email {
+  color: var(--ink-muted);
+  font-size: 12px;
+}

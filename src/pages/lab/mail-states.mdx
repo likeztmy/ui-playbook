@@ -3,7 +3,14 @@ layout: ../../layouts/Lab.astro
 title: Mail row states
 ---
 import { MailStates } from '../../demos/mail';
+import { PostStates } from '../../demos/post';
 
 Every kind of message row in every state, held still. A row passes when each cell reads as one row: one star, the time or the actions but never both, nothing cut off but the text that's meant to be.
 
 <MailStates client:load />
+
+## Post
+
+The list rows and message headers of the full-screen app, in the same way.
+
+<PostStates client:load />

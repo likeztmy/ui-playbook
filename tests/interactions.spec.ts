@@ -1125,7 +1125,7 @@ test('space groups by ratio: header gaps by the overlay; scaling keeps the ratio
 test('mail, direction one: date sections join their rows; the sender column fits the longest name', async ({ page }) => {
   await page.goto('/lab/mail-one');
   await hydrateAll(page);
-  const heads = page.locator('[class*="_section_"]');
+  const heads = page.locator('[role="list"] [class*="_section_"]');
   await expect(heads).toHaveText(['Today', 'Yesterday', 'This week', 'Earlier']);
   // Around “Yesterday”: from the last Today sender to the header, and from the header to the first Yesterday sender.
   const [above, below] = await heads.nth(1).evaluate((h) => {
@@ -1172,13 +1172,47 @@ test('the faster way: holding the modifier shows every key at once; the tally co
   await expect(after.getByText('Mira Okafor')).toHaveCount(0);
 });
 
-test('mail, direction one: with messages ticked, E archives the ticked ones', async ({ page }) => {
+test('post: E archives the ticked conversations', async ({ page }) => {
   await page.goto('/lab/mail-one');
   await hydrateAll(page);
   await page.locator('[data-row="invoice"] [role="checkbox"]').click();
   await page.locator('[data-row="lunch"] [role="checkbox"]').click();
-  await page.locator('[data-row="roadmap"] button').nth(1).focus();
+  await page.locator('[data-row="roadmap"] [class*="_main_"]').focus();
   await page.keyboard.press('e');
   await expect(page.locator('[data-row="invoice"], [data-row="lunch"]')).toHaveCount(0);
   await expect(page.locator('[data-row="roadmap"]')).toHaveCount(1);
+});
+
+test('post: a conversation opens to its unread message; earlier ones fold into a line, then into one line each; quoted text and recipients open in place', async ({ page }) => {
+  await page.goto('/lab/mail-one');
+  await hydrateAll(page);
+  const app = page.locator('[class*="_app_"]');
+  const sound = async (step: string) => expect(await layoutProblems(app, { fill: ['section[aria-label="Conversation"]', 'section[aria-label="Conversations"]'] }), step).toEqual([]);
+  await expect(page.getByRole('navigation', { name: 'Folders' }).getByRole('button', { name: /Inbox/ })).toContainText('5');
+  await page.locator('[data-row="roadmap"] [class*="_main_"]').click();
+  // The unread newest is open and focused; the three before it are one line.
+  const conversation = page.getByRole('region', { name: 'Conversation' });
+  await expect(conversation.getByRole('article')).toHaveCount(1);
+  await expect(conversation.getByRole('button', { name: 'Mira Okafor' })).toBeFocused();
+  await expect(conversation.getByRole('button', { name: /3\s*earlier messages/ })).toBeVisible();
+  await expect(page.getByRole('navigation', { name: 'Folders' }).getByRole('button', { name: /Inbox/ })).toContainText('4');
+  await sound('opened');
+  // Unfolded: three collapsed lines, still one open message.
+  await conversation.getByRole('button', { name: /earlier messages/ }).click();
+  await expect(conversation.getByRole('article')).toHaveCount(1);
+  await conversation.getByRole('button', { name: /^You/ }).click();
+  await expect(conversation.getByRole('article')).toHaveCount(2);
+  // Its quoted text is folded until asked for.
+  const mine = conversation.getByRole('article', { name: 'You, Tue 17:05' });
+  await expect(mine.getByText('Here’s the Q4 roadmap as we left it')).toHaveCount(0);
+  await mine.getByRole('button', { name: 'Show quoted text' }).click();
+  await expect(mine.getByText('Here’s the Q4 roadmap as we left it')).toBeVisible();
+  // Recipients open to every address.
+  await conversation.getByRole('button', { name: 'to me, Priya and 1 other' }).first().click();
+  await expect(page.getByText('jonas@northwind.example')).toBeVisible();
+  await page.keyboard.press('Escape');
+  await sound('unfolded');
+  // Back: the list, with the conversation read.
+  await page.getByRole('button', { name: 'Back' }).click();
+  await expect(page.locator('[data-row="roadmap"]')).not.toHaveAttribute('data-unread', '');
 });

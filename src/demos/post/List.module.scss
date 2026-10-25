@@ -1,0 +1,323 @@
+@use '../../styles/states' as *;
+
+.list {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+// One height with the conversation's bar: tools on the left, the total on the right.
+.bar {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-1);
+  height: 48px;
+  padding: 0 var(--space-4) 0 var(--space-2);
+  border-bottom: 1px solid var(--line);
+}
+
+.tools {
+  display: flex;
+}
+
+.title {
+  padding-left: var(--space-2);
+  font-weight: 600;
+}
+
+// Where you are, on the senders' left edge: past the star's column, less the bar's gap.
+.check + .title {
+  padding-left: 32px;
+}
+
+.total {
+  margin-left: auto;
+  color: var(--ink-muted);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.rows {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+// A date section's header: 20 above, 4 below, so it reads with the rows under it. No line under it,
+// which would split what the spacing joins.
+.section {
+  padding: 20px var(--space-3) 4px calc(32px + 32px + var(--space-2) + var(--space-1));
+  color: var(--ink-muted);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+
+  &[data-first] {
+    padding-top: var(--space-3);
+  }
+}
+
+.check {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 32px;
+}
+
+// One line: check, star, then sender, subject and snippet, time.
+.line {
+  position: relative;
+  display: grid;
+  grid-template-columns: 32px 32px minmax(0, 1fr);
+  align-items: center;
+  height: 44px;
+  padding: 0 var(--space-2);
+  border-bottom: 1px solid var(--line);
+
+  @include hover {
+    background: var(--fill-hover);
+
+    .actions,
+    .star {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    &:has(.actions) .time {
+      visibility: hidden;
+    }
+  }
+
+  // Keyboard focus on the row: a ring, and the time stays.
+  &:has(.main:focus-visible) {
+    box-shadow: inset 0 0 0 2px var(--accent);
+  }
+
+  &:has(.actions :focus-visible, .star:focus-visible) {
+    .actions,
+    .star {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  }
+
+  &:has(.actions :focus-visible) .time {
+    visibility: hidden;
+  }
+
+  &[data-popup-open] {
+    background: var(--fill-hover);
+  }
+
+  // Chosen rows, ticked or open, take the selection's tint; hover stays grey.
+  &[data-checked],
+  &[data-current] {
+    background: var(--accent-soft);
+  }
+}
+
+.star {
+  opacity: 0;
+
+  &[aria-pressed='true'] {
+    opacity: 1;
+  }
+}
+
+.starIcon[data-on] {
+  color: oklch(0.72 0.15 70);
+  fill: oklch(0.83 0.16 85);
+}
+
+.main {
+  display: grid;
+  grid-template-columns: var(--from, 160px) minmax(0, 1fr) 96px;
+  align-items: center;
+  gap: var(--space-4);
+  min-width: 0;
+  height: 100%;
+  padding: 0 var(--space-2) 0 var(--space-1);
+  border: 0;
+  outline: none;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  // After the font shorthand, which would reset it.
+  line-height: 20px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.from {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-1);
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+// The message count: quieter than the names, one step down.
+.count {
+  color: var(--ink-muted);
+  font-size: 12px;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
+
+.text {
+  display: flex;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.subject,
+.snippet {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.subject {
+  flex: 0 1 auto;
+  max-width: 70%;
+}
+
+.snippet {
+  flex: 1 1 0;
+  color: var(--ink-muted);
+}
+
+.time {
+  color: var(--ink-muted);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+[data-unread] {
+  .from,
+  .subject,
+  .time {
+    color: var(--ink);
+    font-weight: 600;
+  }
+}
+
+.actions {
+  position: absolute;
+  top: 50%;
+  right: var(--space-2);
+  display: flex;
+  opacity: 0;
+  pointer-events: none;
+  translate: 0 -50%;
+}
+
+// Highlighter yellow in both themes, with dark ink on it.
+.mark {
+  border-radius: 2px;
+  background: oklch(0.91 0.14 98);
+  color: oklch(0.2 0 0);
+}
+
+.empty {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: var(--space-3);
+  height: 100%;
+  padding: var(--space-6);
+  color: var(--ink-muted);
+  text-align: center;
+
+  p {
+    margin: 0;
+  }
+}
+
+// Narrow: two lines, sender and time, then subject and snippet; phone sizes.
+@container (max-width: 760px) {
+  .line {
+    align-items: start;
+    height: auto;
+    padding-top: 11px;
+    padding-bottom: 11px;
+  }
+
+  // Both centred on the sender's 20px line.
+  .check {
+    height: 20px;
+  }
+
+  // The star leaves the sender's column for the row's end, under the time.
+  .line {
+    grid-template-columns: 32px minmax(0, 1fr);
+  }
+
+  .star {
+    position: absolute;
+    right: var(--space-2);
+    bottom: 6px;
+    opacity: 1;
+  }
+
+  // The top bar already names the folder.
+  .check + .title {
+    display: none;
+  }
+
+  .section {
+    padding-left: calc(32px + var(--space-2) + var(--space-1));
+  }
+
+  .main {
+    grid-template:
+      'from time' auto
+      'text text' auto / minmax(0, 1fr) auto;
+    gap: 2px var(--space-3);
+  }
+
+  .from {
+    grid-area: from;
+    font-size: 15px;
+  }
+
+  .time {
+    grid-area: time;
+  }
+
+  // Subject and snippet each get a line, so neither is cut to fit the other.
+  .text {
+    grid-area: text;
+    flex-direction: column;
+    gap: 0;
+    padding-right: 28px;
+  }
+
+  .subject {
+    max-width: none;
+    font-size: 15px;
+  }
+
+  .snippet {
+    flex: none;
+  }
+
+  .snippet {
+    font-size: 14px;
+  }
+
+  .actions {
+    top: 8px;
+    translate: none;
+  }
+
+  // No standing selection in a list that's the whole screen; ticked rows keep theirs.
+  .line[data-current]:not([data-checked]) {
+    background: none;
+  }
+}

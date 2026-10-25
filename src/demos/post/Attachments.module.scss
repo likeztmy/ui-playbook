@@ -1,0 +1,79 @@
+@use '../../styles/states' as *;
+
+.attachments {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+
+.thumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+.thumb {
+  width: 120px;
+  height: 90px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-md);
+  outline: 1px solid light-dark(oklch(0 0 0 / 0.1), oklch(1 0 0 / 0.1));
+  outline-offset: -1px;
+  cursor: zoom-in;
+
+  &:focus-visible {
+    box-shadow: var(--focus-ring);
+  }
+}
+
+// One width for every file card, so a row of them lines up.
+.card {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-3);
+  width: 260px;
+  height: 56px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+}
+
+.icon {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background: var(--fill-control);
+  color: var(--ink-muted);
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 18px;
+}
+
+.name {
+  overflow: hidden;
+  font-size: 13px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.meta {
+  color: var(--ink-muted);
+  font-size: 12px;
+}
+
+.large {
+  width: min(70vw, 560px);
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-md);
+}
