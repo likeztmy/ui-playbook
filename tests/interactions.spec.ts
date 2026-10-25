@@ -936,3 +936,54 @@ test('let motion change its mind: locked clicks are dropped, a keyframe sheet sn
   const sprung = await flick(5);
   expect(sprung).toBeGreaterThan(eased * 1.5);
 });
+
+test('mail: archive opens the next and Undo restores it; keys move and archive; new mail waits; empty search offers all mail', async ({ page }) => {
+  await page.goto('/practice/mail');
+  await hydrateAll(page);
+  const app = page.locator('[class*="_app_"]');
+  const rows = () => app.locator('[data-row]').evaluateAll((els) => els.map((e) => e.getAttribute('data-row') + (e.hasAttribute('data-selected') ? '*' : '')));
+
+  // Archive from the toolbar: the next message opens; Undo puts it back, selected.
+  await app.getByRole('button', { name: 'Archive' }).last().click();
+  expect((await rows())[0]).toBe('lisbon*');
+  await app.getByRole('button', { name: 'Undo' }).click();
+  expect((await rows())[0]).toBe('roadmap*');
+
+  // j moves down with focus; e archives and focus lands on the next row.
+  await app.locator('[data-row="roadmap"] button').first().focus();
+  await page.keyboard.press('j');
+  expect((await rows())[1]).toBe('lisbon*');
+  await expect(app.locator('[data-row="lisbon"] button').first()).toBeFocused();
+  await page.keyboard.press('e');
+  expect((await rows())[1]).toBe('invoice*');
+  await expect(app.locator('[data-row="invoice"] button').first()).toBeFocused();
+
+  // New mail: a pill, and the list doesn't move until it's clicked.
+  const top = () => app.locator('[data-row]').first().evaluate((el) => el.getBoundingClientRect().top - el.parentElement!.getBoundingClientRect().top);
+  const before = await top();
+  await page.getByRole('button', { name: 'Show' }).nth(3).click();
+  await expect(app.getByRole('button', { name: '1 new message' })).toBeVisible();
+  expect(await top()).toBe(before);
+  await app.getByRole('button', { name: '1 new message' }).click();
+  expect((await rows())[0]).toMatch(/^new-/);
+
+  // An empty search names what and where, and widens to all mail.
+  await app.getByLabel('Search mail').fill('welcome');
+  await expect(app.getByText('No messages match “welcome” in Inbox.')).toBeVisible();
+  await app.getByRole('button', { name: 'Search all mail' }).click();
+  expect(await rows()).toEqual(['welcome']);
+});
+
+test('mail on a phone: a row pushes the message in, Back slides the list back', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 800 });
+  await page.goto('/practice/mail');
+  await hydrateAll(page);
+  const app = page.locator('[class*="_app_"]');
+  const list = app.locator('[class*="_list_"]');
+  const left = () => list.evaluate((el) => el.getBoundingClientRect().left - el.parentElement!.getBoundingClientRect().left);
+  expect(await left()).toBe(0);
+  await app.locator('[data-row="lisbon"] button').first().click();
+  await expect.poll(left).toBeLessThan(-300);
+  await app.locator('[class*="_reader_"]').getByRole('button', { name: 'Inbox' }).click();
+  await expect.poll(left).toBe(0);
+});

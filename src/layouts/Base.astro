@@ -17,7 +17,7 @@ const pageTitle = title ? `${title} · UI Playbook` : 'UI Playbook';
 // The same page in the other language; a page with no Chinese yet points at the Chinese home.
 const here = Astro.url.pathname;
 const bare = pathIn(here, 'en');
-const isEntry = /^\/(components|principles)\//.test(bare);
+const isEntry = /^\/(components|principles|practice)\//.test(bare);
 const other = lang === 'zh' ? bare : !isEntry || hasZh(bare) ? pathIn(bare, 'zh') : '/zh';
 const translated = ZH_LIVE && (lang === 'zh' || !isEntry || hasZh(bare));
 ---

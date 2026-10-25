@@ -14,6 +14,7 @@ import { HoverPreview } from '../demos/hover';
 import { ShiftPreview } from '../demos/shift';
 import { WaitPreview } from '../demos/wait';
 import { InterruptPreview } from '../demos/interrupt';
+import { MailPreview } from '../demos/mail';
 import { TooltipPreview } from '../demos/tooltip';
 import { DialogPreview } from '../demos/dialog';
 import { PopoverPreview } from '../demos/popover';
@@ -38,6 +39,7 @@ const t = ui[lang];
 const groups = [
   { kind: 'component', title: t.components },
   { kind: 'principle', title: t.principles },
+  { kind: 'practice', title: t.practice },
 ] as const;
 ---
 
@@ -62,7 +64,7 @@ const groups = [
               >
                 <a class={s.cardHead} href={linkIn(href(e), lang)}>
                   <span class={s.cardTitle}>{titleIn(e, lang)}</span>
-                  <span class={s.cardMeta}>{t.details(e.details)}</span>
+                  <span class={s.cardMeta}>{e.kind === 'practice' ? t.decisions(e.details) : t.details(e.details)}</span>
                 </a>
                 <div class={s.cardStage}>
                   {e.slug === 'button' && <ButtonPreview client:visible />}
@@ -92,6 +94,7 @@ const groups = [
                   {e.slug === 'nothing-shifts' && <ShiftPreview />}
                   {e.slug === 'how-waiting-feels' && <WaitPreview />}
                   {e.slug === 'let-motion-change-its-mind' && <InterruptPreview />}
+                  {e.slug === 'mail' && <MailPreview />}
                 </div>
                 <p class={s.cardSummary}>{summaryIn(e, lang)}</p>
               </article>

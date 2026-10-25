@@ -14,17 +14,18 @@ const i = entries.findIndex((e) => e.slug === frontmatter.slug);
 const entry = entries[i];
 const prev = entries[i - 1];
 const next = entries[i + 1];
-const isComponent = entry.kind === 'component';
+const back = { component: t.allComponents, principle: t.allPrinciples, practice: t.allPractice }[entry.kind];
+const kind = { component: t.component, principle: t.principle, practice: t.practice }[entry.kind];
 ---
 
 <Base title={titleIn(entry, lang)} description={summaryIn(entry, lang)}>
   <article class={s.page}>
     <a class={s.back} href={lang === 'zh' ? '/zh' : '/'}>
       <BackIcon />
-      {isComponent ? t.allComponents : t.allPrinciples}
+      {back}
     </a>
     <header class={s.head}>
-      <p class={s.kind}>{isComponent ? t.component : t.principle}</p>
+      <p class={s.kind}>{kind}</p>
       <h1 class={s.title}>{titleIn(entry, lang)}</h1>
       <p class={s.summary}>{summaryIn(entry, lang)}</p>
     </header>

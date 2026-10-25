@@ -3,7 +3,7 @@
 
 export type Entry = {
   slug: string;
-  kind: 'component' | 'principle';
+  kind: 'component' | 'principle' | 'practice';
   title: string;
   summary: string;
   details: number;
@@ -227,9 +227,18 @@ export const entries: Entry[] = [
     details: 1,
     keywords: ['validation', 'inline validation', 'error', 'form', 'blur', 'feedback', 'password rules'],
   },
+  {
+    slug: 'mail',
+    kind: 'practice',
+    title: 'Mail',
+    summary: 'An inbox built on the playbook: archive with undo, hover actions that hold their place, new mail that waits its turn.',
+    details: 8,
+    keywords: ['email', 'inbox', 'app', 'example', 'case study', 'archive', 'undo', 'shortcuts'],
+  },
 ];
 
-export const href = (e: Entry) => `/${e.kind === 'component' ? 'components' : 'principles'}/${e.slug}`;
+const SECTION = { component: 'components', principle: 'principles', practice: 'practice' } as const;
+export const href = (e: Entry) => `/${SECTION[e.kind]}/${e.slug}`;
 
 // Chinese titles and summaries. Component names stay in English, as the
 // ecosystem names them; principles are translated.
