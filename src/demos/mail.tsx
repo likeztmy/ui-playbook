@@ -31,9 +31,9 @@ const ic = { size: 16, strokeWidth: 1.5, nonScalingStroke: true, 'aria-hidden': 
 
 // ── Data ─────────────────────────────────────────────────
 
-type Folder = 'inbox' | 'starred' | 'sent' | 'archive';
+export type Folder = 'inbox' | 'starred' | 'sent' | 'archive';
 
-type Msg = {
+export type Msg = {
   id: string;
   folder: Exclude<Folder, 'starred'>;
   from: string;
@@ -47,7 +47,7 @@ type Msg = {
   slow?: boolean;
 };
 
-const MAIL: Msg[] = [
+export const MAIL: Msg[] = [
   {
     id: 'roadmap',
     folder: 'inbox',
@@ -154,7 +154,7 @@ const MAIL: Msg[] = [
 ];
 
 /** The message that arrives when new mail is played. */
-const INCOMING = {
+export const INCOMING = {
   folder: 'inbox',
   from: 'Mira Okafor',
   subject: 'Re: Q4 roadmap: final draft',
@@ -164,27 +164,27 @@ const INCOMING = {
   unread: true,
 } satisfies Omit<Msg, 'id'>;
 
-const FOLDERS: { id: Folder; label: string; icon: LucideIcon }[] = [
+export const FOLDERS: { id: Folder; label: string; icon: LucideIcon }[] = [
   { id: 'inbox', label: 'Inbox', icon: Inbox },
   { id: 'starred', label: 'Starred', icon: Star },
   { id: 'sent', label: 'Sent', icon: Send },
   { id: 'archive', label: 'Archive', icon: Archive },
 ];
 
-const inFolder = (m: Msg, f: Folder) => (f === 'starred' ? !!m.starred : m.folder === f);
-const label = (f: Folder) => FOLDERS.find((x) => x.id === f)!.label;
+export const inFolder = (m: Msg, f: Folder) => (f === 'starred' ? !!m.starred : m.folder === f);
+export const label = (f: Folder) => FOLDERS.find((x) => x.id === f)!.label;
 
 // ── Small parts ──────────────────────────────────────────
 
 /** Marks every match of `q` in `text`. */
-function Marked({ text, q }: { text: string; q: string }) {
+export function Marked({ text, q }: { text: string; q: string }) {
   if (!q) return <>{text}</>;
   const parts = text.split(new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'i'));
   return <>{parts.map((p, i) => (i % 2 ? <mark key={i}>{p}</mark> : p))}</>;
 }
 
 /** spin-delay: nothing for 300 ms, then a spinner that stays at least 500 ms. */
-function useSlowLoad(key: string, slow: boolean) {
+export function useSlowLoad(key: string, slow: boolean) {
   const [state, setState] = useState<'ready' | 'waiting' | 'spinning'>(slow ? 'waiting' : 'ready');
   useEffect(() => {
     if (!slow) {
@@ -210,15 +210,15 @@ function useSlowLoad(key: string, slow: boolean) {
 
 // ── The app ──────────────────────────────────────────────
 
-type Api = ReturnType<typeof useMail>;
+export type Api = ReturnType<typeof useMail>;
 
 type Draft = { kind: 'new' | 'reply' | 'forward'; title: string; to: string; subject: string; body: string };
 
-function useMail() {
-  // The first message starts open, so it starts read.
-  const [mail, setMail] = useState(() => MAIL.map((m) => (m.id === 'roadmap' ? { ...m, unread: false } : m)));
+/** The app's state and actions. `openFirst` starts with the first message open, and so read. */
+export function useMail(seed: Msg[] = MAIL, { openFirst = true } = {}) {
+  const [mail, setMail] = useState(() => (openFirst ? seed.map((m, i) => (i === 0 ? { ...m, unread: false } : m)) : seed));
   const [folder, setFolder] = useState<Folder>('inbox');
-  const [selected, setSelected] = useState<string | null>('roadmap');
+  const [selected, setSelected] = useState<string | null>(openFirst ? seed[0].id : null);
   const [query, setQuery] = useState('');
   const [everywhere, setEverywhere] = useState(false);
   const [pending, setPending] = useState<Msg[]>([]);
@@ -277,6 +277,18 @@ function useMail() {
     });
   };
   const archive = (id: string) => move(id, 'archive');
+
+  /** Archives from the list: nothing opens, so nothing is marked read on the way. */
+  const archiveMany = (ids: string[]) => {
+    const before = new Map(mail.filter((m) => ids.includes(m.id)).map((m) => [m.id, m.folder]));
+    setMail((all) => all.map((m) => (before.has(m.id) ? { ...m, folder: 'archive' } : m)));
+    toast({
+      title: ids.length === 1 ? 'Archived' : `${ids.length} archived`,
+      action: { label: 'Undo', onClick: () => setMail((all) => all.map((m) => (before.has(m.id) ? { ...m, folder: before.get(m.id)! } : m))) },
+    });
+  };
+  const setUnread = (ids: string[], unread: boolean) => setMail((all) => all.map((m) => (ids.includes(m.id) ? { ...m, unread } : m)));
+  const starMany = (ids: string[], starred: boolean) => setMail((all) => all.map((m) => (ids.includes(m.id) ? { ...m, starred } : m)));
   const unarchive = (id: string) => move(id, 'inbox');
 
   const star = (id: string) => setMail((all) => all.map((m) => (m.id === id ? { ...m, starred: !m.starred } : m)));
@@ -354,6 +366,9 @@ function useMail() {
     open,
     step,
     archive,
+    archiveMany,
+    setUnread,
+    starMany,
     unarchive,
     star,
     markUnread,
@@ -395,7 +410,7 @@ function Compose({ api, iconOnly }: { api: Api; iconOnly?: boolean }) {
  * Gmail; a new message docks in the app's corner. Send or Discard; Esc
  * leaves the field, not the draft.
  */
-function Composer({ api }: { api: Api }) {
+export function Composer({ api }: { api: Api }) {
   const d = api.draft!;
   const inline = d.kind !== 'new';
   const box = useRef<HTMLElement>(null);

@@ -10,7 +10,7 @@ const ZH = ['components', 'principles'].flatMap((kind) => {
   return existsSync(dir) ? readdirSync(dir).filter((f) => f.endsWith('.mdx')).map((f) => `/zh/${kind}/${f.replace(/\.mdx$/, '')}`) : [];
 });
 
-export const ROUTES = ['/', ...entries.map(href), ...(ZH_PUBLISHED ? ['/zh', ...ZH] : []), '/lab/menu', '/lab/shortcuts', '/lab/check', '/lab/hero', '/lab/frames', '/lab/mail-states'];
+export const ROUTES = ['/', ...entries.map(href), ...(ZH_PUBLISHED ? ['/zh', ...ZH] : []), '/lab/menu', '/lab/shortcuts', '/lab/check', '/lab/hero', '/lab/frames', '/lab/mail-states', '/lab/mail-one', '/lab/mail-two'];
 
 /**
  * Collects console errors and page exceptions from the moment it's called.

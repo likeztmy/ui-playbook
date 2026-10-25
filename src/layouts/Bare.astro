@@ -1,0 +1,33 @@
+---
+// A whole-window page with no site chrome, for an In practice app run full screen.
+import '../styles/tokens.css';
+import '../styles/global.scss';
+
+interface Props {
+  title: string;
+  /** Kept out of search engines, e.g. a design direction under review. */
+  noindex?: boolean;
+}
+
+const { title, noindex } = Astro.props;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title} · UI Playbook</title>
+    {noindex && <meta name="robots" content="noindex" />}
+    <script is:inline>
+      // Apply a saved theme before first paint. No saved theme: follow the system.
+      try {
+        const t = localStorage.getItem('theme');
+        if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+      } catch {}
+    </script>
+  </head>
+  <body style="margin: 0; overflow: hidden">
+    <slot />
+  </body>
+</html>
