@@ -286,15 +286,15 @@
 .gapLabel {
   position: absolute;
   top: 50%;
-  // Outside the measured text, so it never covers a line.
-  left: calc(100% + var(--space-1));
+  // Inside the gap it measures, 12 tall, so it fits even the tightest gap between lines.
+  right: 0;
   padding: 0 var(--space-1);
   border-radius: var(--radius-sm);
   background: var(--accent);
   color: var(--on-accent);
   font-family: var(--font-mono);
   font-size: 10px;
-  line-height: 14px;
+  line-height: 12px;
   white-space: nowrap;
   translate: 0 -50%;
 }
