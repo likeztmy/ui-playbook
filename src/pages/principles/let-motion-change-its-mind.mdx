@@ -1,0 +1,38 @@
+---
+layout: ../../layouts/Entry.astro
+slug: let-motion-change-its-mind
+---
+import { InterruptQueue, InterruptKeyframes, InterruptReturn, InterruptVelocity } from '../../demos/interrupt';
+
+## The rule
+
+**An animation is never too busy to listen.** The next click can come at any moment, and it means the person has changed their mind. The motion should turn from wherever it is, at once, towards the new target, keeping the speed it had. Whether it can depends on how it was built: queues and keyframes can't, transitions and springs can.
+
+<InterruptQueue client:visible />
+
+## Details
+
+### Keyframes start over
+
+<InterruptKeyframes client:visible />
+
+### The way back is shorter
+
+<InterruptReturn client:visible />
+
+### Keep the speed when you turn
+
+<InterruptVelocity client:visible />
+
+The line under each card is a motion trace: the card's position over the last three seconds, newest on the right. A turn that keeps its speed draws a curve; a turn that starts from rest draws a corner.
+
+## When it doesn't apply
+
+- **A sequence that teaches.** A one-time walkthrough whose steps must be seen in order can finish its step before taking the next.
+- **Reduced motion.** With the motion gone, there's nothing to turn; the state simply changes.
+
+## Where the playbook applies it
+
+- [Switch](/components/switch) and [Segmented control](/components/segmented-control): the thumb is a transition, so a quick second press sends it back from where it is.
+- [Popover](/components/popover) and [Menu](/components/menu): closing mid-way reverses from the current frame.
+- [Hover forgives](/principles/hover-forgives): the pointer's intent, judged while it's still moving.

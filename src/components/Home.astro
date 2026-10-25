@@ -13,6 +13,7 @@ import { EyePreview } from '../demos/eye';
 import { HoverPreview } from '../demos/hover';
 import { ShiftPreview } from '../demos/shift';
 import { WaitPreview } from '../demos/wait';
+import { InterruptPreview } from '../demos/interrupt';
 import { TooltipPreview } from '../demos/tooltip';
 import { DialogPreview } from '../demos/dialog';
 import { PopoverPreview } from '../demos/popover';
@@ -90,6 +91,7 @@ const groups = [
                   {e.slug === 'hover-forgives' && <HoverPreview />}
                   {e.slug === 'nothing-shifts' && <ShiftPreview />}
                   {e.slug === 'how-waiting-feels' && <WaitPreview />}
+                  {e.slug === 'let-motion-change-its-mind' && <InterruptPreview />}
                 </div>
                 <p class={s.cardSummary}>{summaryIn(e, lang)}</p>
               </article>

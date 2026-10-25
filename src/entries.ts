@@ -204,6 +204,14 @@ export const entries: Entry[] = [
     keywords: ['loading', 'spinner', 'skeleton', 'progress bar', 'optimistic', 'perceived performance', 'labor illusion', 'peak-end', 'response time', 'delay'],
   },
   {
+    slug: 'let-motion-change-its-mind',
+    kind: 'principle',
+    title: 'Let motion change its mind',
+    summary: 'The next click can come mid-animation. Turn from where it is, at once, and keep the speed it had.',
+    details: 3,
+    keywords: ['interruptible', 'interruption', 'redirect', 'animation queue', 'keyframes', 'transition', 'spring', 'velocity', 'reversing', 'fluid'],
+  },
+  {
     slug: 'hover-forgives',
     kind: 'principle',
     title: 'Hover forgives',

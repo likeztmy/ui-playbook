@@ -883,3 +883,37 @@ test('how waiting feels: a quick refresh shows no spinner in the After; once sho
   await expect(q4).toHaveAttribute('aria-pressed', 'true', { timeout: 2000 });
   await expect(stars.getByText('Couldn’t unstar “Q4 roadmap”. Try again.')).toBeVisible();
 });
+
+test('let motion change its mind: queued clicks keep playing, redirected ones stop; a reversal comes back quickly', async ({ page }) => {
+  await page.goto('/principles/let-motion-change-its-mind');
+  await hydrateAll(page);
+  const [before, after] = [page.locator('figure').nth(0), page.locator('figure').nth(1)];
+  const body = (f: typeof before) => f.locator('[class*="intBody"]').first();
+  const height = (f: typeof before) => body(f).evaluate((el) => el.getBoundingClientRect().height);
+  for (const f of [before, after]) {
+    const trigger = f.getByRole('button', { name: 'Advanced' });
+    await trigger.click();
+    await trigger.click();
+    await trigger.click();
+  }
+  // Three clicks end open. Once the After has settled, the queued Before is still playing its moves.
+  const running = (f: typeof before) => body(f).evaluate((el) => el.getAnimations({ subtree: true }).filter((a) => a.playState === 'running').length);
+  await expect.poll(() => running(after), { timeout: 1500 }).toBe(0);
+  const open = await body(after).evaluate((el) => el.scrollHeight);
+  expect(await height(after)).toBeGreaterThan(open - 2);
+  expect(await running(before)).toBeGreaterThan(0);
+
+  // Collapse and reverse at once: the Before replays the full move, the transition comes back in the share it travelled.
+  const lastMove = async (f: typeof before) => {
+    await f.scrollIntoViewIfNeeded();
+    await f.getByRole('button', { name: 'Collapse' }).click();
+    await page.waitForTimeout(80);
+    await f.getByRole('button', { name: 'Expand' }).click();
+    await expect(f.getByText(/Last move: \d+ ms/)).toBeVisible({ timeout: 2000 });
+    return Number((await f.getByText(/Last move/).innerText()).match(/\d+/)![0]);
+  };
+  const full = await lastMove(page.locator('figure').nth(4));
+  const back = await lastMove(page.locator('figure').nth(5));
+  expect(full).toBeGreaterThan(580);
+  expect(back).toBeLessThan(full * 0.7);
+});

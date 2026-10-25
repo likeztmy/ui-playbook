@@ -23,7 +23,7 @@ export default defineConfig({
   vite: {
     cacheDir: isDev ? 'node_modules/.vite-dev' : 'node_modules/.vite',
     optimizeDeps: {
-      include: [...baseUiEntries, 'lucide-react'],
+      include: [...baseUiEntries, 'lucide-react', 'motion/react'],
     },
   },
 });
