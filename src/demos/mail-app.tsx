@@ -134,7 +134,7 @@ function Line({ m, api, layout, checked, onCheck, rowRef }: RowProps) {
           <Checkbox aria-label={`Select ${m.from}: ${m.subject}`} checked={checked} onCheckedChange={(v) => onCheck(!!v)} />
         </span>
         <Tip label={m.starred ? 'Unstar' : 'Star'} keys={['S']}>
-          <Button data-key="S" variant="ghost" size="sm" icon aria-label={m.starred ? 'Unstar' : 'Star'} aria-pressed={!!m.starred} className={s.lineStar} onClick={() => api.star(m.id)}>
+          <Button variant="ghost" size="sm" icon aria-label={m.starred ? 'Unstar' : 'Star'} aria-pressed={!!m.starred} className={s.lineStar} onClick={() => api.star(m.id)}>
             <Star {...ic} className={s.star} data-on={m.starred ? '' : undefined} />
           </Button>
         </Tip>
@@ -149,7 +149,7 @@ function Line({ m, api, layout, checked, onCheck, rowRef }: RowProps) {
         <span className={s.lineActions}>
           {m.folder === 'inbox' && (
             <Tip label="Archive" keys={['E']}>
-              <Button data-key="E" variant="ghost" size="sm" icon aria-label="Archive" onClick={() => api.archiveMany([m.id])}>
+              <Button variant="ghost" size="sm" icon aria-label="Archive" onClick={() => api.archiveMany([m.id])}>
                 <Archive {...ic} />
               </Button>
             </Tip>
@@ -194,17 +194,7 @@ function Line({ m, api, layout, checked, onCheck, rowRef }: RowProps) {
 
 // ── List ─────────────────────────────────────────────────
 
-const LEGEND = [
-  ['J K', 'move'],
-  ['X', 'select'],
-  ['E', 'archive'],
-  ['S', 'star'],
-  ['R', 'reply'],
-  ['/', 'search'],
-] as const;
-
 type ListProps = {
-  held: boolean;
   api: Api;
   layout: Layout;
   checked: Set<string>;
@@ -212,7 +202,7 @@ type ListProps = {
   rows: RefObject<Map<string, HTMLButtonElement>>;
 };
 
-function List({ held, api, layout, checked, setChecked, rows }: ListProps) {
+function List({ api, layout, checked, setChecked, rows }: ListProps) {
   const shown = api.list.filter((m) => checked.has(m.id));
   const all = api.list.length > 0 && shown.length === api.list.length;
   const ids = shown.map((m) => m.id);
@@ -254,7 +244,7 @@ function List({ held, api, layout, checked, setChecked, rows }: ListProps) {
             <span className={s.barTools}>
               {shown.some((m) => m.folder === 'inbox') && (
                 <Tip label="Archive" keys={['E']}>
-                  <Button data-key="E"
+                  <Button
                     variant="ghost"
                     icon
                     aria-label="Archive"
@@ -280,15 +270,6 @@ function List({ held, api, layout, checked, setChecked, rows }: ListProps) {
             </span>
             <span className={s.barTitle}>{shown.length} selected</span>
           </TipGroup>
-        ) : held ? (
-          <span className={s.legend}>
-            {LEGEND.map(([k, what]) => (
-              <span key={what}>
-                <kbd>{k}</kbd>
-                {what}
-              </span>
-            ))}
-          </span>
         ) : (
           <span className={s.barTitle}>{api.everywhere ? 'All mail' : label(api.folder)}</span>
         )}
@@ -361,14 +342,14 @@ function Message({ api, layout }: { api: Api; layout: Layout }) {
       <TipGroup>
         <div className={s.bar}>
           <Tip label={`Back to ${label(api.folder)}`} keys={['U']}>
-            <Button data-key="U" variant="ghost" icon aria-label={`Back to ${label(api.folder)}`} className={s.back} onClick={() => api.setReading(false)}>
+            <Button variant="ghost" icon aria-label={`Back to ${label(api.folder)}`} className={s.back} onClick={() => api.setReading(false)}>
               <ChevronLeft {...ic} />
             </Button>
           </Tip>
           <span className={s.barTools}>
             {m.folder === 'inbox' && (
               <Tip label="Archive" keys={['E']}>
-                <Button data-key="E" variant="ghost" icon aria-label="Archive" onClick={() => api.archive(m.id)}>
+                <Button variant="ghost" icon aria-label="Archive" onClick={() => api.archive(m.id)}>
                   <Archive {...ic} />
                 </Button>
               </Tip>
@@ -400,12 +381,12 @@ function Message({ api, layout }: { api: Api; layout: Layout }) {
                 {i + 1} of {api.list.length}
               </span>
               <Tip label="Newer" keys={['K']}>
-                <Button data-key="K" variant="ghost" icon aria-label="Newer" disabled={i === 0} onClick={() => api.step(-1)}>
+                <Button variant="ghost" icon aria-label="Newer" disabled={i === 0} onClick={() => api.step(-1)}>
                   <ChevronLeft {...ic} />
                 </Button>
               </Tip>
               <Tip label="Older" keys={['J']}>
-                <Button data-key="J" variant="ghost" icon aria-label="Older" disabled={i === api.list.length - 1} onClick={() => api.step(1)}>
+                <Button variant="ghost" icon aria-label="Older" disabled={i === api.list.length - 1} onClick={() => api.step(1)}>
                   <ChevronRight {...ic} />
                 </Button>
               </Tip>
@@ -418,7 +399,7 @@ function Message({ api, layout }: { api: Api; layout: Layout }) {
           <header className={s.messageHead}>
             <h1 className={s.messageSubject}>{m.subject}</h1>
             <Tip label={m.starred ? 'Unstar' : 'Star'} keys={['S']}>
-              <Button data-key="S" variant="ghost" icon aria-label={m.starred ? 'Unstar' : 'Star'} onClick={() => api.star(m.id)}>
+              <Button variant="ghost" icon aria-label={m.starred ? 'Unstar' : 'Star'} onClick={() => api.star(m.id)}>
                 <Star {...ic} className={s.star} data-on={m.starred ? '' : undefined} />
               </Button>
             </Tip>
@@ -457,11 +438,11 @@ function Message({ api, layout }: { api: Api; layout: Layout }) {
             <Composer api={api} />
           ) : (
             <div className={s.replyBar}>
-              <Button data-key="R" onClick={() => api.write('reply', m)}>
+              <Button onClick={() => api.write('reply', m)}>
                 <Reply {...ic} />
                 Reply
               </Button>
-              <Button data-key="F" onClick={() => api.write('forward', m)}>
+              <Button onClick={() => api.write('forward', m)}>
                 <Forward {...ic} />
                 Forward
               </Button>
@@ -475,15 +456,6 @@ function Message({ api, layout }: { api: Api; layout: Layout }) {
 
 // ── Frame ────────────────────────────────────────────────
 
-/** The modifier's name where the reader is: ⌥ on a Mac, Alt elsewhere. */
-function useModifier() {
-  const [name, setName] = useState('⌥');
-  useEffect(() => {
-    if (!/Mac|iPhone|iPad/.test(navigator.platform)) setName('Alt');
-  }, []);
-  return name;
-}
-
 function Shell({ layout, onToasts }: { layout: Layout; onToasts: (el: HTMLDivElement | null) => void }) {
   const api = useMail(SEED, { openFirst: layout === 'split' });
   const [checked, setChecked] = useState<Set<string>>(new Set());
@@ -492,23 +464,7 @@ function Shell({ layout, onToasts }: { layout: Layout; onToasts: (el: HTMLDivEle
   const keyed = useRef(false);
   // Single: the message replaces the list. Split: both show, until a phone's width makes it single too.
   const reading = api.reading && !!api.current;
-  // Holding ⌥ (Alt) shows every control's key at once, as ExposeHK does.
-  const [held, setHeld] = useState(false);
-  const [used, setUsed] = useState({ key: 0, pointer: 0 });
-  useEffect(() => {
-    const down = (e: globalThis.KeyboardEvent) => e.key === 'Alt' && setHeld(true);
-    const up = (e: globalThis.KeyboardEvent) => e.key === 'Alt' && setHeld(false);
-    const off = () => setHeld(false);
-    addEventListener('keydown', down);
-    addEventListener('keyup', up);
-    addEventListener('blur', off);
-    return () => {
-      removeEventListener('keydown', down);
-      removeEventListener('keyup', up);
-      removeEventListener('blur', off);
-    };
-  }, []);
-  const mod = useModifier();
+
 
   // Selections belong to a folder and a search; a new list starts with none.
   useEffect(() => setChecked(new Set()), [api.folder, api.query, api.everywhere]);
@@ -556,22 +512,11 @@ function Shell({ layout, onToasts }: { layout: Layout; onToasts: (el: HTMLDivEle
     if (!act[e.key]) return;
     e.preventDefault();
     keyed.current = e.key === 'j' || e.key === 'k';
-    if (e.key !== 'j' && e.key !== 'k' && e.key !== '/') setUsed((u) => ({ ...u, key: u.key + 1 }));
     act[e.key]();
   };
 
   return (
-    <div
-      className={s.app}
-      data-layout={layout}
-      data-view={reading ? 'message' : 'list'}
-      data-keys={held ? '' : undefined}
-      onKeyDown={keys}
-      onClickCapture={(e) => {
-        // A command given by pointer that has a key: the moment the key is worth knowing.
-        if ((e.target as HTMLElement).closest('[data-key]')) setUsed((u) => ({ ...u, pointer: u.pointer + 1 }));
-      }}
-    >
+    <div className={s.app} data-layout={layout} data-view={reading ? 'message' : 'list'} onKeyDown={keys}>
       <header className={s.top}>
         <span className={s.brand}>Post</span>
         <span className={s.phoneOnly}>
@@ -628,23 +573,17 @@ function Shell({ layout, onToasts }: { layout: Layout; onToasts: (el: HTMLDivEle
             {f.id === 'inbox' && api.unread > 0 && <span className={s.folderCount}>{api.unread}</span>}
           </button>
         ))}
-        {/* After a command by pointer, until a key has been used: where to find the faster way. */}
-        {used.pointer > 0 && used.key === 0 && (
-          <p className={s.keyHint} data-held={held ? '' : undefined}>
-            Hold {mod} to see shortcuts
-          </p>
-        )}
       </nav>
       <main className={s.main}>
         {layout === 'single' ? (
           reading ? (
             <Message api={api} layout={layout} />
           ) : (
-            <List held={held} api={api} layout={layout} checked={checked} setChecked={setChecked} rows={rows} />
+            <List api={api} layout={layout} checked={checked} setChecked={setChecked} rows={rows} />
           )
         ) : (
           <>
-            <List held={held} api={api} layout={layout} checked={checked} setChecked={setChecked} rows={rows} />
+            <List api={api} layout={layout} checked={checked} setChecked={setChecked} rows={rows} />
             <Message api={api} layout={layout} />
           </>
         )}

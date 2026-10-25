@@ -1172,27 +1172,13 @@ test('the faster way: holding the modifier shows every key at once; the tally co
   await expect(after.getByText('Mira Okafor')).toHaveCount(0);
 });
 
-test('mail, direction one: holding the modifier labels the bar; the hint shows after a pointer command until a key is used; E archives the ticked', async ({ page }) => {
+test('mail, direction one: with messages ticked, E archives the ticked ones', async ({ page }) => {
   await page.goto('/lab/mail-one');
   await hydrateAll(page);
-  const hint = page.getByText(/^Hold (⌥|Alt) to see shortcuts$/);
-  await expect(hint).toHaveCount(0);
-  // A command by pointer: the hint appears.
-  await page.locator('[data-row="lisbon"]').hover();
-  await page.locator('[data-row="lisbon"]').getByRole('button', { name: 'Archive' }).click();
-  await expect(hint).toBeVisible();
-  // Held: the bar lists the list's keys.
-  await page.mouse.move(0, 0);
-  await page.keyboard.down('Alt');
-  await expect(page.locator('[class*="_legend_"]')).toContainText('archive');
-  await page.keyboard.up('Alt');
-  await expect(page.locator('[class*="_legend_"]')).toHaveCount(0);
-  // Two ticked, then E: both go, and the hint, its job done, goes too.
   await page.locator('[data-row="invoice"] [role="checkbox"]').click();
   await page.locator('[data-row="lunch"] [role="checkbox"]').click();
   await page.locator('[data-row="roadmap"] button').nth(1).focus();
   await page.keyboard.press('e');
   await expect(page.locator('[data-row="invoice"], [data-row="lunch"]')).toHaveCount(0);
   await expect(page.locator('[data-row="roadmap"]')).toHaveCount(1);
-  await expect(hint).toHaveCount(0);
 });
