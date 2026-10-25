@@ -15,7 +15,7 @@ import {
   Star,
   X,
 } from 'lucide-react';
-import { useEffect, useRef, useState, type KeyboardEvent, type RefObject } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type KeyboardEvent, type RefObject } from 'react';
 import { Button } from '../ui/Button';
 import { Checkbox } from '../ui/Checkbox';
 import { ContextMenu, Menu } from '../ui/Menu';
@@ -53,7 +53,40 @@ const MORE: Msg[] = [
   unread: !!unread,
 }));
 
-const SEED = [...MAIL.filter((m) => m.folder === 'inbox'), ...MORE, ...MAIL.filter((m) => m.folder !== 'inbox')];
+// Days ago, and the time shown, for each inbox message; today is a Thursday.
+const WHEN: Record<string, [number, string]> = {
+  roadmap: [0, '9:41'],
+  lisbon: [0, '8:15'],
+  invoice: [1, '16:02'],
+  lunch: [1, '12:30'],
+  standup: [2, 'Tue'],
+  receipt: [2, 'Tue'],
+  interview: [2, 'Tue'],
+  review: [3, 'Mon'],
+  notes: [3, 'Mon'],
+  security: [3, 'Mon'],
+  books: [3, 'Mon'],
+  offsite: [4, 'Sun'],
+  retro: [4, 'Sun'],
+  gym: [5, 'Sat'],
+  figma: [5, 'Sat'],
+  tax: [6, 'Fri'],
+  photos: [6, 'Fri'],
+  newsletter: [7, '17 Oct'],
+  plants: [7, '17 Oct'],
+};
+
+type Dated = Msg & { day?: number };
+
+const SEED: Dated[] = [...MAIL, ...MORE]
+  .map((m) => (WHEN[m.id] ? { ...m, day: WHEN[m.id][0], time: WHEN[m.id][1] } : m))
+  .sort((a, b) => ((a as Dated).day ?? 99) - ((b as Dated).day ?? 99));
+
+/** The section a message falls in, by how many days ago it came; new mail is today's. */
+const section = (m: Dated) => {
+  const d = m.day ?? (m.time === 'Now' ? 0 : 99);
+  return d === 0 ? 'Today' : d === 1 ? 'Yesterday' : d < 7 ? 'This week' : 'Earlier';
+};
 
 /** Email addresses for the message header, made from the sender's name. */
 const address = (from: string) => `${from.replace(/^To: /, '').toLowerCase().replace(/[^a-z]+/g, '.').replace(/^\.|\.$/g, '')}@example.com`;
@@ -106,7 +139,7 @@ function Line({ m, api, layout, checked, onCheck, rowRef }: RowProps) {
           </Button>
         </Tip>
         <button type="button" ref={rowRef} className={s.lineMain} aria-current={current || undefined} onClick={() => api.open(m.id)}>
-          <span className={s.from}>
+          <span className={s.from} data-from="">
             <Marked text={m.from} q={q} />
           </span>
           <span className={s.text}>{text}</span>
@@ -175,6 +208,25 @@ function List({ api, layout, checked, setChecked, rows }: ListProps) {
   const ids = shown.map((m) => m.id);
   const anyUnread = shown.some((m) => m.unread);
   const q = api.query.trim();
+  // The sender column is as wide as the longest name on screen, up to 200: subjects keep one
+  // left edge, with no gap after short names wider than it needs to be.
+  const box = useRef<HTMLDivElement>(null);
+  const [fromWidth, setFromWidth] = useState(160);
+  useLayoutEffect(() => {
+    const measure = () => {
+      const names = [...(box.current?.querySelectorAll<HTMLElement>('[data-from]') ?? [])];
+      // The text's own width: the span itself is as wide as its column.
+      const width = (n: HTMLElement) => {
+        const range = document.createRange();
+        range.selectNodeContents(n);
+        return range.getBoundingClientRect().width;
+      };
+      if (names.length) setFromWidth(Math.min(200, Math.ceil(Math.max(...names.map(width)))));
+    };
+    measure();
+    // Again once the webfont is in: the fallback's widths differ.
+    document.fonts.ready.then(measure);
+  }, [api.list]);
   return (
     <section className={s.list} aria-label="Messages">
       {/* The bar keeps one height and one place for its count, with or without a selection. */}
@@ -230,8 +282,14 @@ function List({ api, layout, checked, setChecked, rows }: ListProps) {
           {api.pending.length === 1 ? '1 new message' : `${api.pending.length} new messages`}
         </button>
       )}
-      <div className={s.rows} role="list" data-layout={layout}>
-        {api.list.map((m) => (
+      <div ref={box} className={s.rows} role="list" data-layout={layout} style={{ '--from': `${fromWidth}px` } as CSSProperties}>
+        {api.list.map((m, i) => [
+          // A header where the section changes: more space above it than below, so it joins the rows it names.
+          (i === 0 || section(m) !== section(api.list[i - 1])) && (
+            <div key={`h-${m.id}`} className={s.section} data-first={i === 0 ? '' : undefined}>
+              {section(m)}
+            </div>
+          ),
           <Line
             key={m.id}
             m={m}
@@ -248,8 +306,8 @@ function List({ api, layout, checked, setChecked, rows }: ListProps) {
               if (el) rows.current.set(m.id, el);
               else rows.current.delete(m.id);
             }}
-          />
-        ))}
+          />,
+        ])}
         {api.list.length === 0 &&
           (q ? (
             <div className={s.empty}>

@@ -339,7 +339,7 @@
   }
 
   .lineMain {
-    grid-template-columns: 200px minmax(0, 1fr) 96px;
+    grid-template-columns: var(--from, 160px) minmax(0, 1fr) 96px;
     gap: var(--space-4);
     padding: 0 var(--space-2) 0 var(--space-1);
   }
@@ -395,6 +395,20 @@
 
 .rows[data-layout='split'] {
   @include two-line;
+}
+
+// A date section's header: 20 above, 4 below, so it reads with the rows under it.
+.section {
+  // No line under it: a rule between the header and its rows would split what the spacing joins.
+  padding: 20px var(--space-3) 4px calc(32px + 32px + var(--space-2) + var(--space-1));
+  color: var(--ink-muted);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+
+  &[data-first] {
+    padding-top: var(--space-3);
+  }
 }
 
 .pill {

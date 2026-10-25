@@ -268,3 +268,33 @@
   background: var(--ink);
   box-shadow: 0 0 0 2px var(--surface);
 }
+
+// The Gaps overlay: each gap between a Measured region's lines of text,
+// in pixels and as a multiple of the smallest.
+.measured {
+  position: relative;
+}
+
+.gapBand {
+  position: absolute;
+  right: -8px;
+  left: -8px;
+  background: color-mix(in oklch, var(--accent) 14%, transparent);
+  pointer-events: none;
+}
+
+.gapLabel {
+  position: absolute;
+  top: 50%;
+  // Outside the measured text, so it never covers a line.
+  left: calc(100% + var(--space-1));
+  padding: 0 var(--space-1);
+  border-radius: var(--radius-sm);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  line-height: 14px;
+  white-space: nowrap;
+  translate: 0 -50%;
+}

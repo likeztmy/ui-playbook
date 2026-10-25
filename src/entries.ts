@@ -212,6 +212,14 @@ export const entries: Entry[] = [
     keywords: ['interruptible', 'interruption', 'redirect', 'carousel', 'sheet', 'swipe', 'keyframes', 'transition', 'spring', 'velocity', 'reversing', 'fluid'],
   },
   {
+    slug: 'space-groups-by-ratio',
+    kind: 'principle',
+    title: 'Space groups by ratio',
+    summary: 'A gap only separates when it’s clearly bigger than the gaps around it. Move space, don’t add it; a fill beats any gap.',
+    details: 3,
+    keywords: ['spacing', 'whitespace', 'proximity', 'grouping', 'gestalt', 'common region', 'zebra', 'stripes', 'alignment', 'layout', 'section header'],
+  },
+  {
     slug: 'hover-forgives',
     kind: 'principle',
     title: 'Hover forgives',

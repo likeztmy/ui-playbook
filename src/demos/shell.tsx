@@ -1,6 +1,7 @@
-import { createContext, useContext, useEffect, useState, type ComponentType, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useLayoutEffect, useRef, useState, type ComponentType, type ReactNode } from 'react';
 import { PortalContainer } from '../ui/portal';
 import { Button } from '../ui/Button';
+import { Ruler } from 'lucide-react';
 import { CheckIcon, ContrastIcon, CrossIcon } from '../ui/icons';
 import { SliderPanel } from '../ui/Slider';
 import { cx } from '../ui/cx';
@@ -33,9 +34,76 @@ export function localized<P extends object>(Demo: ComponentType<P>) {
 }
 
 const FRAME_UI = {
-  en: { before: 'Before', after: 'After', theme: 'Switch theme', slow: 'Slow motion' },
-  zh: { before: 'Before', after: 'After', theme: '切换主题', slow: '慢放' },
+  en: { before: 'Before', after: 'After', theme: 'Switch theme', slow: 'Slow motion', gaps: 'Show gaps' },
+  zh: { before: 'Before', after: 'After', theme: '切换主题', slow: '慢放', gaps: '显示间距' },
 } as const;
+
+// ── Gaps ─────────────────────────────────────────────────
+
+const GapsOn = createContext(false);
+
+type Band = { top: number; height: number; px: number; ratio: number };
+
+/**
+ * The vertical gaps between its children's text, drawn when the frame's Gaps
+ * switch is on: each in pixels and as a multiple of the smallest, the way
+ * grouping by proximity compares them. Text is measured by its em box, so a
+ * line's leading doesn't count as space.
+ */
+export function Measured({ children, className, show }: { children: ReactNode; className?: string; /** Always on, for a playground with no switch. */ show?: boolean }) {
+  const on = useContext(GapsOn) || !!show;
+  const ref = useRef<HTMLDivElement>(null);
+  const [bands, setBands] = useState<Band[]>([]);
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!on || !el) {
+      setBands([]);
+      return;
+    }
+    const measure = () => {
+      const top0 = el.getBoundingClientRect().top;
+      const extents = [...el.children]
+        .filter((c) => !c.hasAttribute('data-gap-band'))
+        .map((c) => {
+          let t = Infinity;
+          let b = -Infinity;
+          const walker = document.createTreeWalker(c, NodeFilter.SHOW_TEXT);
+          for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+            if (!n.textContent?.trim()) continue;
+            const size = parseFloat(getComputedStyle(n.parentElement!).fontSize);
+            const range = document.createRange();
+            range.selectNodeContents(n);
+            for (const r of range.getClientRects()) {
+              const mid = r.top + r.height / 2;
+              t = Math.min(t, mid - size / 2);
+              b = Math.max(b, mid + size / 2);
+            }
+          }
+          return Number.isFinite(t) ? { t: t - top0, b: b - top0 } : null;
+        })
+        .filter((x): x is { t: number; b: number } => !!x);
+      const gaps = extents.slice(1).map((e, i) => ({ top: extents[i].b, height: e.t - extents[i].b }));
+      const least = Math.max(1, Math.min(...gaps.map((g) => g.height)));
+      setBands(gaps.map((g) => ({ ...g, px: Math.round(g.height), ratio: g.height / least })));
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [on, children]);
+  return (
+    <div ref={ref} className={cx(s.measured, className)}>
+      {children}
+      {bands.map((b, i) => (
+        <span key={i} className={s.gapBand} data-gap-band="" style={{ top: b.top, height: b.height }} aria-hidden>
+          <span className={s.gapLabel}>
+            {b.px} · {b.ratio.toFixed(1)}×
+          </span>
+        </span>
+      ))}
+    </div>
+  );
+}
 
 function pageTheme(): Theme {
   const pinned = document.documentElement.dataset.theme;
@@ -57,6 +125,10 @@ type FrameProps = {
   slow?: boolean;
   /** Shows the slow-motion switch in the band. */
   onSlowChange?: (slow: boolean) => void;
+  /** Draws the gaps in its Measured regions. */
+  gaps?: boolean;
+  /** Shows the Gaps switch in the band. */
+  onGapsChange?: (gaps: boolean) => void;
 };
 
 type Box = { x: number; y: number; w: number; h: number };
@@ -126,7 +198,7 @@ function useStartFrame(on: boolean | undefined, stage: HTMLElement | null, porta
  * A demo stage with a band under it naming the scene or the verdict, after
  * Material 3's Do / Don't, and its own light/dark switch. Popups stay inside it.
  */
-export function Frame({ label, children, height = 200, className, defaultTheme, tone, slow, onSlowChange }: FrameProps) {
+export function Frame({ label, children, height = 200, className, defaultTheme, tone, slow, onSlowChange, gaps, onGapsChange }: FrameProps) {
   const words = FRAME_UI[useLang()];
   const [theme, setTheme] = useState<Theme | null>(defaultTheme ?? null);
   const [portal, setPortal] = useState<HTMLElement | null>(null);
@@ -139,7 +211,9 @@ export function Frame({ label, children, height = 200, className, defaultTheme, 
     <figure className={cx(s.frame, className)} data-theme={theme ?? undefined} data-slow={slow ? '' : undefined}>
       <div ref={setStage} className={s.stage} style={{ minHeight: height }}>
         <PortalContainer.Provider value={portal}>
-          <TipGroup>{children}</TipGroup>
+          <GapsOn.Provider value={!!gaps}>
+            <TipGroup>{children}</TipGroup>
+          </GapsOn.Provider>
         </PortalContainer.Provider>
         {start && <span className={s.startFrame} style={{ left: start.x, top: start.y, width: start.w, height: start.h }} aria-hidden />}
         {origin && <span className={s.origin} style={{ left: origin.x, top: origin.y }} aria-hidden />}
@@ -147,6 +221,13 @@ export function Frame({ label, children, height = 200, className, defaultTheme, 
       <div className={s.bar} data-tone={tone}>
         <span className={s.label}>{label}</span>
         <span className={s.tools}>
+          {onGapsChange && (
+            <Tip label={words.gaps}>
+              <Button variant="ghost" size="sm" icon aria-label={words.gaps} aria-pressed={gaps} className={s.slow} onClick={() => onGapsChange(!gaps)}>
+                <Ruler size={14} strokeWidth={1.5} nonScalingStroke aria-hidden />
+              </Button>
+            </Tip>
+          )}
           {onSlowChange && (
             <Tip label={words.slow}>
               <Button variant="ghost" size="sm" aria-pressed={slow} className={s.slow} onClick={() => onSlowChange(!slow)}>
@@ -177,22 +258,26 @@ type CompareProps = {
   stacked?: boolean;
   /** Offers slow motion, shared by both sides, for demos whose point is how something moves. */
   motion?: boolean;
+  /** Offers the Gaps switch, shared by both sides, for demos whose point is spacing. */
+  measure?: boolean;
 };
 
 /** The same thing twice: the common version and the better one. */
-export function Compare({ before, after, beforeNote, afterNote, height, stacked, motion }: CompareProps) {
+export function Compare({ before, after, beforeNote, afterNote, height, stacked, motion, measure }: CompareProps) {
   const [slow, setSlow] = useState(false);
   const slowing = motion ? { slow, onSlowChange: setSlow } : {};
+  const [gaps, setGaps] = useState(false);
+  const measuring = measure ? { gaps, onGapsChange: setGaps } : {};
   return (
     <div className={cx(s.compare, stacked && s.stacked)}>
       <div className={s.side}>
-        <Frame label={<Verdict good={false} />} height={height} tone="bad" {...slowing}>
+        <Frame label={<Verdict good={false} />} height={height} tone="bad" {...slowing} {...measuring}>
           {before}
         </Frame>
         <p className={s.note}>{beforeNote}</p>
       </div>
       <div className={s.side}>
-        <Frame label={<Verdict good />} height={height} tone="good" {...slowing}>
+        <Frame label={<Verdict good />} height={height} tone="good" {...slowing} {...measuring}>
           {after}
         </Frame>
         <p className={s.note}>{afterNote}</p>

@@ -1089,3 +1089,64 @@ test('mail on a phone: a row pushes the message in, Back slides the list back', 
   await app.locator('[class*="_reader_"]').getByRole('button', { name: 'Inbox' }).click();
   await expect.poll(left).toBe(0);
 });
+
+test('space groups by ratio: header gaps by the overlay; scaling keeps the ratio; stripes by line or record; one subject edge', async ({ page }) => {
+  await page.goto('/principles/space-groups-by-ratio');
+  await hydrateAll(page);
+  const figure = (i: number) => page.locator('figure').nth(i);
+  // The Gaps switch draws each gap; around “Yesterday” the Before is even, the After at least twice as much above.
+  await figure(0).getByRole('button', { name: 'Show gaps' }).click();
+  const gaps = (i: number) => figure(i).locator('[data-gap-band]').evaluateAll((els) => els.map((e) => e.getBoundingClientRect().height));
+  const [b, a] = [await gaps(0), await gaps(1)];
+  // Bands run top to bottom: 0 under Today, 1 between its rows, 2 above Yesterday, 3 below it.
+  expect(Math.abs(b[2] / b[3] - 1)).toBeLessThan(0.15);
+  expect(a[2] / a[3]).toBeGreaterThan(2);
+
+  // Scaling every gap leaves the readout where it was.
+  const readout = () => figure(2).locator('code').innerText();
+  const at1 = await readout();
+  await page.getByRole('slider', { name: 'All spacing' }).focus();
+  for (let i = 0; i < 8; i++) await page.keyboard.press('ArrowRight');
+  expect(await readout()).toBe(at1);
+
+  // Stripes: by line, a transaction's two lines differ; by record, they match.
+  const stripes = (i: number) => figure(i).locator('[class*="_ratLine_"]').evaluateAll((els) => els.map((e) => e.hasAttribute('data-stripe')));
+  const [line, record] = [await stripes(3), await stripes(4)];
+  expect(line[0]).not.toBe(line[1]);
+  expect(record[0]).toBe(record[1]);
+  expect(record[1]).not.toBe(record[2]);
+
+  // One subject edge: every subject starts at the same x in the After, not in the Before.
+  const starts = (i: number) => figure(i).locator('[class*="_ratSubject_"]').evaluateAll((els) => new Set(els.map((e) => Math.round(e.getBoundingClientRect().left))).size);
+  expect(await starts(5)).toBeGreaterThan(1);
+  expect(await starts(6)).toBe(1);
+});
+
+test('mail, direction one: date sections join their rows; the sender column fits the longest name', async ({ page }) => {
+  await page.goto('/lab/mail-one');
+  await hydrateAll(page);
+  const heads = page.locator('[class*="_section_"]');
+  await expect(heads).toHaveText(['Today', 'Yesterday', 'This week', 'Earlier']);
+  // Around “Yesterday”: from the last Today sender to the header, and from the header to the first Yesterday sender.
+  const [above, below] = await heads.nth(1).evaluate((h) => {
+    const text = (el: Element) => {
+      const r = document.createRange();
+      r.selectNodeContents(el);
+      return r.getBoundingClientRect();
+    };
+    const prev = h.previousElementSibling!.querySelector('[data-from]')!;
+    const next = h.nextElementSibling!.querySelector('[data-from]')!;
+    const head = text(h);
+    return [head.top - text(prev).bottom, text(next).top - head.bottom];
+  });
+  expect(above / below).toBeGreaterThan(2);
+  const [column, widest] = await page.locator('[role="list"]').evaluate((list) => {
+    const names = [...list.querySelectorAll('[data-from]')].map((n) => {
+      const r = document.createRange();
+      r.selectNodeContents(n);
+      return r.getBoundingClientRect().width;
+    });
+    return [list.querySelector('[data-from]')!.getBoundingClientRect().width, Math.max(...names)];
+  });
+  expect(Math.abs(column - Math.ceil(widest))).toBeLessThanOrEqual(1);
+});

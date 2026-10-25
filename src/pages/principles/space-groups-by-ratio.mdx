@@ -1,0 +1,38 @@
+---
+layout: ../../layouts/Entry.astro
+slug: space-groups-by-ratio
+---
+import { RatioScene, RatioScale, RatioRegion, RatioEdge } from '../../demos/ratio';
+
+## The rule
+
+**A gap only separates when it's clearly bigger than the gaps around it.** What belongs together is settled by comparing distances, not by any one of them: a header, a label or a heading joins whichever neighbour is nearer. Give it more space on the side it doesn't belong to. And a shared background or border outranks spacing altogether.
+
+<RatioScene client:visible />
+
+## Details
+
+### More space doesn't fix it
+
+<RatioScale client:visible />
+
+Doubling every gap keeps every ratio, so it keeps the confusion too. Grouping by nearness depends "only on the relative distance" between elements, and holds when the whole pattern is scaled ([Wagemans et al., 2012](https://pmc.ncbi.nlm.nih.gov/articles/PMC3482144/), reviewing Kubovy's lattices). When a layout reads wrong, move space from one side to the other before adding any.
+
+### A fill beats any gap
+
+<RatioRegion client:visible />
+
+### One left edge per kind
+
+<RatioEdge client:visible />
+
+## When it doesn't apply
+
+- **Real columns.** In a table, a wide gap between columns is meant to make columns; the rows hold together through their alignment and their lines, not their spacing.
+- **A single group.** A short list with no headers has one gap to get right, the one between its items.
+
+## Where the playbook applies it
+
+- [Input](/components/input): label, field and hint sit 4 apart, so a form that spaces its fields 16 or more keeps each label with its own box.
+- [Menu](/components/menu): a group's label has 8 above it and 4 below, so it reads with the items it names.
+- [Where the eye goes](/principles/where-the-eye-goes): the same form with every gap equal, and why the eye groups before it reads.
