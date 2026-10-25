@@ -3,21 +3,23 @@ import {
   ArchiveRestore,
   ChevronDown,
   ChevronLeft,
+  FileText,
+  Forward,
   Inbox,
   LoaderCircle,
   Mail,
   MailOpen,
+  Reply,
   Search,
   Send,
   SquarePen,
   Star,
+  Trash2,
   X,
   type LucideIcon,
 } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type RefObject, type ReactNode } from 'react';
 import { Button } from '../ui/Button';
-import { Dialog } from '../ui/Dialog';
-import { TextField } from '../ui/Field';
 import { ContextMenu, Menu } from '../ui/Menu';
 import { ToastProvider, useToast } from '../ui/Toast';
 import { Tip, TipGroup } from '../ui/Tooltip';
@@ -67,7 +69,7 @@ const MAIL: Msg[] = [
     from: 'Atlas Travel',
     subject: 'Your trip to Lisbon is confirmed',
     snippet: 'Booking ref K7Q2. Check-in opens 24 hours before departure.',
-    body: ['Your booking is confirmed.', 'Booking ref K7Q2 · Thu 14 Nov, 07:25 → 10:05.', 'Check-in opens 24 hours before departure.'],
+    body: ['Your booking is confirmed.', 'Booking ref K7Q2 · Thu\u00a014\u00a0Nov, 07:25\u00a0→\u00a010:05.', 'Check-in opens 24 hours before departure.'],
     time: '8:15',
     unread: true,
   },
@@ -77,7 +79,7 @@ const MAIL: Msg[] = [
     from: 'Northwind Billing',
     subject: 'Invoice #2041 is ready',
     snippet: 'Your October invoice is available. Amount due: $48.00.',
-    body: ['Your October invoice is available.', 'Team plan, 4 seats · $48.00', 'It will be charged to the card ending 4242 on 1 November.'],
+    body: ['Your October invoice is available.', 'Team plan, 4 seats · $48.00', 'It will be charged to the card ending\u00a04242 on 1\u00a0November.'],
     time: 'Yesterday',
     slow: true,
   },
@@ -210,6 +212,8 @@ function useSlowLoad(key: string, slow: boolean) {
 
 type Api = ReturnType<typeof useMail>;
 
+type Draft = { kind: 'new' | 'reply' | 'forward'; title: string; to: string; subject: string; body: string };
+
 function useMail() {
   // The first message starts open, so it starts read.
   const [mail, setMail] = useState(() => MAIL.map((m) => (m.id === 'roadmap' ? { ...m, unread: false } : m)));
@@ -242,38 +246,48 @@ function useMail() {
     setReading(true);
   };
 
-  const step = (by: number) => {
-    const i = list.findIndex((m) => m.id === selected);
+  const step = (by: number, from = selected) => {
+    const i = list.findIndex((m) => m.id === from);
     const next = list[Math.min(list.length - 1, Math.max(0, i + by))];
     if (next) open(next.id);
   };
 
-  const archive = (id: string) => {
+  /** Moves a message out of this folder: the next one opens, as Gmail does; the last falls back to the one above. */
+  const move = (id: string, to: 'inbox' | 'archive') => {
     const i = list.findIndex((m) => m.id === id);
     const msg = mail.find((m) => m.id === id);
-    if (!msg || msg.folder !== 'inbox') return;
-    // The next message opens, as Gmail does; the last one falls back to the one above.
+    if (!msg || msg.folder === to) return;
+    const from = msg.folder;
     const next = list.filter((m) => m.id !== id)[Math.min(i, list.length - 2)];
-    patch(id, { folder: 'archive' });
-    setSelected(next?.id ?? null);
-    if (next) patch(next.id, { unread: false });
-    else setReading(false);
+    patch(id, { folder: to });
+    if (folder !== 'starred') {
+      setSelected(next?.id ?? null);
+      if (next) patch(next.id, { unread: false });
+      else setReading(false);
+    }
     toast({
-      title: 'Archived',
+      title: to === 'archive' ? 'Archived' : 'Moved to Inbox',
       action: {
         label: 'Undo',
         onClick: () => {
-          patch(id, { folder: 'inbox' });
+          patch(id, { folder: from });
           setSelected(id);
         },
       },
     });
   };
+  const archive = (id: string) => move(id, 'archive');
+  const unarchive = (id: string) => move(id, 'inbox');
 
   const star = (id: string) => setMail((all) => all.map((m) => (m.id === id ? { ...m, starred: !m.starred } : m)));
   const markUnread = (id: string) => patch(id, { unread: true });
 
-  const arrive = () => setPending((p) => [...p, { ...INCOMING, id: `new-${++arrivals.current}` }]);
+  // With nothing in the list there's nothing to push under the pointer, so new mail goes straight in.
+  const arrive = () => {
+    const m = { ...INCOMING, id: `new-${++arrivals.current}` };
+    if (mail.some((x) => x.folder === 'inbox')) setPending((p) => [...p, m]);
+    else setMail((all) => [m, ...all]);
+  };
   const showPending = () => {
     setMail((all) => [...pending, ...all]);
     setPending([]);
@@ -288,12 +302,37 @@ function useMail() {
     setReading(false);
   };
 
-  const send = (to: string, subject: string, body: string) => {
+  // One draft at a time, docked in the corner as Gmail's compose window is.
+  const [draft, setDraft] = useState<Draft | null>(null);
+  // Where focus was when the draft opened; it goes back there when the draft closes.
+  const opener = useRef<HTMLElement | null>(null);
+  // A new message closed with Close is kept, and Compose brings it back, as Gmail's drafts.
+  const saved = useRef<Draft | null>(null);
+  const write = (kind: 'new' | 'reply' | 'forward', m?: Msg | null) => {
+    opener.current = document.activeElement as HTMLElement | null;
+    if (kind === 'new' && saved.current) {
+      setDraft(saved.current);
+      saved.current = null;
+      return;
+    }
+    const re = (t: string) => (t.startsWith('Re: ') ? t : `Re: ${t}`);
+    setDraft(
+      !m || kind === 'new'
+        ? { kind: 'new', title: 'New message', to: '', subject: '', body: '' }
+        : kind === 'reply'
+          ? { kind, title: 'Reply', to: m.from.replace(/^To: /, ''), subject: re(m.subject), body: '' }
+          : { kind, title: 'Forward', to: '', subject: `Fwd: ${m.subject}`, body: `\n\nForwarded from ${m.from}:\n${m.body.join('\n')}` },
+    );
+  };
+  const send = () => {
+    if (!draft) return;
     const id = `sent-${Date.now()}`;
+    const body = draft.body.trim();
     setMail((all) => [
-      { id, folder: 'sent', from: `To: ${to || 'nobody'}`, subject: subject || '(no subject)', snippet: body, body: [body], time: 'Now' },
+      { id, folder: 'sent', from: `To: ${draft.to || 'nobody'}`, subject: draft.subject || '(no subject)', snippet: body, body: body.split('\n'), time: 'Now' },
       ...all,
     ]);
+    setDraft(null);
     toast({ title: 'Message sent', action: { label: 'Undo', onClick: () => setMail((all) => all.filter((m) => m.id !== id)) } });
   };
 
@@ -315,64 +354,108 @@ function useMail() {
     open,
     step,
     archive,
+    unarchive,
     star,
     markUnread,
     arrive,
     showPending,
     go,
+    draft,
+    opener,
+    write,
+    editDraft: (change: Partial<Draft>) => setDraft((d) => (d ? { ...d, ...change } : d)),
+    closeDraft: () => setDraft(null),
+    keepDraft: () => {
+      saved.current = draft;
+      setDraft(null);
+      toast({ title: 'Draft saved' });
+    },
     send,
     unread: mail.filter((m) => m.folder === 'inbox' && m.unread).length + pending.length,
   };
 }
 
-function Compose({ onSend, iconOnly }: { onSend: Api['send']; iconOnly?: boolean }) {
-  const [open, setOpen] = useState(false);
-  const [to, setTo] = useState('');
-  const [subject, setSubject] = useState('');
-  const [body, setBody] = useState('');
-  const trigger = iconOnly ? (
-    <Button variant="ghost" icon aria-label="Compose" data-spot="colour" />
-  ) : (
-    <Button variant="primary" className={s.compose} data-spot="colour" />
-  );
-  return (
-    <Dialog.Root
-      open={open}
-      onOpenChange={(o) => {
-        setOpen(o);
-        if (!o) [setTo, setSubject, setBody].forEach((f) => f(''));
-      }}
-    >
-      <Dialog.Trigger render={trigger}>
+function Compose({ api, iconOnly }: { api: Api; iconOnly?: boolean }) {
+  return iconOnly ? (
+    <Tip label="Compose">
+      <Button variant="ghost" icon aria-label="Compose" data-spot="colour" onClick={() => api.write('new')}>
         <SquarePen {...ic} />
-        {!iconOnly && 'Compose'}
-      </Dialog.Trigger>
-      <Dialog.Popup
-        title="New message"
-        actions={
-          <>
-            <Dialog.Close render={<Button />}>Discard</Dialog.Close>
-            <Button
-              variant="primary"
-              onClick={() => {
-                onSend(to, subject, body);
-                setOpen(false);
-              }}
-            >
-              Send
-            </Button>
-          </>
-        }
-      >
-        <TextField label="To" value={to} onValueChange={setTo} />
-        <TextField label="Subject" value={subject} onValueChange={setSubject} />
-        <TextField label="Message" multiline value={body} onValueChange={setBody} />
-      </Dialog.Popup>
-    </Dialog.Root>
+      </Button>
+    </Tip>
+  ) : (
+    <Button variant="primary" className={s.compose} data-spot="colour" onClick={() => api.write('new')}>
+      <SquarePen {...ic} />
+      Compose
+    </Button>
   );
 }
 
-function Row({ m, api, pinned, rowRef }: { m: Msg; api: Api; pinned: boolean; rowRef: (el: HTMLButtonElement | null) => void }) {
+/**
+ * The draft. A reply or forward sits under the message it answers, as in
+ * Gmail; a new message docks in the app's corner. Send or Discard; Esc
+ * leaves the field, not the draft.
+ */
+function Composer({ api }: { api: Api }) {
+  const d = api.draft!;
+  const inline = d.kind !== 'new';
+  const box = useRef<HTMLElement>(null);
+  // A reply opens under a long message: bring it, and its caret, into view.
+  useEffect(() => {
+    if (inline) box.current?.scrollIntoView({ block: 'nearest' });
+  }, [inline]);
+  // Focus goes back where it came from when the draft closes.
+  useEffect(() => {
+    const from = api.opener.current;
+    return () => {
+      if (from?.isConnected) from.focus();
+    };
+  }, [api.opener]);
+  return (
+    <section ref={box} className={inline ? s.composerInline : s.composer} role="dialog" aria-label={d.title} data-overlay={inline ? undefined : ''}>
+      {!inline && (
+        <header className={s.composerHead}>
+          {d.title}
+          <Tip label="Save and close">
+            <Button variant="ghost" size="sm" icon aria-label="Save and close" onClick={api.keepDraft}>
+              <X {...ic} />
+            </Button>
+          </Tip>
+        </header>
+      )}
+      <label className={s.composerLine}>
+        <span>To</span>
+        <input value={d.to} autoFocus={!d.to} onChange={(e) => api.editDraft({ to: e.target.value })} />
+      </label>
+      {/* A reply keeps its thread's subject, so it shows none, as Gmail's inline reply. */}
+      {!inline && (
+        <label className={s.composerLine}>
+          <span>Subject</span>
+          <input value={d.subject} onChange={(e) => api.editDraft({ subject: e.target.value })} />
+        </label>
+      )}
+      <textarea
+        className={s.composerBody}
+        aria-label="Message"
+        value={d.body}
+        autoFocus={!!d.to}
+        onChange={(e) => api.editDraft({ body: e.target.value })}
+      />
+      <footer className={s.composerFoot}>
+        <Button variant="primary" onClick={api.send}>
+          Send
+        </Button>
+        <Tip label="Discard draft">
+          <Button variant="ghost" icon aria-label="Discard draft" onClick={api.closeDraft}>
+            <Trash2 {...ic} />
+          </Button>
+        </Tip>
+      </footer>
+    </section>
+  );
+}
+
+/** One message in the list. `pin` holds a state still (hover, focus, menu) for the state matrix and for Show. */
+function Row({ m, api, pin, rowRef }: { m: Msg; api: Api; pin?: string; rowRef?: (el: HTMLButtonElement | null) => void }) {
   const q = api.query.trim();
   const selected = api.current?.id === m.id;
   return (
@@ -383,7 +466,7 @@ function Row({ m, api, pinned, rowRef }: { m: Msg; api: Api; pinned: boolean; ro
             className={s.row}
             data-selected={selected ? '' : undefined}
             data-unread={m.unread ? '' : undefined}
-            data-pin={pinned ? 'hover' : undefined}
+            data-pin={pin}
             data-row={m.id}
           />
         }
@@ -404,27 +487,57 @@ function Row({ m, api, pinned, rowRef }: { m: Msg; api: Api; pinned: boolean; ro
           </span>
         </button>
         {/* In the time's place: the row never grows or reflows when they appear. */}
-        <span className={s.rowActions}>
-          {m.folder === 'inbox' && (
+        {m.folder === 'inbox' && (
+          <span className={s.rowActions}>
             <Tip label="Archive" keys={['E']}>
               <Button variant="ghost" size="sm" icon aria-label="Archive" onClick={() => api.archive(m.id)}>
                 <Archive {...ic} />
               </Button>
             </Tip>
-          )}
-          <Tip label={m.starred ? 'Unstar' : 'Star'} keys={['S']}>
-            <Button variant="ghost" size="sm" icon aria-label={m.starred ? 'Unstar' : 'Star'} onClick={() => api.star(m.id)}>
-              <Star {...ic} className={s.star} data-on={m.starred ? '' : undefined} />
-            </Button>
-          </Tip>
-        </span>
-        {m.starred && <Star {...ic} className={cx(s.star, s.rowStar)} data-on="" />}
+          </span>
+        )}
+        {m.folder === 'archive' && (
+          <span className={s.rowActions}>
+            <Tip label="Move to Inbox">
+              <Button variant="ghost" size="sm" icon aria-label="Move to Inbox" onClick={() => api.unarchive(m.id)}>
+                <ArchiveRestore {...ic} />
+              </Button>
+            </Tip>
+          </span>
+        )}
+        {/* One star in one place: always there when on, an outline on hover when off. */}
+        <Tip label={m.starred ? 'Unstar' : 'Star'} keys={['S']}>
+          <Button
+            variant="ghost"
+            size="sm"
+            icon
+            aria-label={m.starred ? 'Unstar' : 'Star'}
+            aria-pressed={!!m.starred}
+            className={s.rowStar}
+            onClick={() => api.star(m.id)}
+          >
+            <Star {...ic} className={s.star} data-on={m.starred ? '' : undefined} />
+          </Button>
+        </Tip>
       </ContextMenu.Trigger>
       {/* A context menu carries no shortcuts; the toolbar's tooltips do. */}
-      <ContextMenu.Popup>
+      {/* Focus returns to the open message's row, so focus and selection stay one row. */}
+      <ContextMenu.Popup finalFocus={() => document.querySelector<HTMLElement>('[data-row][data-selected] button') ?? true}>
+        <Menu.Item icon={Reply} onClick={() => (api.open(m.id), api.write('reply', m))}>
+          Reply
+        </Menu.Item>
+        <Menu.Item icon={Forward} onClick={() => (api.open(m.id), api.write('forward', m))}>
+          Forward
+        </Menu.Item>
+        <Menu.Separator />
         {m.folder === 'inbox' && (
           <Menu.Item icon={Archive} onClick={() => api.archive(m.id)}>
             Archive
+          </Menu.Item>
+        )}
+        {m.folder === 'archive' && (
+          <Menu.Item icon={ArchiveRestore} onClick={() => api.unarchive(m.id)}>
+            Move to Inbox
           </Menu.Item>
         )}
         <Menu.Item icon={Star} onClick={() => api.star(m.id)}>
@@ -483,7 +596,7 @@ function List({ api, pinned, rows }: { api: Api; pinned: string | null; rows: Re
           )}
         </label>
         <span className={s.phoneOnly}>
-          <Compose onSend={api.send} iconOnly />
+          <Compose api={api} iconOnly />
         </span>
       </header>
       {/* Floats over the list: the rows under the pointer stay where they are. */}
@@ -491,6 +604,7 @@ function List({ api, pinned, rows }: { api: Api; pinned: string | null; rows: Re
         <button
           type="button"
           className={s.pill}
+          data-overlay
           data-spot="arrive"
           onClick={() => {
             api.showPending();
@@ -506,7 +620,7 @@ function List({ api, pinned, rows }: { api: Api; pinned: string | null; rows: Re
             key={m.id}
             m={m}
             api={api}
-            pinned={pinned === m.id}
+            pin={pinned === m.id ? 'hover' : undefined}
             rowRef={(el) => {
               if (el) rows.current.set(m.id, el);
               else rows.current.delete(m.id);
@@ -543,76 +657,93 @@ function List({ api, pinned, rows }: { api: Api; pinned: string | null; rows: Re
 function Reader({ api }: { api: Api }) {
   const m = api.current;
   const load = useSlowLoad(m?.id ?? '', !!m?.slow);
-  if (!m) {
-    return (
-      <section className={s.reader} aria-label="Message">
-        <div className={s.empty}>
-          <p>Select a message to read it.</p>
-        </div>
-      </section>
-    );
-  }
   return (
     <section className={s.reader} aria-label="Message">
       <TipGroup>
+        {/* The bar stays when there's no message, so the panes keep one shape. */}
         <header className={s.toolbar}>
           <Button variant="ghost" size="sm" className={cx(s.back, s.phoneOnly)} onClick={() => api.setReading(false)}>
             <ChevronLeft {...ic} />
             {label(api.folder)}
           </Button>
-          <span className={s.tools}>
-            {m.folder === 'inbox' ? (
-              <Tip label="Archive" keys={['E']} side="bottom">
-                <Button variant="ghost" icon aria-label="Archive" data-spot="archive" onClick={() => api.archive(m.id)}>
-                  <Archive {...ic} />
-                </Button>
-              </Tip>
-            ) : (
-              m.folder === 'archive' && (
+          {m && (
+            <span className={s.tools}>
+              {m.folder === 'inbox' && (
+                <Tip label="Archive" keys={['E']} side="bottom">
+                  <Button variant="ghost" icon aria-label="Archive" data-spot="archive" onClick={() => api.archive(m.id)}>
+                    <Archive {...ic} />
+                  </Button>
+                </Tip>
+              )}
+              {m.folder === 'archive' && (
                 <Tip label="Move to Inbox" side="bottom">
-                  <Button variant="ghost" icon aria-label="Move to Inbox" onClick={() => api.go('inbox')}>
+                  <Button variant="ghost" icon aria-label="Move to Inbox" onClick={() => api.unarchive(m.id)}>
                     <ArchiveRestore {...ic} />
                   </Button>
                 </Tip>
-              )
-            )}
-            <Tip label={m.starred ? 'Unstar' : 'Star'} keys={['S']} side="bottom">
-              <Button variant="ghost" icon aria-label={m.starred ? 'Unstar' : 'Star'} data-spot="star" onClick={() => api.star(m.id)}>
-                <Star {...ic} className={s.star} data-on={m.starred ? '' : undefined} />
-              </Button>
-            </Tip>
-            <Tip label="Mark as unread" side="bottom">
-              <Button variant="ghost" icon aria-label="Mark as unread" onClick={() => api.markUnread(m.id)}>
-                <Mail {...ic} />
-              </Button>
-            </Tip>
-          </span>
-        </header>
-        <article className={s.message}>
-          <h3 className={s.messageSubject}>{m.subject}</h3>
-          <p className={s.messageFrom}>
-            <span className={s.avatar} aria-hidden>
-              {m.from.replace('To: ', '')[0]}
-            </span>
-            <span>{m.from}</span>
-            <span className={s.messageTime}>{m.time}</span>
-          </p>
-          {m.body.map((p, i) => (
-            <p key={i}>{p}</p>
-          ))}
-          {m.slow && (
-            <div className={s.attachment} data-spot="slow">
-              {load === 'ready' ? (
-                <>
-                  <span className={s.attachmentName}>Invoice-2041.pdf</span>
-                  <span className={s.attachmentMeta}>1 page · 84 KB</span>
-                </>
-              ) : (
-                load === 'spinning' && <LoaderCircle {...ic} className={s.spin} aria-label="Loading attachment" />
               )}
-            </div>
+              <Tip label={m.starred ? 'Unstar' : 'Star'} keys={['S']} side="bottom">
+                <Button variant="ghost" icon aria-label={m.starred ? 'Unstar' : 'Star'} data-spot="star" onClick={() => api.star(m.id)}>
+                  <Star {...ic} className={s.star} data-on={m.starred ? '' : undefined} />
+                </Button>
+              </Tip>
+              {m.folder !== 'sent' && (
+                <Tip label="Mark as unread" side="bottom">
+                  <Button variant="ghost" icon aria-label="Mark as unread" onClick={() => api.markUnread(m.id)}>
+                    <Mail {...ic} />
+                  </Button>
+                </Tip>
+              )}
+            </span>
           )}
-        </article>
+        </header>
+        {m ? (
+          <article className={s.message}>
+            <h3 className={s.messageSubject}>{m.subject}</h3>
+            <p className={s.messageFrom}>
+              <span className={s.avatar} aria-hidden>
+                {m.from.replace('To: ', '')[0]}
+              </span>
+              <span>{m.from}</span>
+              <span className={s.messageTime}>{m.time}</span>
+            </p>
+            {m.body.map((p, i) => (
+              <p key={i}>{p}</p>
+            ))}
+            {m.slow && (
+              // The file's name shows at once; only its preview waits, behind a spinner after 300 ms.
+              <div className={s.attachment} data-spot="slow">
+                <span className={s.attachmentIcon}>
+                  {load === 'ready' ? (
+                    <FileText {...ic} />
+                  ) : (
+                    load === 'spinning' && <LoaderCircle {...ic} className={s.spin} aria-label="Loading preview" />
+                  )}
+                </span>
+                <span className={s.attachmentText}>
+                  <span className={s.attachmentName}>Invoice-2041.pdf</span>
+                  <span className={s.attachmentMeta}>{load === 'ready' ? 'PDF · 1 page · 84 KB' : '\u00a0'}</span>
+                </span>
+              </div>
+            )}
+            {api.draft && api.draft.kind !== 'new' ? (
+              <Composer api={api} />
+            ) : (
+              <div className={s.replyBar}>
+                <Button onClick={() => api.write('reply', m)}>
+                  <Reply {...ic} />
+                  Reply
+                </Button>
+                <Button onClick={() => api.write('forward', m)}>
+                  <Forward {...ic} />
+                  Forward
+                </Button>
+              </div>
+            )}
+          </article>
+        ) : (
+          <div className={s.empty}>{api.list.length > 0 && <p>Select a message to read it.</p>}</div>
+        )}
       </TipGroup>
     </section>
   );
@@ -621,7 +752,7 @@ function Reader({ api }: { api: Api }) {
 function Sidebar({ api }: { api: Api }) {
   return (
     <nav className={s.sidebar} aria-label="Folders">
-      <Compose onSend={api.send} />
+      <Compose api={api} />
       {FOLDERS.map((f) => (
         <button
           key={f.id}
@@ -708,7 +839,7 @@ const DECISIONS: { spot: Spot; text: ReactNode }[] = [
     spot: 'colour',
     text: (
       <>
-        Unread is bold and a dot; blue is kept for the one primary action, Compose.{' '}
+        Unread is bold and a dot. Blue marks only Compose and the open message’s row; hover is grey.{' '}
         <a href="/principles/colour-means-one-thing">Colour means one thing</a>
       </>
     ),
@@ -732,12 +863,15 @@ function App({ onRoot }: { onRoot: (el: HTMLDivElement | null) => void }) {
 
   const keys = (e: KeyboardEvent) => {
     if (e.metaKey || e.ctrlKey || e.altKey || (e.target as HTMLElement).closest('input, textarea, [role="dialog"]')) return;
-    const id = api.current?.id;
+    // Keys act on the row the keyboard is on, else on the open message, as Gmail's cursor does.
+    const id = (e.target as HTMLElement).closest('[data-row]')?.getAttribute('data-row') ?? api.current?.id;
     const act: Record<string, () => void> = {
-      j: () => api.step(1),
-      k: () => api.step(-1),
+      j: () => api.step(1, id),
+      k: () => api.step(-1, id),
       e: () => id && api.archive(id),
       s: () => id && api.star(id),
+      r: () => api.write('reply', api.current),
+      f: () => api.write('forward', api.current),
       u: () => api.setReading(false),
     };
     if (!act[e.key]) return;
@@ -792,16 +926,16 @@ function App({ onRoot }: { onRoot: (el: HTMLDivElement | null) => void }) {
   return (
     <>
       <div
-        ref={(el) => {
-          root.current = el;
-          onRoot(el);
-        }}
+        ref={root}
         className={s.app} data-spot={spot ?? undefined} data-reading={api.reading ? '' : undefined} onKeyDown={keys}>
         <Sidebar api={api} />
         <div className={s.panes}>
           <List api={api} pinned={pinned} rows={rows} />
           <Reader api={api} />
         </div>
+        {api.draft?.kind === 'new' && <Composer api={api} />}
+        {/* Toasts rise in their own layer, out of the app's grid. */}
+        <div ref={onRoot} className={s.toastLayer} data-overlay />
       </div>
       <ol className={s.decisions}>
         {DECISIONS.map((d, i) => (
@@ -823,7 +957,7 @@ export function MailExample() {
   const [container, setContainer] = useState<HTMLElement | null>(null);
   return (
     <div className={s.example}>
-      <ToastProvider container={container} contained>
+      <ToastProvider container={container} contained align="start">
         <App onRoot={setContainer} />
       </ToastProvider>
     </div>
@@ -872,10 +1006,12 @@ function Arrivals({ push }: { push?: boolean }) {
         onPointerEnter={() => (timer.current = setTimeout(arrive, 1200))}
         onPointerLeave={() => clearTimeout(timer.current)}
       >
+        <div className={s.miniHead}>Inbox</div>
         {waiting > 0 && (
           <button
             type="button"
             className={s.pill}
+            data-overlay
             onClick={() => {
               setList((l) => [...Array.from({ length: waiting }, (_, i) => ({ ...INCOMING, id: `w-${count.current}-${i}` })), ...l]);
               setWaiting(0);
@@ -914,46 +1050,63 @@ export function MailArrivals() {
   );
 }
 
-/** One row. `inline` adds its hover actions to the line, pushing the time out; otherwise they take the time's place. */
-function HoverRow({ inline }: { inline?: boolean }) {
-  const m = MAIL[1];
-  const actions = (
-    <span className={inline ? s.inlineActions : s.rowActions}>
-      <Button variant="ghost" size="sm" icon aria-label="Archive">
-        <Archive {...ic} />
-      </Button>
-      <Button variant="ghost" size="sm" icon aria-label="Star">
-        <Star {...ic} />
-      </Button>
-    </span>
-  );
-  return (
-    <div className={cx(s.miniList, s.miniOne)}>
-      <div className={cx(s.row, inline && s.rowInline)} data-unread="">
-        <div className={s.rowMain}>
-          <span className={s.rowTop}>
-            <span className={s.dot} />
-            <span className={s.from}>{m.from}</span>
-            {inline && actions}
-            <span className={s.time}>{m.time}</span>
-          </span>
-          <span className={s.subject}>{m.subject}</span>
-          <span className={s.snippet}>{m.snippet}</span>
-        </div>
-        {!inline && actions}
-      </div>
-    </div>
-  );
-}
+// ── State matrix (lab) ───────────────────────────────────
 
-export function MailHoverActions() {
+const LONG: Msg = {
+  ...MAIL[0],
+  id: 'long',
+  from: 'Alexandra Montgomery-Whitfield',
+  subject: 'Re: Re: Fwd: Updated agenda for the quarterly planning offsite in Lisbon',
+  time: 'Yesterday',
+};
+
+const KINDS: { name: string; m: Msg; query?: string }[] = [
+  { name: 'Read', m: { ...MAIL[3] } },
+  { name: 'Unread', m: { ...MAIL[1] } },
+  { name: 'Read, starred', m: { ...MAIL[3], starred: true } },
+  { name: 'Unread, starred', m: { ...MAIL[1], starred: true } },
+  { name: 'Archived', m: { ...MAIL[7] } },
+  { name: 'Search match', m: { ...MAIL[3] }, query: 'ramen' },
+  { name: 'Long', m: { ...LONG, unread: true, starred: true } },
+];
+
+const STATES: { name: string; pin?: string; selected?: boolean }[] = [
+  { name: 'Rest' },
+  { name: 'Hover', pin: 'hover' },
+  { name: 'Focus', pin: 'focus' },
+  { name: 'Selected', selected: true },
+  { name: 'Selected, hover', pin: 'hover', selected: true },
+  { name: 'Menu open', pin: 'menu' },
+];
+
+/** A stand-in for the app's state: enough for a row to render, and nothing happens. */
+const still = (m: Msg, selected?: boolean, query = '') =>
+  ({ query, current: selected ? m : null, open() {}, archive() {}, star() {}, markUnread() {} }) as unknown as Api;
+
+/** Every kind of row in every state, held still, for checking side by side. */
+export function MailStates() {
   return (
-    <Compare
-      height={0}
-      before={<HoverRow inline />}
-      after={<HoverRow />}
-      beforeNote="The actions join the line when the pointer arrives. The sender’s name is cut short and the row grows taller, every time the pointer passes over it."
-      afterNote="The actions take the time’s place, in the same box, so the row keeps its shape whether the pointer is on it or not."
-    />
+    <div className={s.states}>
+      <ToastProvider>
+        <div className={s.statesGrid} style={{ gridTemplateColumns: `120px repeat(${STATES.length}, 300px)` }}>
+          <span />
+          {STATES.map((st) => (
+            <span key={st.name} className={s.statesHead}>
+              {st.name}
+            </span>
+          ))}
+          {KINDS.map((k) => (
+            <div key={k.name} className={s.statesRow}>
+              <span className={s.statesName}>{k.name}</span>
+              {STATES.map((st) => (
+                <div key={st.name} className={s.statesCell}>
+                  <Row m={k.m} api={still(k.m, st.selected, k.query)} pin={st.pin} />
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      </ToastProvider>
+    </div>
   );
 }

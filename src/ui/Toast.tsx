@@ -86,15 +86,17 @@ type ProviderProps = {
   container?: HTMLElement | null;
   /** Anchor the stack to its container rather than the window. */
   contained?: boolean;
+  /** Bottom centre, or bottom left as in Gmail. */
+  align?: 'center' | 'start';
 };
 
 /** The toast queue and the place they appear: bottom centre, newest lowest. */
-export function ToastProvider({ children, limit = 3, container, contained }: ProviderProps) {
+export function ToastProvider({ children, limit = 3, container, contained, align = 'center' }: ProviderProps) {
   return (
     <Toast.Provider limit={limit}>
       {children}
       <Toast.Portal container={container ?? undefined}>
-        <Toast.Viewport className={cx(s.viewport, contained && s.contained)}>
+        <Toast.Viewport className={cx(s.viewport, contained && s.contained, align === 'start' && s.start)}>
           <List />
         </Toast.Viewport>
       </Toast.Portal>

@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { hydrateAll, ZH_PUBLISHED } from './helpers';
+import { hydrateAll, layoutProblems, ZH_PUBLISHED } from './helpers';
 
 // Each test pins one behaviour a playbook page claims. If a page says it,
 // the component has to do it.
@@ -942,12 +942,24 @@ test('mail: archive opens the next and Undo restores it; keys move and archive; 
   await hydrateAll(page);
   const app = page.locator('[class*="_app_"]');
   const rows = () => app.locator('[data-row]').evaluateAll((els) => els.map((e) => e.getAttribute('data-row') + (e.hasAttribute('data-selected') ? '*' : '')));
+  // After every step, not only at rest: the panes still fill the app, nothing overlaps text, no icon twice in a row.
+  const sound = async (step: string) =>
+    expect(await layoutProblems(app, { fill: ['[class*="_sidebar_"]', '[class*="_panes_"]'] }), step).toEqual([]);
+  await sound('at rest');
 
   // Archive from the toolbar: the next message opens; Undo puts it back, selected.
   await app.getByRole('button', { name: 'Archive' }).last().click();
   expect((await rows())[0]).toBe('lisbon*');
+  await sound('archived');
   await app.getByRole('button', { name: 'Undo' }).click();
   expect((await rows())[0]).toBe('roadmap*');
+  await sound('undone');
+
+  // A mouse click leaves the row's actions hidden once the pointer goes.
+  await app.locator('[data-row="lunch"] button').first().click();
+  await page.mouse.move(0, 0);
+  await expect(app.locator('[data-row="lunch"] [class*="_rowActions_"]')).toHaveCSS('opacity', '0');
+  await sound('clicked a row');
 
   // j moves down with focus; e archives and focus lands on the next row.
   await app.locator('[data-row="roadmap"] button').first().focus();
@@ -957,6 +969,12 @@ test('mail: archive opens the next and Undo restores it; keys move and archive; 
   await page.keyboard.press('e');
   expect((await rows())[1]).toBe('invoice*');
   await expect(app.locator('[data-row="invoice"] button').first()).toBeFocused();
+  await sound('keyboard');
+
+  // Star with s, then hover the row: one star, filled.
+  await page.keyboard.press('s');
+  await app.locator('[data-row="invoice"]').hover();
+  await sound('starred and hovered');
 
   // New mail: a pill, and the list doesn't move until it's clicked.
   const top = () => app.locator('[data-row]').first().evaluate((el) => el.getBoundingClientRect().top - el.parentElement!.getBoundingClientRect().top);
@@ -964,14 +982,98 @@ test('mail: archive opens the next and Undo restores it; keys move and archive; 
   await page.getByRole('button', { name: 'Show' }).nth(3).click();
   await expect(app.getByRole('button', { name: '1 new message' })).toBeVisible();
   expect(await top()).toBe(before);
+  // The pill covers no row: the first one still takes a plain click.
+  const first = app.locator('[data-row]').first();
+  const main = first.locator('button').first();
+  const w = (await main.boundingBox())!.width;
+  await main.click({ position: { x: w / 2, y: 19 }, timeout: 2000 });
+  await expect(first).toHaveAttribute('data-selected', '');
   await app.getByRole('button', { name: '1 new message' }).click();
   expect((await rows())[0]).toMatch(/^new-/);
+  await sound('new mail shown');
 
   // An empty search names what and where, and widens to all mail.
   await app.getByLabel('Search mail').fill('welcome');
   await expect(app.getByText('No messages match “welcome” in Inbox.')).toBeVisible();
+  await sound('empty search');
   await app.getByRole('button', { name: 'Search all mail' }).click();
   expect(await rows()).toEqual(['welcome']);
+  await sound('all mail');
+
+  // Compose and send: the toast rises inside the app and the app keeps its shape.
+  await app.getByRole('button', { name: 'Compose' }).click();
+  await page.getByRole('dialog').getByLabel('To', { exact: true }).fill('Priya');
+  await page.getByRole('button', { name: 'Send' }).click();
+  await expect(app.getByText('Message sent')).toBeVisible();
+  await sound('sent');
+});
+
+test('mail: r replies under the message; Move to Inbox moves; a closed context menu hands focus back to the open message', async ({ page }) => {
+  await page.goto('/practice/mail');
+  await hydrateAll(page);
+  const app = page.locator('[class*="_app_"]');
+  const sound = async (step: string) =>
+    expect(await layoutProblems(app, { fill: ['[class*="_sidebar_"]', '[class*="_panes_"]'] }), step).toEqual([]);
+
+  // r: a reply under the message, addressed, the caret in its body.
+  await app.locator('[data-row="roadmap"] button').first().focus();
+  await page.keyboard.press('r');
+  const draft = app.getByRole('dialog', { name: 'Reply' });
+  await expect(draft.getByLabel('To', { exact: true })).toHaveValue('Mira Okafor');
+  await expect(draft.getByLabel('Message')).toBeFocused();
+  await draft.getByRole('button', { name: 'Discard draft' }).click();
+  // Under a long message the reply scrolls itself, Send and all, into the reading pane.
+  await app.locator('[data-row="invoice"] button').first().click();
+  await page.waitForTimeout(1400);
+  await page.keyboard.press('r');
+  const send = app.getByRole('dialog', { name: 'Reply' }).getByRole('button', { name: 'Send' });
+  const visible = () =>
+    send.evaluate((el) => {
+      const r = el.getBoundingClientRect();
+      const pane = el.closest('[class*="_reader_"]')!.getBoundingClientRect();
+      return r.top >= pane.top && r.bottom <= pane.bottom;
+    });
+  await expect.poll(visible).toBe(true);
+  await sound('drafting');
+  await app.getByRole('dialog', { name: 'Reply' }).getByRole('button', { name: 'Discard draft' }).click();
+  await expect(app.getByRole('dialog', { name: 'Reply' })).toHaveCount(0);
+  await expect(app.locator('[data-row="invoice"] button').first()).toBeFocused();
+  await app.locator('[data-row="roadmap"] button').first().click();
+
+  // A new message closed with Save and close comes back with Compose.
+  await page.getByRole('navigation', { name: 'Folders' }).getByRole('button', { name: 'Compose' }).click();
+  await app.getByRole('dialog', { name: 'New message' }).getByLabel('Message').fill('Draft text');
+  await app.getByRole('button', { name: 'Save and close' }).click();
+  await expect(app.getByRole('dialog', { name: 'New message' })).toHaveCount(0);
+  await page.getByRole('navigation', { name: 'Folders' }).getByRole('button', { name: 'Compose' }).click();
+  await expect(app.getByRole('dialog', { name: 'New message' }).getByLabel('Message')).toHaveValue('Draft text');
+  await app.getByRole('button', { name: 'Discard draft' }).click();
+  await app.locator('[data-row="roadmap"] button').first().click();
+
+  // Right-click another row and close the menu: focus lands on the open message's row.
+  await app.locator('[data-row="lunch"]').click({ button: 'right' });
+  await page.keyboard.press('Escape');
+  await expect(app.locator('[data-row="roadmap"] button').first()).toBeFocused();
+
+  // In Archive, Move to Inbox takes the message out of the list and back to the Inbox.
+  await page.getByRole('navigation', { name: 'Folders' }).getByRole('button', { name: 'Archive' }).click();
+  await app.locator('[data-row="oncall"] button').first().click();
+  await app.locator('[class*="_reader_"]').getByRole('button', { name: 'Move to Inbox' }).click();
+  await expect(app.locator('[data-row="oncall"]')).toHaveCount(0);
+  await expect(app.getByText('Moved to Inbox')).toBeVisible();
+  await page.getByRole('navigation', { name: 'Folders' }).getByRole('button', { name: 'Inbox' }).click();
+  await expect(app.locator('[data-row="oncall"]')).toHaveCount(1);
+  await sound('moved back');
+});
+
+test('mail row states: every kind of row in every state lays out cleanly', async ({ page }) => {
+  await page.goto('/lab/mail-states');
+  await hydrateAll(page);
+  const cells = page.locator('[class*="_statesCell_"]');
+  const n = await cells.count();
+  const faults: string[] = [];
+  for (let i = 0; i < n; i++) faults.push(...(await layoutProblems(cells.nth(i))).map((p) => `cell ${i}: ${p}`));
+  expect(faults).toEqual([]);
 });
 
 test('mail on a phone: a row pushes the message in, Back slides the list back', async ({ page }) => {

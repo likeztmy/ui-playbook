@@ -23,3 +23,11 @@ for those rules.
 - **Before is a real mistake.** A comparison's "before" reproduces something shipping products actually do, via `src/demos/mistakes.module.scss`, and its note says what goes wrong.
 - **Claims are tested.** Each behaviour a page states (a delay, a kept width, a keyboard path) has a test in `tests/interactions.spec.ts`.
 - **Copy.** English, sentence case, verbs on buttons and menu items, a tooltip's name equal to the control's `aria-label`.
+
+## Composite UI (In practice examples, rows, panels)
+
+- **Every combination is drawn before it's done.** A part whose look depends on several states at once (a mail row: unread, starred, hover, focus, selected, menu open) gets a state matrix in `src/pages/lab/` that renders each combination held still, as `/lab/mail-states` does. Review the matrix zoomed in, light and dark; one state at a time hides the clashes between them, like a star shown twice when a starred row is hovered.
+- **Layout is checked after every step, not only at rest.** An interaction test for a composite surface calls `layoutProblems` (`tests/helpers.ts`) after each action: panes still fill their parent, nothing overlaps text, no icon twice in one row. Prove a new check red on the bug it's for before trusting it green.
+- **Floating layers stay out of layout.** A toast viewport, popup or pill rendered inside a grid or flex container sits in its own absolutely positioned layer marked `data-overlay`, never as a direct child that takes a track.
+- **Focus-only reveals use `:focus-visible`.** Actions shown on hover also show for keyboard focus, through `:has(:focus-visible)`, not `:focus-within`, which a mouse click leaves behind.
+- **A fresh pair of eyes on the screenshots.** Before shipping a new example, capture every state in both themes and at 375 wide, and have them reviewed by someone (or an agent) who wasn't told the design intent, against the reference products.

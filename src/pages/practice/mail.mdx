@@ -2,7 +2,7 @@
 layout: ../../layouts/Entry.astro
 slug: mail
 ---
-import { MailExample, MailArrivals, MailHoverActions } from '../../demos/mail';
+import { MailExample, MailArrivals } from '../../demos/mail';
 
 Post is a small mail app built from the playbook's components and held to its principles. Everything works: open, archive, star, search, right-click a row, compose. J and K move through the list, E archives, S stars, U goes back, as in Gmail.
 
@@ -10,12 +10,6 @@ Under it, each decision that shaped it, with a Show button that plays it in the 
 
 <MailExample client:load />
 
-## Two of them, side by side
-
-### New mail waits its turn
+## New mail waits its turn
 
 <MailArrivals client:visible />
-
-### Row actions hold their place
-
-<MailHoverActions client:visible />
