@@ -2,11 +2,11 @@
 layout: ../../layouts/Entry.astro
 slug: let-motion-change-its-mind
 ---
-import { InterruptQueue, InterruptKeyframes, InterruptReturn, InterruptVelocity } from '../../demos/interrupt';
+import { InterruptQueue, InterruptKeyframes, InterruptVelocity } from '../../demos/interrupt';
 
 ## The rule
 
-**An animation is never too busy to listen.** The next click can come at any moment, and it means the person has changed their mind. The motion should turn from wherever it is, at once, towards the new target, keeping the speed it had. Whether it can depends on how it was built: queues and keyframes can't, transitions and springs can.
+**An animation is never too busy to listen.** The next click can come at any moment, and it means the person has changed their mind. The motion should turn from wherever it is, at once, towards the new target, keeping the speed it had. Whether it can depends on how it was built: a lock that drops clicks, keyframes and timed curves can't; transitions and springs can.
 
 <InterruptQueue client:visible />
 
@@ -16,15 +16,11 @@ import { InterruptQueue, InterruptKeyframes, InterruptReturn, InterruptVelocity 
 
 <InterruptKeyframes client:visible />
 
-### The way back is shorter
-
-<InterruptReturn client:visible />
-
-### Keep the speed when you turn
+### Keep the speed when you let go
 
 <InterruptVelocity client:visible />
 
-The line under each card is a motion trace: the card's position over the last three seconds, newest on the right. A turn that keeps its speed draws a curve; a turn that starts from rest draws a corner.
+The line under each strip is a motion trace: its position over the last three seconds, newest on the right. A release that keeps its speed draws a curve; one that starts from rest draws a corner.
 
 ## When it doesn't apply
 

@@ -884,36 +884,55 @@ test('how waiting feels: a quick refresh shows no spinner in the After; once sho
   await expect(stars.getByText('Couldn’t unstar “Q4 roadmap”. Try again.')).toBeVisible();
 });
 
-test('let motion change its mind: queued clicks keep playing, redirected ones stop; a reversal comes back quickly', async ({ page }) => {
+test('let motion change its mind: locked clicks are dropped, keyframes restart, a spring keeps the flick', async ({ page }) => {
   await page.goto('/principles/let-motion-change-its-mind');
   await hydrateAll(page);
-  const [before, after] = [page.locator('figure').nth(0), page.locator('figure').nth(1)];
-  const body = (f: typeof before) => f.locator('[class*="intBody"]').first();
-  const height = (f: typeof before) => body(f).evaluate((el) => el.getBoundingClientRect().height);
-  for (const f of [before, after]) {
-    const trigger = f.getByRole('button', { name: 'Advanced' });
-    await trigger.click();
-    await trigger.click();
-    await trigger.click();
-  }
-  // Three clicks end open. Once the After has settled, the queued Before is still playing its moves.
-  const running = (f: typeof before) => body(f).evaluate((el) => el.getAnimations({ subtree: true }).filter((a) => a.playState === 'running').length);
-  await expect.poll(() => running(after), { timeout: 1500 }).toBe(0);
-  const open = await body(after).evaluate((el) => el.scrollHeight);
-  expect(await height(after)).toBeGreaterThan(open - 2);
-  expect(await running(before)).toBeGreaterThan(0);
+  const figure = (i: number) => page.locator('figure').nth(i);
 
-  // Collapse and reverse at once: the Before replays the full move, the transition comes back in the share it travelled.
-  const lastMove = async (f: typeof before) => {
-    await f.scrollIntoViewIfNeeded();
-    await f.getByRole('button', { name: 'Collapse' }).click();
-    await page.waitForTimeout(80);
-    await f.getByRole('button', { name: 'Expand' }).click();
-    await expect(f.getByText(/Last move: \d+ ms/)).toBeVisible({ timeout: 2000 });
-    return Number((await f.getByText(/Last move/).innerText()).match(/\d+/)![0]);
+  // Three fast Nexts: the locked carousel moves once, the redirectable one three times.
+  for (const i of [0, 1]) {
+    const next = figure(i).getByRole('button', { name: 'Next' });
+    await next.click();
+    await next.click();
+    await next.click();
+  }
+  await expect(figure(0).getByLabel('Photo 2 of 5')).toBeVisible({ timeout: 2000 });
+  await expect(figure(1).getByLabel('Photo 4 of 5')).toBeVisible({ timeout: 2000 });
+
+  // A question clicked twice: the keyframe close starts fully open, the transition from where it got to.
+  const reopen = (i: number) =>
+    figure(i).evaluate(async (f) => {
+      const trigger = f.querySelector('button[aria-expanded]') as HTMLButtonElement;
+      const body = trigger.nextElementSibling as HTMLElement;
+      const full = (body.firstElementChild as HTMLElement).scrollHeight;
+      trigger.click();
+      await new Promise((r) => setTimeout(r, 30));
+      trigger.click();
+      await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+      return body.getBoundingClientRect().height / full;
+    });
+  await figure(2).scrollIntoViewIfNeeded();
+  const restarted = await reopen(2);
+  const turned = await reopen(3);
+  expect(restarted).toBeGreaterThan(0.75);
+  expect(restarted - turned).toBeGreaterThan(0.25);
+
+  // A flick: after the release, the timed ease starts from rest while the spring carries on.
+  const flick = async (i: number) => {
+    const viewport = figure(i).locator('[class*="intSwipeViewport"]');
+    await viewport.scrollIntoViewIfNeeded();
+    const box = (await viewport.boundingBox())!;
+    const strip = viewport.locator('[class*="intSwipeStrip"]');
+    const left = () => strip.evaluate((el) => el.getBoundingClientRect().left);
+    await page.mouse.move(box.x + box.width - 20, box.y + 60);
+    await page.mouse.down();
+    await page.mouse.move(box.x + box.width - 100, box.y + 60, { steps: 6 });
+    await page.mouse.up();
+    const at = await left();
+    await page.waitForTimeout(60);
+    return at - (await left());
   };
-  const full = await lastMove(page.locator('figure').nth(4));
-  const back = await lastMove(page.locator('figure').nth(5));
-  expect(full).toBeGreaterThan(580);
-  expect(back).toBeLessThan(full * 0.7);
+  const eased = await flick(4);
+  const sprung = await flick(5);
+  expect(sprung).toBeGreaterThan(eased * 1.5);
 });

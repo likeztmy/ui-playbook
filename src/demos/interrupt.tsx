@@ -1,8 +1,6 @@
-import { ChevronDown, Inbox, Archive } from 'lucide-react';
+import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import { animate, motion, useMotionValue, type MotionValue } from 'motion/react';
-import { useEffect, useRef, useState } from 'react';
-import { Button } from '../ui/Button';
-import { Switch } from '../ui/Switch';
+import { useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from 'react';
 import { cx } from '../ui/cx';
 import { Compare, localized } from './shell';
 import s from './demos.module.scss';
@@ -19,64 +17,59 @@ function token(el: Element, duration: string, easing: string) {
 
 // ── Second thoughts ──────────────────────────────────────
 
-const ADVANCED = [
-  ['Snap to grid', true],
-  ['Show rulers', false],
-  ['Autosave', true],
+const SLIDES = [
+  ['Lisbon', 'oklch(0.78 0.09 60), oklch(0.62 0.12 30)'],
+  ['Kyoto', 'oklch(0.8 0.07 150), oklch(0.6 0.09 170)'],
+  ['Reykjavík', 'oklch(0.82 0.05 230), oklch(0.6 0.08 260)'],
+  ['Marrakesh', 'oklch(0.8 0.1 80), oklch(0.65 0.13 50)'],
+  ['Oslo', 'oklch(0.85 0.03 250), oklch(0.62 0.05 280)'],
 ] as const;
 
 /**
- * An Advanced section that opens and shuts. With `queued`, each click waits
- * for the animation before it, as jQuery's effects queue does by default;
- * otherwise the panel turns from wherever it is.
+ * A photo carousel. With `locked`, a click while a slide is moving is
+ * dropped, as Bootstrap's Carousel does; otherwise each click moves the
+ * target and the slide turns from where it is.
  */
-function Advanced({ queued }: { queued?: boolean }) {
-  const [open, setOpen] = useState(false);
-  const body = useRef<HTMLDivElement>(null);
-  const queue = useRef<boolean[]>([]);
-  const running = useRef(false);
-  const shown = useRef(false);
-  // The last click's target; state alone goes stale between clicks in one frame.
-  const target = useRef(false);
-
-  const play = async () => {
-    if (running.current) return;
-    running.current = true;
-    const el = body.current!;
-    while (queue.current.length) {
-      const next = queue.current.shift()!;
-      const full = el.scrollHeight;
-      const { duration, easing } = token(el, '--spring-smooth-duration', '--ease-spring-smooth');
-      const anim = el.animate([{ height: `${shown.current ? full : 0}px` }, { height: `${next ? full : 0}px` }], { duration, easing, fill: 'forwards' });
-      await anim.finished;
-      shown.current = next;
-    }
-    running.current = false;
+function Carousel({ locked }: { locked?: boolean }) {
+  const [index, setIndex] = useState(0);
+  const sliding = useRef(false);
+  // The latest target; state alone goes stale between clicks in one frame.
+  const target = useRef(0);
+  const go = (step: number) => {
+    if (locked && sliding.current) return;
+    const next = Math.min(SLIDES.length - 1, Math.max(0, target.current + step));
+    if (next === target.current) return;
+    target.current = next;
+    sliding.current = true;
+    setIndex(next);
   };
-
-  const toggle = () => {
-    const next = (target.current = !target.current);
-    setOpen(next);
-    if (!queued) return;
-    queue.current.push(next);
-    play();
-  };
-
   return (
-    <div className={s.intPanel}>
-      <Button variant="ghost" className={s.intTrigger} aria-expanded={open} onClick={toggle}>
-        Advanced
-        <ChevronDown {...ic} className={s.intChevron} data-open={open ? '' : undefined} />
-      </Button>
-      <div ref={body} className={cx(s.intBody, !queued && s.intBodyFluid)} data-open={open ? '' : undefined}>
-        {/* The clip is the grid item; padding lives inside it, so a 0fr row closes all the way. */}
-        <div className={s.intClip}>
-          <div className={s.intBodyInner}>
-            {ADVANCED.map(([label, on]) => (
-              <Switch key={label} label={label} defaultChecked={on} />
-            ))}
-          </div>
+    <div className={s.intCarousel}>
+      <div className={s.intViewport}>
+        <div
+          className={s.intSlides}
+          style={{ translate: `${index * -100}% 0` }}
+          onTransitionEnd={(e) => {
+            if (e.target === e.currentTarget) sliding.current = false;
+          }}
+        >
+          {SLIDES.map(([place, stops]) => (
+            <div key={place} className={s.intSlide} style={{ backgroundImage: `linear-gradient(160deg, ${stops})` }}>
+              {place}
+            </div>
+          ))}
         </div>
+        <button type="button" className={cx(s.intArrow, s.intArrowPrev)} aria-label="Previous" disabled={index === 0} onClick={() => go(-1)}>
+          <ChevronLeft {...ic} />
+        </button>
+        <button type="button" className={cx(s.intArrow, s.intArrowNext)} aria-label="Next" disabled={index === SLIDES.length - 1} onClick={() => go(1)}>
+          <ChevronRight {...ic} />
+        </button>
+      </div>
+      <div className={s.intDots} aria-label={`Photo ${index + 1} of ${SLIDES.length}`}>
+        {SLIDES.map(([place], i) => (
+          <span key={place} className={s.intDot} data-current={i === index ? '' : undefined} />
+        ))}
       </div>
     </div>
   );
@@ -87,20 +80,19 @@ export const InterruptQueue = localized(function InterruptQueue() {
     <Compare
       height={0}
       motion
-      before={<Advanced queued />}
-      after={<Advanced />}
+      before={<Carousel locked />}
+      after={<Carousel />}
       beforeNote={
         <>
-          Each click waits for the animation before it. Change your mind twice and the panel plays all three moves in order, long after the
-          last click. jQuery’s effects queue this way by default; its docs call it{' '}
-          <a href="https://api.jquery.com/stop/">the common problem of multiple queued animations</a>.
+          Click Next three times fast and the carousel moves once: the clicks that land while a slide is moving are dropped. That’s
+          Bootstrap’s Carousel, whose <a href="https://github.com/twbs/bootstrap/blob/v5.3.3/js/src/carousel.js">slide method</a> returns
+          early while a slide is in progress.
         </>
       }
       afterNote={
         <>
-          Each click turns the panel from where it is, and the last click is the one that counts. Apple built the iPhone X gestures the same
-          way: “a <a href="https://developer.apple.com/videos/play/wwdc2018/803/">fully redirectable interface</a>”, where the thought and
-          the gesture happen in parallel.
+          Each click moves the target on, and the strip turns from where it is: three clicks, three photos. Apple built the iPhone X
+          gestures the same way, “a <a href="https://developer.apple.com/videos/play/wwdc2018/803/">fully redirectable interface</a>”.
         </>
       }
     />
@@ -109,44 +101,56 @@ export const InterruptQueue = localized(function InterruptQueue() {
 
 // ── Keyframes start over ─────────────────────────────────
 
-const ROWS = ['Q4 roadmap', 'Brand guide', 'Onboarding', 'Pricing'];
+const FAQ = [
+  ['Can I change my plan later?', 'Yes. Switch plans any time from Billing; the difference is prorated to the day.'],
+  ['Do you offer refunds?', 'Within 14 days of any charge, in full, no questions asked.'],
+  ['Is there a free trial?', 'Every plan starts with 14 days free. No card needed until it ends.'],
+] as const;
 
-/** A file list with a details drawer. `keyframes` animates it with @keyframes; otherwise with a transition. */
-function Drawer({ keyframes }: { keyframes?: boolean }) {
+/**
+ * One FAQ row. `keyframes` opens and closes it with two @keyframes, as
+ * shadcn/ui's Accordion does; otherwise with a transition.
+ */
+function FaqItem({ q, a, keyframes }: { q: string; a: string; keyframes?: boolean }) {
   const [open, setOpen] = useState(false);
   const [touched, setTouched] = useState(false);
+  const inner = useRef<HTMLDivElement>(null);
+  const [height, setHeight] = useState(0);
   return (
-    <div className={s.intDrawerStage}>
-      <div className={s.intFiles}>
-        <div className={s.intFilesHead}>
-          <span className={s.intTitle}>Files</span>
-          <Button
-            size="sm"
-            aria-expanded={open}
-            onClick={() => {
-              setOpen((o) => !o);
-              setTouched(true);
-            }}
-          >
-            {open ? 'Hide details' : 'Details'}
-          </Button>
-        </div>
-        {ROWS.map((r) => (
-          <div key={r} className={s.intFileRow}>
-            {r}
-          </div>
-        ))}
-      </div>
-      <aside
-        className={cx(s.intDrawer, keyframes ? s.intDrawerKeys : s.intDrawerFluid)}
+    <div className={s.intFaqItem}>
+      <button
+        type="button"
+        className={s.intFaqTrigger}
+        aria-expanded={open}
+        onClick={() => {
+          setHeight(inner.current!.scrollHeight);
+          setOpen((o) => !o);
+          setTouched(true);
+        }}
+      >
+        {q}
+        <ChevronDown {...ic} className={s.intChevron} data-open={open ? '' : undefined} />
+      </button>
+      <div
+        className={cx(s.intFaqBody, keyframes ? s.intFaqKeys : s.intFaqFluid)}
+        style={{ '--h': `${height}px` } as CSSProperties}
         data-open={open ? '' : undefined}
         data-touched={touched ? '' : undefined}
-        aria-hidden={!open}
       >
-        <span className={s.intTitle}>Q4 roadmap</span>
-        <span className={s.intMeta}>Edited 2 hours ago</span>
-        <span className={s.intMeta}>24 files · 18.4 MB</span>
-      </aside>
+        <div ref={inner} className={s.intClip}>
+          <p className={s.intFaqAnswer}>{a}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Faq({ keyframes }: { keyframes?: boolean }) {
+  return (
+    <div className={s.intFaq}>
+      {FAQ.map(([q, a]) => (
+        <FaqItem key={q} q={q} a={a} keyframes={keyframes} />
+      ))}
     </div>
   );
 }
@@ -156,82 +160,21 @@ export const InterruptKeyframes = localized(function InterruptKeyframes() {
     <Compare
       height={0}
       motion
-      before={<Drawer keyframes />}
-      after={<Drawer />}
-      beforeNote="The drawer slides with two @keyframes animations, in and out. Hide it before it has finished arriving and the out animation starts from its own first frame, fully open: the drawer jumps out, then slides away."
-      afterNote={
+      before={<Faq keyframes />}
+      after={<Faq />}
+      beforeNote={
         <>
-          A transition only knows where it is and where it’s going, so hiding the drawer half-way turns it back from that half. A CSS
-          transition “can be interrupted and smoothly transition to a new value” (
-          <a href="https://emilkowal.ski/ui/great-animations">Emil Kowalski</a>); keyframes can’t.
+          shadcn/ui’s <a href="https://ui.shadcn.com/docs/components/accordion">Accordion</a> opens and closes with two keyframe
+          animations, from 0 to the answer’s height and back. Click a question twice and the second plays from its own first frame: the
+          answer jumps fully open, then closes.
         </>
       }
-    />
-  );
-});
-
-// ── The way back is shorter ──────────────────────────────
-
-/**
- * A sidebar that collapses. `fixed` animates every move over the full
- * duration from wherever it is, as a hand-written animate() call does;
- * otherwise a CSS transition shortens a reversal by how far it got.
- */
-function Sidebar({ fixed }: { fixed?: boolean }) {
-  const [collapsed, setCollapsed] = useState(false);
-  const [last, setLast] = useState<number | null>(null);
-  const side = useRef<HTMLDivElement>(null);
-  const clickedAt = useRef(0);
-  const anim = useRef<Animation | null>(null);
-
-  const toggle = () => {
-    const next = !collapsed;
-    setCollapsed(next);
-    clickedAt.current = performance.now();
-    if (!fixed) return;
-    const el = side.current!;
-    const from = el.getBoundingClientRect().width;
-    anim.current?.cancel();
-    const { duration, easing } = token(el, '--spring-smooth-duration', '--ease-spring-smooth');
-    anim.current = el.animate([{ width: `${from}px` }, { width: next ? '56px' : '180px' }], { duration, easing, fill: 'forwards' });
-    anim.current.finished.then(() => setLast(Math.round(performance.now() - clickedAt.current)), () => {});
-  };
-
-  return (
-    <div className={s.intShell}>
-      <div
-        ref={side}
-        className={cx(s.intSide, !fixed && s.intSideFluid)}
-        data-collapsed={collapsed ? '' : undefined}
-        onTransitionEnd={(e) => {
-          if (e.propertyName === 'width' && e.target === e.currentTarget) setLast(Math.round(performance.now() - clickedAt.current));
-        }}
-      >
-        <Button variant="ghost" size="sm" aria-expanded={!collapsed} onClick={toggle}>
-          {collapsed ? 'Expand' : 'Collapse'}
-        </Button>
-      </div>
-      <div className={s.intMain}>
-        <span className={s.intMeta}>{last === null ? ' ' : `Last move: ${last} ms`}</span>
-      </div>
-    </div>
-  );
-}
-
-export const InterruptReturn = localized(function InterruptReturn() {
-  return (
-    <Compare
-      height={0}
-      motion
-      before={<Sidebar fixed />}
-      after={<Sidebar />}
-      beforeNote="Every move takes the full duration, wherever it starts. Collapse and change your mind at once, and the sidebar spends a full animation crawling back a few pixels."
       afterNote={
         <>
-          A reversed CSS transition is shortened by how far it got: turn back a quarter of the way in and the way back takes about a quarter
-          of the time. The spec calls it the{' '}
-          <a href="https://www.w3.org/TR/css-transitions-1/">reversing shortening factor</a>; in Chrome, a 1000 ms linear move
-          reversed at its midpoint came back in 508 ms.
+          A transition only knows where it is and where it’s going, so the second click turns the answer back from where it got to. The way
+          back is shorter, too: a reversed transition is cut by how far it went, the spec’s{' '}
+          <a href="https://www.w3.org/TR/css-transitions-1/">reversing shortening factor</a>. In Chrome, a 1000 ms move reversed at its
+          midpoint came back in 508 ms.
         </>
       }
     />
@@ -240,10 +183,11 @@ export const InterruptReturn = localized(function InterruptReturn() {
 
 // ── Keep the speed when you turn ─────────────────────────
 
-const TRACK = 220;
-
-/** Plots a motion value over the last few seconds: position up the side, time along the bottom. */
-function MotionTrace({ value, min, max }: { value: MotionValue<number>; min: number; max: number }) {
+/**
+ * Plots a motion value over the last few seconds: position up the side,
+ * time along the bottom. The scale fits what's on screen, at least `span` tall.
+ */
+function MotionTrace({ value, span: least }: { value: MotionValue<number>; span: number }) {
   const canvas = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
     const c = canvas.current!;
@@ -272,12 +216,16 @@ function MotionTrace({ value, min, max }: { value: MotionValue<number>; min: num
         ctx.lineTo(width, y);
         ctx.stroke();
       }
+      const vs = samples.map((p) => p.v);
+      const mid = (Math.min(...vs) + Math.max(...vs)) / 2;
+      const range = Math.max(least, Math.max(...vs) - Math.min(...vs));
+      const min = mid - range / 2;
       ctx.strokeStyle = css.getPropertyValue('--ink').trim();
       ctx.lineWidth = 1.5;
       ctx.beginPath();
       samples.forEach(({ t, v }, i) => {
         const x = width - ((now - t) / span) * width;
-        const y = height - 4 - ((v - min) / (max - min)) * (height - 8);
+        const y = height - 4 - ((v - min) / range) * (height - 8);
         if (i) ctx.lineTo(x, y);
         else ctx.moveTo(x, y);
       });
@@ -286,40 +234,68 @@ function MotionTrace({ value, min, max }: { value: MotionValue<number>; min: num
     };
     raf = requestAnimationFrame(draw);
     return () => cancelAnimationFrame(raf);
-  }, [value, min, max]);
+  }, [value, least]);
   return <canvas ref={canvas} className={s.intTrace} aria-hidden />;
 }
 
+const PHOTO = 240;
+const LAST = -(SLIDES.length - 1) * PHOTO;
+
 /**
- * A card sent between Inbox and Archive. `curve` uses a timed ease, which
- * starts every new target from rest; otherwise a physical spring carries
- * the card's velocity into the turn.
+ * Photos you swipe through. On release, `curve` settles with a timed ease,
+ * which starts from rest whatever the finger was doing; otherwise a physical
+ * spring carries the finger's velocity on.
  */
-function Sorter({ curve }: { curve?: boolean }) {
+function Swiper({ curve }: { curve?: boolean }) {
   const x = useMotionValue(0);
-  const [target, setTarget] = useState<'inbox' | 'archive'>('inbox');
-  const send = (to: 'inbox' | 'archive') => {
-    setTarget(to);
-    animate(x, to === 'inbox' ? 0 : TRACK, curve ? { duration: 0.6, ease: 'easeInOut' } : { type: 'spring', stiffness: 170, damping: 24 });
+  const drag = useRef<{ x0: number; start: number; from: number } | null>(null);
+  const settle = useRef<ReturnType<typeof animate> | null>(null);
+  const [index, setIndex] = useState(0);
+
+  const down = (e: ReactPointerEvent) => {
+    settle.current?.stop();
+    e.currentTarget.setPointerCapture(e.pointerId);
+    drag.current = { x0: e.clientX, start: x.get(), from: Math.round(-x.get() / PHOTO) };
   };
+  const move = (e: ReactPointerEvent) => {
+    if (!drag.current) return;
+    const raw = drag.current.start + e.clientX - drag.current.x0;
+    // Past either end the strip gives a third as much.
+    x.set(raw > 0 ? raw / 3 : raw < LAST ? LAST + (raw - LAST) / 3 : raw);
+  };
+  const up = () => {
+    if (!drag.current) return;
+    const { from } = drag.current;
+    drag.current = null;
+    const velocity = x.getVelocity();
+    // Where a flick would carry it, one photo at most from where the drag began.
+    const aim = Math.round(-(x.get() + velocity * 0.2) / PHOTO);
+    const next = Math.min(SLIDES.length - 1, Math.max(0, from - 1, Math.min(from + 1, aim)));
+    setIndex(next);
+    settle.current = animate(
+      x,
+      -next * PHOTO,
+      curve ? { duration: 0.5, ease: 'easeInOut' } : { type: 'spring', stiffness: 260, damping: 30, velocity },
+    );
+  };
+
   return (
-    <div className={s.intSorter}>
-      <div className={s.intTrack}>
-        <motion.div className={s.intCard} style={{ x }}>
-          Invoice #2041
+    <div className={s.intSwipe}>
+      <div className={s.intSwipeViewport} onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={up}>
+        <motion.div className={s.intSwipeStrip} style={{ x }}>
+          {SLIDES.map(([place, stops]) => (
+            <div key={place} className={s.intSlide} style={{ backgroundImage: `linear-gradient(160deg, ${stops})` }}>
+              {place}
+            </div>
+          ))}
         </motion.div>
       </div>
-      <div className={s.intTargets}>
-        <Button size="sm" aria-pressed={target === 'inbox'} onClick={() => send('inbox')}>
-          <Inbox {...ic} />
-          Inbox
-        </Button>
-        <Button size="sm" aria-pressed={target === 'archive'} onClick={() => send('archive')}>
-          <Archive {...ic} />
-          Archive
-        </Button>
+      <div className={s.intDots} aria-label={`Photo ${index + 1} of ${SLIDES.length}`}>
+        {SLIDES.map(([place], i) => (
+          <span key={place} className={s.intDot} data-current={i === index ? '' : undefined} />
+        ))}
       </div>
-      <MotionTrace value={x} min={0} max={TRACK} />
+      <MotionTrace value={x} span={PHOTO} />
     </div>
   );
 }
@@ -328,31 +304,32 @@ export const InterruptVelocity = localized(function InterruptVelocity() {
   return (
     <Compare
       height={0}
-      before={<Sorter curve />}
-      after={<Sorter />}
-      beforeNote="A timed ease starts every new target from rest. Send the card back mid-flight and it stops dead, then sets off again: the line under it turns a sharp corner."
+      before={<Swiper curve />}
+      after={<Swiper />}
+      beforeNote="Flick a photo and let go. A timed ease starts from rest, so the strip stalls under your finger, then sets off again: the line under it bends at a corner where you let go."
       afterNote={
         <>
-          A spring defined by stiffness and damping takes the card’s current velocity into the turn, so it slows, swings round and comes back
-          in one curve. Motion’s physical springs “incorporate the velocity of any existing gestures or animations”; springs set by duration
-          don’t (<a href="https://motion.dev/docs/react-transitions">Motion docs</a>).
+          A spring defined by stiffness and damping takes the finger’s speed and carries it on, so the photo leaves your hand in one curve.
+          Motion’s physical springs “incorporate the velocity of any existing gestures or animations”; springs set by duration don’t (
+          <a href="https://motion.dev/docs/react-transitions">Motion docs</a>).
         </>
       }
     />
   );
 });
 
-/** The Advanced section, half open, held still. */
+/** The carousel, caught between two photos. */
 export function InterruptPreview() {
   return (
-    <div className={cx(s.intPanel, s.intStill)} aria-hidden>
-      <span className={s.intTrigger}>
-        Advanced <ChevronDown {...ic} />
-      </span>
-      <div className={s.intBodyInner} style={{ height: 52, overflow: 'hidden' }}>
-        {ADVANCED.map(([label, on]) => (
-          <Switch key={label} label={label} defaultChecked={on} />
-        ))}
+    <div className={cx(s.intCarousel, s.intStill)} aria-hidden>
+      <div className={s.intViewport}>
+        <div className={s.intSlides} style={{ translate: '-40% 0' }}>
+          {SLIDES.slice(0, 2).map(([place, stops]) => (
+            <div key={place} className={s.intSlide} style={{ backgroundImage: `linear-gradient(160deg, ${stops})` }}>
+              {place}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

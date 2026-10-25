@@ -2267,20 +2267,127 @@
   pointer-events: none;
 }
 
-// Let motion change its mind: an Advanced section, a details drawer, a
-// collapsing sidebar and a card sent between two places.
-.intPanel {
+// Let motion change its mind: a photo carousel, an FAQ, and photos you swipe.
+.intCarousel,
+.intSwipe {
   display: flex;
   flex-direction: column;
-  width: min(100%, 280px);
+  align-items: center;
+  gap: var(--space-3);
+  width: 240px;
 }
 
-.intTrigger {
-  justify-content: space-between;
+.intViewport,
+.intSwipeViewport {
+  position: relative;
   width: 100%;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+}
+
+// Bootstrap slides each photo with one transform transition; the lock is the only difference.
+.intSlides {
+  display: flex;
+  transition: translate var(--spring-smooth-duration) var(--ease-spring-smooth);
+}
+
+.intSlide {
+  display: flex;
+  flex: none;
+  align-items: flex-end;
+  width: 100%;
+  height: 150px;
+  padding: var(--space-3);
+  color: oklch(1 0 0);
+  font-size: 13px;
+  font-weight: 600;
+  text-shadow: 0 1px 2px oklch(0 0 0 / 0.25);
+  user-select: none;
+}
+
+.intArrow {
+  position: absolute;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 50%;
+  background: oklch(1 0 0 / 0.85);
+  color: oklch(0.2 0 0);
+  box-shadow: var(--shadow-sm);
+  translate: 0 -50%;
+  cursor: pointer;
+
+  // A larger hit area than the visible disc.
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -8px;
+  }
+
+  &:disabled {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+.intArrowPrev {
+  left: var(--space-2);
+}
+
+.intArrowNext {
+  right: var(--space-2);
+}
+
+.intDots {
+  display: flex;
+  gap: 6px;
+}
+
+.intDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--line-strong);
+
+  &[data-current] {
+    background: var(--ink);
+  }
+}
+
+// An FAQ like shadcn/ui's Accordion.
+.intFaq {
+  display: flex;
+  flex-direction: column;
+  width: min(100%, 300px);
+}
+
+.intFaqItem {
+  border-bottom: 1px solid var(--line);
+}
+
+.intFaqTrigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-3) 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
 }
 
 .intChevron {
+  flex: none;
+  color: var(--ink-muted);
   transition: rotate var(--duration-base) var(--ease-out);
 
   &[data-open] {
@@ -2288,22 +2395,8 @@
   }
 }
 
-// The queued version: height is driven by element.animate().
-.intBody {
-  height: 0;
+.intFaqBody {
   overflow: hidden;
-}
-
-// The fluid version: grid rows transition, so any click turns it from where it is.
-.intBodyFluid {
-  display: grid;
-  grid-template-rows: 0fr;
-  height: auto;
-  transition: grid-template-rows var(--spring-smooth-duration) var(--ease-spring-smooth);
-
-  &[data-open] {
-    grid-template-rows: 1fr;
-  }
 }
 
 .intClip {
@@ -2311,172 +2404,67 @@
   overflow: hidden;
 }
 
-.intBodyInner {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  padding: var(--space-2) var(--space-3) var(--space-3);
-}
-
-// A file list with a drawer that slides over its right edge.
-.intDrawerStage {
-  position: relative;
-  width: min(100%, 300px);
-  overflow: hidden;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-md);
-}
-
-.intFiles {
-  display: flex;
-  flex-direction: column;
-  padding: var(--space-3);
-  font-size: 13px;
-}
-
-.intFilesHead {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-bottom: var(--space-2);
-}
-
-.intTitle {
-  font-size: 13px;
-  font-weight: 600;
-}
-
-.intMeta {
+.intFaqAnswer {
+  margin: 0;
+  padding-bottom: var(--space-3);
   color: var(--ink-muted);
-  font-size: 12px;
-  font-variant-numeric: tabular-nums;
+  font-size: 13px;
 }
 
-.intFileRow {
-  display: flex;
-  align-items: center;
-  height: 32px;
-  border-top: 1px solid var(--line);
-}
+// shadcn's accordion-down and accordion-up, at its 0.2s ease-out. Each
+// always plays from its own first frame.
+.intFaqKeys {
+  height: 0;
 
-.intDrawer {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-  width: 160px;
-  padding: var(--space-3);
-  border-left: 1px solid var(--line);
-  background: var(--surface-raised);
-  box-shadow: var(--shadow-md);
-  translate: 100% 0;
-}
-
-// Two keyframe animations: each always plays from its own first frame.
-.intDrawerKeys {
   &[data-touched] {
-    animation: int-drawer-out var(--spring-smooth-duration) var(--ease-spring-smooth) both;
+    animation: int-faq-up var(--duration-base) var(--ease-out) both;
   }
 
   &[data-open] {
-    animation: int-drawer-in var(--spring-smooth-duration) var(--ease-spring-smooth) both;
+    animation: int-faq-down var(--duration-base) var(--ease-out) both;
   }
 }
 
-@keyframes int-drawer-in {
+@keyframes int-faq-down {
   from {
-    translate: 100% 0;
+    height: 0;
   }
   to {
-    translate: 0 0;
+    height: var(--h);
   }
 }
 
-@keyframes int-drawer-out {
+@keyframes int-faq-up {
   from {
-    translate: 0 0;
+    height: var(--h);
   }
   to {
-    translate: 100% 0;
+    height: 0;
   }
 }
 
-.intDrawerFluid {
-  transition: translate var(--spring-smooth-duration) var(--ease-spring-smooth);
-
-  &[data-open] {
-    translate: 0 0;
-  }
-}
-
-// An app shell whose sidebar collapses.
-.intShell {
-  display: flex;
-  width: min(100%, 320px);
-  height: 140px;
-  overflow: hidden;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-md);
-}
-
-.intSide {
-  flex: none;
-  width: 180px;
-  padding: var(--space-2);
-  overflow: hidden;
-  border-right: 1px solid var(--line);
-  background: var(--surface-sunken);
-}
-
-.intSideFluid {
-  transition: width var(--spring-smooth-duration) var(--ease-spring-smooth);
-
-  &[data-collapsed] {
-    width: 56px;
-  }
-}
-
-.intMain {
-  flex: 1;
+// The same timing as a transition: a second click turns it from where it is.
+.intFaqFluid {
   display: grid;
-  place-items: center;
-  min-width: 0;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--duration-base) var(--ease-out);
+
+  &[data-open] {
+    grid-template-rows: 1fr;
+  }
 }
 
-// A card that travels between Inbox and Archive, and its trace.
-.intSorter {
+.intSwipeViewport {
+  touch-action: pan-y;
+  cursor: grab;
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.intSwipeStrip {
   display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  width: min(100%, 300px);
-}
-
-.intTrack {
-  height: 40px;
-  border-radius: var(--radius-md);
-  background: var(--surface-sunken);
-}
-
-.intCard {
-  display: flex;
-  align-items: center;
-  width: 80px;
-  height: 40px;
-  padding: 0 var(--space-2);
-  border-radius: var(--radius-md);
-  background: var(--surface-raised);
-  box-shadow: var(--shadow-sm);
-  font-size: 11px;
-  font-weight: 500;
-  white-space: nowrap;
-}
-
-.intTargets {
-  display: flex;
-  justify-content: space-between;
 }
 
 .intTrace {
