@@ -2357,100 +2357,166 @@
   }
 }
 
-// An FAQ like shadcn/ui's Accordion.
-.intFaq {
+// A settings page and an Edit profile sheet, at shadcn's timing.
+.intSheetStage {
+  --sheet-in: 500ms;
+  --sheet-out: 300ms;
+  --fade: 150ms;
+  // Off past the edge, shadow and all.
+  --off: calc(100% + 48px);
+
+  position: relative;
+  width: min(100%, 320px);
+  height: 200px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+
+  [data-slow] & {
+    --sheet-in: 5000ms;
+    --sheet-out: 3000ms;
+    --fade: 1500ms;
+  }
+}
+
+.intPage,
+.intSheet {
   display: flex;
   flex-direction: column;
-  width: min(100%, 300px);
+  gap: var(--space-1);
+  padding: var(--space-4);
 }
 
-.intFaqItem {
-  border-bottom: 1px solid var(--line);
+.intPageTitle {
+  font-size: 14px;
+  font-weight: 600;
 }
 
-.intFaqTrigger {
+.intPageMeta {
+  color: var(--ink-muted);
+  font-size: 12px;
+}
+
+.intOpen {
+  align-self: flex-start;
+  margin-top: var(--space-3);
+}
+
+.intOverlay {
+  position: absolute;
+  inset: 0;
+  background: oklch(0 0 0 / 0.5);
+  opacity: 0;
+  pointer-events: none;
+
+  &[data-open] {
+    pointer-events: auto;
+  }
+}
+
+.intSheet {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 75%;
+  border-left: 1px solid var(--line);
+  background: var(--surface);
+  box-shadow: var(--shadow-lg);
+  translate: var(--off) 0;
+}
+
+.intField {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: var(--space-2);
-  width: 100%;
-  padding: var(--space-3) 0;
-  border: 0;
-  background: none;
-  color: var(--ink);
-  font: inherit;
-  font-size: 13px;
-  font-weight: 500;
-  text-align: left;
-  cursor: pointer;
-}
-
-.intChevron {
-  flex: none;
-  color: var(--ink-muted);
-  transition: rotate var(--duration-base) var(--ease-out);
-
-  &[data-open] {
-    rotate: 180deg;
-  }
-}
-
-.intFaqBody {
-  overflow: hidden;
-}
-
-.intClip {
-  min-height: 0;
-  overflow: hidden;
-}
-
-.intFaqAnswer {
-  margin: 0;
-  padding-bottom: var(--space-3);
-  color: var(--ink-muted);
+  height: 32px;
+  margin-top: var(--space-2);
+  padding: 0 var(--space-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
   font-size: 13px;
 }
 
-// shadcn's accordion-down and accordion-up, at its 0.2s ease-out. Each
-// always plays from its own first frame.
-.intFaqKeys {
-  height: 0;
+.intClose {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+}
 
-  &[data-touched] {
-    animation: int-faq-up var(--duration-base) var(--ease-out) both;
+// shadcn's slide-in-from-right and slide-out-to-right. Each always plays
+// from its own first frame.
+.intSheetKeys {
+  .intSheet[data-touched] {
+    animation: int-sheet-out var(--sheet-out) ease-in-out both;
   }
 
-  &[data-open] {
-    animation: int-faq-down var(--duration-base) var(--ease-out) both;
+  .intSheet[data-open] {
+    animation: int-sheet-in var(--sheet-in) ease-in-out both;
+  }
+
+  .intOverlay[data-touched] {
+    animation: int-fade-out var(--fade) ease both;
+  }
+
+  .intOverlay[data-open] {
+    animation: int-fade-in var(--fade) ease both;
   }
 }
 
-@keyframes int-faq-down {
+@keyframes int-sheet-in {
   from {
-    height: 0;
+    translate: var(--off) 0;
   }
   to {
-    height: var(--h);
+    translate: 0 0;
   }
 }
 
-@keyframes int-faq-up {
+@keyframes int-sheet-out {
   from {
-    height: var(--h);
+    translate: 0 0;
   }
   to {
-    height: 0;
+    translate: var(--off) 0;
   }
 }
 
-// The same timing as a transition: a second click turns it from where it is.
-.intFaqFluid {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows var(--duration-base) var(--ease-out);
+@keyframes int-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
 
-  &[data-open] {
-    grid-template-rows: 1fr;
+@keyframes int-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+// The same timing as transitions: each takes the duration of the state it heads for.
+.intSheetFluid {
+  .intSheet {
+    transition: translate var(--sheet-out) ease-in-out;
+
+    &[data-open] {
+      translate: 0 0;
+      transition-duration: var(--sheet-in);
+    }
+  }
+
+  .intOverlay {
+    transition: opacity var(--fade) ease;
+
+    &[data-open] {
+      opacity: 1;
+    }
   }
 }
 

@@ -884,7 +884,7 @@ test('how waiting feels: a quick refresh shows no spinner in the After; once sho
   await expect(stars.getByText('Couldn’t unstar “Q4 roadmap”. Try again.')).toBeVisible();
 });
 
-test('let motion change its mind: locked clicks are dropped, keyframes restart, a spring keeps the flick', async ({ page }) => {
+test('let motion change its mind: locked clicks are dropped, a keyframe sheet snaps open before closing, a spring keeps the flick', async ({ page }) => {
   await page.goto('/principles/let-motion-change-its-mind');
   await hydrateAll(page);
   const figure = (i: number) => page.locator('figure').nth(i);
@@ -899,23 +899,23 @@ test('let motion change its mind: locked clicks are dropped, keyframes restart, 
   await expect(figure(0).getByLabel('Photo 2 of 5')).toBeVisible({ timeout: 2000 });
   await expect(figure(1).getByLabel('Photo 4 of 5')).toBeVisible({ timeout: 2000 });
 
-  // A question clicked twice: the keyframe close starts fully open, the transition from where it got to.
-  const reopen = (i: number) =>
+  // A sheet opened and closed at once: the keyframe close starts fully open, the transition from where it got to.
+  const reconsider = (i: number) =>
     figure(i).evaluate(async (f) => {
-      const trigger = f.querySelector('button[aria-expanded]') as HTMLButtonElement;
-      const body = trigger.nextElementSibling as HTMLElement;
-      const full = (body.firstElementChild as HTMLElement).scrollHeight;
-      trigger.click();
-      await new Promise((r) => setTimeout(r, 30));
-      trigger.click();
+      const stage = f.querySelector('[class*="intSheetStage"]') as HTMLElement;
+      const sheet = stage.querySelector('[role="dialog"]') as HTMLElement;
+      const shown = () => (stage.getBoundingClientRect().right - sheet.getBoundingClientRect().left) / sheet.offsetWidth;
+      (stage.querySelector('button') as HTMLButtonElement).click();
+      await new Promise((r) => setTimeout(r, 120));
+      (stage.querySelector('[class*="intOverlay"]') as HTMLElement).click();
       await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
-      return body.getBoundingClientRect().height / full;
+      return shown();
     });
   await figure(2).scrollIntoViewIfNeeded();
-  const restarted = await reopen(2);
-  const turned = await reopen(3);
-  expect(restarted).toBeGreaterThan(0.75);
-  expect(restarted - turned).toBeGreaterThan(0.25);
+  const snapped = await reconsider(2);
+  const turned = await reconsider(3);
+  expect(snapped).toBeGreaterThan(0.9);
+  expect(turned).toBeLessThan(0.6);
 
   // A flick: after the release, the timed ease starts from rest while the spring carries on.
   const flick = async (i: number) => {

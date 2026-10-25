@@ -209,7 +209,7 @@ export const entries: Entry[] = [
     title: 'Let motion change its mind',
     summary: 'The next click can come mid-animation. Turn from where it is, at once, and keep the speed it had.',
     details: 2,
-    keywords: ['interruptible', 'interruption', 'redirect', 'carousel', 'accordion', 'swipe', 'keyframes', 'transition', 'spring', 'velocity', 'reversing', 'fluid'],
+    keywords: ['interruptible', 'interruption', 'redirect', 'carousel', 'sheet', 'swipe', 'keyframes', 'transition', 'spring', 'velocity', 'reversing', 'fluid'],
   },
   {
     slug: 'hover-forgives',

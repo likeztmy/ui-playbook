@@ -1,6 +1,7 @@
-import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { animate, motion, useMotionValue, type MotionValue } from 'motion/react';
-import { useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from 'react';
+import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react';
+import { Button } from '../ui/Button';
 import { cx } from '../ui/cx';
 import { Compare, localized } from './shell';
 import s from './demos.module.scss';
@@ -93,56 +94,38 @@ export const InterruptQueue = localized(function InterruptQueue() {
 
 // ── Keyframes start over ─────────────────────────────────
 
-const FAQ = [
-  ['Can I change my plan later?', 'Yes. Switch plans any time from Billing; the difference is prorated to the day.'],
-  ['Do you offer refunds?', 'Within 14 days of any charge, in full, no questions asked.'],
-  ['Is there a free trial?', 'Every plan starts with 14 days free. No card needed until it ends.'],
-] as const;
-
 /**
- * One FAQ row. `keyframes` opens and closes it with two @keyframes, as
- * shadcn/ui's Accordion does; otherwise with a transition.
+ * A settings page with an Edit profile sheet. `keyframes` slides it with
+ * two @keyframes, as shadcn/ui's Sheet does; otherwise with a transition.
+ * Both take shadcn's timing: 500 ms in, 300 ms out, ease-in-out.
  */
-function FaqItem({ q, a, keyframes }: { q: string; a: string; keyframes?: boolean }) {
+function Sheet({ keyframes }: { keyframes?: boolean }) {
   const [open, setOpen] = useState(false);
   const [touched, setTouched] = useState(false);
-  const inner = useRef<HTMLDivElement>(null);
-  const [height, setHeight] = useState(0);
+  const set = (next: boolean) => {
+    setOpen(next);
+    setTouched(true);
+  };
+  const state = { 'data-open': open ? '' : undefined, 'data-touched': touched ? '' : undefined };
   return (
-    <div className={s.intFaqItem}>
-      <button
-        type="button"
-        className={s.intFaqTrigger}
-        aria-expanded={open}
-        onClick={() => {
-          setHeight(inner.current!.scrollHeight);
-          setOpen((o) => !o);
-          setTouched(true);
-        }}
-      >
-        {q}
-        <ChevronDown {...ic} className={s.intChevron} data-open={open ? '' : undefined} />
-      </button>
-      <div
-        className={cx(s.intFaqBody, keyframes ? s.intFaqKeys : s.intFaqFluid)}
-        style={{ '--h': `${height}px` } as CSSProperties}
-        data-open={open ? '' : undefined}
-        data-touched={touched ? '' : undefined}
-      >
-        <div ref={inner} className={s.intClip}>
-          <p className={s.intFaqAnswer}>{a}</p>
-        </div>
+    <div className={cx(s.intSheetStage, keyframes ? s.intSheetKeys : s.intSheetFluid)} onKeyDown={(e) => e.key === 'Escape' && set(false)}>
+      <div className={s.intPage}>
+        <span className={s.intPageTitle}>Account</span>
+        <span className={s.intPageMeta}>Ada Lovelace · @ada</span>
+        <Button size="sm" className={s.intOpen} onClick={() => set(true)}>
+          Edit profile
+        </Button>
       </div>
-    </div>
-  );
-}
-
-function Faq({ keyframes }: { keyframes?: boolean }) {
-  return (
-    <div className={s.intFaq}>
-      {FAQ.map(([q, a]) => (
-        <FaqItem key={q} q={q} a={a} keyframes={keyframes} />
-      ))}
+      <div className={s.intOverlay} {...state} onClick={() => set(false)} />
+      <div className={s.intSheet} role="dialog" aria-label="Edit profile" aria-hidden={!open} {...state}>
+        <span className={s.intPageTitle}>Edit profile</span>
+        <span className={s.intPageMeta}>Make changes to your profile here.</span>
+        <span className={s.intField}>Ada Lovelace</span>
+        <span className={s.intField}>@ada</span>
+        <Button variant="ghost" size="sm" icon className={s.intClose} aria-label="Close" tabIndex={open ? 0 : -1} onClick={() => set(false)}>
+          <X {...ic} />
+        </Button>
+      </div>
     </div>
   );
 }
@@ -152,19 +135,19 @@ export const InterruptKeyframes = localized(function InterruptKeyframes() {
     <Compare
       height={0}
       motion
-      before={<Faq keyframes />}
-      after={<Faq />}
+      before={<Sheet keyframes />}
+      after={<Sheet />}
       beforeNote={
         <>
-          shadcn/ui’s <a href="https://ui.shadcn.com/docs/components/accordion">Accordion</a> opens and closes with two keyframe
-          animations, from 0 to the answer’s height and back. Click a question twice and the second plays from its own first frame: the
-          answer jumps fully open, then closes.
+          shadcn/ui’s <a href="https://ui.shadcn.com/docs/components/sheet">Sheet</a> slides in and out with two keyframe animations.
+          Open it, then close it at once: the closing animation starts from its own first frame, so the sheet snaps fully open before it
+          slides away.
         </>
       }
       afterNote={
         <>
-          A transition only knows where it is and where it’s going, so the second click turns the answer back from where it got to. The way
-          back is shorter, too: a reversed transition is cut by how far it went, the spec’s{' '}
+          A transition only knows where it is and where it’s going, so the sheet turns back from where it got to. The way back is shorter,
+          too: a reversed transition is cut by how far it went, the spec’s{' '}
           <a href="https://www.w3.org/TR/css-transitions-1/">reversing shortening factor</a>. In Chrome, a 1000 ms move reversed at its
           midpoint came back in 508 ms.
         </>
