@@ -220,6 +220,14 @@ export const entries: Entry[] = [
     keywords: ['spacing', 'whitespace', 'proximity', 'grouping', 'gestalt', 'common region', 'zebra', 'stripes', 'alignment', 'layout', 'section header'],
   },
   {
+    slug: 'the-faster-way',
+    kind: 'principle',
+    title: 'The faster way lives on the slow way',
+    summary: 'A key printed in a tooltip teaches almost no one. Show every key at once when the hand reaches for the keyboard.',
+    details: 2,
+    keywords: ['keyboard shortcuts', 'hotkeys', 'discoverability', 'tooltip', 'expert', 'novice', 'learning', 'modifier', 'teach'],
+  },
+  {
     slug: 'hover-forgives',
     kind: 'principle',
     title: 'Hover forgives',

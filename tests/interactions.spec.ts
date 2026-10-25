@@ -1150,3 +1150,49 @@ test('mail, direction one: date sections join their rows; the sender column fits
   });
   expect(Math.abs(column - Math.ceil(widest))).toBeLessThanOrEqual(1);
 });
+
+test('the faster way: holding the modifier shows every key at once; the tally counts key and pointer commands', async ({ page }) => {
+  await page.goto('/principles/the-faster-way');
+  await hydrateAll(page);
+  const [before, after] = [page.locator('figure').nth(0), page.locator('figure').nth(1)];
+  for (const f of [before, after]) {
+    await f.locator('[aria-label="Inbox"]').focus();
+    await page.keyboard.down('Alt');
+    await page.waitForTimeout(100);
+    await expect(f.locator('kbd')).toHaveCount(f === after ? 3 : 0);
+    await page.keyboard.up('Alt');
+    await expect(f.locator('kbd')).toHaveCount(0);
+  }
+  // E by key archives the current message; the toolbar's Star by pointer counts as pointer.
+  await page.keyboard.press('KeyE');
+  await expect(after.locator('[data-tally]')).toHaveText('1 of 1 by key');
+  await after.getByRole('button', { name: 'Star' }).click();
+  await expect(after.locator('[data-tally]')).toHaveText('1 of 2 by key');
+  await expect(after.getByText('Atlas Travel')).toBeVisible();
+  await expect(after.getByText('Mira Okafor')).toHaveCount(0);
+});
+
+test('mail, direction one: holding the modifier labels the bar; the hint shows after a pointer command until a key is used; E archives the ticked', async ({ page }) => {
+  await page.goto('/lab/mail-one');
+  await hydrateAll(page);
+  const hint = page.getByText(/^Hold (⌥|Alt) to see shortcuts$/);
+  await expect(hint).toHaveCount(0);
+  // A command by pointer: the hint appears.
+  await page.locator('[data-row="lisbon"]').hover();
+  await page.locator('[data-row="lisbon"]').getByRole('button', { name: 'Archive' }).click();
+  await expect(hint).toBeVisible();
+  // Held: the bar lists the list's keys.
+  await page.mouse.move(0, 0);
+  await page.keyboard.down('Alt');
+  await expect(page.locator('[class*="_legend_"]')).toContainText('archive');
+  await page.keyboard.up('Alt');
+  await expect(page.locator('[class*="_legend_"]')).toHaveCount(0);
+  // Two ticked, then E: both go, and the hint, its job done, goes too.
+  await page.locator('[data-row="invoice"] [role="checkbox"]').click();
+  await page.locator('[data-row="lunch"] [role="checkbox"]').click();
+  await page.locator('[data-row="roadmap"] button').nth(1).focus();
+  await page.keyboard.press('e');
+  await expect(page.locator('[data-row="invoice"], [data-row="lunch"]')).toHaveCount(0);
+  await expect(page.locator('[data-row="roadmap"]')).toHaveCount(1);
+  await expect(hint).toHaveCount(0);
+});

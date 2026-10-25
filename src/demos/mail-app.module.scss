@@ -613,6 +613,69 @@ mark {
   }
 }
 
+// ── Keys: every control's key while ⌥ (Alt) is held ─────
+
+[data-key] {
+  position: relative;
+}
+
+.app[data-keys] [data-key]::after {
+  content: attr(data-key);
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  z-index: 1;
+  min-width: 16px;
+  padding: 0 3px;
+  border-radius: 4px;
+  background: var(--ink);
+  color: var(--surface);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 16px;
+  text-align: center;
+  translate: -50% 0;
+  pointer-events: none;
+}
+
+// Rows don't label their buttons: the keys act on the row at hand, not on every row.
+.line [data-key]::after {
+  display: none;
+}
+
+// With nothing ticked, the bar has no buttons to label: it lists the list's keys instead.
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-3);
+  padding-left: var(--space-2);
+  color: var(--ink-muted);
+  font-size: 13px;
+
+  kbd {
+    margin-right: var(--space-1);
+    padding: 0 4px;
+    border-radius: 4px;
+    background: var(--ink);
+    color: var(--surface);
+    font-family: var(--font-mono);
+    font-size: 11px;
+  }
+}
+
+// Under the folders, clear of the toasts that rise in the bottom corner.
+.keyHint {
+  margin: var(--space-4) 0 0;
+  padding: 0 var(--space-3);
+  color: var(--ink-muted);
+  font-size: 12px;
+
+  &[data-held] {
+    color: var(--ink);
+  }
+}
+
 // ── Narrow: one column, the message over the list ────────
 
 @container (max-width: 760px) {

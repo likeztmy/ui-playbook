@@ -2646,3 +2646,122 @@
     display: flex;
   }
 }
+
+// The faster way: a short inbox, its toolbar, and the keys shown while a modifier is held.
+.fkApp {
+  display: flex;
+  flex-direction: column;
+  width: min(100%, 320px);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+}
+
+.fkBar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-0-5);
+  height: 44px;
+  padding: 0 var(--space-2);
+  border-bottom: 1px solid var(--line);
+}
+
+.fkTool {
+  position: relative;
+}
+
+// Over the button's lower edge, like a keycap label.
+.fkKey {
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  min-width: 16px;
+  padding: 0 3px;
+  border-radius: 4px;
+  background: var(--ink);
+  color: var(--surface);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  line-height: 16px;
+  text-align: center;
+  translate: -50% 0;
+  pointer-events: none;
+}
+
+.fkTally {
+  margin-left: auto;
+  color: var(--ink-muted);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.fkRows {
+  display: flex;
+  flex-direction: column;
+  min-height: 180px;
+}
+
+.fkRow {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-2);
+  height: 30px;
+  padding: 0 var(--space-3);
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+
+  &[data-current] {
+    background: var(--accent-soft);
+  }
+
+  &[data-unread] .fkFrom,
+  &[data-unread] .fkSubject {
+    font-weight: 600;
+  }
+}
+
+.fkFrom,
+.fkSubject {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fkSubject {
+  color: var(--ink-muted);
+}
+
+.fkStar {
+  color: oklch(0.72 0.15 70);
+  fill: oklch(0.83 0.16 85);
+}
+
+.fkEmpty {
+  margin: auto;
+  color: var(--ink-muted);
+  font-size: 12px;
+}
+
+.fkHint {
+  margin: 0;
+  padding: var(--space-2) var(--space-3);
+  border-top: 1px solid var(--line);
+  color: var(--ink-muted);
+  font-size: 12px;
+
+  &[data-held] {
+    color: var(--ink);
+  }
+}

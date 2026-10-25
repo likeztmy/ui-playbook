@@ -1,0 +1,30 @@
+---
+layout: ../../layouts/Entry.astro
+slug: the-faster-way
+---
+import { FasterExpose } from '../../demos/faster';
+
+## The rule
+
+**A shortcut is learned on the path people already take.** Writing it in a tooltip or beside a menu item teaches almost no one: people look at the task, not at the label. Show every key at once the moment the hand reaches for the keyboard, or name the key at the moment the slow way is used.
+
+<FasterExpose client:visible />
+
+## Details
+
+### Nobody finds it alone
+
+Asked how they first learned that keyboard shortcuts exist, 54 of 853 people (6%) said they found out by themselves; seven said a tooltip showed them. Most were shown by someone else ([Brulé et al., 2025](https://hal.science/hal-05294608)). What's hidden behind a hover or a menu waits for a discovery that rarely comes: on desktop sites, people used hidden navigation in 27% of cases, visible navigation in 48% ([NN/g, 2016](https://www.nngroup.com/articles/hamburger-menus/)).
+
+### A label is not a lesson
+
+With the key printed beside each menu item, as usual, 28.9% of commands were given by key, and 7 of 14 people made no effort to learn any. Speaking the key aloud each time the menu was used raised that to 66.6%. A key that blinked and followed the pointer after each pick did no better than the plain label in their pilot, because people had already looked back at their work ([Grossman, Dragicevic & Balakrishnan, CHI 2007](https://www.dgp.toronto.edu/~ravin/papers/chi2007_learninghotkeys.pdf)). The key has to arrive where attention already is, not where it could be.
+
+## When it doesn't apply
+
+- **Commands used once.** A setting changed once a year doesn't need a key, let alone a lesson.
+- **Touch first.** On a phone there's no modifier to hold; the visible path is the only one, so keep it short.
+
+## Where the playbook applies it
+
+- [Tooltip](/components/tooltip) and [Menu](/components/menu): keys sit in the tooltip and the pull-down, for reference; this page is why that alone isn't enough.
