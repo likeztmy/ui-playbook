@@ -62,14 +62,18 @@ export function Slider({ label, value, onValueChange, min = 0, max = 100, step =
     set(v);
   };
 
-  // The handle steps aside when it would sit on the label or the value.
+  // The handle steps aside when it would sit on the label or the value; stops do the same, and are
+  // left out where the words are: the clear stretch between them, as a fraction of the row.
+  const [clear, setClear] = useState<[number, number]>([0, 1]);
   useLayoutEffect(() => {
     const el = row.current;
     const l = labelEl.current;
     const r = valueEl.current;
     if (!el || !l || !r) return;
-    const x = (pct / 100) * el.offsetWidth;
+    const w = el.offsetWidth;
+    const x = (pct / 100) * w;
     setDodging(x < l.offsetLeft + l.offsetWidth + 8 || x > r.offsetLeft - 8);
+    setClear([(l.offsetLeft + l.offsetWidth + 6) / w, (r.offsetLeft - 6) / w]);
   }, [pct, text]);
 
   const valueAt = (clientX: number, rect: DOMRect) => min + Math.min(1, Math.max(0, (clientX - rect.left) / rect.width)) * (max - min);
@@ -157,9 +161,9 @@ export function Slider({ label, value, onValueChange, min = 0, max = 100, step =
     >
       <span className={s.fill} />
       {discrete &&
-        Array.from({ length: stops - 1 }, (_, i) => (
-          <span key={i} className={s.tick} style={{ left: `${((i + 1) / stops) * 100}%` }} />
-        ))}
+        Array.from({ length: stops - 1 }, (_, i) => (i + 1) / stops)
+          .filter((at) => at > clear[0] && at < clear[1])
+          .map((at) => <span key={at} className={s.tick} style={{ left: `${at * 100}%` }} />)}
       <span className={s.handle} />
       <span ref={labelEl} className={s.label}>
         {label}

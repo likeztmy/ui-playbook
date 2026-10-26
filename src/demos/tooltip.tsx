@@ -3,8 +3,7 @@ import type { ComponentProps } from 'react';
 import { Button } from '../ui/Button';
 import { cx } from '../ui/cx';
 import { Tip, TipGroup, TipKeys, tooltipClasses as ts } from '../ui/Tooltip';
-import { CanvasScene } from './canvas';
-import { Compare } from './shell';
+import { Compare, Frame } from './shell';
 import m from './mistakes.module.scss';
 import s from './demos.module.scss';
 
@@ -43,8 +42,13 @@ export function TooltipPreview() {
   return <Row openFirst />;
 }
 
+/** The page's own scene: an editor's view controls, one label already showing, the rest a hover away. */
 export function TooltipLive() {
-  return <CanvasScene />;
+  return (
+    <Frame label="View controls" height={200}>
+      <Row openFirst />
+    </Frame>
+  );
 }
 
 export function TooltipGrouping() {

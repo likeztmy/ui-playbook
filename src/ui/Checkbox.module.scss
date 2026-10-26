@@ -22,6 +22,11 @@
   &[data-disabled] {
     color: var(--ink-disabled);
   }
+
+  // A finger needs 44px (Apple) where a pointer needs the 20px line: the row grows, the box doesn't.
+  @media (pointer: coarse) {
+    padding-block: 12px;
+  }
 }
 
 .text {

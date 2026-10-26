@@ -17,6 +17,8 @@ export type Column<R> = {
   sortBy?: (row: R) => string | number;
   render: (row: R) => ReactNode;
   width?: number;
+  /** The first to go on a phone, so the columns that matter fit without a sideways scroll. */
+  optional?: boolean;
 };
 
 export type Sort = { key: string; dir: 'asc' | 'desc' };
@@ -74,10 +76,19 @@ export function Table<R>({
 
   const wrap = useRef<HTMLDivElement>(null);
   const [scrolls, setScrolls] = useState(false);
+  // Columns still to the right: the edge fades, so a table cut at a column's end doesn't look whole.
+  const [more, setMore] = useState(false);
+  const edge = () => {
+    const el = wrap.current;
+    if (el) setMore(el.scrollLeft + el.clientWidth < el.scrollWidth - 1);
+  };
   useEffect(() => {
     const el = wrap.current;
     if (!el) return;
-    const measure = () => setScrolls(el.scrollWidth > el.clientWidth || el.scrollHeight > el.clientHeight);
+    const measure = () => {
+      setScrolls(el.scrollWidth > el.clientWidth || el.scrollHeight > el.clientHeight);
+      edge();
+    };
     const ro = new ResizeObserver(measure);
     ro.observe(el);
     measure();
@@ -95,6 +106,8 @@ export function Table<R>({
       tabIndex={scrolls ? 0 : undefined}
       role={scrolls ? 'region' : undefined}
       aria-label={scrolls ? label : undefined}
+      data-more={more || undefined}
+      onScroll={edge}
     >
       <table aria-label={label} className={cx(s.table, stickyFirst && s.stickyFirst, stickyFirst && selectable && s.hasCheck)}>
         <thead>
@@ -115,7 +128,13 @@ export function Table<R>({
               const ariaSort = active ? (sort.dir === 'asc' ? 'ascending' : 'descending') : c.sortBy ? 'none' : undefined;
               const Arrow = active && sort.dir === 'desc' ? ArrowDown : ArrowUp;
               return (
-                <th key={c.key} scope="col" aria-sort={ariaSort} className={cx(c.numeric && s.num)} style={c.width ? { width: c.width } : undefined}>
+                <th
+                  key={c.key}
+                  scope="col"
+                  aria-sort={ariaSort}
+                  className={cx(c.numeric && s.num, c.optional && s.optional)}
+                  style={c.width ? { width: c.width } : undefined}
+                >
                   {c.sortBy ? (
                     <button
                       type="button"
@@ -146,7 +165,7 @@ export function Table<R>({
                   </td>
                 )}
                 {columns.map((c) => (
-                  <td key={c.key} className={cx(c.numeric && s.num, c.muted && s.muted)}>
+                  <td key={c.key} className={cx(c.numeric && s.num, c.muted && s.muted, c.optional && s.optional)}>
                     {c.render(r)}
                   </td>
                 ))}

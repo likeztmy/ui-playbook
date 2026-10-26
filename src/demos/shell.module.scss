@@ -2,6 +2,8 @@
 // the subtree. No overflow clipping: popups portal inside the frame.
 
 .frame {
+  display: flex;
+  flex-direction: column;
   margin: 0;
   min-width: 0;
   border-radius: var(--radius-lg);
@@ -56,6 +58,8 @@
   position: relative;
   box-sizing: border-box;
   display: grid;
+  // In a pair, the shorter frame grows to the taller one's height; its scene stays centred.
+  flex: 1;
   place-items: center;
   padding: var(--space-6);
 }
@@ -74,7 +78,13 @@
   }
 }
 
+// Each side's frame and note share rows with the other side's, so the two frames are one height
+// and the notes start on one line.
 .side {
+  display: grid;
+  grid-row: span 2;
+  grid-template-rows: subgrid;
+  align-content: start;
   min-width: 0;
 }
 
@@ -125,6 +135,7 @@
 
 .grid {
   display: grid;
+  grid-template-columns: var(--cols);
   gap: var(--space-4) var(--space-3);
   align-items: center;
   width: 100%;
@@ -132,14 +143,36 @@
   // Room for the 4px focus ring: a scroll container clips both axes.
   padding: var(--space-1);
 
-  // Too narrow for every state: it scrolls, and the fading edge says so.
+  // Too narrow for every state in a row: each variant gets its own block, its states wrapping,
+  // each named under itself. Nothing is cut off and nothing needs a sideways scroll.
   @media (max-width: 640px) {
-    mask-image: linear-gradient(to right, var(--ink) calc(100% - 32px), transparent);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-5);
+
+    > .head {
+      display: none;
+    }
+
+    > span:first-child {
+      display: none;
+    }
   }
 }
 
 .row {
   display: contents;
+
+  @media (max-width: 640px) {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: var(--space-3);
+
+    > .name {
+      grid-column: 1 / -1;
+    }
+  }
 }
 
 .head {
@@ -160,6 +193,18 @@
 .cell {
   display: flex;
   justify-content: center;
+
+  @media (max-width: 640px) {
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-1);
+
+    &::after {
+      content: attr(data-state);
+      color: var(--ink-muted);
+      font-size: 11px;
+    }
+  }
 }
 
 // Gallery: one row per variant, its purpose on the left and a live instance

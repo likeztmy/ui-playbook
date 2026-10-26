@@ -21,7 +21,7 @@ const size = (mb: number) => `${mb.toFixed(1)} MB`;
 
 const COLUMNS: Column<File>[] = [
   { key: 'name', header: 'Name', render: (f) => f.name, sortBy: (f) => f.name },
-  { key: 'owner', header: 'Owner', muted: true, render: (f) => f.owner, sortBy: (f) => f.owner },
+  { key: 'owner', header: 'Owner', muted: true, optional: true, render: (f) => f.owner, sortBy: (f) => f.owner },
   {
     key: 'status',
     header: 'Status',
@@ -186,7 +186,7 @@ export function TableScroll() {
       before={<Files columns={WIDE} sortable={false} className={cx(s.narrowTable, m.nothingPinned)} />}
       after={<Files columns={WIDE} sortable={false} stickyFirst className={s.narrowTable} />}
       beforeNote="Scroll right to see Views and the names scroll away with everything else. Whose row is 388 views?"
-      afterNote="The name column stays pinned, with a line at its edge, while the rest scroll under it. Try scrolling both."
+      afterNote="The name column stays pinned, with a line at its edge, while the rest scroll under it."
     />
   );
 }

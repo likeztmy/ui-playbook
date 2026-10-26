@@ -1,4 +1,14 @@
-import { createContext, useContext, useEffect, useLayoutEffect, useRef, useState, type ComponentType, type ReactNode } from 'react';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type ComponentType,
+  type CSSProperties,
+  type ReactNode,
+} from 'react';
 import { PortalContainer } from '../ui/portal';
 import { Button } from '../ui/Button';
 import { Ruler } from 'lucide-react';
@@ -50,7 +60,15 @@ type Band = { top: number; height: number; px: number; ratio: number };
  * grouping by proximity compares them. Text is measured by its em box, so a
  * line's leading doesn't count as space.
  */
-export function Measured({ children, className, show }: { children: ReactNode; className?: string; /** Always on, for a playground with no switch. */ show?: boolean }) {
+export function Measured({
+  children,
+  className,
+  show,
+}: {
+  children: ReactNode;
+  className?: string;
+  /** Always on, for a playground with no switch. */ show?: boolean;
+}) {
   const on = useContext(GapsOn) || !!show;
   const ref = useRef<HTMLDivElement>(null);
   const [bands, setBands] = useState<Band[]>([]);
@@ -160,7 +178,8 @@ function useStartFrame(on: boolean | undefined, stage: HTMLElement | null, porta
       const scale = parseFloat(css.getPropertyValue('--enter-scale')) || 1;
       const offset = parseFloat(css.getPropertyValue('--enter-offset')) || 0;
       const side = el.dataset.side;
-      const [tx, ty] = side === 'bottom' ? [0, -offset] : side === 'top' ? [0, offset] : side === 'right' ? [-offset, 0] : side === 'left' ? [offset, 0] : [0, 0];
+      const [tx, ty] =
+        side === 'bottom' ? [0, -offset] : side === 'top' ? [0, offset] : side === 'right' ? [-offset, 0] : side === 'left' ? [offset, 0] : [0, 0];
       const o = { x: box.left - f.left + ox, y: box.top - f.top + oy };
       setOrigin(o);
       setStart({
@@ -225,7 +244,15 @@ export function Frame({ label, children, height = 200, className, defaultTheme, 
         <span className={s.tools}>
           {onGapsChange && (
             <Tip label={words.gaps}>
-              <Button variant="ghost" size="sm" icon aria-label={words.gaps} aria-pressed={gaps} className={s.slow} onClick={() => onGapsChange(!gaps)}>
+              <Button
+                variant="ghost"
+                size="sm"
+                icon
+                aria-label={words.gaps}
+                aria-pressed={gaps}
+                className={s.slow}
+                onClick={() => onGapsChange(!gaps)}
+              >
                 <Ruler size={14} strokeWidth={1.5} nonScalingStroke aria-hidden />
               </Button>
             </Tip>
@@ -337,7 +364,7 @@ type StateGridProps = {
 export function StateGrid({ rows }: StateGridProps) {
   return (
     <Frame label="All states" height={0} still>
-      <div className={s.grid} style={{ gridTemplateColumns: `auto repeat(${STATES.length}, 1fr)` }}>
+      <div className={s.grid} style={{ '--cols': `auto repeat(${STATES.length}, 1fr)` } as CSSProperties}>
         <span />
         {STATES.map((state) => (
           <span key={state} className={s.head}>
@@ -348,7 +375,7 @@ export function StateGrid({ rows }: StateGridProps) {
           <div key={row.name} className={s.row}>
             <span className={s.name}>{row.name}</span>
             {STATES.map((state) => (
-              <div key={state} className={s.cell}>
+              <div key={state} className={s.cell} data-state={state}>
                 {row.render(state)}
               </div>
             ))}

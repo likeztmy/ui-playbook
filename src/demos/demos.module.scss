@@ -14,10 +14,11 @@
   width: 100%;
 }
 
-// Pins a live trigger to the top so its menu has room below.
+// Pins a live trigger to the top, centred, so its popup has room below and the stage reads as
+// one scene rather than a control in a corner.
 .top {
   align-self: start;
-  justify-self: start;
+  justify-self: center;
 }
 
 .readout {
@@ -33,7 +34,9 @@
   width: 200px;
   height: 128px;
   border: 0 solid var(--line-strong);
-  background: var(--surface);
+  // A step off the stage in both themes, so the corner gap being judged can be seen; a shadow
+  // alone vanishes in dark mode.
+  background: var(--surface-sunken);
   box-shadow: var(--shadow-sm);
 }
 
@@ -2655,7 +2658,7 @@
   font-size: 13px;
 
   &[data-stripe] {
-    background: var(--surface-sunken);
+    background: var(--fill-control);
   }
 }
 

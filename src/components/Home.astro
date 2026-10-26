@@ -52,7 +52,7 @@ const groups = [
     groups.map((g) => {
       const items = entries.filter((e) => e.kind === g.kind);
       return (
-        <section class={s.group} data-group>
+        <section class={s.group} id={g.kind} data-group>
           <header class={s.groupHead}>
             <h2 class={s.groupTitle}>{g.title}</h2>
             <span class={s.count} data-count>{items.length}</span>
@@ -65,7 +65,7 @@ const groups = [
                 data-search={[e.title, e.summary, titleIn(e, lang), summaryIn(e, lang), ...e.keywords].join(' ').toLowerCase()}
               >
                 <a class={s.cardHead} href={linkIn(href(e), lang)}>
-                  <span class={s.cardTitle}>{titleIn(e, lang)}</span>
+                  <span class={s.cardTitle} title={titleIn(e, lang)}>{titleIn(e, lang)}</span>
                   <span class={s.cardMeta}>{e.kind === 'practice' ? t.decisions(e.details) : t.details(e.details)}</span>
                 </a>
                 {/* Something to look at, not to use: the card is one link, one Tab stop. */}

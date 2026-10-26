@@ -9,7 +9,8 @@ const openTip = (page: Page, text: string) => page.locator('[data-open]').filter
 test('tooltip waits delay-tooltip, then neighbours swap instantly', async ({ page }) => {
   await page.goto('/components/tooltip');
   await hydrateAll(page);
-  const live = page.locator('figure').first();
+  // The grouped row, the After of "one delay": the opening scene already has a label showing.
+  const live = page.locator('figure').nth(2);
   const zoomOut = live.getByRole('button', { name: 'Zoom out' });
   await zoomOut.scrollIntoViewIfNeeded();
 

@@ -18,6 +18,11 @@
   &:focus-visible {
     box-shadow: var(--focus-ring);
   }
+
+  // Not while focused: the fade would take the ring's right side with it.
+  &[data-more]:not(:focus-visible) {
+    mask-image: linear-gradient(to left, transparent, black 32px);
+  }
   overscroll-behavior-x: contain;
 }
 
@@ -185,5 +190,11 @@
 
   &[data-sorted] {
     color: var(--ink);
+  }
+}
+
+@media (max-width: 640px) {
+  .optional {
+    display: none;
   }
 }

@@ -47,9 +47,15 @@
     border-color: var(--accent);
   }
 
-  // Invalid keeps its red edge, focused or not; the message says why.
+  // Invalid keeps its red edge, focused or not; the message says why. Focused, the edge doubles
+  // inward, so the field that focus was moved to can be told from the others.
   &:has(> [data-invalid]) {
     border-color: var(--danger);
+  }
+
+  &:has(> [data-invalid]):focus-within,
+  &:has(> [data-invalid])[data-pin~='focus'] {
+    box-shadow: inset 0 0 0 1px var(--danger);
   }
 
   &:has(> [data-disabled]) {

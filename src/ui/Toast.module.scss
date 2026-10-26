@@ -126,6 +126,11 @@
   font-weight: 400;
   white-space: nowrap;
   text-overflow: ellipsis;
+
+  // A failure stays until it's closed so it can be read: its reason wraps rather than being cut.
+  [data-type='error'] & {
+    white-space: normal;
+  }
 }
 
 .actions {

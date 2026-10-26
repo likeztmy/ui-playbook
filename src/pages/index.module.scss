@@ -1,4 +1,7 @@
 .group {
+  // Arriving from an entry's back link: the section's head clears the sticky header.
+  scroll-margin-top: calc(56px + var(--space-6));
+
   & + & {
     margin-top: var(--space-12);
   }
@@ -90,9 +93,14 @@
 }
 
 .cardTitle {
+  // One line, so every card's stage starts on one line across the row; the page has it in full.
+  min-width: 0;
+  overflow: hidden;
   font-size: 15px;
   line-height: 22px;
   font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .cardMeta {
@@ -108,7 +116,9 @@
 .cardStage {
   display: grid;
   place-items: center;
-  min-height: 248px;
+  // One height for every stage, so summaries line up across a row too.
+  height: 300px;
+  overflow: hidden;
   padding: var(--space-6) var(--space-4);
   background: var(--bg);
 }
