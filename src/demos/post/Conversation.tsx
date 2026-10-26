@@ -180,7 +180,7 @@ export function Conversation({ post, compose, c, single }: { post: Post; compose
             // Where reading ends, a reply is already waiting: the action on the path people take.
             <TipGroup>
               <div className={s.answer}>
-                <Tip label="Reply" keys={['R']}>
+                <Tip keys={['R']}>
                   <button ref={field} type="button" className={s.replyField} onClick={() => compose.reply(c, 'reply')}>
                     <Avatar id="me" size="sm" />
                     <span>Reply to {replyName}…</span>
@@ -202,7 +202,7 @@ export function Conversation({ post, compose, c, single }: { post: Post; compose
             </TipGroup>
           )}
           {next && (
-            <Tip label="Next conversation" keys={['J']}>
+            <Tip keys={['J']}>
               <button type="button" className={s.next} onClick={() => post.step(1)}>
                 <span className={s.nextLabel}>Next conversation</span>
                 <span className={s.nextSubject}>{next.subject}</span>

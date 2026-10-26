@@ -167,16 +167,19 @@
   font-weight: 500;
 }
 
-// The way on: the next conversation, by name, after everything in this one.
+// The way on: the next conversation, by name, after everything in this one. Its text stays on the
+// column's edges; the hover's fill reaches a little past them, with a radius, so the words don't
+// touch its edge.
 .next {
+  position: relative;
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  width: 100%;
-  margin-top: var(--space-8);
-  padding: var(--space-3) 0;
+  width: calc(100% + 2 * var(--space-3));
+  margin: var(--space-8) calc(-1 * var(--space-3)) 0;
+  padding: var(--space-3);
   border: 0;
-  border-top: 1px solid var(--line);
+  border-radius: var(--radius-md);
   background: none;
   color: var(--ink);
   font: inherit;
@@ -202,6 +205,14 @@
 .next > svg {
   // The chevron's drawing, not its box, on the times' right edge.
   margin-right: -4px;
+}
+
+// The line above it, on the column's width and clear of the fill: the row's own edges are the fill's.
+.next::before {
+  position: absolute;
+  inset: calc(-1 * var(--space-2)) var(--space-3) auto;
+  border-top: 1px solid var(--line);
+  content: '';
 }
 
 .nextSubject {

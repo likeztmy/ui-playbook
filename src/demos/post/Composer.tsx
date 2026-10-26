@@ -187,7 +187,7 @@ export function Composer({ d, compose, page, onBack }: Props) {
   const footer = (
     <TipGroup>
       <div className={s.footer}>
-        <Tip label="Send" keys={['⌘', '↵']}>
+        <Tip keys={['⌘', '↵']}>
           <Button variant="primary" onClick={send}>
             Send
           </Button>

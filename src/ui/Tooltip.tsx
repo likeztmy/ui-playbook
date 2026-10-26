@@ -36,8 +36,11 @@ export function TipGroup({ children }: { children: ReactNode }) {
 }
 
 type TipProps = {
-  /** Same words as the trigger's aria-label. */
-  label: string;
+  /**
+   * Same words as the trigger's aria-label. Leave it out for a control that already shows its name
+   * (a labelled button, a row): the tip then carries only the shortcut, never the name a second time.
+   */
+  label?: string;
   keys?: string[];
   side?: 'top' | 'bottom';
   /** Start open, e.g. for a still preview. */
@@ -48,7 +51,7 @@ type TipProps = {
   children: ReactElement;
 };
 
-/** Names an icon-only control, with its shortcut. One line, never interactive. */
+/** Names an icon-only control, with its shortcut; or, for a labelled one, gives just its shortcut. One line, never interactive. */
 export function Tip({ label, keys, side = 'top', defaultOpen, offset = 4, children }: TipProps) {
   const container = usePortalContainer();
   useEffect(listen, []);
@@ -63,7 +66,7 @@ export function Tip({ label, keys, side = 'top', defaultOpen, offset = 4, childr
       <Tooltip.Trigger render={children} delay={DELAY} />
       <Tooltip.Portal container={container}>
         <Tooltip.Positioner className={s.positioner} side={side} sideOffset={offset}>
-          <Tooltip.Popup className={s.popup}>
+          <Tooltip.Popup className={s.popup} data-bare={label ? undefined : ''}>
             {label}
             {keys && <TipKeys keys={keys} />}
           </Tooltip.Popup>

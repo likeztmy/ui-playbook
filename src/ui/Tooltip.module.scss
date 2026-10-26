@@ -39,3 +39,8 @@
   font: inherit;
   font-variant-numeric: tabular-nums;
 }
+
+// Keys alone, for a control that shows its own name: nothing to recede behind.
+[data-bare] > .keys {
+  color: inherit;
+}
