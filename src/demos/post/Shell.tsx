@@ -10,6 +10,7 @@ import { DraftList } from './DraftList';
 import { Find } from './Find';
 import { FOLDERS, FOLDER_NAME } from './folders';
 import { participants } from './people';
+import { Sending } from './Sending';
 import { List, type Chrome } from './List';
 import type { Folder } from './model';
 import { useCompose, type Compose } from './useCompose';
@@ -153,17 +154,12 @@ function Shell({ onToasts }: { onToasts: (el: HTMLDivElement | null) => void }) 
   chrome.outbox = compose.sending
     .filter((x) => !x.conversation)
     .map((x) => (
-      <div key={x.message} className={s.outbox} role="status">
+      <div key={x.message} className={s.outbox} data-outbox="">
         <span className={s.outboxText}>
-          {x.done ? 'Sent' : 'Sending'} <b>{x.subject.trim() || '(no subject)'}</b>
+          <b>{x.subject.trim() || '(no subject)'}</b>
           {x.to.length > 0 && ` to ${participants(x.to)}`}
-          {!x.done && ' · '}
         </span>
-        {!x.done && (
-          <button type="button" className={s.undo} onClick={x.undo}>
-            Undo
-          </button>
-        )}
+        <Sending onUndo={x.undo} done={x.done} />
       </div>
     ));
 

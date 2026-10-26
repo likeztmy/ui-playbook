@@ -6,6 +6,7 @@ import { snippet, type Message as Msg } from './model';
 import { person } from './people';
 import { QuotedFold } from './QuotedFold';
 import { Recipients } from './Recipients';
+import { Sending } from './Sending';
 import s from './Message.module.scss';
 
 type Props = {
@@ -43,16 +44,7 @@ export function Message({ m, open, onToggle, headRef, undo }: Props) {
           </button>
           <Recipients m={m} />
         </span>
-        {undo ? (
-          <span className={s.sending} role="status">
-            Sending ·{' '}
-            <button type="button" className={s.undo} onClick={undo}>
-              Undo
-            </button>
-          </span>
-        ) : (
-          <span className={s.time}>{m.at}</span>
-        )}
+        {undo ? <Sending onUndo={undo} /> : <span className={s.time}>{m.at}</span>}
       </header>
       <div className={s.body}>
         {m.letter ? (

@@ -4,6 +4,8 @@
 $indent: calc(36px + var(--space-3));
 
 .message {
+  // Holds a just-sent message's Undo window, drawn along its top.
+  position: relative;
   padding: var(--space-4) 0 var(--space-5);
 }
 
@@ -47,29 +49,6 @@ $indent: calc(36px + var(--space-3));
   color: var(--ink-muted);
   font-size: 12px;
   font-weight: 400;
-}
-
-// Just sent, in the time's place: what's happening, and the way back.
-.sending {
-  color: var(--ink-muted);
-  font-size: 13px;
-  white-space: nowrap;
-}
-
-.undo {
-  padding: 0;
-  border: 0;
-  background: none;
-  color: var(--accent-text);
-  font: inherit;
-  font-weight: 500;
-  cursor: pointer;
-
-  &:focus-visible {
-    border-radius: var(--radius-xs);
-    outline: none;
-    box-shadow: var(--focus-ring);
-  }
 }
 
 .time {

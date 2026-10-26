@@ -32,8 +32,10 @@
 
 // A new message just sent, atop the list: what it is, and the way back, for as long as Undo lasts.
 .outbox {
+  position: relative;
   display: flex;
   align-items: center;
+  gap: var(--space-4);
   height: 44px;
   padding: 0 var(--space-4) 0 calc(32px + 20px + var(--space-1));
   border-bottom: 1px solid var(--line);
@@ -42,33 +44,15 @@
   color: var(--ink-muted);
 }
 
-// The way back follows the words, as a sent reply's does, not off at the row's far end.
 .outboxText {
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: pre;
+  white-space: nowrap;
 
   b {
     color: var(--ink);
     font-weight: 500;
-  }
-}
-
-.undo {
-  flex: none;
-  padding: 2px 0;
-  border: 0;
-  border-radius: var(--radius-xs);
-  background: none;
-  color: var(--accent-text);
-  font: inherit;
-  font-weight: 500;
-  cursor: pointer;
-
-  &:focus-visible {
-    outline: none;
-    box-shadow: var(--focus-ring);
   }
 }
 

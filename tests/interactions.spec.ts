@@ -1256,7 +1256,9 @@ test('post: compose picks and types recipients, sends with ⌘↵, and Undo brin
   await page.keyboard.press('ControlOrMeta+Enter');
   await expect(composer).toHaveCount(0);
   // Sent: it's atop the list you come back to, with its Undo, not in a toast at the screen's foot.
-  await expect(page.getByRole('status').filter({ hasText: 'Sending Beta invite list to Priya' })).toBeVisible();
+  const outbox = page.locator('[data-outbox]');
+  await expect(outbox).toContainText('Beta invite list to Priya');
+  await expect(outbox.getByRole('status')).toContainText('Sending');
   await page.getByRole('navigation', { name: 'Folders' }).getByRole('button', { name: 'Sent' }).click();
   await expect(page.getByRole('list').getByText('Beta invite list')).toBeVisible();
   // Undo: the message leaves Sent and the composer is back as it was.
@@ -1293,7 +1295,7 @@ test('post: R replies at the foot of the conversation, to the sender, and the re
   await expect(sent).toContainText('See you there.');
   expect(await conversation.getByRole('article').count()).toBeGreaterThanOrEqual(before);
   // The reply says it's sending, with its Undo, where its time will be; focus is back on the reply field.
-  await expect(sent.getByRole('status')).toHaveText(/Sending/);
+  await expect(sent.getByRole('status')).toContainText('Sending');
   await expect(conversation.getByRole('button', { name: 'Reply to Daniel…' })).toBeFocused();
   // Undo takes it back out of the thread and reopens the reply as it was.
   await sent.getByRole('button', { name: 'Undo' }).click();
@@ -1382,7 +1384,7 @@ test('post: files attach by picking or dropping, each with its own progress; Sen
   await expect(composer.getByText('Sends when the files are up')).toBeVisible();
   await expect(composer.getByRole('button', { name: 'Cancel sending' })).toBeVisible();
   await expect(files.getByText('PDF · 40 KB')).toBeVisible({ timeout: 5000 });
-  await expect(page.getByRole('status').filter({ hasText: /^Sending/ })).toBeVisible({ timeout: 6000 });
+  await expect(page.locator('[data-outbox]').getByRole('status')).toContainText('Sending', { timeout: 6000 });
   await expect(composer).toHaveCount(0);
   // Dropping onto the composer: an outline while over it, a card after.
   await page.keyboard.press('c');
@@ -1463,14 +1465,45 @@ test('post: when Undo runs out, a sent message says so in place; nothing under t
   await page.getByRole('textbox', { name: 'Message' }).click();
   await page.keyboard.type('Noon?');
   await page.keyboard.press('ControlOrMeta+Enter');
-  const status = list.getByRole('status');
-  await expect(status).toHaveText(/^Sending Lunch to Mira/);
+  const row = list.locator('[data-outbox]');
+  const status = row.getByRole('status');
+  await expect(row).toContainText('Lunch to Mira');
+  await expect(status).toContainText('Sending');
   const first = list.locator('[data-row]').first();
   const before = (await first.boundingBox())!.y;
-  await expect(status).toHaveText('Sent Lunch to Mira', { timeout: 8000 });
+  await expect(status).toHaveText('Sent', { timeout: 8000 });
   await expect(status.getByRole('button', { name: 'Undo' })).toHaveCount(0);
   expect((await first.boundingBox())!.y).toBe(before);
   // It goes with the next move.
   await page.getByRole('navigation', { name: 'Folders' }).getByRole('button', { name: 'Sent' }).click();
-  await expect(list.getByRole('status')).toHaveCount(0);
+  await expect(list.locator('[data-outbox]')).toHaveCount(0);
+});
+
+test('tip: focus the app moves back opens no tooltip; focus the person moves with Tab does', async ({ page }) => {
+  await page.goto('/lab/mail-one');
+  await hydrateAll(page);
+  const list = page.getByRole('region', { name: 'Conversations' });
+  const newMessage = list.getByRole('button', { name: 'New message' });
+  const tip = openTip(page, 'New message');
+  // Esc out of a new message: focus comes back to New message, quietly.
+  await page.keyboard.press('c');
+  await page.keyboard.press('Escape');
+  await expect(newMessage).toBeFocused();
+  await page.waitForTimeout(800);
+  await expect(tip).toHaveCount(0);
+  // Sent with ⌘↵: the same.
+  await page.keyboard.press('c');
+  await page.getByRole('combobox', { name: 'To' }).fill('mira');
+  await page.getByRole('combobox', { name: 'To' }).press('Enter');
+  await page.getByRole('textbox', { name: 'Message' }).click();
+  await page.keyboard.type('Noon?');
+  await page.keyboard.press('ControlOrMeta+Enter');
+  await expect(newMessage).toBeFocused();
+  await page.waitForTimeout(800);
+  await expect(tip).toHaveCount(0);
+  // Tabbing to it is the person's own move: the tooltip names it.
+  await page.keyboard.press('Shift+Tab');
+  await page.keyboard.press('Tab');
+  await expect(newMessage).toBeFocused();
+  await expect(tip).toBeVisible();
 });
