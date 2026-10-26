@@ -15,7 +15,7 @@
     'side main' minmax(0, 1fr) / 232px minmax(0, 1fr);
   height: 100%;
   overflow: hidden;
-  background: var(--bg);
+  background: var(--post-canvas, var(--bg));
   color: var(--ink);
   font-size: 14px;
 }
@@ -99,7 +99,7 @@
 
   // Where you are is chosen, so it takes the selection's tint; hover stays grey.
   &[aria-current] {
-    background: var(--accent-soft);
+    background: var(--post-current, var(--accent-soft));
     color: var(--ink);
     font-weight: 600;
   }

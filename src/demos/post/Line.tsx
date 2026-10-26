@@ -50,6 +50,7 @@ export function Line({ c, post, rowRef, pin }: Props) {
           />
         }
       >
+        <span className={s.dot} aria-hidden />
         <span className={s.check}>
           <Checkbox aria-label={`Select ${c.subject}`} checked={checked} onCheckedChange={(v) => check(!!v)} />
         </span>

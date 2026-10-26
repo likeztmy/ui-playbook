@@ -12,6 +12,7 @@ import { List } from './List';
 import type { Folder } from './model';
 import { useCompose, type Compose } from './useCompose';
 import { usePost, type Post } from './usePost';
+import './looks.scss';
 import s from './Shell.module.scss';
 
 const ic = { size: 16, strokeWidth: 1.5, nonScalingStroke: true, 'aria-hidden': true } as const;
@@ -170,7 +171,7 @@ function Shell({ onToasts }: { onToasts: (el: HTMLDivElement | null) => void }) 
       </header>
       <nav className={s.side} aria-label="Folders">
         {composeTip(
-          <Button ref={composeButton} className={s.compose} onClick={compose.compose}>
+          <Button ref={composeButton} className={s.compose} data-compose="" onClick={compose.compose}>
             <Pencil {...ic} />
             Compose
           </Button>,
@@ -196,8 +197,11 @@ function Shell({ onToasts }: { onToasts: (el: HTMLDivElement | null) => void }) 
 /** Post, the In practice mail app, at full size. */
 export function PostApp() {
   const [container, setContainer] = useState<HTMLElement | null>(null);
+  // Which colour direction to show (?look=a|b|c), while they're compared.
+  const [look, setLook] = useState<string | null>(null);
+  useEffect(() => setLook(new URLSearchParams(location.search).get('look')), []);
   return (
-    <div className={s.frame}>
+    <div className={s.frame} data-look={look ?? undefined}>
       <ToastProvider container={container} contained align="start">
         <Shell onToasts={setContainer} />
       </ToastProvider>
