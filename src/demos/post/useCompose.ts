@@ -1,9 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { useToast } from '../../ui/Toast';
 import { toBlocks } from './doc';
-import { blank, empty, loadDrafts, replyTo, storeDrafts, type Draft, type DraftKind } from './draft';
+import { blank, empty, fileFrom, loadDrafts, replyTo, storeDrafts, uploading, type Draft, type DraftKind } from './draft';
 import type { Conversation, Message } from './model';
 import type { Post } from './usePost';
+
+// Uploads are simulated: a steady rate, and a floor so a small file still shows its bar.
+const RATE = 1.5 * 1024 * 1024;
+const FLOOR = 1500;
+const TICK = 100;
 
 const at = (d: Date) => `${d.toLocaleDateString('en-GB', { weekday: 'short' })} ${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`;
 
@@ -13,6 +18,9 @@ export function useCompose(post: Post) {
   const [writing, setWriting] = useState<string | null>(null);
   const [saved, setSaved] = useState(0);
   const loaded = useRef(false);
+  const timers = useRef(new Map<string, ReturnType<typeof setInterval>>());
+  // Drafts whose Send is waiting for their uploads.
+  const [waiting, setWaiting] = useState<Set<string>>(new Set());
   const toast = useToast();
 
   // Read after the first render, so the server's HTML and the first client render agree.
@@ -30,6 +38,40 @@ export function useCompose(post: Post) {
     }, 1000);
     return () => clearTimeout(t);
   }, [drafts]);
+
+  const files = (id: string, change: (fs: NonNullable<Draft['attachments']>) => NonNullable<Draft['attachments']>) =>
+    setDrafts((all) => all.map((d) => (d.id === id ? { ...d, attachments: change(d.attachments ?? []), edited: Date.now() } : d)));
+
+  /** Adds files to a draft; each uploads on its own. */
+  const attach = (id: string, picked: File[]) => {
+    const added = picked.map(fileFrom);
+    files(id, (fs) => [...fs, ...added]);
+    for (const f of added) {
+      const steps = Math.max(FLOOR, ((f.bytes ?? 0) / RATE) * 1000) / TICK;
+      let step = 0;
+      const timer = setInterval(() => {
+        step++;
+        const done = step >= steps;
+        files(id, (fs) => fs.map((x) => (x.id === f.id ? { ...x, progress: done ? undefined : step / steps } : x)));
+        if (done) {
+          clearInterval(timer);
+          timers.current.delete(f.id);
+        }
+      }, TICK);
+      timers.current.set(f.id, timer);
+    }
+  };
+
+  /** Takes a file off a draft, stopping its upload. */
+  const detach = (id: string, file: string) => {
+    clearInterval(timers.current.get(file));
+    timers.current.delete(file);
+    files(id, (fs) => {
+      const f = fs.find((x) => x.id === file);
+      if (f?.src?.startsWith('blob:')) URL.revokeObjectURL(f.src);
+      return fs.filter((x) => x.id !== file);
+    });
+  };
 
   const add = (d: Draft) => setDrafts((all) => [...all.filter((x) => x.id !== d.id), d]);
   const remove = (id: string) => setDrafts((all) => all.filter((x) => x.id !== id));
@@ -86,7 +128,7 @@ export function useCompose(post: Post) {
       at: at(new Date()),
       body: toBlocks(d.body),
       quoted: d.quoted,
-      attachments: d.attachments,
+      attachments: d.attachments?.map(({ id: _, progress: __, bytes: ___, ...a }) => a),
     };
     const undo = post.deliver(m, d.subject, d.conversation);
     remove(id);
@@ -104,6 +146,35 @@ export function useCompose(post: Post) {
     });
   };
 
+  /** Send now, or, while a file is still uploading, once it's up. */
+  const sendWhenReady = (id: string) => {
+    const d = drafts.find((x) => x.id === id);
+    if (!d) return;
+    if (!uploading(d)) return send(id);
+    setWaiting((w) => new Set(w).add(id));
+  };
+
+  const cancelWait = (id: string) =>
+    setWaiting((w) => {
+      const next = new Set(w);
+      next.delete(id);
+      return next;
+    });
+
+  // The last upload of a waiting draft finishing sends it.
+  useEffect(() => {
+    for (const id of waiting) {
+      const d = drafts.find((x) => x.id === id);
+      if (d && uploading(d)) continue;
+      setWaiting((w) => {
+        const next = new Set(w);
+        next.delete(id);
+        return next;
+      });
+      if (d) send(id);
+    }
+  }, [drafts, waiting]);
+
   return {
     drafts: drafts.filter((d) => !empty(d)),
     writing: drafts.find((d) => d.id === writing) ?? null,
@@ -116,7 +187,11 @@ export function useCompose(post: Post) {
     update,
     close,
     discard,
-    send,
+    send: sendWhenReady,
+    waiting: (id: string) => waiting.has(id),
+    cancelWait,
+    attach,
+    detach,
     /** Leaves the main-area draft, e.g. for another folder. */
     leave: () => writing && close(writing),
   };

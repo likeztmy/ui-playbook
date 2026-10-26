@@ -33,6 +33,14 @@ export const person = (id: string): Person => PEOPLE[id] ?? BY_EMAIL[id] ?? { id
 /** Everyone you can write to, for suggestions. */
 export const CONTACTS = LIST.filter((p) => !p.me);
 
+/** Contacts a word of whose name, or whose address, starts with `q`: "h" finds Hana, not every "northwind". */
+export function findContacts(q: string, exclude: string[] = [], limit = 6) {
+  const query = q.trim().toLowerCase();
+  if (!query) return [];
+  const starts = (p: Person) => [...p.name.toLowerCase().split(/\s+/), p.email].some((w) => w.startsWith(query));
+  return CONTACTS.filter((p) => !exclude.includes(p.email) && starts(p)).slice(0, limit);
+}
+
 /** How someone is named in running text: "me" for the reader, a person by first name, a company in full. */
 export const shortName = (id: string) => {
   const p = person(id);

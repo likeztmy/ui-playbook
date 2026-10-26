@@ -136,9 +136,13 @@
   box-shadow: var(--shadow-xs);
 }
 
+// Over the mail, not the whole app: a toast rises at the foot of the area where its action was
+// taken (archive, send), never across the line between folders and mail.
 .toastLayer {
-  position: absolute;
-  inset: 0;
+  position: relative;
+  grid-area: main;
+  // The main card's own inset, so a toast centres on the card.
+  margin: 0 var(--space-3) var(--space-3) 0;
   pointer-events: none;
 
   > * {
@@ -179,8 +183,12 @@
     font-weight: 600;
   }
 
-  .main {
+  .main,
+  .toastLayer {
     margin: 0;
+  }
+
+  .main {
     border-radius: 0;
   }
 }

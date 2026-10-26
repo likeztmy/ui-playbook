@@ -1,8 +1,8 @@
 import { X } from 'lucide-react';
 import { useId, useState, type ClipboardEvent, type KeyboardEvent, type ReactNode, type Ref } from 'react';
 import { valid } from './draft';
-import { Avatar } from './Avatar';
-import { CONTACTS, person } from './people';
+import { findContacts, person } from './people';
+import { Suggestions } from './Suggestions';
 import s from './RecipientField.module.scss';
 
 type Props = {
@@ -16,11 +16,6 @@ type Props = {
   error?: string | null;
 };
 
-const fold = (t: string) => t.toLowerCase();
-
-/** A word of the name, or the address, starts with what's typed: "h" finds Hana, not every "northwind". */
-const starts = (p: { name: string; email: string }, q: string) => [...fold(p.name).split(/\s+/), fold(p.email)].some((w) => w.startsWith(q));
-
 /**
  * Addresses as chips. Type for suggestions; Enter, Tab or a comma makes a chip; Backspace on an
  * empty field selects the last chip, again removes it. A malformed address is marked when it
@@ -33,8 +28,7 @@ export function RecipientField({ label, value, onChange, inputRef, trailing, err
   const [selected, setSelected] = useState(false);
   const [focused, setFocused] = useState(false);
 
-  const q = fold(text.trim());
-  const matches = q ? CONTACTS.filter((p) => !value.includes(p.email) && starts(p, q)).slice(0, 6) : [];
+  const matches = findContacts(text, value);
   const open = focused && matches.length > 0;
 
   const commit = (raw: string) => {
@@ -143,25 +137,15 @@ export function RecipientField({ label, value, onChange, inputRef, trailing, err
         </p>
       )}
       {open && (
-        <ul id={`${id}-list`} role="listbox" aria-label={`Suggestions for ${label}`} className={s.list} data-overlay>
-          {matches.map((p, i) => (
-            <li
-              key={p.id}
-              id={`${id}-${i}`}
-              role="option"
-              aria-selected={i === active}
-              className={s.option}
-              // Picking mustn't blur the input first, or the half-typed text would become a chip.
-              onPointerDown={(e) => e.preventDefault()}
-              onClick={() => pick(p.email)}
-              onPointerMove={() => setActive(i)}
-            >
-              <Avatar id={p.id} size="sm" />
-              <span className={s.name}>{p.name}</span>
-              <span className={s.email}>{p.email}</span>
-            </li>
-          ))}
-        </ul>
+        <Suggestions
+          id={id}
+          label={`Suggestions for ${label}`}
+          items={matches}
+          active={active}
+          onPick={(p) => pick(p.email)}
+          onActive={setActive}
+          className={s.list}
+        />
       )}
     </div>
   );

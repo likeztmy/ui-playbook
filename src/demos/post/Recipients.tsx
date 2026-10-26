@@ -1,5 +1,6 @@
 import { ChevronDown } from 'lucide-react';
 import { Popover } from '../../ui/Popover';
+import { Avatar } from './Avatar';
 import type { Message } from './model';
 import { person, shortName } from './people';
 import s from './Recipients.module.scss';
@@ -15,13 +16,15 @@ export const summary = (m: Message) => {
   return `to ${named.join(', ')} and ${rest} ${rest === 1 ? 'other' : 'others'}`;
 };
 
+/** One role's people, each as the app shows a person elsewhere: avatar, name, address. */
 function People({ label, ids }: { label: string; ids: string[] }) {
   return (
     <div className={s.group}>
       <span className={s.label}>{label}</span>
-      <ul className={s.people}>
+      <ul className={s.people} aria-label={label}>
         {ids.map((id) => (
-          <li key={id}>
+          <li key={id} className={s.person}>
+            <Avatar id={id} size="sm" />
             <span className={s.name}>{person(id).name}</span>
             <span className={s.email}>{person(id).email}</span>
           </li>

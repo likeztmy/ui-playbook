@@ -1,13 +1,13 @@
-import { ChevronLeft, Ellipsis, Trash2 } from 'lucide-react';
-import { lazy, Suspense, useEffect, useRef, useState, type KeyboardEvent } from 'react';
+import { ChevronLeft, Ellipsis, Paperclip, Trash2 } from 'lucide-react';
+import { lazy, Suspense, useEffect, useRef, useState, type DragEvent, type KeyboardEvent } from 'react';
 import { Button } from '../../ui/Button';
 import { Tip, TipGroup } from '../../ui/Tooltip';
-import { Attachments } from './Attachments';
 import { Blocks } from './Blocks';
 import type { Editor } from '@tiptap/react';
 import type { BodyHandle } from './Body';
 import { empty, valid, type Draft } from './draft';
 import { FormatBar } from './FormatBar';
+import { Uploads } from './Uploads';
 import { person } from './people';
 import { RecipientField } from './RecipientField';
 import type { Compose } from './useCompose';
@@ -44,6 +44,9 @@ export function Composer({ d, compose, page, onBack }: Props) {
   const toInput = useRef<HTMLInputElement>(null);
   const body = useRef<BodyHandle>(null);
   const [editor, setEditor] = useState<Editor | null>(null);
+  const picker = useRef<HTMLInputElement>(null);
+  // Files dragged over the composer: entering and leaving its children fire too, so count.
+  const [dragging, setDragging] = useState(0);
   // Chosen once: switching from the lazy wrapper to the loaded editor would remount it.
   const [Body] = useState(() => Loaded ?? Lazy);
   // Send reads the draft as it is now, after a chip made by leaving a field has landed.
@@ -59,6 +62,12 @@ export function Composer({ d, compose, page, onBack }: Props) {
   const set = (patch: Partial<Draft>) => {
     setError(null);
     compose.update(d.id, patch);
+  };
+
+  // A mentioned person joins To, unless they're on the message already.
+  const mention = (email: string) => {
+    const { d } = live.current;
+    if (![...d.to, ...d.cc, ...d.bcc].includes(email)) set({ to: [...d.to, email] });
   };
 
   const send = () => {
@@ -96,6 +105,25 @@ export function Composer({ d, compose, page, onBack }: Props) {
   };
 
   const saved = !empty(d) && compose.saved >= d.edited;
+
+  const files = (e: DragEvent) => e.dataTransfer.types.includes('Files');
+  const drop = {
+    onDragEnter: (e: DragEvent) => files(e) && setDragging((n) => n + 1),
+    onDragLeave: (e: DragEvent) => files(e) && setDragging((n) => Math.max(0, n - 1)),
+    onDragOver: (e: DragEvent) => files(e) && e.preventDefault(),
+    onDrop: (e: DragEvent) => {
+      if (!files(e)) return;
+      e.preventDefault();
+      setDragging(0);
+      compose.attach(d.id, [...e.dataTransfer.files]);
+    },
+    'data-dragging': dragging > 0 ? '' : undefined,
+  };
+  const dropHint = dragging > 0 && (
+    <div className={s.drop} data-overlay>
+      Drop to attach
+    </div>
+  );
 
   const fields = (
     <>
@@ -143,7 +171,14 @@ export function Composer({ d, compose, page, onBack }: Props) {
           />
         }
       >
-        <Body handle={body} content={d.body} autoFocus={!startInTo} onEditor={setEditor} onChange={(doc, text) => set({ body: doc, text })} />
+        <Body
+          handle={body}
+          content={d.body}
+          autoFocus={!startInTo}
+          onEditor={setEditor}
+          onMention={mention}
+          onChange={(doc, text) => set({ body: doc, text })}
+        />
       </Suspense>
       {d.quoted && (
         <>
@@ -161,7 +196,7 @@ export function Composer({ d, compose, page, onBack }: Props) {
           {quoted && <Blocks blocks={d.quoted} className={s.quoted} />}
         </>
       )}
-      {d.attachments && <Attachments files={d.attachments} />}
+      {!!d.attachments?.length && <Uploads files={d.attachments} onRemove={(f) => compose.detach(d.id, f)} />}
     </>
   );
 
@@ -173,9 +208,39 @@ export function Composer({ d, compose, page, onBack }: Props) {
             Send
           </Button>
         </Tip>
-        <FormatBar editor={editor} />
+        {/* On a phone the row takes a line of its own, so its tools keep their size. */}
+        <span className={s.format}>
+          <FormatBar editor={editor} />
+        </span>
+        <Tip label="Attach files">
+          <Button variant="ghost" icon aria-label="Attach files" onClick={() => picker.current?.click()}>
+            <Paperclip {...ic} />
+          </Button>
+        </Tip>
+        <input
+          ref={picker}
+          type="file"
+          multiple
+          hidden
+          aria-label="Files to attach"
+          onChange={(e) => {
+            if (e.target.files?.length) compose.attach(d.id, [...e.target.files]);
+            e.target.value = '';
+          }}
+        />
         <span className={s.status} aria-live="polite">
-          {saved ? 'Saved' : ''}
+          {compose.waiting(d.id) ? (
+            <>
+              Sends when the files are up ·{' '}
+              <button type="button" className={s.cancel} aria-label="Cancel sending" onClick={() => compose.cancelWait(d.id)}>
+                Cancel
+              </button>
+            </>
+          ) : saved ? (
+            'Saved'
+          ) : (
+            ''
+          )}
         </span>
         <Tip label="Discard draft">
           <Button variant="ghost" icon aria-label="Discard draft" onClick={() => compose.discard(d.id)}>
@@ -188,14 +253,16 @@ export function Composer({ d, compose, page, onBack }: Props) {
 
   if (!page)
     return (
-      <section className={s.inline} aria-label={d.kind === 'forward' ? 'Forward' : 'Reply'} onKeyDown={onKeyDown}>
+      <section className={s.inline} aria-label={d.kind === 'forward' ? 'Forward' : 'Reply'} onKeyDown={onKeyDown} {...drop}>
+        {dropHint}
         {fields}
         {footer}
       </section>
     );
 
   return (
-    <section className={s.page} aria-label="New message" onKeyDown={onKeyDown}>
+    <section className={s.page} aria-label="New message" onKeyDown={onKeyDown} {...drop}>
+      {dropHint}
       <div className={s.bar}>
         <Tip label="Back" keys={['Esc']}>
           <Button variant="ghost" icon aria-label="Back" onClick={onBack}>

@@ -187,7 +187,7 @@ function Shell({ onToasts }: { onToasts: (el: HTMLDivElement | null) => void }) 
         })}
       </nav>
       <main className={s.main}>{main}</main>
-      {/* Toasts rise in their own layer, out of the app's grid. */}
+      {/* Toasts rise in their own layer, laid over the main area. */}
       <div ref={onToasts} className={s.toastLayer} data-overlay />
     </div>
   );
@@ -198,7 +198,7 @@ export function PostApp() {
   const [container, setContainer] = useState<HTMLElement | null>(null);
   return (
     <div className={s.frame}>
-      <ToastProvider container={container} contained align="start">
+      <ToastProvider container={container} contained>
         <Shell onToasts={setContainer} />
       </ToastProvider>
     </div>

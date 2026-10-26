@@ -86,6 +86,17 @@ Reference: Gmail's formatting row sits over Send; ⌘B / ⌘I / ⌘K / ⌘⇧7 /
 
 The row sits on the footer's line, between Send and Discard, in both a new message and a reply; on a phone it stays one line.
 
+### Step 3 · Mentions and attachments (state table)
+
+| Trigger | Main area | Focus | Feedback | Way back |
+| --- | --- | --- | --- | --- |
+| `@` or `+` then letters | Suggestions at the caret, word-start matching as in To | Stays in text; ↑↓ move, Enter/Tab pick | — | Esc closes; the typed text stays |
+| Pick a person | "@Name" in the text, in link colour; the person joins To unless already on To, Cc or Bcc | After the mention | The chip appears in To | Remove the chip (the mention stays); ⌘Z removes the mention |
+| Paperclip / drop files on the composer | A card per file under the body, each filling with its own progress | Unchanged | While dragging over the composer: its outline and "Drop to attach" | × on a card cancels or removes it |
+| Send while one is uploading | Composer stays | Send | Send keeps its label (and its width, so the row never moves); the status says "Sends when the files are up"; it sends itself when the last upload finishes | Cancel, beside that status |
+
+Uploads are simulated (no server) at a steady rate with a floor, so a small file still shows its bar. A file's bytes don't go into localStorage: after a reload a draft keeps the card (name, size), and an image's thumbnail falls back to its tint.
+
 ### Build order
 
 1. Composer shell, recipients chips, send / undo / Drafts folder, reply inline.

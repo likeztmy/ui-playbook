@@ -1325,3 +1325,66 @@ test('post: the formatting row marks what applies at the caret; ⌘K links the s
   await expect(address).toHaveCount(0);
   await expect(composer).toBeVisible();
 });
+
+test('post: @ and a name mentions a contact and puts them on To; Esc closes only the list', async ({ page }) => {
+  await page.goto('/lab/mail-one');
+  await hydrateAll(page);
+  await page.keyboard.press('c');
+  const composer = page.getByRole('region', { name: 'New message' });
+  const body = composer.getByRole('textbox', { name: 'Message' });
+  await body.click();
+  await page.keyboard.type('Thanks @pri');
+  await expect(page.getByRole('listbox', { name: 'People to mention' }).getByRole('option', { name: /Priya Natarajan/ })).toBeVisible();
+  await page.keyboard.press('Enter');
+  await expect(body.locator('[data-mention]')).toHaveText('@Priya Natarajan');
+  await expect(composer.getByText('Priya Natarajan', { exact: true }).first()).toBeVisible();
+  await expect(composer.locator('[class*="_chip_"]')).toHaveText(/Priya Natarajan/);
+  // Mentioning someone already on To doesn't add them twice.
+  await page.keyboard.type('and @pri');
+  await page.keyboard.press('Enter');
+  await expect(composer.locator('[class*="_chip_"]')).toHaveCount(1);
+  // Esc closes the list and leaves the composer open.
+  await page.keyboard.type('@ha');
+  await expect(page.getByRole('listbox', { name: 'People to mention' })).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('listbox', { name: 'People to mention' })).toHaveCount(0);
+  await expect(composer).toBeVisible();
+});
+
+test('post: files attach by picking or dropping, each with its own progress; Send waits for them, then sends', async ({ page }) => {
+  await page.goto('/lab/mail-one');
+  await hydrateAll(page);
+  await page.keyboard.press('c');
+  const composer = page.getByRole('region', { name: 'New message' });
+  await composer.getByRole('combobox', { name: 'To' }).fill('mira');
+  await composer.getByRole('combobox', { name: 'To' }).press('Enter');
+  await composer.getByLabel('Files to attach').setInputFiles([
+    { name: 'brief.pdf', mimeType: 'application/pdf', buffer: Buffer.alloc(40 * 1024) },
+    { name: 'budget.csv', mimeType: 'text/csv', buffer: Buffer.alloc(3 * 1024 * 1024) },
+  ]);
+  const files = composer.getByRole('list', { name: 'Attachments' });
+  await expect(files.getByRole('progressbar')).toHaveCount(2);
+  // Send while they upload: it says so, and sends itself when they're up.
+  await composer.getByRole('button', { name: 'Send' }).click();
+  await expect(composer.getByText('Sends when the files are up')).toBeVisible();
+  await expect(composer.getByRole('button', { name: 'Cancel sending' })).toBeVisible();
+  await expect(files.getByText('PDF · 40 KB')).toBeVisible({ timeout: 5000 });
+  await expect(page.getByText('Message sent')).toBeVisible({ timeout: 6000 });
+  await expect(composer).toHaveCount(0);
+  // Dropping onto the composer: an outline while over it, a card after.
+  await page.keyboard.press('c');
+  const drop = await page.evaluateHandle(() => {
+    const dt = new DataTransfer();
+    dt.items.add(new File(['x'.repeat(2048)], 'notes.txt', { type: 'text/plain' }));
+    return dt;
+  });
+  await composer.dispatchEvent('dragenter', { dataTransfer: drop });
+  await expect(composer).toHaveAttribute('data-dragging', '');
+  await expect(composer.getByText('Drop to attach')).toBeVisible();
+  await composer.dispatchEvent('drop', { dataTransfer: drop });
+  await expect(composer).not.toHaveAttribute('data-dragging', '');
+  await expect(files.getByText('notes.txt')).toBeVisible();
+  // Cancelling an upload takes the card away.
+  await files.getByRole('button', { name: 'Cancel upload of notes.txt' }).click();
+  await expect(files).toHaveCount(0);
+});

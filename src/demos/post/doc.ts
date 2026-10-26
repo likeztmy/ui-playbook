@@ -5,6 +5,8 @@ import type { Block, Inline } from './model';
 function inline(nodes: JSONContent[] = []): Inline[] {
   return nodes.flatMap((n): Inline[] => {
     if (n.type === 'hardBreak') return ['\n'];
+    // A mention is a link to the person's address.
+    if (n.type === 'mention') return [{ text: `${n.attrs?.mentionSuggestionChar ?? '@'}${n.attrs?.label}`, href: `mailto:${n.attrs?.id}` }];
     if (n.type !== 'text' || !n.text) return [];
     const marks = new Map((n.marks ?? []).map((m) => [m.type, m.attrs]));
     const href = marks.get('link')?.href as string | undefined;

@@ -5,6 +5,14 @@ import { person } from './people';
 
 export type DraftKind = 'new' | 'reply' | 'replyAll' | 'forward';
 
+/** A file on a draft: an attachment, with an id while it's being written and its upload's progress. */
+export type DraftFile = Attachment & {
+  id: string;
+  /** 0–1 while uploading; absent once it's up. */
+  progress?: number;
+  bytes?: number;
+};
+
 export type Draft = {
   id: string;
   kind: DraftKind;
@@ -21,13 +29,38 @@ export type Draft = {
   text: string;
   /** What a reply quotes or a forward carries, behind "···". */
   quoted?: Block[];
-  attachments?: Attachment[];
+  attachments?: DraftFile[];
   /** When it last changed, ms. */
   edited: number;
 };
 
 let n = 0;
-const id = () => `draft-${Date.now().toString(36)}-${n++}`;
+const id = (kind = 'draft') => `${kind}-${Date.now().toString(36)}-${n++}`;
+
+const KB = 1024;
+const size = (bytes: number) => (bytes < KB * KB ? `${Math.max(1, Math.round(bytes / KB))} KB` : `${(bytes / KB / KB).toFixed(1)} MB`);
+const kind = (f: File): Attachment['kind'] =>
+  f.type.startsWith('image/')
+    ? 'image'
+    : f.type === 'application/pdf'
+      ? 'pdf'
+      : /sheet|excel|csv/.test(f.type) || /\.(xlsx?|csv|numbers)$/i.test(f.name)
+        ? 'sheet'
+        : 'doc';
+
+/** A file picked or dropped, about to upload. An image shows itself straight away. */
+export const fileFrom = (f: File): DraftFile => ({
+  id: id('file'),
+  name: f.name,
+  size: size(f.size),
+  kind: kind(f),
+  bytes: f.size,
+  progress: 0,
+  src: f.type.startsWith('image/') ? URL.createObjectURL(f) : undefined,
+  tint: 'var(--fill-control), var(--fill-control-hover)',
+});
+
+export const uploading = (d: Draft) => d.attachments?.some((a) => a.progress !== undefined) ?? false;
 
 export const blank = (kind: DraftKind = 'new', fields: Partial<Draft> = {}): Draft => ({
   id: id(),
@@ -49,7 +82,13 @@ const notMe = (pid: string) => !person(pid).me;
 export function replyTo(c: Conversation, kind: Exclude<DraftKind, 'new'>): Draft {
   const m = latest(c);
   const fromMe = person(m.from).me;
-  if (kind === 'forward') return blank(kind, { conversation: c.id, subject: `Fwd: ${c.subject}`, quoted: m.body, attachments: m.attachments });
+  if (kind === 'forward')
+    return blank(kind, {
+      conversation: c.id,
+      subject: `Fwd: ${c.subject}`,
+      quoted: m.body,
+      attachments: m.attachments?.map((a) => ({ ...a, id: id('file') })),
+    });
   const to = fromMe ? m.to : [m.from];
   const others = kind === 'replyAll' ? [...(fromMe ? [] : m.to), ...(m.cc ?? [])].filter((p) => notMe(p) && !to.includes(p)) : [];
   return blank(kind, { conversation: c.id, to: to.filter(notMe).map(address), cc: others.map(address), subject: c.subject, quoted: m.body });
@@ -75,7 +114,14 @@ export function loadDrafts(): Draft[] {
 
 export function storeDrafts(drafts: Draft[]) {
   try {
-    localStorage.setItem(KEY, JSON.stringify(drafts.filter((d) => !empty(d))));
+    // A file's bytes stay in memory: an unfinished upload is dropped, an image's preview falls back to its tint.
+    const kept = drafts
+      .filter((d) => !empty(d))
+      .map((d) => ({
+        ...d,
+        attachments: d.attachments?.filter((a) => a.progress === undefined).map((a) => (a.src?.startsWith('blob:') ? { ...a, src: undefined } : a)),
+      }));
+    localStorage.setItem(KEY, JSON.stringify(kept));
   } catch {
     // Storage blocked or full: drafts last for this visit only.
   }

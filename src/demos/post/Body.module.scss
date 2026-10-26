@@ -1,4 +1,17 @@
 // Written in the same type the message will be read in.
+// Positions the mention list.
+.box {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.mentions {
+  width: min(320px, 100%);
+}
+
 .body {
   display: flex;
   flex: 1;
@@ -15,5 +28,10 @@
   // The editor wraps list items' text in paragraphs; they sit tight, as in a sent message.
   li > p {
     margin: 0;
+  }
+
+  // A mention reads as a link: it is one, to the person's address.
+  [data-mention] {
+    color: var(--accent-text);
   }
 }

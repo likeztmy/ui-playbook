@@ -2,6 +2,7 @@
 
 // A new message in the main area: the conversation's bar, its column, and Send fixed at the foot.
 .page {
+  position: relative;
   display: flex;
   flex-direction: column;
   min-width: 0;
@@ -124,6 +125,7 @@
 
 .status {
   margin-left: auto;
+  font-variant-numeric: tabular-nums;
   color: var(--ink-muted);
   font-size: 13px;
   white-space: nowrap;
@@ -131,6 +133,7 @@
 
 // A reply at the foot of its conversation: one card, its fields divided by hairlines.
 .inline {
+  position: relative;
   display: flex;
   flex-direction: column;
   margin-top: var(--space-4);
@@ -143,9 +146,70 @@
   }
 }
 
+// Waiting to send: the way out, in the status's own line.
+.cancel {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent-text);
+  font: inherit;
+  cursor: pointer;
+
+  &:focus-visible {
+    border-radius: var(--radius-xs);
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+}
+
+.format {
+  display: contents;
+}
+
 @container (max-width: 760px) {
   .column,
   .foot {
     padding-inline: var(--space-4);
   }
+
+  .footer {
+    flex-wrap: wrap;
+    row-gap: var(--space-1);
+  }
+
+  .format {
+    display: block;
+    flex-basis: 100%;
+    order: -1;
+  }
+
+  // A long status wraps in its own space rather than pushing Discard to a line of its own.
+  .status {
+    flex: 1 1 0;
+    min-width: 0;
+    line-height: 16px;
+    text-align: right;
+    white-space: normal;
+  }
+}
+
+// Files over the composer: its outline, and where they'll go.
+.page[data-dragging],
+.inline[data-dragging] {
+  outline: 2px dashed var(--accent);
+  outline-offset: -2px;
+}
+
+.drop {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border-radius: inherit;
+  background: color-mix(in oklch, var(--surface) 85%, transparent);
+  color: var(--accent-text);
+  font-weight: 600;
+  // The drop lands on the composer, not on this.
+  pointer-events: none;
 }

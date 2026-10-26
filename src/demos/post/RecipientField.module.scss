@@ -85,7 +85,8 @@
 }
 
 .input {
-  flex: 1 0 64px;
+  // Small enough to sit after the chips on their line, growing into what's left.
+  flex: 1 0 24px;
   min-width: 0;
   height: 26px;
   border: 0;
@@ -97,47 +98,7 @@
 
 // Under the field, at the chips' left edge.
 .list {
-  position: absolute;
-  z-index: var(--z-dropdown);
   top: calc(100% + 4px);
   left: 64px;
   width: min(360px, 100% - 64px);
-  margin: 0;
-  padding: var(--space-1);
-  border-radius: var(--radius-lg);
-  background: var(--surface-raised);
-  box-shadow: var(--shadow-lg);
-  list-style: none;
-}
-
-.option {
-  display: grid;
-  grid-template-columns: 28px minmax(0, 1fr);
-  grid-template-areas: 'avatar name' 'avatar email';
-  column-gap: var(--space-2);
-  align-items: center;
-  padding: 6px var(--space-2);
-  border-radius: var(--radius-md);
-  cursor: pointer;
-
-  > :first-child {
-    grid-area: avatar;
-  }
-
-  &[aria-selected='true'] {
-    background: var(--fill-hover);
-  }
-}
-
-.name,
-.email {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.email {
-  grid-area: email;
-  color: var(--ink-muted);
-  font-size: 12px;
 }
