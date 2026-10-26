@@ -14,9 +14,8 @@
   flex: none;
   align-items: center;
   gap: var(--space-1);
-  height: 48px;
+  height: 56px;
   padding: 0 var(--space-3) 0 var(--space-2);
-  border-bottom: 1px solid var(--line);
 }
 
 .title {
@@ -42,14 +41,18 @@
   display: flex;
   flex: 1;
   flex-direction: column;
+  // Writing, like reading, is a letter in the middle of its card.
   width: 100%;
-  max-width: 840px;
+  max-width: 760px;
+  margin-inline: auto;
   padding: var(--space-2) var(--space-8) var(--space-6);
 }
 
 .foot {
   flex: none;
-  max-width: 840px;
+  width: 100%;
+  max-width: 760px;
+  margin-inline: auto;
   padding: 0 var(--space-8);
 }
 

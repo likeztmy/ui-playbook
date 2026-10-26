@@ -1,7 +1,8 @@
 @use '../../styles/states' as *;
 
-// Post at full size: folders, and the mail in one raised surface. No bar across the top: search
-// and New message sit on the bar of the list they act on.
+// Post at full size: two planes. The folders lie on a tinted desk; the mail is raised off it, one
+// surface, so what you act on sits above what holds it. No bar across the top: search and New
+// message sit on the bar of the list they act on.
 // The frame is the container, so the app lays itself out by its own width.
 .frame {
   container-type: inline-size;
@@ -14,7 +15,9 @@
   grid-template: 'side main' minmax(0, 1fr) / 232px minmax(0, 1fr);
   height: 100%;
   overflow: hidden;
-  background: var(--bg);
+  // A few degrees warm in light, so the white mail is the brightest thing on screen; the page's own
+  // ground in dark, where the raised surface is the lighter one already.
+  background: light-dark(oklch(0.948 0.007 75), var(--bg));
   color: var(--ink);
   font-size: 14px;
 }
@@ -23,7 +26,7 @@
 .brand {
   display: flex;
   align-items: center;
-  height: 48px;
+  height: 56px;
   margin: 0 0 var(--space-1);
   padding-left: var(--space-3);
   font-size: 16px;
@@ -37,7 +40,8 @@
   align-items: center;
   gap: var(--space-4);
   height: 44px;
-  padding: 0 var(--space-4) 0 calc(32px + 20px + var(--space-1));
+  // On the senders' edge: the rows' margin, inset, face and gap.
+  padding: 0 var(--space-4) 0 calc(var(--space-2) + 20px + 36px + var(--space-3));
   border-bottom: 1px solid var(--line);
   // Neutral: a pale accent would say "chosen", and this isn't.
   background: var(--surface-sunken);
@@ -66,7 +70,8 @@
   grid-area: side;
   flex-direction: column;
   gap: var(--space-0-5);
-  padding: var(--space-3) var(--space-3) var(--space-3);
+  // The brand level with the mail's bar, inside the card's inset.
+  padding: var(--space-2) var(--space-3) var(--space-3);
 }
 
 // The way back to the page, apart from the folders at the column's foot.
@@ -127,11 +132,15 @@
   grid-area: main;
   min-width: 0;
   min-height: 0;
-  margin: var(--space-3) var(--space-3) var(--space-3) 0;
+  margin: var(--space-2) var(--space-2) var(--space-2) 0;
   overflow: hidden;
-  border-radius: var(--radius-lg);
+  border-radius: 18px;
   background: var(--surface);
-  box-shadow: var(--shadow-xs);
+  // One soft light from above, warm like the desk; in dark a hairline does what shadow can't.
+  box-shadow:
+    0 1px 2px oklch(0.35 0.02 75 / 0.04),
+    0 4px 16px oklch(0.35 0.02 75 / 0.05),
+    0 0 0 1px light-dark(oklch(0.35 0.02 75 / 0.04), var(--line));
 }
 
 // Over the mail, not the whole app: a toast rises at the foot of the area where its action was
@@ -140,7 +149,7 @@
   position: relative;
   grid-area: main;
   // The main card's own inset, so a toast centres on the card.
-  margin: var(--space-3) var(--space-3) var(--space-3) 0;
+  margin: var(--space-2) var(--space-2) var(--space-2) 0;
   pointer-events: none;
 
   > * {
@@ -168,11 +177,6 @@
 
   .newLabel {
     display: none;
-  }
-
-  // No checkbox column on a phone: on the senders' edge.
-  .outbox {
-    padding-left: calc(20px + var(--space-1));
   }
 
   .main,

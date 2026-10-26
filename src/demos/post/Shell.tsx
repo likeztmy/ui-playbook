@@ -33,11 +33,9 @@ type ShellProps = {
   back?: string;
   /** Inside a page that has its own main content: the app's main area is a plain region then. */
   embedded?: boolean;
-  /** A visual direction under review, styled by the lab's looks. */
-  look?: string;
 };
 
-export function Shell({ onToasts, spot, control, pinned, back, embedded, look }: ShellProps) {
+export function Shell({ onToasts, spot, control, pinned, back, embedded }: ShellProps) {
   const post = usePost();
   const compose = useCompose(post);
   const root = useRef<HTMLDivElement>(null);
@@ -139,8 +137,8 @@ export function Shell({ onToasts, spot, control, pinned, back, embedded, look }:
   );
 
   return (
-    <div ref={root} className={s.app} data-view={reading ? 'message' : 'list'} data-spot={spot ?? undefined} data-look={look}>
-      <nav className={s.side} aria-label="Folders" data-part="side">
+    <div ref={root} className={s.app} data-view={reading ? 'message' : 'list'} data-spot={spot ?? undefined}>
+      <nav className={s.side} aria-label="Folders">
         {/* The app's name heads the page at full screen; on a page with its own title it's a label. */}
         {embedded ? <span className={s.brand}>Post</span> : <h1 className={s.brand}>Post</h1>}
         {FOLDERS.map((f) => {
@@ -167,11 +165,11 @@ export function Shell({ onToasts, spot, control, pinned, back, embedded, look }:
         )}
       </nav>
       {embedded ? (
-        <div className={s.main} data-part="pane">
+        <div className={s.main}>
           {main}
         </div>
       ) : (
-        <main className={s.main} data-part="pane">
+        <main className={s.main}>
           {main}
         </main>
       )}
@@ -182,12 +180,12 @@ export function Shell({ onToasts, spot, control, pinned, back, embedded, look }:
 }
 
 /** Post, the In practice mail app, at full size. */
-export function PostApp({ back, look }: { back?: string; look?: string }) {
+export function PostApp({ back }: { back?: string }) {
   const [container, setContainer] = useState<HTMLElement | null>(null);
   return (
     <div className={s.frame}>
       <ToastProvider container={container} contained>
-        <Shell onToasts={setContainer} back={back} look={look} />
+        <Shell onToasts={setContainer} back={back} />
       </ToastProvider>
     </div>
   );

@@ -1,7 +1,11 @@
 @use '../../styles/states' as *;
 
-// The rows' left inset: room for unread's dot, before the checkbox.
+// The rows' left inset: room for unread's dot, before the face. Rows sit $margin in from the list's
+// edge, each on its own rounded surface; the face takes $face.
 $inset: 20px;
+$margin: var(--space-2);
+$face: 36px;
+$gap: var(--space-3);
 
 .list {
   position: relative;
@@ -17,9 +21,9 @@ $inset: 20px;
   flex: none;
   align-items: center;
   gap: var(--space-1);
-  height: 48px;
-  padding: 0 var(--space-3) 0 $inset;
-  border-bottom: 1px solid var(--line);
+  height: 56px;
+  // Select all centred on the faces' column below it.
+  padding: 0 var(--space-3) 0 calc(#{$margin} + #{$inset} + 10px);
 }
 
 .tools {
@@ -62,7 +66,8 @@ $inset: 20px;
 // A date section's header: 20 above, 4 below, so it reads with the rows under it. No line under it,
 // which would split what the spacing joins.
 .section {
-  padding: 20px var(--space-3) 4px calc(32px + #{$inset} + var(--space-1));
+  // On the senders' edge: the row's margin, inset, face and gap.
+  padding: 24px var(--space-3) 4px calc(#{$margin} + #{$inset} + #{$face} + #{$gap});
   color: var(--ink-muted);
   font-size: 12px;
   font-weight: 600;
@@ -80,8 +85,34 @@ $inset: 20px;
   width: 32px;
 }
 
-// A row's checkbox: out of sight on a list you mostly read. It comes when the pointer rests on the
-// row, with its actions, or with focus, and stays on every row once one is ticked.
+// A row's checkbox shares the face's place: the face at rest, the checkbox once the pointer rests on
+// the row, with focus, and on every row once one is ticked. Selection is the rarer task.
+.line > .check,
+.line > .face {
+  grid-row: 1;
+  grid-column: 1;
+  place-self: center;
+}
+
+.face {
+  display: grid;
+  // Under the pointer the checkbox is what answers: the face only shows who.
+  pointer-events: none;
+  transition: opacity var(--duration-fast) var(--ease-out);
+}
+
+.line:hover > .face,
+.line[data-pin~='hover'] > .face {
+  opacity: 0;
+  transition-delay: 300ms;
+}
+
+.line[data-checked] > .face,
+.line:has(.check:focus-within) > .face,
+[data-selecting] .line > .face {
+  opacity: 0;
+}
+
 .line .check > * {
   opacity: 0;
   transition: opacity var(--duration-fast) var(--ease-out);
@@ -100,17 +131,19 @@ $inset: 20px;
   transition-delay: 300ms;
 }
 
-// One line: check, then sender, subject and snippet, time.
+// A face, then three lines: who and when, the subject, the newest words. Rows part by space and
+// their own rounded surface, not by a rule under each: a list to read, not a ledger.
 .line {
   // What the row is painted with, for its actions to fade into.
   --row: var(--surface);
   position: relative;
   display: grid;
-  grid-template-columns: 32px minmax(0, 1fr);
+  grid-template-columns: $face minmax(0, 1fr);
+  column-gap: $gap;
   align-items: center;
-  height: 44px;
-  padding: 0 var(--space-2) 0 $inset;
-  border-bottom: 1px solid var(--line);
+  margin: 2px $margin;
+  padding: 10px var(--space-3) 10px $inset;
+  border-radius: 12px;
 
   // Hover shades whatever the row's colour is, rather than replacing it. Its actions wait until the
   // pointer rests: sweeping down the list is on its way somewhere, and must leave every row as it was.
@@ -172,19 +205,15 @@ $inset: 20px;
   fill: oklch(0.83 0.16 85);
 }
 
-// A sender's face: only in looks that show it (see the lab's looks).
-.face {
-  display: none;
-}
-
 .main {
   display: grid;
-  grid-template-columns: var(--from, 160px) minmax(0, 1fr) 64px;
+  grid-template:
+    'from time' auto
+    'text text' auto / minmax(0, 1fr) auto;
   align-items: center;
-  gap: var(--space-4);
+  gap: 2px var(--space-3);
   min-width: 0;
-  height: 100%;
-  padding: 0 var(--space-2) 0 var(--space-1);
+  padding: 0;
   border: 0;
   outline: none;
   background: none;
@@ -197,6 +226,7 @@ $inset: 20px;
 }
 
 .from {
+  grid-area: from;
   display: flex;
   align-items: baseline;
   gap: var(--space-1);
@@ -232,9 +262,11 @@ $inset: 20px;
   font-variant-numeric: tabular-nums;
 }
 
+// Subject and snippet each get a line, so neither is cut to fit the other.
 .text {
+  grid-area: text;
   display: flex;
-  gap: var(--space-2);
+  flex-direction: column;
   min-width: 0;
 }
 
@@ -245,23 +277,19 @@ $inset: 20px;
   white-space: nowrap;
 }
 
-.subject {
-  flex: 0 1 auto;
-  max-width: 70%;
-}
-
 .snippet {
-  flex: 1 1 0;
   color: var(--ink-muted);
+  font-size: 13px;
 }
 
 .time {
+  grid-area: time;
   display: flex;
   justify-content: flex-end;
   align-items: center;
   gap: var(--space-1);
   color: var(--ink-muted);
-  font-size: 13px;
+  font-size: 12px;
   font-variant-numeric: tabular-nums;
 }
 
@@ -274,12 +302,11 @@ $inset: 20px;
   }
 }
 
-// Beside the time, never over it, on the row's own colour, fading in over the end of the snippet.
+// Under the time, never over it, on the row's own colour, fading in over the end of the subject.
 .actions {
   position: absolute;
   top: 50%;
-  // The row's and the button's end padding, the time's column, and the gap before it.
-  right: calc(var(--space-2) * 2 + 64px + var(--space-2));
+  right: var(--space-2);
   display: flex;
   padding-left: var(--space-6);
   background: linear-gradient(var(--fill-hover), var(--fill-hover)), var(--row);
@@ -312,21 +339,17 @@ $inset: 20px;
   }
 }
 
-// Narrow: two lines, sender and time, then subject and snippet; phone sizes. No checkboxes or
-// hover actions, which a finger can't rest on: a long press opens the row's menu.
+// Narrow: phone sizes. The face stays; no checkboxes or hover actions, which a finger can't rest on:
+// a long press opens the row's menu.
 @container (max-width: 760px) {
-  .line {
-    grid-template-columns: minmax(0, 1fr);
-    align-items: start;
-    height: auto;
-    padding-top: 11px;
-    padding-bottom: 11px;
-  }
-
-  .line .check,
+  .line > .check,
   .bar .check,
   .actions {
     display: none;
+  }
+
+  .line > .face {
+    opacity: 1;
   }
 
   .title {
@@ -341,46 +364,13 @@ $inset: 20px;
     padding-left: var(--space-2);
   }
 
-  .section {
-    padding-left: calc(#{$inset} + var(--space-1));
-  }
-
-  .main {
-    grid-template:
-      'from time' auto
-      'text text' auto / minmax(0, 1fr) auto;
-    gap: 2px var(--space-3);
-  }
-
-  .from {
-    grid-area: from;
-    font-size: 15px;
-  }
-
-  .time {
-    grid-area: time;
-  }
-
-  // Subject and snippet each get a line, so neither is cut to fit the other.
-  .text {
-    grid-area: text;
-    flex-direction: column;
-    gap: 0;
-  }
-
+  .from,
   .subject {
-    max-width: none;
     font-size: 15px;
   }
 
   .snippet {
-    flex: none;
     font-size: 14px;
-  }
-
-  // On the sender's line: 11px of padding, then half of its 20px line.
-  .dot {
-    top: 21px;
   }
 
   // No standing selection in a list that's the whole screen; ticked rows keep theirs.
@@ -392,7 +382,7 @@ $inset: 20px;
 // New mail, waiting over the top of the list, under its bar.
 .pill {
   position: absolute;
-  top: calc(48px + var(--space-2));
+  top: calc(56px + var(--space-2));
   left: 50%;
   z-index: var(--z-dropdown);
   height: 28px;

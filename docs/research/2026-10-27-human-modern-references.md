@@ -365,6 +365,8 @@ Each pattern has a mechanism (why it reads as human or modern), evidence, the re
 - Open: needs a primary study on rules versus whitespace in list scanning; none was found in this pass.
 
 **T3. Two planes: when depth earns its place**
+
+> Owner, 2026-10-27, on Post's first Two planes build: "是否 boxshadow 过重了…需要开个 boxshadow 课题." Open this as its own topic: how heavy a shadow should be for each step of height, one light source across the app, and what replaces shadow in dark mode.
 - Claim: a material belongs to the layer you act on, never to the layer you read. A shadow is believable only with one light source.
 - Cite: Apple Liquid Glass newsroom and developer overview (R3); Josh's shadows (R16); Sonner's stacking (R12); Raycast's restrained glass (R28).
 

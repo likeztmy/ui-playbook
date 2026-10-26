@@ -119,7 +119,8 @@ export function Conversation({ post, compose, c, single }: { post: Post; compose
   return (
     <section ref={box} className={s.conversation} aria-label="Conversation">
       <TipGroup>
-        <div className={s.bar} data-part="convbar">
+        {/* Floats: what scrolls passes under it. */}
+        <div className={s.bar} data-overlay>
           <Tip label="Back">
             <Button variant="ghost" icon aria-label="Back" className={s.back} onClick={post.close}>
               <ChevronLeft {...ic} />
@@ -155,9 +156,9 @@ export function Conversation({ post, compose, c, single }: { post: Post; compose
         </div>
       </TipGroup>
       <div className={s.scroll}>
-        <div className={s.column} data-part="column">
+        <div className={s.column}>
           <header className={s.head}>
-            <h1 className={s.subject} data-part="headline">
+            <h1 className={s.subject}>
               {c.subject}
             </h1>
             <Tip label={c.starred ? 'Unstar' : 'Star'}>

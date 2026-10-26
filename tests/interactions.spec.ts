@@ -1060,7 +1060,7 @@ test('space groups by ratio: header gaps by the overlay; scaling keeps the ratio
   expect(await starts(6)).toBe(1);
 });
 
-test('mail, direction one: date sections join their rows; the sender column fits the longest name', async ({ page }) => {
+test('post: date sections join their rows', async ({ page }) => {
   await page.goto('/practice/mail/app');
   await hydrateAll(page);
   const heads = page.locator('[role="list"] [class*="_section_"]');
@@ -1079,15 +1079,6 @@ test('mail, direction one: date sections join their rows; the sender column fits
     return [head.top - text(prev).bottom, text(next).top - head.bottom];
   });
   expect(above / below).toBeGreaterThan(2);
-  const [column, widest] = await page.locator('[role="list"]').evaluate((list) => {
-    const names = [...list.querySelectorAll('[data-from]')].map((n) => {
-      const r = document.createRange();
-      r.selectNodeContents(n);
-      return r.getBoundingClientRect().width;
-    });
-    return [list.querySelector('[data-from]')!.getBoundingClientRect().width, Math.max(...names)];
-  });
-  expect(Math.abs(column - Math.ceil(widest))).toBeLessThanOrEqual(1);
 });
 
 test('the faster way: holding the modifier shows every key at once; the tally counts key and pointer commands', async ({ page }) => {

@@ -133,7 +133,7 @@ const quantity = (cells: string[]) => cells.some(Boolean) && cells.every((c) => 
 
 export function Blocks({ blocks, className }: { blocks: Block[]; className?: string }) {
   return (
-    <div className={[s.prose, className].filter(Boolean).join(' ')} data-part="prose">
+    <div className={[s.prose, className].filter(Boolean).join(' ')}>
       {blocks.map((b, i) => (
         <One key={i} b={b} />
       ))}
