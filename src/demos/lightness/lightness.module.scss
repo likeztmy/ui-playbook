@@ -1,0 +1,421 @@
+.readout {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+
+  &[data-fails] {
+    color: var(--danger);
+  }
+}
+
+.full {
+  width: 100%;
+}
+
+// ── Eight hues, one lightness ───────────────────────────
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  width: 100%;
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.rowName {
+  color: var(--ink-muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.chips {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: var(--space-2);
+
+  // Greyscale by luminance, as contrast is computed: only the swatches, so the ratios stay readable.
+  &[data-grey] .swatch {
+    filter: grayscale(1);
+  }
+
+  @media (max-width: 520px) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.swatch {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 40px;
+  border-radius: var(--radius-md);
+  color: oklch(1 0 0);
+  font-size: 13px;
+  font-weight: 600;
+  transition: filter var(--duration-fast) var(--ease-out);
+}
+
+.ratio {
+  color: var(--ink-muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+
+  &[data-fails] {
+    color: var(--danger);
+  }
+}
+
+.rowsSwitch {
+  align-self: flex-start;
+}
+
+// ── A scale's cusp ──────────────────────────────────────
+
+.cusp {
+  display: grid;
+  grid-template-columns: repeat(11, minmax(0, 1fr));
+  gap: var(--space-1);
+  width: 100%;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+// A bar as tall as the chroma the step can hold, filled with that colour.
+.bar {
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+  height: 160px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-sunken);
+  overflow: hidden;
+
+  > span {
+    width: 100%;
+    transition: height var(--duration-fast) var(--ease-out);
+  }
+}
+
+.stepName {
+  color: var(--ink-muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+// ── A small screen ──────────────────────────────────────
+
+.ground {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  padding: var(--space-6) var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--p-ground);
+  color: var(--p-ink);
+  transition: background var(--duration-fast) var(--ease-out);
+}
+
+.sheet {
+  width: min(100%, 320px);
+  padding: var(--space-2);
+  border-radius: 14px;
+  background: var(--p-surface);
+  box-shadow: 0 0 0 1px var(--p-line);
+  font-size: 13px;
+}
+
+.sheetBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 36px;
+  padding: 0 var(--space-1) 0 var(--space-2);
+}
+
+.sheetTitle {
+  font-weight: 600;
+}
+
+.sheetButton {
+  display: flex;
+  align-items: center;
+  height: 26px;
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-full);
+  background: var(--p-accent);
+  color: var(--p-on-accent);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.sheetRow {
+  position: relative;
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+
+  &[data-current] {
+    background: var(--p-accent-soft);
+  }
+}
+
+.sheetDot {
+  position: absolute;
+  left: 5px;
+  display: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--p-accent);
+
+  [data-unread] > & {
+    display: block;
+  }
+}
+
+.sheetFace {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--p-line);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.sheetText {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 18px;
+}
+
+.sheetFrom {
+  font-weight: 600;
+}
+
+.sheetSubject {
+  overflow: hidden;
+  color: var(--p-muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// ── Status colours ──────────────────────────────────────
+
+.status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  width: 100%;
+}
+
+.statusSets {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+  width: 100%;
+
+  @media (max-width: 520px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.statusSet {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+
+  figcaption {
+    display: flex;
+    justify-content: space-between;
+    color: var(--ink-muted);
+    font-size: 12px;
+  }
+}
+
+// Always the light theme's page: these are the light theme's colours.
+.statusCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-2);
+  border-radius: var(--radius-lg);
+  background: oklch(1 0 0);
+  box-shadow: 0 0 0 1px oklch(0.3 0.01 270 / 0.1);
+  color: oklch(0.21 0.006 286);
+  font-size: 13px;
+}
+
+.statusRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 32px;
+  padding: 0 var(--space-2);
+}
+
+.statusDot {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+}
+
+// ── Neighbours ──────────────────────────────────────────
+
+.neighbours {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  width: 100%;
+}
+
+.desksTwo {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  width: 100%;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.deskLight,
+.deskDark {
+  display: grid;
+  place-items: center;
+  height: 160px;
+}
+
+.deskLight {
+  background: oklch(0.97 0.003 270);
+}
+
+.deskDark {
+  background: oklch(0.17 0.005 270);
+}
+
+// Over the strip that joins them, so their labels stay whole.
+.send {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 96px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  background: var(--n-accent);
+  color: oklch(1 0 0);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+// A strip of the same blue from one button's centre to the other's.
+.bridge {
+  position: absolute;
+  top: 50%;
+  left: 25%;
+  width: 50%;
+  height: 8px;
+  background: var(--n-accent);
+  translate: 0 -50%;
+}
+
+// ── The blue button ─────────────────────────────────────
+
+// A dark desk whatever the page's theme: the question is the dark theme's.
+.buttons {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+  width: 100%;
+  padding: var(--space-8) var(--space-4);
+  border-radius: var(--radius-lg);
+  background: oklch(0.2 0.006 271);
+  color: oklch(0.93 0.004 286);
+}
+
+.buttonCase {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.fillButton {
+  display: grid;
+  place-items: center;
+  width: 112px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.verdicts {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+
+  [data-fails] {
+    color: oklch(0.75 0.13 35);
+  }
+}
+
+.labelName {
+  margin-bottom: var(--space-1);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+// ── Home card ───────────────────────────────────────────
+
+.preview {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: var(--space-1);
+  width: min(100%, 240px);
+
+  // The lower half of each chip without colour: one grey all along.
+  > span {
+    height: 56px;
+    border-radius: var(--radius-sm);
+  }
+
+  > span:nth-child(n + 7) {
+    height: 28px;
+    filter: grayscale(1);
+  }
+}

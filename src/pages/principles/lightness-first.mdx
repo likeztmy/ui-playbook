@@ -1,0 +1,96 @@
+---
+layout: ../../layouts/Entry.astro
+slug: lightness-first
+---
+import { LightnessRows, LightnessCusp, LightnessTint, LightnessStatus, LightnessTheme, LightnessNeighbours, LightnessButton } from '../../demos/lightness';
+
+## What a colour has to get right
+
+**Pick a colour's lightness for its job; its hue only says which one it is.** Whether a label can be read, a border found or two states told apart depends on how far their lightness is from what's around them. WCAG measures contrast so that hue “is not a key factor” ([WCAG 2.2, Understanding 1.4.3](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html)).
+
+The catch is the number most colour pickers call lightness. HSL's is the average of the red, green and blue channels, and of yellow and blue at the same 50%, “clearly the yellow looks much lighter than the blue” ([CSS Color 4, HSL](https://www.w3.org/TR/css-color-4/#the-hsl-notation)). OKLCH's lightness is fitted to how light colours look ([Ottosson, 2020](https://bottosson.github.io/posts/oklab/)), so one lightness there is one grey:
+
+<LightnessRows client:visible />
+
+HSL's “50%” runs from 1.1:1 to 8.6:1 against white. In OKLCH, choosing 55% is choosing a white label that passes on every hue, between 4.6:1 and 5.2:1, before any hue is picked.
+
+## How to choose
+
+### Lightness by role
+
+Each role gets a lightness that meets its contrast against what it sits on; the hue is poured in after. Material assigns its roles tones, not colours: primary sits at tone 40 in light and 80 in dark, never at 50, where even white “only reaches a contrast ratio of ~4.5:1” ([Material Color Utilities](https://github.com/material-foundation/material-color-utilities/blob/main/concepts/scheme_generation.md)). Radix gives each of its 12 steps one job, from app background to high-contrast text ([Radix Colors, Understanding the scale](https://www.radix-ui.com/colors/docs/palette-composition/understanding-the-scale)).
+
+| Role | WCAG 2.2 | OKLCH lightness on white | On the dark surface |
+| --- | --- | --- | --- |
+| Text, any size the reader reads | 4.5:1 | 57% or less | 60% or more |
+| Control borders, focus rings, icons that carry state | 3:1 | 67% or less | 50% or more |
+| A fill with a white label | 4.5:1 for the label | about 55% or less | about 55% or less |
+| Decorative lines | none | | |
+
+The figures are for greys; a saturated colour lands a few points off, so check it.
+
+### A scale bends
+
+<LightnessCusp client:visible />
+
+A screen can only show so much colour at each lightness, and where it shows the most depends on the hue: blue peaks around 60%, yellow near 90%. Near white, yellow holds four times blue's chroma. So a scale can't keep one hue and one chroma from end to end. Tailwind v4's own palette bends: amber turns from hue 95 to 46 as it darkens, and every hue's chroma rises to the middle and falls again ([Tailwind CSS, theme.css](https://github.com/tailwindlabs/tailwindcss/blob/main/packages/tailwindcss/theme.css)). Radix's yellow, amber, lime, mint and sky take dark text on their solid step where every other hue takes white: their peak sits too high for white to pass.
+
+### Greys carry a trace of hue
+
+<LightnessTint client:visible />
+
+At a chroma of 0.006 no single swatch looks coloured, but a screen of them does. The systems tint on purpose: Material builds every surface from the source colour's hue at a chroma of 6 to 8 out of about 120 ([Material Color Utilities](https://github.com/material-foundation/material-color-utilities/blob/main/concepts/dynamic_color_scheme.md)); Radix says to choose “the gray scale which is saturated with the hue closest to your accent hue” ([Radix Colors, Composing a palette](https://www.radix-ui.com/colors/docs/palette-composition/composing-a-palette)). Linear went the other way in 2024, limiting the blue in its greys for “a more neutral and timeless appearance” ([Linear, 2024](https://linear.app/now/how-we-redesigned-the-linear-ui)).
+
+Both are answers. Pairs of colours look more harmonious the closer their hues, but a figure is preferred the more its hue differs from its ground ([Schloss & Palmer, 2011](https://doi.org/10.3758/s13414-010-0027-0)). Greys in the accent's hue make one calm whole; greys in the opposite hue lift the accent off them. Whichever, the amount stays small: shipping systems tint between 0.003 and 0.046.
+
+### Status colours part by lightness
+
+<LightnessStatus client:visible />
+
+“Colour maps that include both red and green colours with similar lightness cannot be read by a large fraction of the readership”: about 8% of men ([Crameri, Shephard & Heron, 2020](https://doi.org/10.1038/s41467-020-19160-7)). Red, amber and green at one lightness differ by hue alone, and hue is what a red-green deficiency takes away. Set them a step apart in lightness and they stay apart. GitHub's colour-blind themes go further and move the hues themselves: success turns blue, danger orange ([GitHub, 2022](https://github.blog/changelog/2022-04-19-protanopia-deuteranopia-colorblind-themes-beta/)). The word beside each still carries the meaning ([Colour means one thing](/principles/colour-means-one-thing)); lightness is for the eye that scans a column of dots before it reads.
+
+### A theme is three inputs
+
+<LightnessTheme client:visible />
+
+Once every role is a contrast target, a theme follows from very little. Drag the base toward the middle and pairs start to fail: a mid-grey ground leaves no lightness far enough from it on either side. Linear's 2024 rebuild moved theme generation to LCH, and “instead of having to define 98 specific variables for each theme, we defined three: base color, accent color, and contrast”, which let it ship high-contrast themes without drawing them ([Linear, 2024](https://linear.app/now/how-we-redesigned-the-linear-ui)). Apple asks every custom colour for an increased-contrast variant ([Apple, Color](https://developer.apple.com/design/human-interface-guidelines/color)); with contrast as an input, it is the same rule with a higher target. CSS can now do the deriving itself, with `oklch(from var(--accent) …)` and `color-mix()` ([CSS Color 5](https://www.w3.org/TR/css-color-5/)).
+
+## Details
+
+### In the dark, re-map rather than invert
+
+Dark colours “aren't necessarily inversions of their light counterparts” ([Apple, Dark Mode](https://developer.apple.com/design/human-interface-guidelines/dark-mode)): Material's primary goes from tone 40 to 80, but its container from 90 to 30. Each role is solved again against the dark ground. And the ground changes the colour before any value does:
+
+<LightnessNeighbours client:visible />
+
+The same pixels look lighter on a dark ground, the effect behind Adelson's checker-shadow, where two squares of one grey look nothing alike ([Adelson, MIT](http://persci.mit.edu/gallery/checkershadow)). A blue that holds its own on white already stands out more on near-black.
+
+### Two standards, one button
+
+<LightnessButton client:visible />
+
+WCAG 2.2 is the contrast test that counts. APCA, a newer model that weighs polarity and text size, is still in beta, and the WCAG 3 draft says its own contrast method is “yet to be determined” ([WCAG 3.0 draft](https://www.w3.org/TR/wcag-3.0/); [APCA](https://github.com/Myndex/apca-w3)). On a blue fill between 59% and 71% the two pick opposite labels. The playbook keeps its accent fill at 56%, where both pick white.
+
+## The playbook's colours
+
+| Role | Light | Dark |
+| --- | --- | --- |
+| `ink` | L 21%, 17.7:1 | L 94%, 15.2:1 |
+| `ink-muted` | L 49%, 6.4:1 | L 77%, 8.7:1 |
+| `line-strong` | L 62%, 3.6:1 | L 54%, 3.5:1 |
+| `accent`, white label | L 56%, 4.7:1 | L 56%, 4.7:1 |
+| `danger` · `warning` · `success` | L 46% · 54% · 52% | L 76% · 80% · 75% |
+
+Contrast is against `surface`. The greys share one hue, a cool zinc, at a chroma under 0.015. Working through this page changed three things: light `danger` went from 53% to 46%, so it no longer matches `warning` for a red-green eye; the dark accent came down from 62% to 56% to take a white label, like the light one; and its dark label, which passed WCAG but fell short of APCA, is gone.
+
+## When it doesn't apply
+
+- **Colour as data.** A chart's categories or a map's scale need their own palettes, built for order and distance rather than roles ([Crameri, Shephard & Heron, 2020](https://doi.org/10.1038/s41467-020-19160-7)).
+- **A colour that's given.** A brand's colour keeps the lightness it has: use it for fills and marks where its contrast holds, and a darker or lighter step of its hue for text.
+- **What a hue means.** No study found ties a particular accent to how usable an interface is. “Blue builds trust” and “warm greys feel friendlier” have no evidence behind them.
+
+## Where the playbook applies it
+
+- [Button](/components/button): the primary fill takes a white label in both themes.
+- [Badge](/components/badge) and [Toast](/components/toast): danger, warning and success differ in lightness as well as hue.
+- [Mail](/practice/mail): a warm desk under cool greys and a blue accent, the opposite-hue choice, so the one blue lifts off it.

@@ -180,6 +180,14 @@ export const entries: Entry[] = [
     keywords: ['shadow', 'box-shadow', 'elevation', 'depth', 'dark mode', 'layers', 'raised'],
   },
   {
+    slug: 'lightness-first',
+    kind: 'principle',
+    title: 'Lightness first, hue last',
+    summary: 'Choose each colour’s lightness for its job, then its hue. Greys carry a trace of it; a theme comes from three inputs.',
+    details: 7,
+    keywords: ['colour', 'color', 'palette', 'oklch', 'hsl', 'contrast', 'wcag', 'apca', 'dark mode', 'theme', 'neutrals', 'gray', 'grey', 'tint', 'colour blindness', 'status colours', 'tokens'],
+  },
+  {
     slug: 'colour-means-one-thing',
     kind: 'principle',
     title: 'Colour means one thing',

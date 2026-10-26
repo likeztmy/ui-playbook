@@ -1646,3 +1646,48 @@ test('a shadow says how high: a card held in the After lifts, in the Before it k
   expect(await lift(0)).toBe(false);
   expect(await lift(1)).toBe(true);
 });
+
+test('lightness first: without colour, one row is one grey; the status sets part for a colour-blind eye', async ({ page }) => {
+  await page.goto('/principles/lightness-first');
+  await hydrateAll(page);
+  // Every OKLCH chip passes with a white label; the HSL row doesn't.
+  const rows = page.locator('[class*="_chips_"]');
+  await expect(rows.nth(0).locator('[data-fails]')).toHaveCount(6);
+  await expect(rows.nth(1).locator('[data-fails]')).toHaveCount(0);
+  await page.getByRole('switch', { name: 'Without colour' }).click();
+  const filters = () => rows.nth(1).locator('[class*="_swatch_"]').evaluateAll((els) => [...new Set(els.map((e) => getComputedStyle(e).filter))]);
+  await expect.poll(filters).toEqual(['grayscale(1)']);
+  // Deuteranopia by default: the old set merges, the new one doesn't.
+  await expect(page.getByText('ΔE 0.004')).toBeVisible();
+  await expect(page.getByText('ΔE 0.077')).toBeVisible();
+  await page.getByRole('radio', { name: 'Typical' }).click();
+  await expect(page.getByText(/ΔE 0\.004/)).toHaveCount(0);
+});
+
+test('lightness first: three inputs make a theme whose pairs pass at either end, not in the middle', async ({ page }) => {
+  await page.goto('/principles/lightness-first');
+  await hydrateAll(page);
+  const readout = page.locator('code').filter({ hasText: /pairs (pass|fail)/ });
+  await expect(readout).toContainText('all 5 pairs pass');
+  const base = page.getByRole('slider', { name: 'Base' });
+  await base.focus();
+  await page.keyboard.press('Home');
+  await expect(readout).toContainText('all 5 pairs pass');
+  await page.getByRole('slider', { name: 'Contrast' }).focus();
+  await page.keyboard.press('End');
+  await expect(readout).toContainText('all 5 pairs pass');
+  await base.focus();
+  for (let i = 0; i < 44; i++) await page.keyboard.press('ArrowRight');
+  await expect(readout).toContainText('fail');
+});
+
+test('lightness first: the two standards disagree on a mid blue, and agree on the playbook’s', async ({ page }) => {
+  await page.goto('/principles/lightness-first');
+  await hydrateAll(page);
+  const readout = page.locator('code').filter({ hasText: /picks?|pick the/ });
+  await expect(readout).toHaveText('WCAG picks the dark label, APCA the white');
+  const lightness = page.getByRole('slider', { name: 'Lightness' });
+  await lightness.focus();
+  for (let i = 0; i < 6; i++) await page.keyboard.press('ArrowLeft');
+  await expect(readout).toHaveText('both standards pick the white label');
+});

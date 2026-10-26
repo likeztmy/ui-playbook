@@ -121,7 +121,7 @@
         "name": "accent",
         "value": {
           "light": "#0071e3",
-          "dark": "#0a84ff"
+          "dark": "#0071e3"
         },
         "usage": "Apple 系统蓝，唯一的强调色：主按钮填充、选中块、焦点环、输入框聚焦边框。作为文字请用 `accent-text`。每个视图主按钮最多一个。"
       },
@@ -129,7 +129,7 @@
         "name": "accent-hover",
         "value": {
           "light": "#0066cc",
-          "dark": "#409cff"
+          "dark": "#0066cc"
         },
         "usage": "主按钮悬停与按下填充。"
       },
@@ -137,9 +137,9 @@
         "name": "on-accent",
         "value": {
           "light": "#ffffff",
-          "dark": "#0e0f11"
+          "dark": "#ffffff"
         },
-        "usage": "`accent` 与 `accent-hover` 填充上的文字和图标（浅色模式白字 4.7:1；深色模式 #0a84ff 上白字只有 3.6:1，所以用深色字）。"
+        "usage": "`accent` 与 `accent-hover` 填充上的文字和图标：两种主题都是白字（4.7:1）。深色模式的主色压暗到与浅色相同，而不是提亮配深色字：提亮后深色字 WCAG 过线，APCA 却只有 Lc 40。"
       },
       {
         "name": "accent-soft",
@@ -160,7 +160,7 @@
       {
         "name": "danger",
         "value": {
-          "light": "#bb3610",
+          "light": "#a11f01",
           "dark": "#ff8a65"
         },
         "usage": "破坏性操作与错误。始终配合图标或文字出现，不单靠颜色。"
@@ -192,10 +192,10 @@
       {
         "name": "warning",
         "value": {
-          "light": "#9a5b00",
+          "light": "#9d5e02",
           "dark": "#f5b042"
         },
-        "usage": "需要注意但不阻断的状态：配额将满、未保存的修改。作为文字用于所有表面与 `warning-soft` 之上。与 `danger` 亮度接近，必须配图标或文字区分。"
+        "usage": "需要注意但不阻断的状态：配额将满、未保存的修改。作为文字用于所有表面与 `warning-soft` 之上。比 `danger` 亮一截（OKLCH L 54% 对 46%），红绿色弱也分得开；仍配图标或文字。"
       },
       {
         "name": "warning-soft",

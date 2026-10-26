@@ -10,6 +10,8 @@ const DIAGRAMS = new Set([
   'src/components/hero/Redline.astro',
   // A pen stroke drawn on the Toolbar/Tooltip canvas: content, not an icon.
   'src/demos/canvas.tsx',
+  // A colour-vision filter, not an icon: it draws nothing.
+  'src/demos/lightness/Vision.tsx',
 ]);
 
 function* files(dir) {
