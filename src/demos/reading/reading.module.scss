@@ -1,0 +1,298 @@
+.readout {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+
+  &[data-off] {
+    color: var(--danger);
+  }
+}
+
+.full {
+  width: 100%;
+}
+
+// ── The letter at a measure ─────────────────────────────
+
+.letter {
+  align-self: flex-start;
+  width: 100%;
+  font-size: 14px;
+  line-height: 20px;
+
+  // Interface text: the list's size and leading, paragraphs a row's gap apart.
+  p {
+    margin: 0 0 var(--space-2);
+  }
+
+  &[data-set='Reading'] {
+    font-size: 16px;
+    line-height: 26px;
+
+    p {
+      margin-bottom: var(--space-3);
+    }
+  }
+}
+
+// ── Leading ─────────────────────────────────────────────
+
+.leading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  width: 100%;
+  font-size: 14px;
+
+  p {
+    margin: 0;
+  }
+}
+
+.wide {
+  width: 100%;
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--line);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr) auto;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+
+.rowFrom {
+  font-weight: 600;
+}
+
+.rowSubject {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rowTime {
+  color: var(--ink-muted);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+// ── A size is an angle ──────────────────────────────────
+
+.angle {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  width: 100%;
+  padding-bottom: var(--space-6);
+}
+
+.sample {
+  min-height: 40px;
+  margin: 0;
+  line-height: 1.4;
+}
+
+// 0° to 0.6° of x-height: below the critical print size, the band where it lies for most people, and
+// the marks for the fluent range's floor and Rello's best size.
+.scale {
+  position: relative;
+  height: 12px;
+  border-radius: var(--radius-full);
+  background: var(--surface-sunken);
+}
+
+.zoneLow,
+.zoneBand {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+}
+
+.zoneLow {
+  left: 0;
+  border-radius: var(--radius-full) 0 0 var(--radius-full);
+  background: color-mix(in oklch, var(--danger) 30%, transparent);
+}
+
+.zoneBand {
+  background: color-mix(in oklch, var(--warning) 25%, transparent);
+}
+
+.tick {
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  width: 1px;
+  background: var(--line-strong);
+
+  &::after {
+    content: attr(data-label);
+    position: absolute;
+    bottom: calc(100% + 4px);
+    left: 0;
+    color: var(--ink-muted);
+    font-size: 11px;
+    white-space: nowrap;
+    translate: -50% 0;
+  }
+
+  &[data-below]::after {
+    top: calc(100% + 4px);
+    bottom: auto;
+  }
+}
+
+.marker {
+  position: absolute;
+  top: 50%;
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--surface);
+  border-radius: 50%;
+  background: var(--ink);
+  translate: -50% -50%;
+  transition: left var(--duration-fast) var(--ease-out);
+}
+
+// ── Your fastest face ───────────────────────────────────
+
+.fastest {
+  width: 100%;
+}
+
+.faces {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+
+  @media (max-width: 640px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.face {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 0;
+  border-radius: var(--radius-lg);
+  background: var(--fill-control);
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-out);
+
+  &:hover {
+    background: var(--fill-control-hover);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+}
+
+.faceSample {
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.faceName {
+  color: var(--ink-muted);
+  font-size: 12px;
+}
+
+.ready,
+.passage,
+.results {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-4);
+
+  p {
+    margin: 0;
+  }
+}
+
+.ready p {
+  color: var(--ink-muted);
+}
+
+.passage p {
+  max-width: var(--reading-max);
+  font-size: 16px;
+  line-height: 26px;
+}
+
+.results {
+  align-items: stretch;
+
+  > button {
+    align-self: flex-start;
+  }
+}
+
+.result {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  font-size: 16px;
+
+  &[data-fastest] {
+    background: var(--accent-soft);
+    font-weight: 600;
+  }
+}
+
+.resultMeta {
+  color: var(--ink-muted);
+  font-size: 13px;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
+
+// ── Home card ───────────────────────────────────────────
+
+.preview {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: var(--space-5);
+  width: min(100%, 260px);
+
+  span {
+    display: block;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--ink-disabled);
+  }
+}
+
+.previewRows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.previewText {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  span {
+    background: var(--ink-muted);
+  }
+}

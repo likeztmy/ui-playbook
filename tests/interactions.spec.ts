@@ -1691,3 +1691,74 @@ test('lightness first: the two standards disagree on a mid blue, and agree on th
   for (let i = 0; i < 6; i++) await page.keyboard.press('ArrowLeft');
   await expect(readout).toHaveText('both standards pick the white label');
 });
+
+// Characters per rendered line in the paragraphs under `sel`, the last line of each left out.
+const charsPerLine = (page: Page, sel: string) =>
+  page.evaluate((sel) => {
+    const range = document.createRange();
+    const full: number[] = [];
+    for (const p of document.querySelector(sel)!.querySelectorAll('p')) {
+      const lines = new Map<number, number>();
+      const walker = document.createTreeWalker(p, NodeFilter.SHOW_TEXT);
+      for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+        for (let i = 0; i < n.textContent!.length; i++) {
+          range.setStart(n, i);
+          range.setEnd(n, i + 1);
+          const box = range.getClientRects()[0];
+          if (box) lines.set(Math.round(box.top), (lines.get(Math.round(box.top)) ?? 0) + 1);
+        }
+      }
+      full.push(...[...lines.values()].slice(0, -1));
+    }
+    return full.reduce((a, b) => a + b, 0) / full.length;
+  }, sel);
+
+test('reading text: Post sets an open letter at 16px and a reading measure, not the 96 characters 68ch gave', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/practice/mail/app');
+  await hydrateAll(page);
+  await page.getByText('Back from the coast').first().click();
+  const prose = page.locator('[class*="_prose_"]').filter({ hasText: 'harbour' });
+  await expect(prose).toBeVisible();
+  await expect(prose).toHaveCSS('font-size', '16px');
+  const cpl = await charsPerLine(page, '[class*="_prose_"]:has(p)');
+  expect(cpl).toBeGreaterThan(55);
+  expect(cpl).toBeLessThan(75);
+});
+
+test('reading text: the measure readout counts real characters; a phone gives the same px a bigger angle', async ({ page }) => {
+  await page.goto('/principles/reading-text');
+  await hydrateAll(page);
+  const measure = page.locator('code').filter({ hasText: /characters a line ·/ }).first();
+  await expect(measure).toContainText('60em is 90ch');
+  const wide = Number((await measure.textContent())!.match(/≈ (\d+)/)![1]);
+  await page.getByRole('radio', { name: 'Reading' }).click();
+  await page.getByRole('slider', { name: 'Measure' }).focus();
+  for (let i = 0; i < 29; i++) await page.keyboard.press('ArrowLeft');
+  await expect(measure).toContainText('31em');
+  const narrow = Number((await measure.textContent())!.match(/≈ (\d+)/)![1]);
+  expect(narrow).toBeLessThan(wide);
+  expect(narrow).toBeLessThan(75);
+
+  const angle = page.locator('code').filter({ hasText: /x-height/ });
+  await expect(angle).toContainText('x-height 0.19°');
+  await page.getByRole('radio', { name: 'Phone' }).click();
+  await expect(angle).toContainText('x-height 0.24°');
+});
+
+test('reading text: the font test reads three passages, then shows each face’s speed with focus on Try again', async ({ page }) => {
+  await page.goto('/principles/reading-text');
+  await hydrateAll(page);
+  await page.getByRole('button', { name: /Your system’s serif/ }).click();
+  for (let i = 1; i <= 3; i++) {
+    await expect(page.getByRole('button', { name: `Start passage ${i}` })).toBeFocused();
+    await page.keyboard.press('Enter');
+    await expect(page.getByRole('button', { name: 'Done' })).toBeFocused();
+    await page.keyboard.press('Enter');
+  }
+  await expect(page.getByText(/words a minute/)).toHaveCount(3);
+  await expect(page.getByText('Your favourite ·')).toBeVisible();
+  // Pressing straight through is skimming, and says so rather than naming a winner.
+  await expect(page.getByText('Faster than anyone reads')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Try again' })).toBeFocused();
+});

@@ -1,0 +1,79 @@
+---
+layout: ../../layouts/Entry.astro
+slug: reading-text
+---
+import { ReadingMeasure, ReadingAngle, ReadingLeading, ReadingFastest } from '../../demos/reading';
+
+## Two kinds of text
+
+**Text that's read through is set for the reader, not for the screen around it.** Most interface text is scanned: a list row is read in spots and layers, for the one word that tells it apart. A letter is read word by word, the reading NN/g calls commitment, slower than scanning and the best for comprehension ([NN/g, 2019](https://www.nngroup.com/articles/text-scanning-patterns-eyetracking/)). The size, line and leading that make a row compact make a letter hard going:
+
+<ReadingMeasure client:visible />
+
+And what feels best is a poor guide. People rated 55 characters a line easiest, but read longer lines faster, and understood 55 better than 100 ([Dyson, 2004](https://doi.org/10.1080/01449290410001715714)). Set reading text from what readers do, then let them change it.
+
+## How to set it
+
+### Count the characters, not `ch`
+
+On screen, long lines are not read more slowly; Dyson found “in no case were long lines read more slowly than shorter lines” ([Dyson, 2021](https://designregression.com/article/line-length-revisited-following-the-research)). They cost something else: in the one study built to measure it, 100 characters a line were understood worse than 55, with no gain in speed to trade for it. The familiar 45 to 75 is a printer's convention for serif books ([Bringhurst, via webtypography.net](http://webtypography.net/2.1.2)) that happens to sit where comprehension and preference meet.
+
+Count them as the reader does. CSS's `ch` is the width of the zero ([CSS Values 4](https://www.w3.org/TR/css-values-4/#ch)), and Geist's zero is wide: `68ch` holds about 100 characters of English. In Geist an average character is 0.449em, so 31em holds about 67 once the words wrap.
+
+On a narrow screen let the lines run short. Students with dyslexia read lines of about 13 characters 27% faster than lines of 67, with half the regressions ([Schneps et al., 2013](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0071161)).
+
+### A size is an angle
+
+<ReadingAngle client:visible />
+
+The eye gets an angle, not a pixel count. Reading slows sharply below a critical print size that lies, for most people, between 0.15° and 0.3° of x-height, and stays fluent from about 0.2° up ([Legge & Bigelow, 2011](https://pmc.ncbi.nlm.nih.gov/articles/PMC3428264/)). Rello's readers did better with every step up to “18” and “22”, and the authors ask for at least 18; on their monitor that came to about 0.3° ([Rello, Pielot & Marcos, 2016](https://doi.org/10.1145/2858036.2858204)). The 15px that's ordinary for interface text gives about 0.19° on a laptop, inside that band; the same pixels on a phone, held closer, give more.
+
+Bigger is not always better. On a phone, a size chosen for reading while walking was read 21% faster on foot and 20% slower sitting down, and the size people said they preferred rose from 16.8 to 22.5 points once they had tried the larger one ([Kong et al., 2025](https://faculty.washington.edu/wobbrock/pubs/chi-25.01.pdf)). A default, then, and a setting.
+
+### Leading is for the trip back
+
+<ReadingLeading client:visible />
+
+Between line heights of about 1.2 and 1.7 Rello's eye tracking found no difference at all, p = .978; only 0.96 hurt comprehension, and 2.16 felt worse. What leading serves is the jump from the end of one line to the start of the next, which is why Apple asks for loose leading “in wide columns or long passages” and tight leading in a list row ([Apple, Typography](https://developer.apple.com/design/human-interface-guidelines/typography)). A row of one line has no next line to find. The longer the line, the more the leading matters.
+
+### The best face is the reader's
+
+<ReadingFastest client:visible />
+
+In a study of 352 readers, each read 35% faster in their fastest of five fonts than in their slowest, no font was fastest for everyone, and their favourite was their fastest only 20% of the time: chance. Yet 73% expected it to be ([Wallace et al., 2022](https://doi.org/10.1145/3502222)). Serif against sans is the wrong question too: which does better flips with stroke contrast ([Minakata & Beier, 2022](https://doi.org/10.1016/j.actpsy.2022.103623)), and again for low vision ([Minakata et al., 2023](https://doi.org/10.1016/j.actpsy.2022.103810)). One sitting is noisy, so the test above is a demonstration, not a measurement.
+
+A reading view can offer a choice of face. Interface text gains little from one.
+
+## Interface text
+
+The other text is set for the glance. Material marks its label styles for “quick reading at small sizes” and sets them in Medium ([Material 3, Applying type](https://m3.material.io/styles/typography/applying-type)); weight helps most at small sizes ([Beier & Oderkerk, 2019](https://doi.org/10.1016/j.actpsy.2019.102904)).
+
+| | Reading text | Interface text |
+| --- | --- | --- |
+| Size | 16px, more as a setting | 13–14px; 12px for labels |
+| Line | 55–75 characters, in em | the row's width |
+| Leading | 1.5–1.6 | 1.2–1.45 |
+| Weight | Regular | Medium or Semibold for what leads |
+| Numbers | | tabular where they stack |
+
+## The playbook's type
+
+| Style | Size / leading | Measure | Used for |
+| --- | --- | --- | --- |
+| `reading` | 16 / 26 | `reading-max`, 31em, about 67 characters | An open mail, a draft |
+| `body` | 14 / 20 | | Rows, controls, forms |
+| These pages | 15 / 24 | `prose-max`, 34em, about 73 characters | The text you are reading |
+
+Working this page through changed two measures. Post's mail body was 15px at `68ch`, about 96 characters a line; it is now `reading`. These pages ran 87 to 93 characters a line at 640px; they now stop at 34em.
+
+## When it doesn't apply
+
+- **A designed letter.** A newsletter keeps the width its sender set.
+- **Code.** Its lines are as long as the code; wrapping it changes what it says.
+- **Chinese and Japanese.** A character is about twice as wide, so the line is about half as many: WCAG's limit is 80 characters, or 40 for CJK ([WCAG 2.2, 1.4.8](https://www.w3.org/WAI/WCAG22/Understanding/visual-presentation.html)), measured in `ic`, not `em`.
+- **What the evidence doesn't say.** No study since 2015 has tested line length on screens for English, and none since 2020 has shown dark mode helping or hurting reading.
+
+## Where the playbook applies it
+
+- [Mail](/practice/mail): Post's list is `body`, its open mail `reading`; Sam's letter from the coast is the long one.
+- These pages: paragraphs stop at 34em; demos and tables use the full width.

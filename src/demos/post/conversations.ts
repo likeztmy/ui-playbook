@@ -1,3 +1,4 @@
+import { LETTER } from './letter';
 import type { Attachment, Block, Conversation, Inline, Message } from './model';
 
 // Post's sample mailbox. Today is a Thursday; `day` counts back from it.
@@ -425,6 +426,14 @@ export const CONVERSATIONS: Conversation[] = [
         p({ text: 'Track your parcel', href: '#' }),
       ]),
     ],
+  },
+  {
+    id: 'coast',
+    subject: 'Back from the coast',
+    folder: 'inbox',
+    day: 4,
+    time: 'Sun',
+    messages: [msg('coast-1', 'sam', ['me'], 'Sun 21:40', [...LETTER.map((t) => p(t)), sign('Sam')])],
   },
   {
     id: 'retro',

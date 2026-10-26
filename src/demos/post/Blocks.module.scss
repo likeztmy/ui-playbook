@@ -1,8 +1,9 @@
-// A message's body: a reading measure, and every kind of block at home in it.
+// A message's body: set for reading, not for the list. About 67 characters a line, measured in em,
+// not ch: ch is the width of Geist's wide zero, so 68ch holds about 100 characters.
 .prose {
-  max-width: 68ch;
-  font-size: 15px;
-  line-height: 25px;
+  max-width: var(--reading-max);
+  font-size: 16px;
+  line-height: 26px;
   overflow-wrap: anywhere;
 
   > * {

@@ -55,7 +55,7 @@
 }
 
 .summary {
-  max-width: 560px;
+  max-width: var(--prose-max);
   margin: var(--space-2) 0 0;
   font-size: 15px;
   line-height: 22px;
@@ -95,9 +95,10 @@
     font-weight: 600;
   }
 
+  // About 73 characters a line, measured in em: a character of Geist averages 0.449em.
   > :global(p),
   > :global(ul) {
-    max-width: 640px;
+    max-width: var(--prose-max);
     margin: 0 0 var(--space-4);
   }
 

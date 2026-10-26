@@ -316,6 +316,21 @@
         ]
       },
       {
+        "name": "Reading",
+        "family": "sans",
+        "note": "长篇阅读：打开的邮件正文、文章。按读者在常用距离下看到的字有多大来定字号，行长按真实字符数而不是 `ch` 来定：Geist 平均每个字符约 0.449em，31em 换行后约 67 个字符。",
+        "styles": [
+          {
+            "name": "reading",
+            "fontSize": "16px",
+            "lineHeight": "26px",
+            "fontWeight": 400,
+            "sample": "Thanks for sending the venue list over.",
+            "usage": "英文为主的长段落，行长 `reading-max`。界面文字仍用 `body`。"
+          }
+        ]
+      },
+      {
         "name": "Code",
         "family": "mono",
         "styles": [
@@ -594,8 +609,13 @@
       },
       {
         "name": "prose-max",
-        "value": "680px",
-        "usage": "长段落最大宽度，约 40 个汉字或 75 个英文字符。"
+        "value": "34em",
+        "usage": "文档页段落最大宽度：Geist 15px 下换行后约 73 个英文字符。用 em 而不是 `ch`：Geist 的“0”很宽，68ch 约 101 个字符。"
+      },
+      {
+        "name": "reading-max",
+        "value": "31em",
+        "usage": "`reading` 正文的最大宽度，换行后约 67 个英文字符。"
       },
       {
         "name": "dialog-sm",

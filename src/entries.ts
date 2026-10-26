@@ -180,6 +180,14 @@ export const entries: Entry[] = [
     keywords: ['shadow', 'box-shadow', 'elevation', 'depth', 'dark mode', 'layers', 'raised'],
   },
   {
+    slug: 'reading-text',
+    kind: 'principle',
+    title: 'Set reading text for the reader',
+    summary: 'A letter is read, a row is scanned. Count the line in characters, size the text as an angle, and let the reader choose.',
+    details: 4,
+    keywords: ['typography', 'line length', 'measure', 'characters per line', 'ch unit', 'line height', 'leading', 'font size', 'readability', 'reading', 'body text', 'serif', 'sans serif', 'visual angle'],
+  },
+  {
     slug: 'lightness-first',
     kind: 'principle',
     title: 'Lightness first, hue last',
