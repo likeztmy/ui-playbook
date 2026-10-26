@@ -119,7 +119,7 @@ export function Conversation({ post, compose, c, single }: { post: Post; compose
   return (
     <section ref={box} className={s.conversation} aria-label="Conversation">
       <TipGroup>
-        <div className={s.bar}>
+        <div className={s.bar} data-part="convbar">
           <Tip label="Back">
             <Button variant="ghost" icon aria-label="Back" className={s.back} onClick={post.close}>
               <ChevronLeft {...ic} />
@@ -155,9 +155,11 @@ export function Conversation({ post, compose, c, single }: { post: Post; compose
         </div>
       </TipGroup>
       <div className={s.scroll}>
-        <div className={s.column}>
+        <div className={s.column} data-part="column">
           <header className={s.head}>
-            <h1 className={s.subject}>{c.subject}</h1>
+            <h1 className={s.subject} data-part="headline">
+              {c.subject}
+            </h1>
             <Tip label={c.starred ? 'Unstar' : 'Star'}>
               <Button
                 variant="ghost"

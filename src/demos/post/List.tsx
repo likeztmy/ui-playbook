@@ -48,7 +48,7 @@ function Bar({ post, chrome }: { post: Post; chrome: Chrome }) {
   const all = post.list.length > 0 && ticked.length === post.list.length;
   const anyUnread = ticked.some(unread);
   return (
-    <div className={s.bar}>
+    <div className={s.bar} data-part="bar">
       <span className={s.check}>
         {post.list.length > 0 && (
           <Checkbox
@@ -135,7 +135,7 @@ export function List({ post, rows, chrome, pinned }: ListProps) {
         {post.list.map((c, i) => [
           // A header where the section changes: more space above than below, so it joins the rows it names.
           (i === 0 || section(c) !== section(post.list[i - 1])) && (
-            <div key={`h-${c.id}`} className={s.section} data-first={i === 0 ? '' : undefined} data-spot="sections">
+            <div key={`h-${c.id}`} className={s.section} data-first={i === 0 ? '' : undefined} data-spot="sections" data-part="section">
               {section(c)}
             </div>
           ),

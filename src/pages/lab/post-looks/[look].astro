@@ -1,0 +1,16 @@
+---
+// Post in each visual direction under review, full screen. Not linked; picked from screenshots.
+import Bare from '../../../layouts/Bare.astro';
+import { PostApp } from '../../../demos/post';
+import '../../../demos/post/looks/shared.scss';
+import '../../../demos/post/looks/quiet.scss';
+import '../../../demos/post/looks/planes.scss';
+import '../../../demos/post/looks/reading.scss';
+
+export const getStaticPaths = () => ['now', 'quiet', 'planes', 'reading'].map((look) => ({ params: { look } }));
+const { look } = Astro.params;
+---
+
+<Bare title={`Post · ${look}`} noindex>
+  <PostApp client:load look={look} />
+</Bare>

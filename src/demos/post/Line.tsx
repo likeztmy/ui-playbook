@@ -6,6 +6,7 @@ import { ContextMenu, Menu } from '../../ui/Menu';
 import { Tip } from '../../ui/Tooltip';
 import { latest, snippet, unread, type Conversation } from './model';
 import { participants } from './people';
+import { Avatar } from './Avatar';
 import { Marked } from './Marked';
 import type { Post } from './usePost';
 import s from './List.module.scss';
@@ -46,27 +47,32 @@ export function Line({ c, post, rowRef, pin }: Props) {
         <span className={s.dot} aria-hidden data-spot={unread(c) ? 'colour' : undefined} />
         <span
           className={s.check}
+          data-part="check"
           onClickCapture={(e) => (shift.current = e.shiftKey)}
           // Shift-click extends a text selection across the rows; here it means a range of rows.
           onMouseDown={(e) => e.shiftKey && e.preventDefault()}
         >
           <Checkbox aria-label={`Select ${c.subject}`} checked={checked} onCheckedChange={(v) => post.tick(c.id, !!v, shift.current)} />
         </span>
-        <button type="button" ref={rowRef} className={s.main} aria-current={post.open?.id === c.id || undefined} onClick={() => post.show(c.id)}>
+        {/* Who it's from, as a face: shown by the looks that put identity first. */}
+        <span className={s.face} data-part="face">
+          <Avatar id={latest(c).from} size="sm" />
+        </span>
+        <button type="button" ref={rowRef} className={s.main} data-part="main" aria-current={post.open?.id === c.id || undefined} onClick={() => post.show(c.id)}>
           <span className={s.from} data-from="">
             {/* In Sent, who it went to: that's what's looked for there. */}
             <Marked text={c.folder === 'sent' ? `To ${participants(latest(c).to)}` : participants(c.messages.map((m) => m.from))} q={q} />
             {count > 1 && <span className={s.count}>{count}</span>}
           </span>
-          <span className={s.text}>
-            <span className={s.subject}>
+          <span className={s.text} data-part="text">
+            <span className={s.subject} data-part="subject">
               <Marked text={c.subject} q={q} />
             </span>
-            <span className={s.snippet}>
+            <span className={s.snippet} data-part="snippet">
               <Marked text={snippet(latest(c).body)} q={q} />
             </span>
           </span>
-          <span className={s.time}>
+          <span className={s.time} data-part="time">
             {c.starred && <Star size={12} strokeWidth={1.5} nonScalingStroke className={s.starred} aria-label="Starred" />}
             {c.time}
           </span>

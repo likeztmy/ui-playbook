@@ -1,0 +1,139 @@
+// Direction C, Reading room: mail as something read, not processed. Paper instead of panels, a reading
+// face for what people wrote, and room around each conversation.
+// Argued from: a reading face is not an interface face (the open message gets its own type, size and
+// measure); who before what; space groups by ratio (a big date header, more room above than below).
+
+[data-look='reading'] {
+  --bg: oklch(0.982 0.009 85);
+  --surface: oklch(0.993 0.005 85);
+  --look-face: 32px;
+  --look-serif: 'Iowan Old Style', 'Charter', 'Palatino', Georgia, serif;
+
+  [data-part='pane'] {
+    margin: 0;
+    border-left: 1px solid oklch(0.9 0.01 85);
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  [data-part='side'] {
+    padding-top: var(--space-5);
+  }
+
+  [data-part='bar'],
+  [data-part='convbar'] {
+    height: 60px;
+    border-bottom-color: transparent;
+  }
+
+  // A date as a heading: the reading face, ink, and space above it that sets the day apart.
+  [data-part='section'] {
+    padding: var(--space-8) var(--space-3) var(--space-2) calc(20px + var(--look-face) + var(--space-4) + 4px);
+    color: var(--ink);
+    font-family: var(--look-serif);
+    font-size: 19px;
+    font-weight: 500;
+    line-height: 24px;
+  }
+
+  [data-row] {
+        column-gap: var(--space-4);
+    align-items: center;
+    height: auto;
+    padding-top: 14px;
+    padding-bottom: 14px;
+    border-bottom: 0;
+  }
+
+  // A rule under the words only, from the face's edge: rows part without the list becoming a grid.
+  [data-row]::after {
+    content: '';
+    position: absolute;
+    right: var(--space-4);
+    bottom: 0;
+    left: calc(20px + var(--look-face) + var(--space-4));
+    border-bottom: 1px solid oklch(0.92 0.01 85);
+  }
+
+  [data-part='face'] > span {
+    font-size: 12px;
+  }
+
+  [data-part='main'] {
+    grid-template:
+      'from time' auto
+      'text text' auto / minmax(0, 1fr) auto;
+    gap: 3px var(--space-3);
+  }
+
+  [data-from] {
+    grid-area: from;
+    font-size: 15px;
+  }
+
+  [data-part='time'] {
+    grid-area: time;
+  }
+
+  [data-part='text'] {
+    grid-area: text;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  // Subject and snippet each keep their own line.
+  [data-part='snippet'] {
+    flex: none;
+  }
+
+  [data-part='subject'] {
+    max-width: none;
+    font-size: 15px;
+  }
+
+  // The newest words, as they were written: the reading face, a little of them.
+  [data-part='snippet'] {
+    color: var(--ink-muted);
+    font-family: var(--look-serif);
+    font-size: 15px;
+  }
+
+  [data-part='column'] {
+    max-width: 720px;
+    margin: 0 auto;
+    padding-top: var(--space-8);
+  }
+
+  [data-part='headline'] {
+    font-family: var(--look-serif);
+    font-size: 32px;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+
+  [data-part='prose'] {
+    max-width: 64ch;
+    font-family: var(--look-serif);
+    font-size: 18px;
+    line-height: 29px;
+  }
+}
+
+// Warmth around the work, not in it: each folder's mark in its own soft colour.
+[data-look='reading'] [data-part='side'] button svg {
+  color: oklch(0.6 0.08 var(--folder-hue, 60));
+}
+
+[data-look='reading'] [data-part='side'] button:nth-of-type(1) { --folder-hue: 250; }
+[data-look='reading'] [data-part='side'] button:nth-of-type(2) { --folder-hue: 80; }
+[data-look='reading'] [data-part='side'] button:nth-of-type(3) { --folder-hue: 160; }
+[data-look='reading'] [data-part='side'] button:nth-of-type(4) { --folder-hue: 30; }
+[data-look='reading'] [data-part='side'] button:nth-of-type(5) { --folder-hue: 300; }
+
+// What's being written is set as it will be read.
+[data-look='reading'] .ProseMirror {
+  font-family: var(--look-serif);
+  font-size: 18px;
+  line-height: 29px;
+}

@@ -172,6 +172,11 @@ $inset: 20px;
   fill: oklch(0.83 0.16 85);
 }
 
+// A sender's face: only in looks that show it (see the lab's looks).
+.face {
+  display: none;
+}
+
 .main {
   display: grid;
   grid-template-columns: var(--from, 160px) minmax(0, 1fr) 64px;

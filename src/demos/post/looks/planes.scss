@@ -1,0 +1,129 @@
+// Direction B, Two planes: the mail lies on a tinted desk, raised a step; rows are two lines with a
+// large face, so a conversation is found by who and read by what.
+// Argued from: two planes of depth (what you act on lifts off what it sits on); who before what;
+// subject and snippet each get a line, so neither is cut to fit the other.
+
+[data-look='planes'] {
+  --bg: oklch(0.948 0.007 75);
+  --look-face: 36px;
+
+  [data-part='side'] {
+    padding-top: var(--space-4);
+  }
+
+  [data-part='pane'] {
+    margin: var(--space-2) var(--space-2) var(--space-2) 0;
+    border-radius: 18px;
+    box-shadow:
+      0 1px 2px oklch(0.4 0.02 75 / 0.06),
+      0 8px 24px oklch(0.4 0.02 75 / 0.08);
+  }
+
+  [data-part='bar'],
+  [data-part='convbar'] {
+    height: 56px;
+    border-bottom-color: transparent;
+  }
+
+  // Two lines a row, a face beside them; rows separated by space and their own rounded surface.
+  [data-row] {
+        column-gap: var(--space-3);
+    align-items: center;
+    height: auto;
+    margin: 2px var(--space-2);
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-bottom: 0;
+    border-radius: 12px;
+  }
+
+  [data-part='face'] > span {
+    font-size: 13px;
+  }
+
+  [data-part='main'] {
+    grid-template:
+      'from time' auto
+      'text text' auto / minmax(0, 1fr) auto;
+    gap: 2px var(--space-3);
+  }
+
+  [data-from] {
+    grid-area: from;
+  }
+
+  [data-part='time'] {
+    grid-area: time;
+    font-size: 12px;
+  }
+
+  [data-part='text'] {
+    grid-area: text;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  // Subject and snippet each keep their own line.
+  [data-part='snippet'] {
+    flex: none;
+  }
+
+  [data-part='subject'] {
+    max-width: none;
+  }
+
+  [data-part='snippet'] {
+    font-size: 13px;
+  }
+
+  [data-part='section'] {
+    padding-left: calc(var(--space-2) + 20px + var(--look-face) + var(--space-3) + 4px);
+  }
+
+  // A conversation reads as a letter in the middle of its card.
+  [data-part='column'] {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  [data-part='headline'] {
+    font-size: 26px;
+    letter-spacing: -0.01em;
+  }
+
+  [data-part='prose'] {
+    font-size: 15px;
+    line-height: 25px;
+  }
+}
+
+// The conversation's tools float over the letter, on the control plane, and leave the reading clear.
+[data-look='planes'] [data-part='convbar'] {
+  position: absolute;
+  top: var(--space-3);
+  left: var(--space-3);
+  z-index: 1;
+  width: fit-content;
+  height: 40px;
+  padding: 0 var(--space-1);
+  border-radius: var(--radius-full);
+  background: color-mix(in oklch, var(--surface) 88%, transparent);
+  box-shadow:
+    0 1px 2px oklch(0.4 0.02 75 / 0.08),
+    0 6px 16px oklch(0.4 0.02 75 / 0.1);
+  backdrop-filter: blur(12px);
+}
+
+[data-look='planes'] section[aria-label='Conversation'] {
+  position: relative;
+}
+
+[data-look='planes'] [data-part='column'] {
+  padding-top: var(--space-12);
+}
+
+// Writing, too, is a letter in the middle of its card.
+[data-look='planes'] section[aria-label='New message'] > :not(:first-child) {
+  width: min(100%, 760px);
+  margin-inline: auto;
+}

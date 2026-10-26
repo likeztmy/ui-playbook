@@ -46,7 +46,7 @@ export function Message({ m, open, onToggle, headRef, undo }: Props) {
         </span>
         {undo ? <Sending onUndo={undo} /> : <span className={s.time}>{m.at}</span>}
       </header>
-      <div className={s.body}>
+      <div className={s.body} data-part="body">
         {m.letter ? (
           <div className={s.letter}>
             <Blocks blocks={m.body} />
