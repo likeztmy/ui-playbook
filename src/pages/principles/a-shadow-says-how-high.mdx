@@ -4,7 +4,27 @@ slug: a-shadow-says-how-high
 ---
 import { ShadowRaise, ShadowLayers, ShadowDesks } from '../../demos/shadow';
 
-## The rule
+## What a shadow is for
+
+**A shadow says that one surface lies over another, and could come away from it.** That is all it says. Cast shadows are how vision places an object against what's behind it ([Mamassian, Knill & Kersten, 1998](https://doi.org/10.1016/s1364-6613(98)01204-2)), and Material names the same three things a surface has to show: its edges, its overlap with other surfaces, and its distance from them ([Material 3, Elevation](https://m3.material.io/styles/elevation/overview)).
+
+Take that cue away and things meant to be acted on stop looking like it. In NN/g's eyetracking, pages whose controls had lost their depth, shadows among other cues, took people 22% longer, with 25% more fixations ([NN/g, 2017](https://www.nngroup.com/articles/flat-ui-less-attention-cause-uncertainty/)). Material's interviews with low-vision users found that shadows and outlines make a component faster to find when scanning ([Material 2, Light and shadows](https://m2.material.io/design/environment/light-shadows.html)).
+
+## When to use one
+
+Where a surface really is over something:
+
+- **It covers what's under it:** a menu, a popover, a dialog, a toast, a toolbar floating over a canvas. The shadow says the page goes on beneath, and is there again when this goes.
+- **It has been picked up:** a dragged card, a row being reordered. Material keeps its highest two levels for hover and drag, things in the hand ([Material 3, Elevation](https://m3.material.io/styles/elevation/overview)).
+- **It is one thing to act on, lying on a ground:** a card that opens, the mail lying on its desk in [Post](/practice/mail).
+
+And not:
+
+- **To group.** Things that belong together share space or a fill ([Space groups by ratio](/principles/space-groups-by-ratio)); a shadow on each would say each could be lifted off alone. Rows, cells and fields sit in the page, not on it.
+- **To rank.** A higher surface is only nearer; a shadow that grows to make something look important says it's floating away. Material treats elevation as distance, and warns against changing a component’s usual elevation.
+- **To part a surface from a plain ground.** A hairline or a step in tone does that. Material 3 keeps the shadow "only when required to create additional protection against a background or to encourage interaction" ([Material 3, Applying elevation](https://m3.material.io/styles/elevation/applying-elevation)): a busy or patterned ground, or a lift on interaction.
+
+## How high: the offset
 
 **A shadow says how high, and its offset is what says it.** Cavanagh, Casati and Elder had 25 people judge how far a square floated above its ground. Every person's answers rose in a straight line with the shadow's offset, at about 1.3 times it; blur and the light's direction left them "relatively unaffected" ([Cavanagh, Casati & Elder, 2021](https://doi.org/10.1167/jov.21.12.15)). A light patch in the shadow's place lifted nothing. So a shadow that looks heavy is usually a long one, and lightening it doesn't lower the card: shorten the drop.
 
@@ -45,7 +65,6 @@ In dark mode the same steps keep their hairline, and the raised surface is the l
 
 ## When it doesn't apply
 
-- **Things that don't stand above anything.** A list row, a table cell or a field sits in the page, not on it; a fill or a line groups them, and a shadow would say they could be lifted off.
 - **Glass.** A box's shadow is clipped under the box itself, so a translucent surface shows only a rim of it ([CSS Backgrounds](https://drafts.csswg.org/css-backgrounds/#box-shadow)); its edge has to come from a stroke.
 
 ## Where the playbook applies it
