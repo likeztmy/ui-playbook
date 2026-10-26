@@ -38,7 +38,8 @@ function TimedEmail({ timing }: { timing: Timing }) {
         // different mistake updates the message.
         if (timing === 'blur-fix' && error) setError(validateEmail(v));
       }}
-      onBlur={timing === 'blur' || timing === 'blur-fix' ? () => setError(validateEmail(value)) : undefined}
+      // Leaving an empty field is looking around, not a mistake: it says nothing until something's typed.
+      onBlur={timing === 'blur' || timing === 'blur-fix' ? () => setError(value ? validateEmail(value) : null) : undefined}
       validate={() => null}
       error={error ?? undefined}
     />
@@ -83,13 +84,20 @@ const RULES: { label: string; test: (v: string) => boolean }[] = [
   { label: 'A symbol', test: (v) => /[^\p{L}\p{N}\s]/u.test(v) },
 ];
 
-/** Rules that turn green as they're met, and red only once you've left. */
+/** Rules that turn green as they're met, and red only once you've typed and left. */
 function NewPassword() {
   const [value, setValue] = useState('');
   const [left, setLeft] = useState(false);
   return (
     <div className={s.formColumn}>
-      <TextField label="New password" type="password" autoComplete="new-password" value={value} onValueChange={setValue} onBlur={() => setLeft(true)} />
+      <TextField
+        label="New password"
+        type="password"
+        autoComplete="new-password"
+        value={value}
+        onValueChange={setValue}
+        onBlur={() => setLeft(value.length > 0)}
+      />
       <div className={s.ruleList} role="list">
         {RULES.map((r) => {
           const met = r.test(value);

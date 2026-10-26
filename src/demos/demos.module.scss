@@ -1611,6 +1611,12 @@
   pointer-events: none;
   transition: opacity var(--duration-fast) var(--ease-out);
 
+  // In sight at rest, quietly: what's hidden until hovered is found only by those who hover.
+  &[data-quiet] {
+    opacity: 0.45;
+    pointer-events: auto;
+  }
+
   &[data-shown],
   &:focus-visible {
     opacity: 1;
@@ -1884,36 +1890,42 @@
   width: min(100%, 260px);
 }
 
+.membersBox {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+
+  // The bar's 12px come out of the content's width, as a classic scroll bar's do.
+  &[data-gutter] .membersList {
+    margin-right: 12px;
+  }
+}
+
 .membersList {
   height: 168px;
   overflow-y: auto;
   padding: 0 var(--space-3);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-md);
+  // The real bar is replaced by the drawn one beside the list.
+  scrollbar-width: none;
 
   > * {
     height: 32px;
   }
 
-  // Styling the bar makes WebKit and Blink draw a classic one, even on a Mac.
-  &::-webkit-scrollbar {
-    width: 12px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    border: 3px solid transparent;
-    border-radius: var(--radius-full);
-    background: var(--line-strong);
-    background-clip: padding-box;
-  }
-
   &:focus-visible {
     outline: 1px solid var(--accent);
+    outline-offset: -1px;
   }
 }
 
-.membersStable {
-  scrollbar-gutter: stable;
+.membersThumb {
+  position: absolute;
+  right: 3px;
+  width: 6px;
+  border-radius: var(--radius-full);
+  background: var(--line-strong);
+  pointer-events: none;
 }
 
 // A chat thread opened at its end; earlier messages load near the top.
@@ -2195,7 +2207,7 @@
 .waitProfileStage {
   display: flex;
   width: 100%;
-  min-height: 132px;
+  min-height: 260px;
   padding: var(--space-4);
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
@@ -2243,6 +2255,44 @@
   display: block;
   border-radius: var(--radius-xs);
   background: var(--fill-control);
+}
+
+// A profile page: the card, then its files under a hairline.
+.waitPage {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  width: 100%;
+}
+
+.waitFiles {
+  display: flex;
+  flex-direction: column;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--line);
+  font-size: 13px;
+}
+
+.waitFilesHead {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 20px;
+  margin-bottom: var(--space-1);
+  color: var(--ink-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.waitFileRow {
+  display: flex;
+  align-items: center;
+  height: 28px;
+}
+
+.waitButtons {
+  display: flex;
+  gap: var(--space-2);
 }
 
 // The avatar's bone keeps the avatar's shape.
@@ -2749,9 +2799,16 @@
 }
 
 .fkEmpty {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-2);
   margin: auto;
   color: var(--ink-muted);
   font-size: 12px;
+
+  p {
+    margin: 0;
+  }
 }
 
 .fkHint {
@@ -2763,6 +2820,11 @@
 
   &[data-held] {
     color: var(--ink);
+  }
+
+  // Nothing to hold without a keyboard.
+  @media (hover: none) and (pointer: coarse) {
+    display: none;
   }
 }
 

@@ -93,10 +93,39 @@ function Measured({ children, status, onReplay }: { children: ReactNode; status?
 const RECENT = ['Buttons', 'Colour tokens', 'Dialogs', 'Menus', 'Spacing', 'Typography'];
 const INDEX = [
   ...RECENT,
-  'Badges', 'Breadcrumbs', 'Cards', 'Checkboxes', 'Colour contrast', 'Combobox', 'Dark mode', 'Data tables', 'Date picker',
-  'Drag and drop', 'Empty states', 'Error messages', 'Focus rings', 'Forms', 'Icons', 'Inputs', 'Keyboard shortcuts',
-  'Loading states', 'Motion', 'Navigation', 'Notifications', 'Pagination', 'Popovers', 'Radio buttons', 'Search', 'Select',
-  'Sliders', 'Switches', 'Tabs', 'Toasts', 'Toolbars', 'Tooltips', 'Undo',
+  'Badges',
+  'Breadcrumbs',
+  'Cards',
+  'Checkboxes',
+  'Colour contrast',
+  'Combobox',
+  'Dark mode',
+  'Data tables',
+  'Date picker',
+  'Drag and drop',
+  'Empty states',
+  'Error messages',
+  'Focus rings',
+  'Forms',
+  'Icons',
+  'Inputs',
+  'Keyboard shortcuts',
+  'Loading states',
+  'Motion',
+  'Navigation',
+  'Notifications',
+  'Pagination',
+  'Popovers',
+  'Radio buttons',
+  'Search',
+  'Select',
+  'Sliders',
+  'Switches',
+  'Tabs',
+  'Toasts',
+  'Toolbars',
+  'Tooltips',
+  'Undo',
 ];
 const RECENT_MAX = 4;
 const PAGES_MAX = 3;
@@ -106,7 +135,15 @@ const matches = (title: string, q: string) => title.toLowerCase().includes(q.tri
 /** The server's ranking: titles that start with the query, then words that do, then the rest; A–Z within each. */
 function rank(q: string) {
   const v = q.trim().toLowerCase();
-  const tier = (t: string) => (t.toLowerCase().startsWith(v) ? 0 : t.toLowerCase().split(' ').some((w) => w.startsWith(v)) ? 1 : 2);
+  const tier = (t: string) =>
+    t.toLowerCase().startsWith(v)
+      ? 0
+      : t
+            .toLowerCase()
+            .split(' ')
+            .some((w) => w.startsWith(v))
+        ? 1
+        : 2;
   return INDEX.filter((t) => matches(t, v)).sort((a, b) => tier(a) - tier(b) || a.localeCompare(b));
 }
 
@@ -137,7 +174,12 @@ export function DocSearch({ keep }: { keep?: boolean }) {
     clearTimeout(timer.current);
     if (!v.trim()) return;
     timer.current = setTimeout(() => {
-      const pages: Group = { name: 'Pages', titles: rank(v).filter((t) => !recent.includes(t)).slice(0, PAGES_MAX) };
+      const pages: Group = {
+        name: 'Pages',
+        titles: rank(v)
+          .filter((t) => !recent.includes(t))
+          .slice(0, PAGES_MAX),
+      };
       if (!pages.titles.length) return;
       setGroups(recent.length ? (keep ? [shown, pages] : [pages, shown]) : [pages]);
     }, 700);
@@ -212,16 +254,16 @@ export const ShiftSearch = localized(function ShiftSearch() {
           ZH.searchBefore
         ) : (
           <>
-            The best pages from the whole index land 0.7 seconds after the last key, as a group above the recent ones. By then the pointer
-            is on its way to a recent page, and the row it reaches, or the one Enter would open, is something else. A shift that late no
-            longer answers the key, and <a href="https://web.dev/articles/cls">CLS</a> counts it.
+            The best pages from the whole index land 0.7 seconds after the last key, as a group above the recent ones. By then the pointer is on its
+            way to a recent page, and the row it reaches, or the one Enter would open, is something else. A shift that late no longer answers the key,
+            and <a href="https://web.dev/articles/cls">CLS</a> counts it.
           </>
         )
       }
       afterNote={
         zh
           ? ZH.searchAfter
-          : "The same group, after the rows already on screen. What the reader was aiming at stays where it was; the better matches are one glance further down, and the next key can rank them first."
+          : 'The same group, after the rows already on screen. What the reader was aiming at stays where it was; the better matches are one glance further down, and the next key can rank them first.'
       }
     />
   );
@@ -265,7 +307,7 @@ export const ShiftBold = localized(function ShiftBold() {
       beforeNote={
         zh
           ? ZH.boldBefore
-          : "Bold glyphs are wider. Each link the pointer crosses grows, and every link after it moves along: the one being aimed at slides away."
+          : 'Bold glyphs are wider. Each link the pointer crosses grows, and every link after it moves along: the one being aimed at slides away.'
       }
       afterNote={
         zh ? (
@@ -273,8 +315,8 @@ export const ShiftBold = localized(function ShiftBold() {
         ) : (
           <>
             Each link also holds an invisible bold copy of its own name, so it is as wide as it will ever get (
-            <a href="https://css-tricks.com/bold-on-hover-without-the-layout-shift/">CSS-Tricks</a>). Hover by a fill instead, and the weight
-            need never change.
+            <a href="https://css-tricks.com/bold-on-hover-without-the-layout-shift/">CSS-Tricks</a>). Hover by a fill instead, and the weight need
+            never change.
           </>
         )
       }
@@ -297,19 +339,34 @@ const PEOPLE: [string, string][] = [
   ['Jo Park', 'Viewer'],
 ];
 
+const ROW = 32;
+const VIEW = 168;
+
+/**
+ * Members in a short scrolling list. Its scroll bar is drawn here, 12px and in the layout, as
+ * Windows and Linux draw theirs: on a Mac or a phone the real one floats over the content and
+ * would show nothing. `stable` keeps the bar's room whether or not the list scrolls.
+ */
 function Members({ stable }: { stable?: boolean }) {
   const [q, setQ] = useState('');
+  const [top, setTop] = useState(0);
   const shown = PEOPLE.filter(([name]) => name.toLowerCase().includes(q.trim().toLowerCase()));
+  const content = shown.length * ROW;
+  const scrolls = content > VIEW;
+  const thumb = scrolls ? (VIEW / content) * VIEW : 0;
   return (
     <div className={s.members}>
       <TextField label="Filter members" placeholder="Name" value={q} onValueChange={setQ} />
-      <div className={cx(s.membersList, stable && s.membersStable)} tabIndex={0} role="region" aria-label="Members">
-        {shown.map(([name, role]) => (
-          <div key={name} className={s.memberRow}>
-            <span>{name}</span>
-            <span className={s.memberRole}>{role}</span>
-          </div>
-        ))}
+      <div className={s.membersBox} data-gutter={scrolls || stable ? '' : undefined}>
+        <div className={s.membersList} tabIndex={0} role="region" aria-label="Members" onScroll={(e) => setTop(e.currentTarget.scrollTop)}>
+          {shown.map(([name, role]) => (
+            <div key={name} className={s.memberRow}>
+              <span>{name}</span>
+              <span className={s.memberRole}>{role}</span>
+            </div>
+          ))}
+        </div>
+        {scrolls && <span className={s.membersThumb} style={{ height: thumb, top: (top / content) * VIEW }} aria-hidden />}
       </div>
     </div>
   );
@@ -327,9 +384,9 @@ export const ShiftScrollbar = localized(function ShiftScrollbar() {
           ZH.scrollbarBefore
         ) : (
           <>
-            Type “an”: the list stops overflowing, its scroll bar goes, and every role jumps 12px right. On a Mac or a phone the bar floats
-            over the content and takes no room, so whoever built it never saw this; on Windows, and wherever bars are always shown, everyone
-            does.
+            Type “an”: the list stops overflowing, its scroll bar goes, and every role jumps 12px right. On a Mac or a phone the bar floats over the
+            content and takes no room, so whoever built it never saw this; on Windows, and wherever bars are always shown, everyone does. The bar here
+            is drawn as Windows draws it.
           </>
         )
       }
@@ -429,8 +486,8 @@ export const ShiftAnchor = localized(function ShiftAnchor() {
           ZH.anchorBefore
         ) : (
           <>
-            With <code>overflow-anchor: none</code>, the earlier messages load in above the one being read and push it down out of the
-            window: the reader lands back at the kickoff and has to find their place again.
+            With <code>overflow-anchor: none</code>, the earlier messages load in above the one being read and push it down out of the window: the
+            reader lands back at the kickoff and has to find their place again.
           </>
         )
       }
@@ -439,10 +496,10 @@ export const ShiftAnchor = localized(function ShiftAnchor() {
           ZH.anchorAfter
         ) : (
           <>
-            The default. The browser picks a message on screen as its{' '}
-            <a href="https://drafts.csswg.org/css-scroll-anchoring/">anchor</a> and scrolls by exactly what was added above it. It can’t at
-            the very top, where there is nothing above to keep, so the thread loads a little before the reader gets there. Every engine
-            anchors only since 2026 (<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/overflow-anchor">MDN</a>).
+            The default. The browser picks a message on screen as its <a href="https://drafts.csswg.org/css-scroll-anchoring/">anchor</a> and scrolls
+            by exactly what was added above it. It can’t at the very top, where there is nothing above to keep, so the thread loads a little before
+            the reader gets there. Every engine anchors only since 2026 (
+            <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/overflow-anchor">MDN</a>).
           </>
         )
       }
@@ -482,7 +539,7 @@ export const ShiftFont = localized(function ShiftFont() {
       beforeNote={
         zh
           ? ZH.fontBefore
-          : "Until the web font arrives, the text is set in Arial, about 2.5% narrower than Geist. When Geist swaps in, the lines break in new places, and everything under the paragraph moves."
+          : 'Until the web font arrives, the text is set in Arial, about 2.5% narrower than Geist. When Geist swaps in, the lines break in new places, and everything under the paragraph moves.'
       }
       afterNote={
         zh ? (

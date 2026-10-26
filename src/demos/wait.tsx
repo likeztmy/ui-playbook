@@ -90,15 +90,15 @@ export const WaitFlash = localized(function WaitFlash() {
       after={<Refresh patient />}
       beforeNote={
         <>
-          The spinner shows the moment Refresh is pressed. Most refreshes take under a third of a second, so it blinks on and off, and a
-          blink reads as a glitch rather than as work. Under a second, NN/g advises showing{' '}
+          The spinner shows the moment Refresh is pressed. Most refreshes take under a third of a second, so it blinks on and off, and a blink reads
+          as a glitch rather than as work. Under a second, NN/g advises showing{' '}
           <a href="https://www.nngroup.com/articles/skeleton-screens/">no indicator at all</a>.
         </>
       }
       afterNote={
         <>
-          Nothing shows for the first 300 ms (<code>delay-loading</code>), so quick refreshes just land. Past that, the spinner stays at
-          least half a second, so a request that ends just after the delay can't flash it either: the second half of the rule, from{' '}
+          Nothing shows for the first 300 ms (<code>delay-loading</code>), so quick refreshes just land. Past that, the spinner stays at least half a
+          second, so a request that ends just after the delay can't flash it either: the second half of the rule, from{' '}
           <a href="https://github.com/smeijer/spin-delay">spin-delay</a>.
         </>
       }
@@ -185,9 +185,8 @@ export const WaitStall = localized(function WaitStall() {
       after={<Stall early />}
       beforeNote={
         <>
-          The bar stands still for a second at 90%, just when the end seemed near. In Harrison et al.’s study people disliked a pause towards
-          the end most of all (
-          <a href="https://www.chrisharrison.net/index.php/Research/ProgressBars">Rethinking the Progress Bar</a>, UIST 2007).
+          The bar stands still for a second at 90%, just when the end seemed near. In Harrison et al.’s study people disliked a pause towards the end
+          most of all (<a href="https://www.chrisharrison.net/index.php/Research/ProgressBars">Rethinking the Progress Bar</a>, UIST 2007).
         </>
       }
       afterNote="The same second, spent at the start, before anyone is watching closely. The study’s advice: front-load the slow, uncertain stages and let the bar speed up towards the end, which people favoured most."
@@ -212,9 +211,7 @@ function Ribbed({ ribbed }: { ribbed?: boolean }) {
   return (
     <div className={s.waitBarDemo}>
       <span className={s.waitMeta}>Uploading video</span>
-      <div className={s.waitBar}>
-        {run > 0 && <span key={run} className={cx(s.waitFill, s.waitLinear, ribbed && s.waitRibs)} />}
-      </div>
+      <div className={s.waitBar}>{run > 0 && <span key={run} className={cx(s.waitFill, s.waitLinear, ribbed && s.waitRibs)} />}</div>
       <Button size="sm" onClick={start} disabled={running}>
         {run ? 'Upload again' : 'Upload'}
       </Button>
@@ -310,8 +307,8 @@ export const WaitLabor = localized(function WaitLabor() {
       beforeNote="A spinner for 3.6 seconds. Nothing says what is happening, so the wait is only a wait."
       afterNote={
         <>
-          The same 3.6 seconds, naming each airline as it’s asked. In Buell and Norton’s experiments, people shown the work could prefer a
-          site with a longer wait to one that answered at once, even when the results were identical (
+          The same 3.6 seconds, naming each airline as it’s asked. In Buell and Norton’s experiments, people shown the work could prefer a site with a
+          longer wait to one that answered at once, even when the results were identical (
           <a href="https://doi.org/10.1287/mnsc.1110.1376">The Labor Illusion</a>, 2011).
         </>
       }
@@ -354,31 +351,72 @@ function ProfileSkeleton() {
   );
 }
 
-/** A profile that takes 1.5 s; `skeleton` holds its shape while it loads. */
-function Profile({ skeleton }: { skeleton?: boolean }) {
-  const [loading, setLoading] = useState(true);
+const PART = 900;
+const RECENT = ['Type scale.fig', 'Critique notes', 'Tokens v4.json'];
+
+/** The files section: its rows, bones while loading, or rows kept while a refresh runs. */
+function Files({ state }: { state: 'shown' | 'bones' | 'refreshing' }) {
+  return (
+    <div className={s.waitFiles}>
+      <span className={s.waitFilesHead}>
+        Recent files
+        {state === 'refreshing' && <Spinner />}
+      </span>
+      {RECENT.map((f, i) =>
+        state === 'bones' ? (
+          <span key={f} className={s.waitFileRow} aria-hidden>
+            <span className={s.waitBone} style={{ width: [120, 96, 108][i], height: 12 }} />
+          </span>
+        ) : (
+          <span key={f} className={s.waitFileRow}>
+            {f}
+          </span>
+        ),
+      )}
+    </div>
+  );
+}
+
+/**
+ * A profile page that takes 1.5 s, and its files list, refreshed on its own in 0.9 s. `right`
+ * gives the page a skeleton and the part a spinner; otherwise the page gets a spinner and the part
+ * goes back to bones.
+ */
+function ProfilePage({ right }: { right?: boolean }) {
+  const [page, setPage] = useState(true);
+  const [part, setPart] = useState(false);
   const later = useTimers();
   const load = () => {
-    setLoading(true);
-    later(() => setLoading(false), PAGE);
+    setPage(true);
+    later(() => setPage(false), PAGE);
+  };
+  const refresh = () => {
+    setPart(true);
+    later(() => setPart(false), PART);
   };
   useEffect(load, []);
   return (
     <div className={s.waitProfileDemo}>
-      <div className={s.waitProfileStage} aria-busy={loading || undefined}>
-        {!loading ? (
-          <ProfileCard />
-        ) : skeleton ? (
-          <ProfileSkeleton />
-        ) : (
+      <div className={s.waitProfileStage} aria-busy={page || part || undefined}>
+        {page && !right ? (
           <span className={s.waitCentre}>
             <Spinner />
           </span>
+        ) : (
+          <div className={s.waitPage}>
+            {page ? <ProfileSkeleton /> : <ProfileCard />}
+            <Files state={page ? 'bones' : part ? (right ? 'refreshing' : 'bones') : 'shown'} />
+          </div>
         )}
       </div>
-      <Button size="sm" variant="ghost" onClick={load} disabled={loading}>
-        Reload
-      </Button>
+      <div className={s.waitButtons}>
+        <Button size="sm" variant="ghost" onClick={load} disabled={page}>
+          Reload page
+        </Button>
+        <Button size="sm" variant="ghost" onClick={refresh} disabled={page || part}>
+          Refresh files
+        </Button>
+      </div>
     </div>
   );
 }
@@ -387,12 +425,12 @@ export const WaitSkeleton = localized(function WaitSkeleton() {
   return (
     <Compare
       height={0}
-      before={<Profile />}
-      after={<Profile skeleton />}
-      beforeNote="A spinner in the middle of the panel says something is coming, but not what or where, and the content then appears all at once."
+      before={<ProfilePage />}
+      after={<ProfilePage right />}
+      beforeNote="A spinner in the middle of the page says something is coming, but not what or where, and everything then appears at once. Refreshing one list blanks it into bones, though its rows were already there."
       afterNote={
         <>
-          A skeleton in the shape of the profile shows the layout before the words, and holds the space the content will take. NN/g keeps
+          The page holds its shape in a skeleton while it loads; refreshing one list keeps its rows and puts a small spinner by its title. NN/g keeps
           skeletons for full-page loads and spinners for a single part, a card or a video (
           <a href="https://www.nngroup.com/articles/skeleton-screens/">Skeleton screens</a>).
         </>
@@ -462,9 +500,9 @@ export const WaitOptimistic = localized(function WaitOptimistic() {
       beforeNote="The star waits for the server: a spinner for most of a second on an action that almost never fails."
       afterNote={
         <>
-          The star fills at once, and the request runs behind it. If the server refuses, the star goes back and says why. React builds this in
-          as <a href="https://react.dev/reference/react/useOptimistic">useOptimistic</a>. It suits actions that rarely fail and are cheap to
-          undo; a payment still waits.
+          The star fills at once, and the request runs behind it. If the server refuses, the star goes back and says why. React builds this in as{' '}
+          <a href="https://react.dev/reference/react/useOptimistic">useOptimistic</a>. It suits actions that rarely fail and are cheap to undo; a
+          payment still waits.
         </>
       }
     />

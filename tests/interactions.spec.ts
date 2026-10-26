@@ -350,7 +350,7 @@ test('where the eye goes: only the After answers at the button; only its fold cu
   expect(await firstScreenShowsPlans(1)).toBe(true);
 });
 
-test('nothing shifts: late results land above the Before list, below the After; the After holds the gutter', async ({ page }) => {
+test('nothing shifts: late results land above the Before list, below the After', async ({ page }) => {
   await page.goto('/principles/nothing-shifts');
   await hydrateAll(page);
   const [before, after] = [page.locator('figure').nth(0), page.locator('figure').nth(1)];
@@ -364,15 +364,6 @@ test('nothing shifts: late results land above the Before list, below the After; 
   for (const f of [before, after]) await f.getByRole('combobox', { name: 'Search docs' }).press('Enter');
   await expect(before.getByText('Opened “Badges”')).toBeVisible();
   await expect(after.getByText('Opened “Buttons”')).toBeVisible();
-
-  // Headless Chromium hides scroll bars, so check the gutter is held rather than measure the jump.
-  const gutter = (n: number) =>
-    page
-      .getByRole('region', { name: 'Members' })
-      .nth(n)
-      .evaluate((l) => getComputedStyle(l).scrollbarGutter);
-  expect(await gutter(0)).toBe('auto');
-  expect(await gutter(1)).toBe('stable');
 });
 
 test('nothing shifts: earlier messages push the Before thread, the After keeps its place', async ({ page }) => {
@@ -1499,10 +1490,11 @@ test('dialog: a press on the scrim keeps focus in the dialog', async ({ page }) 
   await hydrateAll(page);
   await page.getByRole('button', { name: 'Delete project…' }).first().click();
   const dialog = page.getByRole('alertdialog');
-  await expect(dialog).toBeVisible();
+  const inside = () => page.evaluate(() => !!document.activeElement?.closest('[role="alertdialog"]'));
+  await expect.poll(inside).toBe(true);
   await page.mouse.click(5, 300);
   await expect(dialog).toBeVisible();
-  expect(await page.evaluate(() => !!document.activeElement?.closest('[role="alertdialog"]'))).toBe(true);
+  expect(await inside()).toBe(true);
 });
 
 test('toast: deleting a row hands focus to the next row’s Delete', async ({ page }) => {
@@ -1531,4 +1523,43 @@ test('post: focus lands where the action leaves it — unfolding, closing a mess
   await page.getByRole('textbox', { name: 'Search mail' }).fill('handover');
   await page.getByRole('button', { name: 'Search all mail' }).click();
   await expect(page.getByRole('textbox', { name: 'Search mail' })).toBeFocused();
+});
+
+test('error timing: leaving an empty password field marks nothing wrong', async ({ page }) => {
+  await page.goto('/principles/error-timing');
+  await hydrateAll(page);
+  const field = page.getByLabel('New password').first();
+  await field.focus();
+  await page.keyboard.press('Tab');
+  await expect(page.locator('[data-state="unmet"]')).toHaveCount(0);
+  await field.fill('abc');
+  await field.blur();
+  await expect(page.locator('[data-state="unmet"]').first()).toBeVisible();
+});
+
+test('nothing shifts: the drawn scroll bar moves the roles in the Before, not the After', async ({ page }) => {
+  await page.goto('/principles/nothing-shifts');
+  await hydrateAll(page);
+  const role = (i: number) =>
+    page
+      .getByRole('region', { name: 'Members' })
+      .nth(i)
+      .locator('[class*="memberRole"]')
+      .first()
+      .evaluate((e) => e.getBoundingClientRect().right);
+  const filter = (i: number) => page.getByRole('textbox', { name: 'Filter members' }).nth(i);
+  const [b0, a0] = [await role(0), await role(1)];
+  await filter(0).fill('an');
+  await filter(1).fill('an');
+  expect((await role(0)) - b0).toBe(12);
+  expect((await role(1)) - a0).toBe(0);
+});
+
+test('how waiting feels: the page loads behind a skeleton, a refreshed list keeps its rows', async ({ page }) => {
+  await page.goto('/principles/how-waiting-feels');
+  await hydrateAll(page);
+  const after = page.locator('figure', { has: page.getByRole('button', { name: 'Refresh files' }) }).nth(1);
+  await expect(after.getByText('Type scale.fig')).toBeVisible({ timeout: 3000 });
+  await after.getByRole('button', { name: 'Refresh files' }).click();
+  await expect(after.getByText('Type scale.fig')).toBeVisible();
 });

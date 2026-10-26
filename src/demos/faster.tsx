@@ -125,7 +125,14 @@ function Triage({ expose }: { expose?: boolean }) {
             {m.starred && <Star {...ic} className={s.fkStar} />}
           </button>
         ))}
-        {mail.length === 0 && <p className={s.fkEmpty}>All done.</p>}
+        {mail.length === 0 && (
+          <div className={s.fkEmpty}>
+            <p>All done.</p>
+            <Button size="sm" onClick={() => setMail(START)}>
+              Restore inbox
+            </Button>
+          </div>
+        )}
       </div>
       {expose && (
         <p className={s.fkHint} data-held={held ? '' : undefined}>
@@ -144,15 +151,15 @@ export const FasterExpose = localized(function FasterExpose() {
       after={<Triage expose />}
       beforeNote={
         <>
-          Each key lives in its button’s tooltip, one at a time, and only for the pointer that’s already there. In a study where tooltips
-          showed the key the moment the pointer arrived, only 35% of commands ended up given by key (
+          Each key lives in its button’s tooltip, one at a time, and only for the pointer that’s already there. In a study where tooltips showed the
+          key the moment the pointer arrived, only 35% of commands ended up given by key (
           <a href="https://www.cosc.canterbury.ac.nz/~andy/papers/ehk.pdf">Malacria et al., CHI 2013</a>).
         </>
       }
       afterNote={
         <>
-          Holding the modifier shows every key on its button at once, so they can be learned before the pointer moves. With this, ExposeHK,
-          94% of the same commands were given by key. Across the study a command by key took 2.74 s, by pointer 4.16 s.
+          Holding the modifier shows every key on its button at once, so they can be learned before the pointer moves. With this, ExposeHK, 94% of the
+          same commands were given by key. Across the study a command by key took 2.74 s, by pointer 4.16 s.
         </>
       }
     />

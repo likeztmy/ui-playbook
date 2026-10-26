@@ -205,7 +205,7 @@ export function ToastLimit() {
         </ToastStage>
       }
       beforeNote="Six messages that say nearly the same thing cover what you were doing."
-      afterNote="Three at most, the rest wait. Better still, say it once: “Uploaded 6 photos”."
+      afterNote="Three at most: a new one pushes the oldest out. Better still, say it once: “Uploaded 6 photos”."
     />
   );
 }

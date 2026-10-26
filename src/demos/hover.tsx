@@ -121,7 +121,13 @@ function SubmenuDemo({ aim }: { aim?: boolean }) {
             }}
           >
             {FOLDERS.map((f) => (
-              <div key={f} className={ms.item} onClick={() => setMoved(f)} onMouseEnter={(e) => e.currentTarget.setAttribute('data-highlighted', '')} onMouseLeave={(e) => e.currentTarget.removeAttribute('data-highlighted')}>
+              <div
+                key={f}
+                className={ms.item}
+                onClick={() => setMoved(f)}
+                onMouseEnter={(e) => e.currentTarget.setAttribute('data-highlighted', '')}
+                onMouseLeave={(e) => e.currentTarget.removeAttribute('data-highlighted')}
+              >
                 <span className={ms.text}>{f}</span>
               </div>
             ))}
@@ -148,9 +154,8 @@ export function HoverSubmenu() {
       beforeNote="A straight line from Move to toward Archive crosses Share… and Copy link, and the submenu closes on the first of them. The only way through is a tunnel: right, then down."
       afterNote={
         <>
-          While the pointer stays inside the triangle from where it left the row to the submenu’s near edge, the submenu holds. Ben Kamens
-          made it famous in{' '}
-          <a href="https://github.com/kamens/jQuery-menu-aim">jQuery-menu-aim</a>, after Amazon; menus built on Floating UI get it as{' '}
+          While the pointer stays inside the triangle from where it left the row to the submenu’s near edge, the submenu holds. Ben Kamens made it
+          famous in <a href="https://github.com/kamens/jQuery-menu-aim">jQuery-menu-aim</a>, after Amazon; menus built on Floating UI get it as{' '}
           <a href="https://floating-ui.com/docs/useHover">safePolygon</a>.
         </>
       }
@@ -177,7 +182,15 @@ function FileTile({ name, owner }: { name: string; owner: 'content' | 'card' }) 
       <Menu.Root onOpenChange={setMenu}>
         <Menu.Trigger
           render={
-            <Button variant="ghost" size="sm" icon aria-label={`More actions for ${name}`} className={s.tileMore} data-shown={shown ? '' : undefined}>
+            <Button
+              variant="ghost"
+              size="sm"
+              icon
+              aria-label={`More actions for ${name}`}
+              className={s.tileMore}
+              data-shown={shown ? '' : undefined}
+              data-quiet={owner === 'card' ? '' : undefined}
+            >
               <Ellipsis size={16} strokeWidth={1.5} nonScalingStroke aria-hidden />
             </Button>
           }
@@ -208,7 +221,7 @@ export function HoverReveal() {
       before={<Tiles owner="content" />}
       after={<Tiles owner="card" />}
       beforeNote="The hover belongs to the thumbnail and name, but the button sits in the card’s corner, outside them. On the way to it the pointer leaves the content, and the button goes."
-      afterNote="The whole card owns the hover, button included, so the path to it never leaves; it also stays while its menu is open or it has focus."
+      afterNote="The whole card owns the hover, button included, so the path to it never leaves; it stays while its menu is open or it has focus. At rest it’s quiet, not gone, so people know it’s there."
     />
   );
 }
