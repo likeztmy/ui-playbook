@@ -1,5 +1,5 @@
-import { ChevronDown, Pencil, Search, X } from 'lucide-react';
-import { useEffect, useRef, useState, type ReactElement, type RefObject } from 'react';
+import { ChevronDown, Pencil } from 'lucide-react';
+import { useEffect, useRef, useState, type RefObject } from 'react';
 import { Button } from '../../ui/Button';
 import { Menu } from '../../ui/Menu';
 import { Tip } from '../../ui/Tooltip';
@@ -7,8 +7,9 @@ import { ToastProvider } from '../../ui/Toast';
 import { Composer, preloadBody } from './Composer';
 import { Conversation } from './Conversation';
 import { DraftList } from './DraftList';
+import { Find } from './Find';
 import { FOLDERS, FOLDER_NAME } from './folders';
-import { List } from './List';
+import { List, type Chrome } from './List';
 import type { Folder } from './model';
 import { useCompose, type Compose } from './useCompose';
 import { usePost, type Post } from './usePost';
@@ -54,7 +55,11 @@ function useKeys(post: Post, compose: Compose, rows: RefObject<Map<string, HTMLB
         post.setChecked(next);
       },
       u: post.close,
-      '/': () => search.current?.focus(),
+      // Search filters the list: from a conversation, back to the list first.
+      '/': () => {
+        post.close();
+        requestAnimationFrame(() => search.current?.focus());
+      },
       c: compose.compose,
       r: () => post.open && compose.reply(post.open, 'reply'),
       a: () => post.open && compose.reply(post.open, 'replyAll'),
@@ -103,78 +108,57 @@ function Shell({ onToasts }: { onToasts: (el: HTMLDivElement | null) => void }) 
     post.go(f);
   };
 
+  // What every list's bar carries besides its own tools: where you are on a phone, search, and New message.
+  const chrome: Chrome = {
+    folders: (
+      <Menu.Root>
+        <Menu.Trigger render={<Button variant="ghost" className={s.folderMenu} />}>
+          {FOLDER_NAME[post.folder]}
+          <ChevronDown {...ic} />
+        </Menu.Trigger>
+        <Menu.Popup>
+          {FOLDERS.map((f) => (
+            <Menu.Item key={f.id} icon={f.icon} onClick={() => go(f.id)}>
+              {FOLDER_NAME[f.id]}
+            </Menu.Item>
+          ))}
+        </Menu.Popup>
+      </Menu.Root>
+    ),
+    actions: (
+      <>
+        <Find
+          value={post.query}
+          inputRef={search}
+          onChange={(q) => {
+            compose.leave();
+            post.search(q);
+          }}
+        />
+        <Tip label="New message" keys={['C']}>
+          <Button ref={composeButton} variant="primary" className={s.newMessage} aria-label="New message" onClick={compose.compose}>
+            <Pencil {...ic} />
+            <span className={s.newLabel}>New message</span>
+          </Button>
+        </Tip>
+      </>
+    ),
+  };
+
   const main = compose.writing ? (
     <Composer key={compose.writing.id} d={compose.writing} compose={compose} page onBack={() => compose.close(compose.writing!.id)} />
   ) : post.open ? (
     <Conversation key={post.open.id} post={post} compose={compose} c={post.open} single />
   ) : post.folder === 'drafts' && !post.query ? (
-    <DraftList compose={compose} />
+    <DraftList compose={compose} chrome={chrome} />
   ) : (
-    <List post={post} rows={rows} />
-  );
-
-  const composeTip = (button: ReactElement) => (
-    <Tip label="Compose" keys={['C']}>
-      {button}
-    </Tip>
+    <List post={post} rows={rows} chrome={chrome} />
   );
 
   return (
     <div className={s.app} data-view={reading ? 'message' : 'list'}>
-      <header className={s.top}>
-        <span className={s.brand}>Post</span>
-        <span className={s.phoneOnly}>
-          <Menu.Root>
-            <Menu.Trigger render={<Button variant="ghost" className={s.folderMenu} />}>
-              {FOLDER_NAME[post.folder]}
-              <ChevronDown {...ic} />
-            </Menu.Trigger>
-            <Menu.Popup>
-              {FOLDERS.map((f) => (
-                <Menu.Item key={f.id} icon={f.icon} onClick={() => go(f.id)}>
-                  {FOLDER_NAME[f.id]}
-                </Menu.Item>
-              ))}
-            </Menu.Popup>
-          </Menu.Root>
-        </span>
-        <label className={s.search}>
-          <Search {...ic} />
-          <input
-            ref={search}
-            value={post.query}
-            placeholder="Search mail"
-            aria-label="Search mail"
-            onChange={(e) => {
-              compose.leave();
-              post.search(e.target.value);
-            }}
-            onKeyDown={(e) => {
-              if (e.key === 'Escape') post.search('');
-              e.stopPropagation();
-            }}
-          />
-          {post.query && (
-            <Button variant="ghost" size="sm" icon aria-label="Clear search" onClick={() => post.search('')}>
-              <X {...ic} />
-            </Button>
-          )}
-        </label>
-        <span className={s.phoneOnly}>
-          {composeTip(
-            <Button variant="ghost" icon aria-label="Compose" className={s.phoneCompose} onClick={compose.compose}>
-              <Pencil {...ic} />
-            </Button>,
-          )}
-        </span>
-      </header>
       <nav className={s.side} aria-label="Folders">
-        {composeTip(
-          <Button ref={composeButton} className={s.compose} onClick={compose.compose}>
-            <Pencil {...ic} />
-            Compose
-          </Button>,
-        )}
+        <span className={s.brand}>Post</span>
         {FOLDERS.map((f) => {
           const count = f.id === 'inbox' ? post.unreadCount : f.id === 'drafts' ? compose.drafts.length : 0;
           return (

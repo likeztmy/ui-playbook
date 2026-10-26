@@ -1,5 +1,5 @@
 import { Archive, Mail, MailOpen, Star } from 'lucide-react';
-import { useLayoutEffect, useRef, useState, type CSSProperties, type RefObject } from 'react';
+import { useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode, type RefObject } from 'react';
 import { Button } from '../../ui/Button';
 import { Checkbox } from '../../ui/Checkbox';
 import { Tip, TipGroup } from '../../ui/Tooltip';
@@ -12,7 +12,7 @@ import s from './List.module.scss';
 const ic = { size: 16, strokeWidth: 1.5, nonScalingStroke: true, 'aria-hidden': true } as const;
 
 /** The widest sender text in the list, up to 200: subjects keep one left edge with no gap wider than it needs. */
-function useFromWidth(box: RefObject<HTMLDivElement | null>, deps: unknown[]) {
+export function useFromWidth(box: RefObject<HTMLDivElement | null>, deps: unknown[]) {
   const [width, setWidth] = useState(160);
   useLayoutEffect(() => {
     const measure = () => {
@@ -31,8 +31,11 @@ function useFromWidth(box: RefObject<HTMLDivElement | null>, deps: unknown[]) {
   return width;
 }
 
-/** The bar over the list: select all, then the selection's actions, or where you are. */
-function Bar({ post }: { post: Post }) {
+/** What a list's bar carries from the app: the folder menu (on a phone), and search with New message. */
+export type Chrome = { folders: ReactNode; actions: ReactNode };
+
+/** The bar over the list: select all, then the selection's actions or where you are; then search and New message. */
+function Bar({ post, chrome }: { post: Post; chrome: Chrome }) {
   const ticked = post.list.filter((c) => post.checked.has(c.id));
   const ids = ticked.map((c) => c.id);
   const all = post.list.length > 0 && ticked.length === post.list.length;
@@ -48,7 +51,9 @@ function Bar({ post }: { post: Post }) {
         />
       </span>
       {ticked.length > 0 ? (
+        // What's chosen, then what can be done with it: the count reads before the tools.
         <TipGroup>
+          <span className={s.title}>{ticked.length} selected</span>
           <span className={s.tools}>
             {ticked.some((c) => c.folder === 'inbox') && (
               <Tip label="Archive" keys={['E']}>
@@ -68,27 +73,33 @@ function Bar({ post }: { post: Post }) {
               </Button>
             </Tip>
           </span>
-          <span className={s.title}>{ticked.length} selected</span>
         </TipGroup>
       ) : (
-        <span className={s.title}>{post.everywhere ? 'All mail' : FOLDER_NAME[post.folder]}</span>
+        <>
+          <span className={s.title}>{post.everywhere ? 'All mail' : FOLDER_NAME[post.folder]}</span>
+          <span className={s.where}>{chrome.folders}</span>
+        </>
       )}
-      <span className={s.total}>
-        {post.list.length} {post.list.length === 1 ? 'conversation' : 'conversations'}
-      </span>
+      <span className={s.barActions}>{chrome.actions}</span>
     </div>
   );
 }
 
 /** Conversations in date sections, or what to do when there are none. */
-export function List({ post, rows }: { post: Post; rows: RefObject<Map<string, HTMLButtonElement>> }) {
+export function List({ post, rows, chrome }: { post: Post; rows: RefObject<Map<string, HTMLButtonElement>>; chrome: Chrome }) {
   const box = useRef<HTMLDivElement>(null);
   const fromWidth = useFromWidth(box, [post.list]);
   const q = post.query.trim();
   return (
     <section className={s.list} aria-label="Conversations">
-      <Bar post={post} />
-      <div ref={box} className={s.rows} role="list" style={{ '--from': `${fromWidth}px` } as CSSProperties}>
+      <Bar post={post} chrome={chrome} />
+      <div
+        ref={box}
+        className={s.rows}
+        role="list"
+        data-selecting={post.checked.size ? '' : undefined}
+        style={{ '--from': `${fromWidth}px` } as CSSProperties}
+      >
         {post.list.map((c, i) => [
           // A header where the section changes: more space above than below, so it joins the rows it names.
           (i === 0 || section(c) !== section(post.list[i - 1])) && (

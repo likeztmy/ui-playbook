@@ -9,12 +9,7 @@ import { Marked } from './Marked';
 import type { Post } from './usePost';
 import s from './List.module.scss';
 
-const ic = {
-  size: 16,
-  strokeWidth: 1.5,
-  nonScalingStroke: true,
-  'aria-hidden': true,
-} as const;
+const ic = { size: 16, strokeWidth: 1.5, nonScalingStroke: true, 'aria-hidden': true } as const;
 
 type Props = {
   c: Conversation;
@@ -24,7 +19,7 @@ type Props = {
   pin?: string;
 };
 
-/** One conversation in the list: who, what, when; its actions over the time on hover. */
+/** One conversation in the list: who, what, when; its actions beside the time once the pointer rests. */
 export function Line({ c, post, rowRef, pin }: Props) {
   const q = post.query.trim();
   const checked = post.checked.has(c.id);
@@ -54,19 +49,6 @@ export function Line({ c, post, rowRef, pin }: Props) {
         <span className={s.check}>
           <Checkbox aria-label={`Select ${c.subject}`} checked={checked} onCheckedChange={(v) => check(!!v)} />
         </span>
-        <Tip label={c.starred ? 'Unstar' : 'Star'} keys={['S']}>
-          <Button
-            variant="ghost"
-            size="sm"
-            icon
-            aria-label={c.starred ? 'Unstar' : 'Star'}
-            aria-pressed={!!c.starred}
-            className={s.star}
-            onClick={() => post.star([c.id], !c.starred)}
-          >
-            <Star {...ic} className={s.starIcon} data-on={c.starred ? '' : undefined} />
-          </Button>
-        </Tip>
         <button type="button" ref={rowRef} className={s.main} aria-current={post.open?.id === c.id || undefined} onClick={() => post.show(c.id)}>
           <span className={s.from} data-from="">
             <Marked text={participants(c.messages.map((m) => m.from))} q={q} />
@@ -80,9 +62,12 @@ export function Line({ c, post, rowRef, pin }: Props) {
               <Marked text={snippet(latest(c).body)} q={q} />
             </span>
           </span>
-          <span className={s.time}>{c.time}</span>
+          <span className={s.time}>
+            {c.starred && <Star size={12} strokeWidth={1.5} nonScalingStroke className={s.starred} aria-label="Starred" />}
+            {c.time}
+          </span>
         </button>
-        {/* Over the time's place, at the row's end. */}
+        {/* Beside the time, never over it. */}
         <span className={s.actions}>
           {c.folder === 'inbox' && (
             <Tip label="Archive" keys={['E']}>
@@ -98,6 +83,11 @@ export function Line({ c, post, rowRef, pin }: Props) {
               </Button>
             </Tip>
           )}
+          <Tip label={c.starred ? 'Unstar' : 'Star'} keys={['S']}>
+            <Button variant="ghost" size="sm" icon aria-label={c.starred ? 'Unstar' : 'Star'} onClick={() => post.star([c.id], !c.starred)}>
+              <Star {...ic} />
+            </Button>
+          </Tip>
           <Tip label={unread(c) ? 'Mark as read' : 'Mark as unread'}>
             <Button
               variant="ghost"

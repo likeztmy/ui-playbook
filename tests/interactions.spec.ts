@@ -1222,7 +1222,7 @@ test('post: compose picks and types recipients, sends with ⌘↵, and Undo brin
   await hydrateAll(page);
   const app = page.locator('[class*="_app_"]');
   const sound = async (step: string) => expect(await layoutProblems(app, { fill: ['section[aria-label="New message"]', 'section[aria-label="Conversations"]'] }), step).toEqual([]);
-  await page.getByRole('navigation', { name: 'Folders' }).getByRole('button', { name: 'Compose' }).click();
+  await page.getByRole('region', { name: 'Conversations' }).getByRole('button', { name: 'New message' }).click();
   const composer = page.getByRole('region', { name: 'New message' });
   const to = composer.getByRole('combobox', { name: 'To' });
   await expect(to).toBeFocused();
@@ -1259,9 +1259,9 @@ test('post: compose picks and types recipients, sends with ⌘↵, and Undo brin
   await expect(composer.getByRole('textbox', { name: 'Subject' })).toHaveValue('Beta invite list');
   await expect(composer.getByText('Priya Natarajan')).toBeVisible();
   await expect(composer.getByRole('textbox', { name: 'Message' })).toBeFocused();
-  // Back keeps it as a draft, and focus returns to Compose.
+  // Back keeps it as a draft, and focus returns to New message.
   await page.keyboard.press('Escape');
-  await expect(page.getByRole('navigation', { name: 'Folders' }).getByRole('button', { name: 'Compose' })).toBeFocused();
+  await expect(page.getByRole('region', { name: 'Conversations' }).getByRole('button', { name: 'New message' })).toBeFocused();
   await page.getByRole('navigation', { name: 'Folders' }).getByRole('button', { name: /Drafts/ }).click();
   await expect(page.getByRole('region', { name: 'Drafts' }).getByText('Beta invite list')).toBeVisible();
   // Drafts outlive a reload.
@@ -1387,4 +1387,54 @@ test('post: files attach by picking or dropping, each with its own progress; Sen
   // Cancelling an upload takes the card away.
   await files.getByRole('button', { name: 'Cancel upload of notes.txt' }).click();
   await expect(files).toHaveCount(0);
+});
+
+test('post: a row keeps its time under the pointer; its actions come once the pointer rests; checkboxes come when wanted', async ({ page }) => {
+  await page.goto('/lab/mail-one');
+  await hydrateAll(page);
+  const list = page.getByRole('region', { name: 'Conversations' });
+  const row = list.locator('[data-row="invoice"]');
+  const opacity = (l: import('@playwright/test').Locator) => l.evaluate((el) => Number(getComputedStyle(el).opacity));
+  // Search and New message are on the list's own bar.
+  await expect(list.getByRole('textbox', { name: 'Search mail' })).toBeVisible();
+  await expect(list.getByRole('button', { name: 'New message' })).toBeVisible();
+  // Passing over a row changes nothing; resting brings its actions, beside a time that stays.
+  await row.locator('[class*="_main_"]').hover();
+  const tools = row.locator('[class*="_actions_"]');
+  await page.waitForTimeout(100);
+  expect(await opacity(tools)).toBeLessThan(0.5);
+  await page.waitForTimeout(600);
+  expect(await opacity(tools)).toBe(1);
+  await expect(row.getByText('16:02')).toBeVisible();
+  const time = await row.getByText('16:02').boundingBox();
+  const actions = await row.getByRole('button', { name: 'Archive' }).boundingBox();
+  expect(actions!.x + actions!.width).toBeLessThanOrEqual(time!.x);
+  // A row's checkbox stays out of sight until its edge is rested on; one ticked shows them all.
+  const box = (id: string) => list.locator(`[data-row="${id}"] [class*="_check_"] > *`).first();
+  expect(await opacity(box('lunch'))).toBe(0);
+  await box('invoice').click();
+  await page.waitForTimeout(200);
+  expect(await opacity(box('lunch'))).toBe(1);
+  await expect(list.getByText('1 selected')).toBeVisible();
+  // A starred row carries its mark by the time.
+  await expect(list.locator('[data-row="review"]').getByLabel('Starred')).toBeVisible();
+  await expect(list.locator('[data-row="invoice"]').getByLabel('Starred')).toHaveCount(0);
+});
+
+test('post: / searches from anywhere, and a draft is marked in ink', async ({ page }) => {
+  await page.goto('/lab/mail-one');
+  await hydrateAll(page);
+  await page.locator('[data-row="lunch"] [class*="_main_"]').click();
+  await page.keyboard.press('/');
+  await expect(page.getByRole('textbox', { name: 'Search mail' })).toBeFocused();
+  // Esc empties the search and leaves focus in it, where C is a letter, not New message.
+  await page.keyboard.press('Escape');
+  await page.getByRole('region', { name: 'Conversations' }).getByRole('button', { name: 'New message' }).click();
+  await page.getByRole('combobox', { name: 'To' }).fill('mira');
+  await page.getByRole('combobox', { name: 'To' }).press('Enter');
+  await page.keyboard.press('Escape');
+  await page.getByRole('navigation', { name: 'Folders' }).getByRole('button', { name: /Drafts/ }).click();
+  const mark = page.getByRole('region', { name: 'Drafts' }).getByText('Draft', { exact: true });
+  const ink = await mark.evaluate((el) => [getComputedStyle(el).color, getComputedStyle(document.body).getPropertyValue('--danger')]);
+  expect(ink[0]).not.toBe('rgb(187, 54, 16)');
 });

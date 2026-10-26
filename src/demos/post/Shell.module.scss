@@ -1,6 +1,7 @@
 @use '../../styles/states' as *;
 
-// Post at full size: a top bar, folders, and the mail in one raised surface.
+// Post at full size: folders, and the mail in one raised surface. No bar across the top: search
+// and New message sit on the bar of the list they act on.
 // The frame is the container, so the app lays itself out by its own width.
 .frame {
   container-type: inline-size;
@@ -10,9 +11,7 @@
 .app {
   position: relative;
   display: grid;
-  grid-template:
-    'top top' 56px
-    'side main' minmax(0, 1fr) / 232px minmax(0, 1fr);
+  grid-template: 'side main' minmax(0, 1fr) / 232px minmax(0, 1fr);
   height: 100%;
   overflow: hidden;
   background: var(--bg);
@@ -20,53 +19,20 @@
   font-size: 14px;
 }
 
-.top {
-  display: flex;
-  grid-area: top;
-  align-items: center;
-  gap: var(--space-4);
-  padding: 0 var(--space-4);
-}
-
-// As wide as the folders, so the search starts over the mail.
+// On the folders' column, at the height of the list's bar.
 .brand {
-  flex: none;
-  width: calc(232px - 2 * var(--space-4));
+  display: flex;
+  align-items: center;
+  height: 48px;
+  margin-bottom: var(--space-1);
   padding-left: var(--space-3);
   font-size: 16px;
   font-weight: 600;
 }
 
-.search {
-  display: flex;
-  flex: 0 1 720px;
-  align-items: center;
-  gap: var(--space-3);
-  min-width: 0;
-  height: 40px;
-  padding: 0 var(--space-1) 0 var(--space-3);
-  border-radius: var(--radius-lg);
-  background: var(--fill-control);
-  color: var(--ink-muted);
-
-  input {
-    flex: 1;
-    min-width: 0;
-    height: 100%;
-    border: 0;
-    outline: none;
-    background: none;
-    color: var(--ink);
-    font: inherit;
-  }
-
-  &:focus-within {
-    box-shadow: var(--focus-ring);
-  }
-}
-
-.phoneOnly {
-  display: none;
+// The view's one filled button.
+.newMessage {
+  flex: none;
 }
 
 .side {
@@ -74,7 +40,7 @@
   grid-area: side;
   flex-direction: column;
   gap: var(--space-0-5);
-  padding: var(--space-2) var(--space-3) var(--space-3);
+  padding: var(--space-3) var(--space-3) var(--space-3);
 }
 
 // Icon, label and count each in one column.
@@ -129,7 +95,7 @@
   grid-area: main;
   min-width: 0;
   min-height: 0;
-  margin: 0 var(--space-3) var(--space-3) 0;
+  margin: var(--space-3) var(--space-3) var(--space-3) 0;
   overflow: hidden;
   border-radius: var(--radius-lg);
   background: var(--surface);
@@ -142,7 +108,7 @@
   position: relative;
   grid-area: main;
   // The main card's own inset, so a toast centres on the card.
-  margin: 0 var(--space-3) var(--space-3) 0;
+  margin: var(--space-3) var(--space-3) var(--space-3) 0;
   pointer-events: none;
 
   > * {
@@ -153,34 +119,23 @@
 // Narrow: one column; folders move into the top bar.
 @container (max-width: 760px) {
   .app {
-    grid-template:
-      'top' 56px
-      'main' minmax(0, 1fr) / minmax(0, 1fr);
+    grid-template: 'main' minmax(0, 1fr) / minmax(0, 1fr);
   }
 
-  .side,
-  .brand {
+  .side {
     display: none;
   }
 
-  .top {
-    gap: var(--space-2);
-    padding: 0 var(--space-2);
-  }
-
-  .phoneOnly {
-    display: contents;
-  }
-
-  // The search gives way; these keep their size.
-  .phoneCompose {
-    flex: none;
-  }
-
+  // On a phone the list's bar names the folder, as a menu; New message is its icon.
   .folderMenu {
     flex: none;
+    padding-inline: var(--space-2);
     font-size: 15px;
     font-weight: 600;
+  }
+
+  .newLabel {
+    display: none;
   }
 
   .main,

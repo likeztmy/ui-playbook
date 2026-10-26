@@ -1,8 +1,10 @@
-import { Trash2 } from 'lucide-react';
+import { PencilLine, Trash2 } from 'lucide-react';
+import { useRef, type CSSProperties } from 'react';
 import { Button } from '../../ui/Button';
 import { Tip } from '../../ui/Tooltip';
 import type { Draft } from './draft';
 import { participants } from './people';
+import { useFromWidth, type Chrome } from './List';
 import type { Compose } from './useCompose';
 import s from './List.module.scss';
 
@@ -21,14 +23,18 @@ function DraftLine({ d, compose }: { d: Draft; compose: Compose }) {
   return (
     <div className={s.line} role="listitem" data-row={d.id}>
       <span />
-      <span />
       <button type="button" className={s.main} onClick={() => compose.open(d)}>
         <span className={s.from} data-from="">
-          <span className={s.draft}>Draft</span>
-          {to.length > 0 && participants(to)}
+          <span className={s.draft}>
+            <PencilLine size={14} strokeWidth={1.5} nonScalingStroke aria-hidden />
+            Draft
+          </span>
+          {to.length > 0 && `To ${participants(to)}`}
         </span>
         <span className={s.text}>
-          <span className={s.subject}>{d.kind === 'new' ? d.subject.trim() || '(no subject)' : `${d.kind === 'forward' ? '' : 'Re: '}${d.subject}`}</span>
+          <span className={s.subject}>
+            {d.kind === 'new' ? d.subject.trim() || '(no subject)' : `${d.kind === 'forward' ? '' : 'Re: '}${d.subject}`}
+          </span>
           <span className={s.snippet}>{d.text}</span>
         </span>
         <span className={s.time}>{when(d.edited)}</span>
@@ -45,18 +51,20 @@ function DraftLine({ d, compose }: { d: Draft; compose: Compose }) {
 }
 
 /** The Drafts folder: what's being written, newest first. */
-export function DraftList({ compose }: { compose: Compose }) {
+export function DraftList({ compose, chrome }: { compose: Compose; chrome: Chrome }) {
   const drafts = [...compose.drafts].sort((a, b) => b.edited - a.edited);
+  const box = useRef<HTMLDivElement>(null);
+  // Subjects start where the senders end, measured as the other lists are.
+  const fromWidth = useFromWidth(box, [drafts.length]);
   return (
     <section className={s.list} aria-label="Drafts">
       <div className={s.bar}>
         <span className={s.check} />
         <span className={s.title}>Drafts</span>
-        <span className={s.total}>
-          {drafts.length} {drafts.length === 1 ? 'draft' : 'drafts'}
-        </span>
+        <span className={s.where}>{chrome.folders}</span>
+        <span className={s.barActions}>{chrome.actions}</span>
       </div>
-      <div className={s.rows} role="list">
+      <div ref={box} className={s.rows} role="list" style={{ '--from': `${fromWidth}px` } as CSSProperties}>
         {drafts.map((d) => (
           <DraftLine key={d.id} d={d} compose={compose} />
         ))}
