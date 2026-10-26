@@ -1,5 +1,5 @@
 import { ArrowLeft, ChevronDown, Pencil } from 'lucide-react';
-import { useEffect, useRef, useState, type MutableRefObject, type RefObject } from 'react';
+import { useEffect, useRef, useState, type RefObject } from 'react';
 import { Button } from '../../ui/Button';
 import { Menu } from '../../ui/Menu';
 import { Tip } from '../../ui/Tooltip';
@@ -81,7 +81,7 @@ type ShellProps = {
   onToasts: (el: HTMLDivElement | null) => void;
   /** A decision being shown: the parts marked `data-spot` with it are outlined. */
   spot?: string | null;
-  control?: MutableRefObject<Control | null>;
+  control?: RefObject<Control | null>;
   /** A row held as though the pointer rested on it. */
   pinned?: string | null;
   /** At full screen: the page Post came from, at the folders' foot. */
