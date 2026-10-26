@@ -91,7 +91,15 @@ function Bar({ post, chrome }: { post: Post; chrome: Chrome }) {
 }
 
 /** Conversations in date sections, or what to do when there are none. */
-export function List({ post, rows, chrome }: { post: Post; rows: RefObject<Map<string, HTMLButtonElement>>; chrome: Chrome }) {
+type ListProps = {
+  post: Post;
+  rows: RefObject<Map<string, HTMLButtonElement>>;
+  chrome: Chrome;
+  /** A row held as though the pointer rested on it. */
+  pinned?: string | null;
+};
+
+export function List({ post, rows, chrome, pinned }: ListProps) {
   const box = useRef<HTMLDivElement>(null);
   const fromWidth = useFromWidth(box, [post.list]);
   const q = post.query.trim();
@@ -99,6 +107,20 @@ export function List({ post, rows, chrome }: { post: Post; rows: RefObject<Map<s
     <section className={s.list} aria-label="Conversations">
       <Bar post={post} chrome={chrome} />
       {chrome.outbox}
+      {/* New mail waits here, over the list, until asked for: nothing moves under the pointer on its own. */}
+      {post.waiting > 0 && post.folder === 'inbox' && !q && (
+        <button
+          type="button"
+          className={s.pill}
+          data-spot="arrive"
+          onClick={() => {
+            post.letIn();
+            box.current?.scrollTo({ top: 0 });
+          }}
+        >
+          {post.waiting === 1 ? '1 new message' : `${post.waiting} new messages`}
+        </button>
+      )}
       <div
         ref={box}
         className={s.rows}
@@ -109,7 +131,7 @@ export function List({ post, rows, chrome }: { post: Post; rows: RefObject<Map<s
         {post.list.map((c, i) => [
           // A header where the section changes: more space above than below, so it joins the rows it names.
           (i === 0 || section(c) !== section(post.list[i - 1])) && (
-            <div key={`h-${c.id}`} className={s.section} data-first={i === 0 ? '' : undefined}>
+            <div key={`h-${c.id}`} className={s.section} data-first={i === 0 ? '' : undefined} data-spot="sections">
               {section(c)}
             </div>
           ),
@@ -117,6 +139,7 @@ export function List({ post, rows, chrome }: { post: Post; rows: RefObject<Map<s
             key={c.id}
             c={c}
             post={post}
+            pin={pinned === c.id ? 'hover' : undefined}
             rowRef={(el) => {
               if (el) rows.current.set(c.id, el);
               else rows.current.delete(c.id);
@@ -127,7 +150,7 @@ export function List({ post, rows, chrome }: { post: Post; rows: RefObject<Map<s
           <div className={s.empty}>
             {q ? (
               <>
-                <p>
+                <p data-spot="search">
                   No conversations match “{q}” in {post.everywhere ? 'All mail' : FOLDER_NAME[post.folder]}.
                 </p>
                 {!post.everywhere && (

@@ -518,3 +518,15 @@ export const CONVERSATIONS: Conversation[] = [
     messages: [msg('oncall-1', 'jonas', ['me'], '15 Oct 9:00', [p('Handover is Monday at 10:00. Bring the open incidents.')])],
   },
 ];
+
+/** Mail that arrives while you read, at `time` today; the nth gets its own ids. */
+export const incoming = (n: number, time: string): Conversation => ({
+  id: `incoming-${n}`,
+  subject: 'Review moved to 15:00',
+  folder: 'inbox',
+  day: 0,
+  time,
+  messages: [
+    msg(`incoming-${n}-1`, 'priya', ['me'], `Thu ${time}`, [p('Same room, an hour later. The beta notes are in the doc.')], { unread: true }),
+  ],
+});

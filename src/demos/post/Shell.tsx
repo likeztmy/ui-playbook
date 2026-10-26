@@ -1,5 +1,5 @@
-import { ChevronDown, Pencil } from 'lucide-react';
-import { useEffect, useRef, useState, type RefObject } from 'react';
+import { ArrowLeft, ChevronDown, Pencil } from 'lucide-react';
+import { useEffect, useRef, useState, type MutableRefObject, type RefObject } from 'react';
 import { Button } from '../../ui/Button';
 import { Menu } from '../../ui/Menu';
 import { Tip } from '../../ui/Tooltip';
@@ -74,9 +74,25 @@ function useKeys(post: Post, compose: Compose, rows: RefObject<Map<string, HTMLB
   };
 }
 
-function Shell({ onToasts }: { onToasts: (el: HTMLDivElement | null) => void }) {
+/** What a page around Post reads and drives, to play a decision in the app. Current as of the last render. */
+export type Control = { post: Post; compose: Compose; root: HTMLDivElement | null };
+
+type ShellProps = {
+  onToasts: (el: HTMLDivElement | null) => void;
+  /** A decision being shown: the parts marked `data-spot` with it are outlined. */
+  spot?: string | null;
+  control?: MutableRefObject<Control | null>;
+  /** A row held as though the pointer rested on it. */
+  pinned?: string | null;
+  /** At full screen: the page Post came from, at the folders' foot. */
+  back?: string;
+};
+
+export function Shell({ onToasts, spot, control, pinned, back }: ShellProps) {
   const post = usePost();
   const compose = useCompose(post);
+  const root = useRef<HTMLDivElement>(null);
+  if (control) control.current = { post, compose, root: root.current };
   const rows = useRef(new Map<string, HTMLButtonElement>());
   const search = useRef<HTMLInputElement>(null);
   const composeButton = useRef<HTMLButtonElement>(null);
@@ -170,11 +186,11 @@ function Shell({ onToasts }: { onToasts: (el: HTMLDivElement | null) => void }) 
   ) : post.folder === 'drafts' && !post.query ? (
     <DraftList compose={compose} chrome={chrome} />
   ) : (
-    <List post={post} rows={rows} chrome={chrome} />
+    <List post={post} rows={rows} chrome={chrome} pinned={pinned} />
   );
 
   return (
-    <div className={s.app} data-view={reading ? 'message' : 'list'}>
+    <div ref={root} className={s.app} data-view={reading ? 'message' : 'list'} data-spot={spot ?? undefined}>
       <nav className={s.side} aria-label="Folders">
         <span className={s.brand}>Post</span>
         {FOLDERS.map((f) => {
@@ -187,6 +203,12 @@ function Shell({ onToasts }: { onToasts: (el: HTMLDivElement | null) => void }) 
             </button>
           );
         })}
+        {back && (
+          <a className={`${s.folder} ${s.back}`} href={back}>
+            <ArrowLeft {...ic} />
+            <span>UI Playbook</span>
+          </a>
+        )}
       </nav>
       <main className={s.main}>{main}</main>
       {/* Toasts rise in their own layer, laid over the main area. */}
@@ -196,12 +218,12 @@ function Shell({ onToasts }: { onToasts: (el: HTMLDivElement | null) => void }) 
 }
 
 /** Post, the In practice mail app, at full size. */
-export function PostApp() {
+export function PostApp({ back }: { back?: string }) {
   const [container, setContainer] = useState<HTMLElement | null>(null);
   return (
     <div className={s.frame}>
       <ToastProvider container={container} contained>
-        <Shell onToasts={setContainer} />
+        <Shell onToasts={setContainer} back={back} />
       </ToastProvider>
     </div>
   );

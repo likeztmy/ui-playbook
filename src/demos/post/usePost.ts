@@ -1,6 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useToast } from '../../ui/Toast';
-import { CONVERSATIONS } from './conversations';
+import { CONVERSATIONS, incoming } from './conversations';
 import { inFolder, plain, unread, type Conversation, type Folder, type Message } from './model';
 import { person } from './people';
 
@@ -12,6 +12,9 @@ export function usePost(seed: Conversation[] = CONVERSATIONS) {
   const [everywhere, setEverywhere] = useState(false);
   const [openId, setOpenId] = useState<string | null>(null);
   const [checked, setChecked] = useState<Set<string>>(new Set());
+  // Mail that has arrived but waits behind a pill: rows don't move under the pointer on their own.
+  const [waiting, setWaiting] = useState<Conversation[]>([]);
+  const arrived = useRef(0);
   const toast = useToast();
 
   const q = query.trim().toLowerCase();
@@ -80,6 +83,16 @@ export function usePost(seed: Conversation[] = CONVERSATIONS) {
       );
   };
 
+  const arrive = () => {
+    const now = new Date();
+    setWaiting((w) => [incoming(++arrived.current, `${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}`), ...w]);
+  };
+  /** What has arrived joins the top of the list, when asked for. */
+  const letIn = () => {
+    setMail((all) => [...waiting, ...all]);
+    setWaiting([]);
+  };
+
   const go = (f: Folder) => {
     setFolder(f);
     setQuery('');
@@ -110,6 +123,9 @@ export function usePost(seed: Conversation[] = CONVERSATIONS) {
     unarchive: (ids: string[]) => move(ids, 'inbox'),
     star,
     deliver,
+    waiting: waiting.length,
+    arrive,
+    letIn,
     setUnread,
     go,
     unreadCount: mail.filter((c) => c.folder === 'inbox' && unread(c)).length,

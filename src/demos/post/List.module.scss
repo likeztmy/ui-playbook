@@ -4,6 +4,7 @@
 $inset: 20px;
 
 .list {
+  position: relative;
   display: flex;
   flex-direction: column;
   min-width: 0;
@@ -87,13 +88,15 @@ $inset: 20px;
 }
 
 .line:hover .check > *,
+.line[data-pin~='hover'] .check > *,
 .line .check:focus-within > *,
 .line[data-checked] .check > *,
 [data-selecting] .line .check > * {
   opacity: 1;
 }
 
-.line:hover .check > * {
+.line:hover .check > *,
+.line[data-pin~='hover'] .check > * {
   transition-delay: 300ms;
 }
 
@@ -371,5 +374,30 @@ $inset: 20px;
   // No standing selection in a list that's the whole screen; ticked rows keep theirs.
   .line[data-current]:not([data-checked]) {
     background: none;
+  }
+}
+
+// New mail, waiting over the top of the list, under its bar.
+.pill {
+  position: absolute;
+  top: calc(48px + var(--space-2));
+  left: 50%;
+  z-index: var(--z-dropdown);
+  height: 28px;
+  padding: 0 var(--space-3);
+  border: 0;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--surface);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  box-shadow: var(--shadow-md);
+  translate: -50% 0;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
   }
 }

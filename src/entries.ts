@@ -247,9 +247,9 @@ export const entries: Entry[] = [
     slug: 'mail',
     kind: 'practice',
     title: 'Mail',
-    summary: 'An inbox built on the playbook: archive with undo, hover actions that hold their place, new mail that waits its turn.',
-    details: 8,
-    keywords: ['email', 'inbox', 'app', 'example', 'case study', 'archive', 'undo', 'shortcuts'],
+    summary: 'Post, a mail app made of the playbook’s parts: read, reply and write, and each decision traced to the principle behind it.',
+    details: 10,
+    keywords: ['email', 'inbox', 'app', 'example', 'case study', 'archive', 'undo', 'compose', 'reply'],
   },
 ];
 

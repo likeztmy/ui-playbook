@@ -366,7 +366,11 @@ test('nothing shifts: late results land above the Before list, below the After; 
   await expect(after.getByText('Opened “Buttons”')).toBeVisible();
 
   // Headless Chromium hides scroll bars, so check the gutter is held rather than measure the jump.
-  const gutter = (n: number) => page.getByRole('region', { name: 'Members' }).nth(n).evaluate((l) => getComputedStyle(l).scrollbarGutter);
+  const gutter = (n: number) =>
+    page
+      .getByRole('region', { name: 'Members' })
+      .nth(n)
+      .evaluate((l) => getComputedStyle(l).scrollbarGutter);
   expect(await gutter(0)).toBe('auto');
   expect(await gutter(1)).toBe('stable');
 });
@@ -395,7 +399,10 @@ test('nothing shifts: earlier messages push the Before thread, the After keeps i
 test('hover forgives: a diagonal to the submenu closes it in Before, holds in After', async ({ page }) => {
   await page.goto('/principles/hover-forgives');
   await hydrateAll(page);
-  for (const [side, holds] of [['Before', false], ['After', true]] as const) {
+  for (const [side, holds] of [
+    ['Before', false],
+    ['After', true],
+  ] as const) {
     const f = page.locator('figure').filter({ hasText: side }).filter({ hasText: 'Move to' }).first();
     await f.scrollIntoViewIfNeeded();
     const move = (await f.getByText('Move to', { exact: true }).boundingBox())!;
@@ -419,7 +426,10 @@ test('error timing: only “on leaving, cleared on fix” is quiet while typing 
   await field('On every keystroke').fill('zoe@laure');
   await expect(error('On every keystroke'), 'judged mid-word').toBeVisible();
 
-  for (const [name, clearsOnFix] of [['On leaving', false], ['On leaving, cleared on fix', true]] as const) {
+  for (const [name, clearsOnFix] of [
+    ['On leaving', false],
+    ['On leaving, cleared on fix', true],
+  ] as const) {
     await field(name).fill('zoe@laurent');
     await expect(error(name), 'quiet while typing').toHaveCount(0);
     await field(name).blur();
@@ -852,7 +862,9 @@ test('chinese edition: the header switches to the same page; untranslated entrie
   await expect(page.getByRole('link', { name: /^Button/ })).toHaveAttribute('href', '/components/button');
 });
 
-test('how waiting feels: a quick refresh shows no spinner in the After; once shown it stays; a star fills at once and rolls back on failure', async ({ page }) => {
+test('how waiting feels: a quick refresh shows no spinner in the After; once shown it stays; a star fills at once and rolls back on failure', async ({
+  page,
+}) => {
   await page.goto('/principles/how-waiting-feels');
   await hydrateAll(page);
   const [before, after] = [page.locator('figure').nth(0), page.locator('figure').nth(1)];
@@ -872,7 +884,10 @@ test('how waiting feels: a quick refresh shows no spinner in the After; once sho
   await expect(spinner(after)).toHaveCount(1);
   await expect(after.getByText('Updated 2 times')).toBeVisible({ timeout: 1500 });
 
-  const stars = page.locator('figure').filter({ has: page.getByRole('checkbox', { name: 'Fail the next request' }) }).nth(1);
+  const stars = page
+    .locator('figure')
+    .filter({ has: page.getByRole('checkbox', { name: 'Fail the next request' }) })
+    .nth(1);
   await stars.scrollIntoViewIfNeeded();
   const q4 = stars.getByRole('button', { name: /Star Q4 roadmap|Unstar Q4 roadmap/ });
   await q4.click();
@@ -884,7 +899,9 @@ test('how waiting feels: a quick refresh shows no spinner in the After; once sho
   await expect(stars.getByText('Couldn’t unstar “Q4 roadmap”. Try again.')).toBeVisible();
 });
 
-test('let motion change its mind: locked clicks are dropped, a keyframe sheet snaps open before closing, a spring keeps the flick', async ({ page }) => {
+test('let motion change its mind: locked clicks are dropped, a keyframe sheet snaps open before closing, a spring keeps the flick', async ({
+  page,
+}) => {
   await page.goto('/principles/let-motion-change-its-mind');
   await hydrateAll(page);
   const figure = (i: number) => page.locator('figure').nth(i);
@@ -937,133 +954,53 @@ test('let motion change its mind: locked clicks are dropped, a keyframe sheet sn
   expect(sprung).toBeGreaterThan(eased * 1.5);
 });
 
-test('mail: archive opens the next and Undo restores it; keys move and archive; new mail waits; empty search offers all mail', async ({ page }) => {
+test('mail page: each Show plays its decision in the app and outlines what it is about; the app keeps its shape', async ({ page }) => {
   await page.goto('/practice/mail');
   await hydrateAll(page);
-  const app = page.locator('[class*="_app_"]');
-  const rows = () => app.locator('[data-row]').evaluateAll((els) => els.map((e) => e.getAttribute('data-row') + (e.hasAttribute('data-selected') ? '*' : '')));
-  // After every step, not only at rest: the panes still fill the app, nothing overlaps text, no icon twice in a row.
-  const sound = async (step: string) =>
-    expect(await layoutProblems(app, { fill: ['[class*="_sidebar_"]', '[class*="_panes_"]'] }), step).toEqual([]);
+  const app = page.locator('[class*="_app_"][data-view]');
+  const sound = async (step: string) => expect(await layoutProblems(app), step).toEqual([]);
   await sound('at rest');
+  // What each decision should leave on screen once played.
+  const left: Record<string, () => Promise<void>> = {
+    context: async () => {
+      await expect(page.getByRole('menu')).toBeVisible();
+      await page.keyboard.press('Escape');
+    },
+    archive: () => expect(app.getByText('Archived')).toBeVisible(),
+    arrive: () => expect(app.getByRole('button', { name: '1 new message' })).toBeVisible(),
+    undo: () => expect(app.getByRole('status').filter({ hasText: 'Sending' })).toBeVisible(),
+    search: () => expect(app.getByText('No conversations match “handover” in Inbox.')).toBeVisible(),
+  };
+  const shows = page.getByRole('button', { name: 'Show', exact: true });
+  const spots = ['colour', 'sections', 'dwell', 'context', 'archive', 'arrive', 'run', 'reply', 'undo', 'search'];
+  expect(await shows.count()).toBe(spots.length);
+  for (const [i, spot] of spots.entries()) {
+    await shows.nth(i).click();
+    await expect(app, spot).toHaveAttribute('data-spot', spot);
+    if (!['context', 'archive'].includes(spot)) await expect(app.locator(`[data-spot~="${spot}"]`).first(), spot).toBeVisible();
+    await left[spot]?.();
+    // Clicking Show leaves the pointer wherever the page scrolled the app to; out of the way, rows rest.
+    await page.mouse.move(0, 0);
+    await sound(spot);
+  }
 
-  // Archive from the toolbar: the next message opens; Undo puts it back, selected.
-  await app.getByRole('button', { name: 'Archive' }).last().click();
-  expect((await rows())[0]).toBe('lisbon*');
-  await sound('archived');
-  await app.getByRole('button', { name: 'Undo' }).click();
-  expect((await rows())[0]).toBe('roadmap*');
-  await sound('undone');
-
-  // A mouse click leaves the row's actions hidden once the pointer goes.
-  await app.locator('[data-row="lunch"] button').first().click();
-  await page.mouse.move(0, 0);
-  await expect(app.locator('[data-row="lunch"] [class*="_rowActions_"]')).toHaveCSS('opacity', '0');
-  await sound('clicked a row');
-
-  // j moves down with focus; e archives and focus lands on the next row.
-  await app.locator('[data-row="roadmap"] button').first().focus();
-  await page.keyboard.press('j');
-  expect((await rows())[1]).toBe('lisbon*');
-  await expect(app.locator('[data-row="lisbon"] button').first()).toBeFocused();
-  await page.keyboard.press('e');
-  expect((await rows())[1]).toBe('invoice*');
-  await expect(app.locator('[data-row="invoice"] button').first()).toBeFocused();
-  await sound('keyboard');
-
-  // Star with s, then hover the row: one star, filled.
-  await page.keyboard.press('s');
-  await app.locator('[data-row="invoice"]').hover();
-  await sound('starred and hovered');
-
-  // New mail: a pill, and the list doesn't move until it's clicked.
-  const top = () => app.locator('[data-row]').first().evaluate((el) => el.getBoundingClientRect().top - el.parentElement!.getBoundingClientRect().top);
+  // New mail waits: the rows stay put until the pill is clicked; then it's on top.
+  await shows.nth(5).click();
+  const top = () => app.locator('[data-row]').first().getAttribute('data-row');
   const before = await top();
-  await page.getByRole('button', { name: 'Show' }).nth(3).click();
-  await expect(app.getByRole('button', { name: '1 new message' })).toBeVisible();
+  await page.waitForTimeout(300);
   expect(await top()).toBe(before);
-  // The pill covers no row: the first one still takes a plain click.
-  const first = app.locator('[data-row]').first();
-  const main = first.locator('button').first();
-  const w = (await main.boundingBox())!.width;
-  await main.click({ position: { x: w / 2, y: 19 }, timeout: 2000 });
-  await expect(first).toHaveAttribute('data-selected', '');
-  await app.getByRole('button', { name: '1 new message' }).click();
-  expect((await rows())[0]).toMatch(/^new-/);
-  await sound('new mail shown');
-
-  // An empty search names what and where, and widens to all mail.
-  await app.getByLabel('Search mail').fill('welcome');
-  await expect(app.getByText('No messages match “welcome” in Inbox.')).toBeVisible();
-  await sound('empty search');
-  await app.getByRole('button', { name: 'Search all mail' }).click();
-  expect(await rows()).toEqual(['welcome']);
-  await sound('all mail');
-
-  // Compose and send: the toast rises inside the app and the app keeps its shape.
-  await app.getByRole('button', { name: 'Compose' }).click();
-  await page.getByRole('dialog').getByLabel('To', { exact: true }).fill('Priya');
-  await page.getByRole('button', { name: 'Send' }).click();
-  await expect(app.getByText('Message sent')).toBeVisible();
-  await sound('sent');
+  await app.getByRole('button', { name: /new message/ }).click();
+  expect(await top()).toMatch(/^incoming-/);
 });
 
-test('mail: r replies under the message; Move to Inbox moves; a closed context menu hands focus back to the open message', async ({ page }) => {
+test('mail page: the app opens at full screen and has its way back', async ({ page }) => {
   await page.goto('/practice/mail');
+  await page.getByRole('link', { name: 'Open full screen' }).click();
+  await expect(page).toHaveURL(/\/practice\/mail\/app$/);
   await hydrateAll(page);
-  const app = page.locator('[class*="_app_"]');
-  const sound = async (step: string) =>
-    expect(await layoutProblems(app, { fill: ['[class*="_sidebar_"]', '[class*="_panes_"]'] }), step).toEqual([]);
-
-  // r: a reply under the message, addressed, the caret in its body.
-  await app.locator('[data-row="roadmap"] button').first().focus();
-  await page.keyboard.press('r');
-  const draft = app.getByRole('dialog', { name: 'Reply' });
-  await expect(draft.getByLabel('To', { exact: true })).toHaveValue('Mira Okafor');
-  await expect(draft.getByLabel('Message')).toBeFocused();
-  await draft.getByRole('button', { name: 'Discard draft' }).click();
-  // Under a long message the reply scrolls itself, Send and all, into the reading pane.
-  await app.locator('[data-row="invoice"] button').first().click();
-  await page.waitForTimeout(1400);
-  await page.keyboard.press('r');
-  const send = app.getByRole('dialog', { name: 'Reply' }).getByRole('button', { name: 'Send' });
-  const visible = () =>
-    send.evaluate((el) => {
-      const r = el.getBoundingClientRect();
-      const pane = el.closest('[class*="_reader_"]')!.getBoundingClientRect();
-      return r.top >= pane.top && r.bottom <= pane.bottom;
-    });
-  await expect.poll(visible).toBe(true);
-  await sound('drafting');
-  await app.getByRole('dialog', { name: 'Reply' }).getByRole('button', { name: 'Discard draft' }).click();
-  await expect(app.getByRole('dialog', { name: 'Reply' })).toHaveCount(0);
-  await expect(app.locator('[data-row="invoice"] button').first()).toBeFocused();
-  await app.locator('[data-row="roadmap"] button').first().click();
-
-  // A new message closed with Save and close comes back with Compose.
-  await page.getByRole('navigation', { name: 'Folders' }).getByRole('button', { name: 'Compose' }).click();
-  await app.getByRole('dialog', { name: 'New message' }).getByLabel('Message').fill('Draft text');
-  await app.getByRole('button', { name: 'Save and close' }).click();
-  await expect(app.getByRole('dialog', { name: 'New message' })).toHaveCount(0);
-  await page.getByRole('navigation', { name: 'Folders' }).getByRole('button', { name: 'Compose' }).click();
-  await expect(app.getByRole('dialog', { name: 'New message' }).getByLabel('Message')).toHaveValue('Draft text');
-  await app.getByRole('button', { name: 'Discard draft' }).click();
-  await app.locator('[data-row="roadmap"] button').first().click();
-
-  // Right-click another row and close the menu: focus lands on the open message's row.
-  await app.locator('[data-row="lunch"]').click({ button: 'right' });
-  await page.keyboard.press('Escape');
-  await expect(app.locator('[data-row="roadmap"] button').first()).toBeFocused();
-
-  // In Archive, Move to Inbox takes the message out of the list and back to the Inbox.
-  await page.getByRole('navigation', { name: 'Folders' }).getByRole('button', { name: 'Archive' }).click();
-  await app.locator('[data-row="oncall"] button').first().click();
-  await app.locator('[class*="_reader_"]').getByRole('button', { name: 'Move to Inbox' }).click();
-  await expect(app.locator('[data-row="oncall"]')).toHaveCount(0);
-  await expect(app.getByText('Moved to Inbox')).toBeVisible();
-  await page.getByRole('navigation', { name: 'Folders' }).getByRole('button', { name: 'Inbox' }).click();
-  await expect(app.locator('[data-row="oncall"]')).toHaveCount(1);
-  await sound('moved back');
+  await page.getByRole('navigation', { name: 'Folders' }).getByRole('link', { name: 'UI Playbook' }).click();
+  await expect(page).toHaveURL(/\/practice\/mail$/);
 });
 
 test('mail row states: every kind of row in every state lays out cleanly', async ({ page }) => {
@@ -1076,18 +1013,18 @@ test('mail row states: every kind of row in every state lays out cleanly', async
   expect(faults).toEqual([]);
 });
 
-test('mail on a phone: a row pushes the message in, Back slides the list back', async ({ page }) => {
+test('mail on a phone: a row opens its conversation in place of the list, Back brings the list back', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 800 });
-  await page.goto('/practice/mail');
+  await page.goto('/practice/mail/app');
   await hydrateAll(page);
-  const app = page.locator('[class*="_app_"]');
-  const list = app.locator('[class*="_list_"]');
-  const left = () => list.evaluate((el) => el.getBoundingClientRect().left - el.parentElement!.getBoundingClientRect().left);
-  expect(await left()).toBe(0);
+  const app = page.locator('[class*="_app_"][data-view]');
+  await expect(app).toHaveAttribute('data-view', 'list');
   await app.locator('[data-row="lisbon"] button').first().click();
-  await expect.poll(left).toBeLessThan(-300);
-  await app.locator('[class*="_reader_"]').getByRole('button', { name: 'Inbox' }).click();
-  await expect.poll(left).toBe(0);
+  await expect(app).toHaveAttribute('data-view', 'message');
+  expect(await layoutProblems(app)).toEqual([]);
+  await app.getByRole('button', { name: 'Back' }).click();
+  await expect(app).toHaveAttribute('data-view', 'list');
+  await expect(app.locator('[data-row="lisbon"] button').first()).toBeFocused();
 });
 
 test('space groups by ratio: header gaps by the overlay; scaling keeps the ratio; stripes by line or record; one subject edge', async ({ page }) => {
@@ -1096,7 +1033,10 @@ test('space groups by ratio: header gaps by the overlay; scaling keeps the ratio
   const figure = (i: number) => page.locator('figure').nth(i);
   // The Gaps switch draws each gap; around “Yesterday” the Before is even, the After at least twice as much above.
   await figure(0).getByRole('button', { name: 'Show gaps' }).click();
-  const gaps = (i: number) => figure(i).locator('[data-gap-band]').evaluateAll((els) => els.map((e) => e.getBoundingClientRect().height));
+  const gaps = (i: number) =>
+    figure(i)
+      .locator('[data-gap-band]')
+      .evaluateAll((els) => els.map((e) => e.getBoundingClientRect().height));
   const [b, a] = [await gaps(0), await gaps(1)];
   // Bands run top to bottom: 0 under Today, 1 between its rows, 2 above Yesterday, 3 below it.
   expect(Math.abs(b[2] / b[3] - 1)).toBeLessThan(0.15);
@@ -1110,20 +1050,26 @@ test('space groups by ratio: header gaps by the overlay; scaling keeps the ratio
   expect(await readout()).toBe(at1);
 
   // Stripes: by line, a transaction's two lines differ; by record, they match.
-  const stripes = (i: number) => figure(i).locator('[class*="_ratLine_"]').evaluateAll((els) => els.map((e) => e.hasAttribute('data-stripe')));
+  const stripes = (i: number) =>
+    figure(i)
+      .locator('[class*="_ratLine_"]')
+      .evaluateAll((els) => els.map((e) => e.hasAttribute('data-stripe')));
   const [line, record] = [await stripes(3), await stripes(4)];
   expect(line[0]).not.toBe(line[1]);
   expect(record[0]).toBe(record[1]);
   expect(record[1]).not.toBe(record[2]);
 
   // One subject edge: every subject starts at the same x in the After, not in the Before.
-  const starts = (i: number) => figure(i).locator('[class*="_ratSubject_"]').evaluateAll((els) => new Set(els.map((e) => Math.round(e.getBoundingClientRect().left))).size);
+  const starts = (i: number) =>
+    figure(i)
+      .locator('[class*="_ratSubject_"]')
+      .evaluateAll((els) => new Set(els.map((e) => Math.round(e.getBoundingClientRect().left))).size);
   expect(await starts(5)).toBeGreaterThan(1);
   expect(await starts(6)).toBe(1);
 });
 
 test('mail, direction one: date sections join their rows; the sender column fits the longest name', async ({ page }) => {
-  await page.goto('/lab/mail-one');
+  await page.goto('/practice/mail/app');
   await hydrateAll(page);
   const heads = page.locator('[role="list"] [class*="_section_"]');
   await expect(heads).toHaveText(['Today', 'Yesterday', 'This week', 'Earlier']);
@@ -1174,7 +1120,7 @@ test('the faster way: holding the modifier shows every key at once; the tally co
 });
 
 test('post: E archives the ticked conversations', async ({ page }) => {
-  await page.goto('/lab/mail-one');
+  await page.goto('/practice/mail/app');
   await hydrateAll(page);
   await page.locator('[data-row="invoice"] [role="checkbox"]').click();
   await page.locator('[data-row="lunch"] [role="checkbox"]').click();
@@ -1184,11 +1130,14 @@ test('post: E archives the ticked conversations', async ({ page }) => {
   await expect(page.locator('[data-row="roadmap"]')).toHaveCount(1);
 });
 
-test('post: a conversation opens to its unread message; earlier ones fold into a line, then into one line each; quoted text and recipients open in place', async ({ page }) => {
-  await page.goto('/lab/mail-one');
+test('post: a conversation opens to its unread message; earlier ones fold into a line, then into one line each; quoted text and recipients open in place', async ({
+  page,
+}) => {
+  await page.goto('/practice/mail/app');
   await hydrateAll(page);
   const app = page.locator('[class*="_app_"]');
-  const sound = async (step: string) => expect(await layoutProblems(app, { fill: ['section[aria-label="Conversation"]', 'section[aria-label="Conversations"]'] }), step).toEqual([]);
+  const sound = async (step: string) =>
+    expect(await layoutProblems(app, { fill: ['section[aria-label="Conversation"]', 'section[aria-label="Conversations"]'] }), step).toEqual([]);
   await expect(page.getByRole('navigation', { name: 'Folders' }).getByRole('button', { name: /Inbox/ })).toContainText('5');
   await page.locator('[data-row="roadmap"] [class*="_main_"]').click();
   // The unread newest is open and focused; the three before it are one line.
@@ -1223,10 +1172,11 @@ test('post: a conversation opens to its unread message; earlier ones fold into a
 });
 
 test('post: compose picks and types recipients, sends with ⌘↵, and Undo brings the message back to finish', async ({ page }) => {
-  await page.goto('/lab/mail-one');
+  await page.goto('/practice/mail/app');
   await hydrateAll(page);
   const app = page.locator('[class*="_app_"]');
-  const sound = async (step: string) => expect(await layoutProblems(app, { fill: ['section[aria-label="New message"]', 'section[aria-label="Conversations"]'] }), step).toEqual([]);
+  const sound = async (step: string) =>
+    expect(await layoutProblems(app, { fill: ['section[aria-label="New message"]', 'section[aria-label="Conversations"]'] }), step).toEqual([]);
   await page.getByRole('region', { name: 'Conversations' }).getByRole('button', { name: 'New message' }).click();
   const composer = page.getByRole('region', { name: 'New message' });
   const to = composer.getByRole('combobox', { name: 'To' });
@@ -1270,17 +1220,23 @@ test('post: compose picks and types recipients, sends with ⌘↵, and Undo brin
   // Back keeps it as a draft, and focus returns to New message.
   await page.keyboard.press('Escape');
   await expect(page.getByRole('region', { name: 'Conversations' }).getByRole('button', { name: 'New message' })).toBeFocused();
-  await page.getByRole('navigation', { name: 'Folders' }).getByRole('button', { name: /Drafts/ }).click();
+  await page
+    .getByRole('navigation', { name: 'Folders' })
+    .getByRole('button', { name: /Drafts/ })
+    .click();
   await expect(page.getByRole('region', { name: 'Drafts' }).getByText('Beta invite list')).toBeVisible();
   // Drafts outlive a reload.
   await page.reload();
   await hydrateAll(page);
-  await page.getByRole('navigation', { name: 'Folders' }).getByRole('button', { name: /Drafts/ }).click();
+  await page
+    .getByRole('navigation', { name: 'Folders' })
+    .getByRole('button', { name: /Drafts/ })
+    .click();
   await expect(page.getByRole('region', { name: 'Drafts' }).getByText('Beta invite list')).toBeVisible();
 });
 
 test('post: R replies at the foot of the conversation, to the sender, and the reply joins it on send', async ({ page }) => {
-  await page.goto('/lab/mail-one');
+  await page.goto('/practice/mail/app');
   await hydrateAll(page);
   await page.locator('[data-row="lunch"] [class*="_main_"]').click();
   const conversation = page.getByRole('region', { name: 'Conversation' });
@@ -1305,7 +1261,7 @@ test('post: R replies at the foot of the conversation, to the sender, and the re
 });
 
 test('post: the formatting row marks what applies at the caret; ⌘K links the selection and Esc returns to the text', async ({ page }) => {
-  await page.goto('/lab/mail-one');
+  await page.goto('/practice/mail/app');
   await hydrateAll(page);
   await page.keyboard.press('c');
   const composer = page.getByRole('region', { name: 'New message' });
@@ -1343,7 +1299,7 @@ test('post: the formatting row marks what applies at the caret; ⌘K links the s
 });
 
 test('post: @ and a name mentions a contact and puts them on To; Esc closes only the list', async ({ page }) => {
-  await page.goto('/lab/mail-one');
+  await page.goto('/practice/mail/app');
   await hydrateAll(page);
   await page.keyboard.press('c');
   const composer = page.getByRole('region', { name: 'New message' });
@@ -1368,7 +1324,7 @@ test('post: @ and a name mentions a contact and puts them on To; Esc closes only
 });
 
 test('post: files attach by picking or dropping, each with its own progress; Send waits for them, then sends', async ({ page }) => {
-  await page.goto('/lab/mail-one');
+  await page.goto('/practice/mail/app');
   await hydrateAll(page);
   await page.keyboard.press('c');
   const composer = page.getByRole('region', { name: 'New message' });
@@ -1406,7 +1362,7 @@ test('post: files attach by picking or dropping, each with its own progress; Sen
 });
 
 test('post: a row keeps its time under the pointer; its actions come once the pointer rests; checkboxes come when wanted', async ({ page }) => {
-  await page.goto('/lab/mail-one');
+  await page.goto('/practice/mail/app');
   await hydrateAll(page);
   const list = page.getByRole('region', { name: 'Conversations' });
   const row = list.locator('[data-row="invoice"]');
@@ -1438,7 +1394,7 @@ test('post: a row keeps its time under the pointer; its actions come once the po
 });
 
 test('post: / searches from anywhere, and a draft is marked in ink', async ({ page }) => {
-  await page.goto('/lab/mail-one');
+  await page.goto('/practice/mail/app');
   await hydrateAll(page);
   await page.locator('[data-row="lunch"] [class*="_main_"]').click();
   await page.keyboard.press('/');
@@ -1449,14 +1405,17 @@ test('post: / searches from anywhere, and a draft is marked in ink', async ({ pa
   await page.getByRole('combobox', { name: 'To' }).fill('mira');
   await page.getByRole('combobox', { name: 'To' }).press('Enter');
   await page.keyboard.press('Escape');
-  await page.getByRole('navigation', { name: 'Folders' }).getByRole('button', { name: /Drafts/ }).click();
+  await page
+    .getByRole('navigation', { name: 'Folders' })
+    .getByRole('button', { name: /Drafts/ })
+    .click();
   const mark = page.getByRole('region', { name: 'Drafts' }).getByText('Draft', { exact: true });
   const ink = await mark.evaluate((el) => [getComputedStyle(el).color, getComputedStyle(document.body).getPropertyValue('--danger')]);
   expect(ink[0]).not.toBe('rgb(187, 54, 16)');
 });
 
 test('post: when Undo runs out, a sent message says so in place; nothing under the pointer moves until you do', async ({ page }) => {
-  await page.goto('/lab/mail-one');
+  await page.goto('/practice/mail/app');
   await hydrateAll(page);
   const list = page.getByRole('region', { name: 'Conversations' });
   await list.getByRole('button', { name: 'New message' }).click();
@@ -1481,7 +1440,7 @@ test('post: when Undo runs out, a sent message says so in place; nothing under t
 });
 
 test('tip: focus the app moves back opens no tooltip; focus the person moves with Tab does', async ({ page }) => {
-  await page.goto('/lab/mail-one');
+  await page.goto('/practice/mail/app');
   await hydrateAll(page);
   const list = page.getByRole('region', { name: 'Conversations' });
   const newMessage = list.getByRole('button', { name: 'New message' });

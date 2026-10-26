@@ -43,7 +43,7 @@ function Run({ messages, onOpen }: { messages: Conv['messages']; onOpen: () => v
   const names = writers.map(called);
   const label = names.length > 1 ? `${names.slice(0, -1).join(', ')} and ${names.at(-1)}` : names[0];
   return (
-    <button type="button" className={s.run} onClick={onOpen}>
+    <button type="button" className={s.run} data-spot="run" onClick={onOpen}>
       <span className={s.faces}>
         {/* The first writer on top, as the names read. */}
         {writers.slice(0, 3).map((id, i) => (
@@ -179,7 +179,7 @@ export function Conversation({ post, compose, c, single }: { post: Post; compose
           ) : (
             // Where reading ends, a reply is already waiting: the action on the path people take.
             <TipGroup>
-              <div className={s.answer}>
+              <div className={s.answer} data-spot="reply">
                 <button ref={field} type="button" className={s.replyField} onClick={() => compose.reply(c, 'reply')}>
                   <Avatar id="me" size="sm" />
                   <span>Reply to {replyName}…</span>

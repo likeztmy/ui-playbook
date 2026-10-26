@@ -14,7 +14,7 @@ import { HoverPreview } from '../demos/hover';
 import { ShiftPreview } from '../demos/shift';
 import { WaitPreview } from '../demos/wait';
 import { InterruptPreview } from '../demos/interrupt';
-import { MailPreview } from '../demos/mail';
+import { PostPreview } from '../demos/post/Preview';
 import { RatioPreview } from '../demos/ratio';
 import { FasterPreview } from '../demos/faster';
 import { TooltipPreview } from '../demos/tooltip';
@@ -98,7 +98,7 @@ const groups = [
                   {e.slug === 'nothing-shifts' && <ShiftPreview />}
                   {e.slug === 'how-waiting-feels' && <WaitPreview />}
                   {e.slug === 'let-motion-change-its-mind' && <InterruptPreview />}
-                  {e.slug === 'mail' && <MailPreview />}
+                  {e.slug === 'mail' && <PostPreview />}
                 </div>
                 <p class={s.cardSummary}>{summaryIn(e, lang)}</p>
               </article>

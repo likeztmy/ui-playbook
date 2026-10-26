@@ -1,0 +1,134 @@
+@use '../../styles/states' as *;
+
+// The before and after of mail arriving: a short inbox, its rows as Post draws them.
+.mini {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: min(100%, 300px);
+}
+
+.list {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 var(--space-3) 0 var(--space-6);
+  border-bottom: 1px solid var(--line);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+// Sender and time on one line, the subject under them; the dot in the left padding.
+.row {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1px var(--space-2);
+  width: 100%;
+  padding: 10px var(--space-3) 10px var(--space-6);
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  line-height: 18px;
+  text-align: left;
+  cursor: pointer;
+
+  &:last-child {
+    border-bottom: 0;
+  }
+
+  @include hover {
+    background: var(--fill-hover);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+  }
+}
+
+.dot {
+  position: absolute;
+  top: 19px;
+  left: 9px;
+  display: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+
+  [data-unread] > & {
+    display: block;
+  }
+}
+
+.from,
+.subject {
+  min-width: 0;
+  overflow: hidden;
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.subject {
+  grid-column: 1 / -1;
+}
+
+[data-unread] .from,
+[data-unread] .subject {
+  font-weight: 600;
+}
+
+.time {
+  color: var(--ink-muted);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+// Straddles the header's bottom edge, over no row's text.
+.pill {
+  position: absolute;
+  top: 24px;
+  left: 50%;
+  z-index: 1;
+  height: 24px;
+  padding: 0 var(--space-3);
+  border: 0;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--surface);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 24px;
+  box-shadow: var(--shadow-md);
+  translate: -50% 0;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+}
+
+.status {
+  margin: 0;
+  color: var(--ink-muted);
+  font-size: 12px;
+}
+
+.preview {
+  width: min(100%, 280px);
+  pointer-events: none;
+}

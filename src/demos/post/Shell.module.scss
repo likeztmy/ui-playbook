@@ -69,6 +69,12 @@
   padding: var(--space-3) var(--space-3) var(--space-3);
 }
 
+// The way back to the page, apart from the folders at the column's foot.
+.back {
+  margin-top: auto;
+  text-decoration: none;
+}
+
 // Icon, label and count each in one column.
 .folder {
   display: grid;
@@ -177,4 +183,19 @@
   .main {
     border-radius: 0;
   }
+}
+
+// A decision being shown from the page around the app: what it's about, outlined. Dashed, so it
+// can't pass for a focus ring.
+@each $spot in colour, sections, dwell, arrive, run, reply, undo, search {
+  .app[data-spot='#{$spot}'] [data-spot~='#{$spot}'] {
+    outline: 2px dashed var(--accent);
+    outline-offset: 2px;
+  }
+}
+
+// Across the list's whole width: inside its edges, where its scroller would clip an outline.
+.app [data-row][data-spot],
+.app [role='list'] > [data-spot='sections'] {
+  outline-offset: -2px;
 }

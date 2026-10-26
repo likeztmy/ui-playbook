@@ -19,7 +19,7 @@ export function Sending({ onUndo, done }: { onUndo: () => void; done?: boolean }
     );
   return (
     <>
-      <span className={s.status} role="status">
+      <span className={s.status} role="status" data-spot="undo">
         <LoaderCircle size={14} strokeWidth={1.75} nonScalingStroke aria-hidden className={s.spin} />
         Sending
         <Button size="sm" onClick={onUndo}>

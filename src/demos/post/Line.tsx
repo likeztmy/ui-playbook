@@ -42,10 +42,11 @@ export function Line({ c, post, rowRef, pin }: Props) {
             data-checked={checked ? '' : undefined}
             data-current={post.open?.id === c.id ? '' : undefined}
             data-pin={pin}
+            data-spot={pin === 'hover' ? 'dwell' : undefined}
           />
         }
       >
-        <span className={s.dot} aria-hidden />
+        <span className={s.dot} aria-hidden data-spot={unread(c) ? 'colour' : undefined} />
         <span className={s.check}>
           <Checkbox aria-label={`Select ${c.subject}`} checked={checked} onCheckedChange={(v) => check(!!v)} />
         </span>
@@ -67,8 +68,8 @@ export function Line({ c, post, rowRef, pin }: Props) {
             {c.time}
           </span>
         </button>
-        {/* Beside the time, never over it. */}
-        <span className={s.actions}>
+        {/* Beside the time, never over it; over the snippet's tail, which fades under them. */}
+        <span className={s.actions} data-overlay>
           {c.folder === 'inbox' && (
             <Tip label="Archive">
               <Button variant="ghost" size="sm" icon aria-label="Archive" onClick={() => post.archive([c.id])}>
@@ -101,7 +102,7 @@ export function Line({ c, post, rowRef, pin }: Props) {
           </Tip>
         </span>
       </ContextMenu.Trigger>
-      {/* A context menu carries no shortcuts; the tooltips do. */}
+      {/* The row's actions again, for the pointer that went looking for them by right-clicking. */}
       <ContextMenu.Popup>
         {c.folder === 'inbox' && (
           <Menu.Item icon={Archive} onClick={() => post.archive([c.id])}>
