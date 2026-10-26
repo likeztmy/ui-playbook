@@ -47,6 +47,12 @@ export const shortName = (id: string) => {
   return p.me ? 'me' : p.org || p.name.includes('@') ? p.name : p.name.split(' ')[0];
 };
 
+/** Someone in a sentence: "you" for the reader, else as shortName. */
+export const called = (id: string) => (person(id).me ? 'you' : shortName(id));
+
+/** Whose: "your", "Mira's". */
+export const whose = (id: string) => (person(id).me ? 'your' : `${shortName(id)}’s`);
+
 /** Who wrote in a conversation, oldest first, each once: "Mira, me, Priya". At most three names. */
 export const participants = (from: string[]) => {
   const seen = [...new Set(from)].map(shortName);

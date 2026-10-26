@@ -29,6 +29,7 @@ export type Draft = {
   text: string;
   /** What a reply quotes or a forward carries, behind "···". */
   quoted?: Block[];
+  quotes?: { from: string; at: string };
   attachments?: DraftFile[];
   /** When it last changed, ms. */
   edited: number;
@@ -87,11 +88,12 @@ export function replyTo(c: Conversation, kind: Exclude<DraftKind, 'new'>): Draft
       conversation: c.id,
       subject: `Fwd: ${c.subject}`,
       quoted: m.body,
+      quotes: { from: m.from, at: m.at },
       attachments: m.attachments?.map((a) => ({ ...a, id: id('file') })),
     });
   const to = fromMe ? m.to : [m.from];
   const others = kind === 'replyAll' ? [...(fromMe ? [] : m.to), ...(m.cc ?? [])].filter((p) => notMe(p) && !to.includes(p)) : [];
-  return blank(kind, { conversation: c.id, to: to.filter(notMe).map(address), cc: others.map(address), subject: c.subject, quoted: m.body });
+  return blank(kind, { conversation: c.id, to: to.filter(notMe).map(address), cc: others.map(address), subject: c.subject, quoted: m.body, quotes: { from: m.from, at: m.at } });
 }
 
 /** Nothing written and no one to send it to: closing it leaves no draft. */

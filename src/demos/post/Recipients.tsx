@@ -2,18 +2,21 @@ import { ChevronDown } from 'lucide-react';
 import { Popover } from '../../ui/Popover';
 import { Avatar } from './Avatar';
 import type { Message } from './model';
-import { person, shortName } from './people';
+import { called, person } from './people';
 import s from './Recipients.module.scss';
 
-/** "to me, Priya and 2 others": two names, then a count. */
+/**
+ * Who it went to, every name while it's three or fewer: "to you, Priya and Jonas". More than that,
+ * the first two and "+3". What's hidden is missed, so name everyone who fits; first names, so they
+ * fit a phone too (the full names and addresses are a click away).
+ */
 export const summary = (m: Message) => {
   const all = [...m.to, ...(m.cc ?? [])];
-  // The reader first: whether it's addressed to me is the first thing to know.
+  // The reader first: whether it's addressed to you is the first thing to know.
   const ordered = [...all.filter((id) => person(id).me), ...all.filter((id) => !person(id).me)];
-  const named = ordered.slice(0, 2).map(shortName);
-  const rest = ordered.length - named.length;
-  if (rest === 0) return `to ${named.join(' and ')}`;
-  return `to ${named.join(', ')} and ${rest} ${rest === 1 ? 'other' : 'others'}`;
+  const names = ordered.map(called);
+  if (names.length <= 3) return `to ${names.length > 1 ? `${names.slice(0, -1).join(', ')} and ${names.at(-1)}` : names[0]}`;
+  return `to ${names.slice(0, 2).join(', ')} +${names.length - 2}`;
 };
 
 /** One role's people, each as the app shows a person elsewhere: avatar, name, address. */
@@ -42,7 +45,7 @@ export function Recipients({ m }: { m: Message }) {
       hideTitle
       trigger={
         <button type="button" className={s.trigger}>
-          {summary(m)}
+          <span className={s.names}>{summary(m)}</span>
           <ChevronDown size={14} strokeWidth={1.5} nonScalingStroke aria-hidden />
         </button>
       }

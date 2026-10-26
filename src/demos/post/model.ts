@@ -49,8 +49,10 @@ export type Message = {
   /** As shown in the message's header, e.g. "Thu 9:41". */
   at: string;
   body: Block[];
-  /** The earlier text a reply quotes, folded behind "···". */
+  /** The earlier text a reply quotes, folded until asked for. */
   quoted?: Block[];
+  /** Whose message the quote is, and when it was sent, to name it on its fold. */
+  quotes?: { from: string; at: string };
   attachments?: Attachment[];
   unread?: boolean;
   /** A designed newsletter: shown in its own box, at its own width. */
@@ -91,7 +93,7 @@ export const plain = (blocks: Block[]): string =>
     })
     .filter(Boolean)
     // A block that ends without a stop (a list item, a heading) gets one, so the next doesn't run on.
-    .reduce((all, t) => (!all ? t : /[.!?:]$/.test(all) ? `${all} ${t}` : `${all} · ${t}`), '');
+    .reduce((all, t) => (!all ? t : /[.!?:,;]$/.test(all) ? `${all} ${t}` : `${all} · ${t}`), '');
 
 /** The list's preview of a message: what was written in prose, not table cells, headings or signatures. */
 export const snippet = (blocks: Block[]) => plain(blocks.filter((b) => b.kind === 'p' || b.kind === 'quote' || b.kind === 'ul' || b.kind === 'ol'));

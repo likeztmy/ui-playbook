@@ -128,6 +128,7 @@ export function useCompose(post: Post) {
       at: at(new Date()),
       body: toBlocks(d.body),
       quoted: d.quoted,
+      quotes: d.quotes,
       attachments: d.attachments?.map(({ id: _, progress: __, bytes: ___, ...a }) => a),
     };
     const undo = post.deliver(m, d.subject, d.conversation);

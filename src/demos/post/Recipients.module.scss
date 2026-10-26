@@ -4,6 +4,9 @@
   display: inline-flex;
   align-items: center;
   gap: 2px;
+  max-width: 100%;
+  overflow: hidden;
+  text-align: left;
   padding: 0;
   border: 0;
   background: none;
@@ -21,6 +24,14 @@
     outline: none;
     box-shadow: var(--focus-ring);
   }
+}
+
+// A narrow column cuts the line short rather than wrapping under the sender.
+.names {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 // Roles apart, people together: 16 between From, To and Cc, 8 between the people in one.

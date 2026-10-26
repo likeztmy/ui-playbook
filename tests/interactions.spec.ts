@@ -1194,24 +1194,28 @@ test('post: a conversation opens to its unread message; earlier ones fold into a
   const conversation = page.getByRole('region', { name: 'Conversation' });
   await expect(conversation.getByRole('article')).toHaveCount(1);
   await expect(conversation.getByRole('button', { name: 'Mira Okafor' })).toBeFocused();
-  await expect(conversation.getByRole('button', { name: /3\s*earlier messages/ })).toBeVisible();
+  // The folded run says who wrote it.
+  await expect(conversation.getByRole('button', { name: /^Mira, you and Priya · 3 earlier messages/ })).toBeVisible();
   await expect(page.getByRole('navigation', { name: 'Folders' }).getByRole('button', { name: /Inbox/ })).toContainText('4');
   await sound('opened');
   // Unfolded: three collapsed lines, still one open message.
-  await conversation.getByRole('button', { name: /earlier messages/ }).click();
+  await conversation.getByRole('button', { name: /3 earlier/ }).click();
   await expect(conversation.getByRole('article')).toHaveCount(1);
   await conversation.getByRole('button', { name: /^You/ }).click();
   await expect(conversation.getByRole('article')).toHaveCount(2);
   // Its quoted text is folded until asked for.
   const mine = conversation.getByRole('article', { name: 'You, Tue 17:05' });
   await expect(mine.getByText('Here’s the Q4 roadmap as we left it')).toHaveCount(0);
-  await mine.getByRole('button', { name: 'Show quoted text' }).click();
+  // The fold names whose message it holds.
+  await mine.getByRole('button', { name: /Show Mira’s message/ }).click();
   await expect(mine.getByText('Here’s the Q4 roadmap as we left it')).toBeVisible();
   // Recipients open to every address.
-  await conversation.getByRole('button', { name: 'to me, Priya and 1 other' }).first().click();
+  await conversation.getByRole('button', { name: 'to you, Priya and Jonas' }).first().click();
   await expect(page.getByText('jonas@northwind.example')).toBeVisible();
   await page.keyboard.press('Escape');
   await sound('unfolded');
+  // The way on is the next conversation, by name.
+  await expect(conversation.getByRole('button', { name: /Next.*Your trip to Lisbon is confirmed/ })).toBeVisible();
   // Back: the list, with the conversation read.
   await page.getByRole('button', { name: 'Back' }).click();
   await expect(page.locator('[data-row="roadmap"]')).not.toHaveAttribute('data-unread', '');

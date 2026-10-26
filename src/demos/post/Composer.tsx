@@ -1,12 +1,12 @@
-import { ChevronLeft, Ellipsis, Paperclip, Trash2 } from 'lucide-react';
+import { ChevronLeft, Paperclip, Trash2 } from 'lucide-react';
 import { lazy, Suspense, useEffect, useRef, useState, type DragEvent, type KeyboardEvent } from 'react';
 import { Button } from '../../ui/Button';
 import { Tip, TipGroup } from '../../ui/Tooltip';
-import { Blocks } from './Blocks';
 import type { Editor } from '@tiptap/react';
 import type { BodyHandle } from './Body';
 import { empty, valid, type Draft } from './draft';
 import { FormatBar } from './FormatBar';
+import { QuotedFold } from './QuotedFold';
 import { Uploads } from './Uploads';
 import { person } from './people';
 import { RecipientField } from './RecipientField';
@@ -40,7 +40,6 @@ export function Composer({ d, compose, page, onBack }: Props) {
   const [cc, setCc] = useState(d.cc.length > 0);
   const [bcc, setBcc] = useState(d.bcc.length > 0);
   const [error, setError] = useState<string | null>(null);
-  const [quoted, setQuoted] = useState(false);
   const toInput = useRef<HTMLInputElement>(null);
   const body = useRef<BodyHandle>(null);
   const [editor, setEditor] = useState<Editor | null>(null);
@@ -180,22 +179,7 @@ export function Composer({ d, compose, page, onBack }: Props) {
           onChange={(doc, text) => set({ body: doc, text })}
         />
       </Suspense>
-      {d.quoted && (
-        <>
-          <Tip label={quoted ? 'Hide quoted text' : 'Show quoted text'}>
-            <button
-              type="button"
-              className={s.fold}
-              aria-label={quoted ? 'Hide quoted text' : 'Show quoted text'}
-              aria-expanded={quoted}
-              onClick={() => setQuoted((q) => !q)}
-            >
-              <Ellipsis {...ic} />
-            </button>
-          </Tip>
-          {quoted && <Blocks blocks={d.quoted} className={s.quoted} />}
-        </>
-      )}
+      {d.quoted && <QuotedFold blocks={d.quoted} quotes={d.quotes} />}
       {!!d.attachments?.length && <Uploads files={d.attachments} onRemove={(f) => compose.detach(d.id, f)} />}
     </>
   );

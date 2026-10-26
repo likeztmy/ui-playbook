@@ -1,0 +1,52 @@
+@use '../../styles/states' as *;
+
+// A line of quiet text, not a mystery pill: it says what it will open. Its chevron sits on the text's
+// edge; the hover's fill reaches past it.
+.fold {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin: var(--space-3) 0 0 calc(-1 * var(--space-1));
+  padding: 2px var(--space-2) 2px var(--space-1);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--ink-muted);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+
+  @include hover {
+    background: var(--fill-hover);
+    color: var(--ink);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+}
+
+.chevron {
+  transition: rotate var(--duration-fast) var(--ease-out);
+
+  [aria-expanded='true'] > & {
+    rotate: 90deg;
+  }
+}
+
+.at {
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums;
+
+  &::before {
+    content: '· ';
+  }
+}
+
+.quoted {
+  margin-top: var(--space-3);
+  padding-left: var(--space-3);
+  border-left: 2px solid var(--line);
+  color: var(--ink-muted);
+}

@@ -52,7 +52,7 @@ export const CONVERSATIONS: Conversation[] = [
         ['mira', 'priya'],
         'Tue 17:05',
         [p('Looks right to me. On the first question: I’d keep the migration with platform, since they own the schema.'), sign('Alex')],
-        { cc: ['jonas'], quoted: ROADMAP_FIRST },
+        { cc: ['jonas'], quoted: ROADMAP_FIRST, quotes: { from: 'mira', at: 'Tue 16:20' } },
       ),
       msg(
         'roadmap-3',

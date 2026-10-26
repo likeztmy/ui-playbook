@@ -5,7 +5,8 @@ import { Tip, TipGroup } from '../../ui/Tooltip';
 import { Composer } from './Composer';
 import { Message } from './Message';
 import { latest, type Conversation as Conv } from './model';
-import { person } from './people';
+import { Avatar } from './Avatar';
+import { called, person } from './people';
 import type { Compose } from './useCompose';
 import type { Post } from './usePost';
 import s from './Conversation.module.scss';
@@ -35,6 +36,33 @@ function rows(c: Conv, open: Set<string>, unfolded: boolean): Row[] {
   return out;
 }
 
+/** A run of folded messages, by who wrote them: names say whether it's worth opening, a count doesn't. */
+function Run({ messages, onOpen }: { messages: Conv['messages']; onOpen: () => void }) {
+  const from = messages.map((m) => m.from);
+  const writers = [...new Set(from)];
+  const names = writers.map(called);
+  const label = names.length > 1 ? `${names.slice(0, -1).join(', ')} and ${names.at(-1)}` : names[0];
+  return (
+    <button type="button" className={s.run} onClick={onOpen}>
+      <span className={s.faces}>
+        {/* The first writer on top, as the names read. */}
+        {writers.slice(0, 3).map((id, i) => (
+          <span key={id} style={{ zIndex: 3 - i }}>
+            <Avatar id={id} size="sm" />
+          </span>
+        ))}
+      </span>
+      <span className={s.runText}>
+        <span className={s.runNames}>{label[0].toUpperCase() + label.slice(1)}</span> · {from.length} earlier messages
+      </span>
+      {/* When they span, in the times' column. */}
+      <span className={s.runSpan}>
+        {messages[0].at} – {messages.at(-1)!.at}
+      </span>
+    </button>
+  );
+}
+
 /** One conversation: its bar, its subject, and its messages, opened to the first unread. */
 export function Conversation({ post, compose, c, single }: { post: Post; compose: Compose; c: Conv; single: boolean }) {
   const [open, setOpen] = useState(() => startOpen(c));
@@ -42,6 +70,8 @@ export function Conversation({ post, compose, c, single }: { post: Post; compose
   const first = useRef<HTMLButtonElement>(null);
   const firstOpen = c.messages.findIndex((m) => open.has(m.id));
   const i = post.list.findIndex((x) => x.id === c.id);
+  // The way on, named, so you know whether to take it: the next conversation down the list.
+  const next = single && i >= 0 ? post.list[i + 1] : undefined;
   const reply = compose.replyIn(c.id);
   const last = latest(c);
   // Reply all only when there's someone besides the sender to reach.
@@ -101,23 +131,6 @@ export function Conversation({ post, compose, c, single }: { post: Post; compose
               <Mail {...ic} />
             </Button>
           </Tip>
-          {single && i >= 0 && (
-            <span className={s.pager}>
-              <span className={s.count}>
-                {i + 1} of {post.list.length}
-              </span>
-              <Tip label="Newer" keys={['K']}>
-                <Button variant="ghost" icon aria-label="Newer" disabled={i === 0} onClick={() => post.step(-1)}>
-                  <ChevronLeft {...ic} />
-                </Button>
-              </Tip>
-              <Tip label="Older" keys={['J']}>
-                <Button variant="ghost" icon aria-label="Older" disabled={i === post.list.length - 1} onClick={() => post.step(1)}>
-                  <ChevronRight {...ic} />
-                </Button>
-              </Tip>
-            </span>
-          )}
         </div>
       </TipGroup>
       <div className={s.scroll}>
@@ -139,10 +152,7 @@ export function Conversation({ post, compose, c, single }: { post: Post; compose
           <div className={s.messages}>
             {rows(c, open, unfolded).map((r) =>
               r.kind === 'run' ? (
-                <button key={`run-${r.from}`} type="button" className={s.run} onClick={() => setUnfolded(true)}>
-                  <span className={s.runCount}>{r.count}</span>
-                  earlier messages
-                </button>
+                <Run key={`run-${r.from}`} messages={c.messages.slice(r.from, r.from + r.count)} onOpen={() => setUnfolded(true)} />
               ) : (
                 <Message
                   key={c.messages[r.index].id}
@@ -181,6 +191,15 @@ export function Conversation({ post, compose, c, single }: { post: Post; compose
                 </Tip>
               </div>
             </TipGroup>
+          )}
+          {next && (
+            <Tip label="Next conversation" keys={['J']}>
+              <button type="button" className={s.next} onClick={() => post.step(1)}>
+                <span className={s.nextLabel}>Next conversation</span>
+                <span className={s.nextSubject}>{next.subject}</span>
+                <ChevronRight {...ic} />
+              </button>
+            </Tip>
           )}
         </div>
       </div>

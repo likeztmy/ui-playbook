@@ -7,31 +7,18 @@
   min-height: 0;
 }
 
-// One height with the list's bar; tools on the left, the pager on the right.
+// One height with the list's bar: back, then what can be done with the conversation.
 .bar {
   display: flex;
   flex: none;
   align-items: center;
   gap: var(--space-1);
   height: 48px;
-  // The pager ends where the column's text ends, over the star, not at the window's edge.
-  padding: 0 max(var(--space-3), calc(100% - 840px + var(--space-8))) 0 var(--space-2);
+  padding: 0 var(--space-3) 0 var(--space-2);
   border-bottom: 1px solid var(--line);
 }
 
-.pager {
-  display: flex;
-  align-items: center;
-  gap: var(--space-1);
-  margin-left: auto;
-}
 
-.count {
-  margin-right: var(--space-2);
-  color: var(--ink-muted);
-  font-size: 13px;
-  font-variant-numeric: tabular-nums;
-}
 
 .scroll {
   flex: 1;
@@ -76,6 +63,7 @@
   align-items: center;
   gap: var(--space-3);
   width: 100%;
+  text-align: left;
   padding: var(--space-3) 0 var(--space-3) 4px;
   border: 0;
   background: none;
@@ -104,18 +92,82 @@
   border-top: 1px solid var(--line);
 }
 
-// A disc the size of an avatar, so the run sits on the avatars' column.
-.runCount {
-  display: grid;
-  place-items: center;
-  width: 28px;
-  height: 28px;
-  border: 1px solid var(--line);
-  border-radius: 50%;
-  color: var(--ink);
-  font-size: 12px;
-  font-weight: 600;
+
+// The writers of a folded run, overlapping as one group: each ringed in the page's colour.
+.faces {
+  display: flex;
+  flex: none;
+
+  > * {
+    position: relative;
+    display: flex;
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px var(--surface);
+  }
+
+  // A quarter over: each face still shows its letters.
+  > * + * {
+    margin-left: -4px;
+  }
+}
+
+.runText {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.runSpan {
+  flex: none;
   font-variant-numeric: tabular-nums;
+}
+
+.runNames {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+// The way on: the next conversation, by name, after everything in this one.
+.next {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  margin-top: var(--space-8);
+  padding: var(--space-3) 0;
+  border: 0;
+  border-top: 1px solid var(--line);
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+
+  @include hover {
+    background: var(--fill-hover);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: inset 0 0 0 2px var(--accent);
+  }
+}
+
+.nextLabel {
+  flex: none;
+  color: var(--ink-muted);
+  font-size: 13px;
+}
+
+.nextSubject {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 // Narrow: the column fills the screen.

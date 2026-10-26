@@ -1,11 +1,10 @@
-import { Ellipsis } from 'lucide-react';
-import { useState, type Ref } from 'react';
-import { Tip } from '../../ui/Tooltip';
+import type { Ref } from 'react';
 import { Attachments } from './Attachments';
 import { Avatar } from './Avatar';
 import { Blocks } from './Blocks';
 import { snippet, type Message as Msg } from './model';
 import { person } from './people';
+import { QuotedFold } from './QuotedFold';
 import { Recipients } from './Recipients';
 import s from './Message.module.scss';
 
@@ -19,7 +18,6 @@ type Props = {
 
 /** One message in a conversation: a single line when collapsed, the whole message when open. */
 export function Message({ m, open, onToggle, headRef }: Props) {
-  const [quoted, setQuoted] = useState(false);
   const from = person(m.from);
   if (!open) {
     return (
@@ -53,16 +51,7 @@ export function Message({ m, open, onToggle, headRef }: Props) {
         ) : (
           <Blocks blocks={m.body} />
         )}
-        {m.quoted && (
-          <>
-            <Tip label={quoted ? 'Hide quoted text' : 'Show quoted text'}>
-              <button type="button" className={s.fold} aria-label={quoted ? 'Hide quoted text' : 'Show quoted text'} aria-expanded={quoted} onClick={() => setQuoted((q) => !q)}>
-                <Ellipsis size={16} strokeWidth={1.5} nonScalingStroke aria-hidden />
-              </button>
-            </Tip>
-            {quoted && <Blocks blocks={m.quoted} className={s.quoted} />}
-          </>
-        )}
+        {m.quoted && <QuotedFold blocks={m.quoted} quotes={m.quotes} />}
         {m.attachments && <Attachments files={m.attachments} />}
       </div>
     </article>
