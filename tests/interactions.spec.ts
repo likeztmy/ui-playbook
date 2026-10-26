@@ -1612,7 +1612,7 @@ test('post: Compact sets one line a conversation and is kept in this browser; ph
 test('a shadow says how high: the offset moves the estimate, blur doesn’t; a light patch lifts nothing; layers switch', async ({ page }) => {
   await page.goto('/principles/a-shadow-says-how-high');
   await hydrateAll(page);
-  const readout = page.locator('figure').first().locator('code');
+  const readout = page.locator('code').filter({ hasText: /reads ≈|light patch/ });
   await expect(readout).toHaveText('0 4px 8px · reads ≈ 5px up');
   await page.getByRole('slider', { name: 'Blur' }).focus();
   for (let i = 0; i < 10; i++) await page.keyboard.press('ArrowRight');
@@ -1624,4 +1624,25 @@ test('a shadow says how high: the offset moves the estimate, blur doesn’t; a l
   await expect(readout).toHaveText('a light patch · no lift');
   await page.getByRole('checkbox', { name: 'Distance' }).click();
   await expect(page.getByRole('checkbox', { name: 'Distance' })).not.toBeChecked();
+});
+
+test('a shadow says how high: a card held in the After lifts, in the Before it keeps its rest', async ({ page }) => {
+  await page.goto('/principles/a-shadow-says-how-high');
+  await hydrateAll(page);
+  const pairs = page.locator('[class*="_compare_"]');
+  const pick = pairs.nth(1);
+  await pick.scrollIntoViewIfNeeded();
+  const lift = async (i: number) => {
+    const card = pick.getByText('Drag me').nth(i).locator('..');
+    const rest = await card.evaluate((c) => getComputedStyle(c).boxShadow);
+    const b = (await card.boundingBox())!;
+    await page.mouse.move(b.x + 10, b.y + 10);
+    await page.mouse.down();
+    await page.mouse.move(b.x + 30, b.y - 30, { steps: 5 });
+    const held = await card.evaluate((c) => getComputedStyle(c).boxShadow);
+    await page.mouse.up();
+    return rest !== held;
+  };
+  expect(await lift(0)).toBe(false);
+  expect(await lift(1)).toBe(true);
 });

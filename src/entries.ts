@@ -176,7 +176,7 @@ export const entries: Entry[] = [
     kind: 'principle',
     title: 'A shadow says how high',
     summary: 'A shadow says one surface lies over another: for what covers, floats or is picked up. Its offset says how high.',
-    details: 3,
+    details: 5,
     keywords: ['shadow', 'box-shadow', 'elevation', 'depth', 'dark mode', 'layers', 'raised'],
   },
   {

@@ -101,3 +101,129 @@
     width: 100%;
   }
 }
+
+// A file list with a row's menu open, for where a shadow belongs.
+.files {
+  position: relative;
+  width: min(100%, 320px);
+  padding: var(--space-3);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  font-size: 13px;
+
+  // Shadow as a style: on the list, the bar's parts and every row.
+  &[data-everywhere] {
+    box-shadow: 0 2px 6px oklch(0.3 0.01 75 / 0.14);
+
+    .filesSearch,
+    .filesButton,
+    .fileRow {
+      box-shadow: 0 2px 6px oklch(0.3 0.01 75 / 0.16);
+    }
+  }
+}
+
+.filesBar {
+  display: flex;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.filesSearch,
+.filesButton {
+  display: flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-full);
+  background: var(--fill-control);
+  color: var(--ink-muted);
+}
+
+.filesSearch {
+  flex: 1;
+}
+
+.filesButton {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.fileRow {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-2);
+  height: 36px;
+  margin-top: var(--space-1);
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-md);
+
+  &[data-open] {
+    background: var(--fill-hover);
+  }
+}
+
+.fileIcon {
+  width: 16px;
+  height: 18px;
+  border-radius: 3px;
+  background: var(--fill-control);
+}
+
+.fileMore {
+  color: var(--ink-muted);
+}
+
+// Open from the second row's More, over the rows below it.
+.fileMenu {
+  position: absolute;
+  top: 112px;
+  right: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  width: 148px;
+  padding: var(--space-1);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-md);
+}
+
+.fileMenuItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 28px;
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-sm);
+}
+
+// Two cards, the second to be dragged over the first.
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+
+  .card[data-dragging] {
+    position: relative;
+    z-index: 1;
+    transition: box-shadow var(--duration-fast) var(--ease-out);
+  }
+
+  .card:last-child {
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+  }
+
+  .card[data-dragging]:last-child {
+    cursor: grabbing;
+  }
+
+  // Let go, it settles back to its place.
+  .card:last-child:not([data-dragging]) {
+    transition:
+      translate var(--duration-base) var(--ease-out),
+      box-shadow var(--duration-fast) var(--ease-out);
+  }
+}
