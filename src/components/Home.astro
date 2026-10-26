@@ -15,6 +15,8 @@ import { ShiftPreview } from '../demos/shift';
 import { WaitPreview } from '../demos/wait';
 import { InterruptPreview } from '../demos/interrupt';
 import { MailPreview } from '../demos/mail';
+import { RatioPreview } from '../demos/ratio';
+import { FasterPreview } from '../demos/faster';
 import { TooltipPreview } from '../demos/tooltip';
 import { DialogPreview } from '../demos/dialog';
 import { PopoverPreview } from '../demos/popover';
@@ -68,6 +70,8 @@ const groups = [
                 </a>
                 <div class={s.cardStage}>
                   {e.slug === 'button' && <ButtonPreview client:visible />}
+                  {e.slug === 'space-groups-by-ratio' && <RatioPreview client:visible />}
+                  {e.slug === 'the-faster-way' && <FasterPreview />}
                   {e.slug === 'menu' && <MenuPreview client:visible />}
                   {e.slug === 'toolbar' && <ToolbarPreview client:visible />}
                   {e.slug === 'tooltip' && <TooltipPreview client:visible />}

@@ -187,11 +187,10 @@ export function Composer({ d, compose, page, onBack }: Props) {
   const footer = (
     <TipGroup>
       <div className={s.footer}>
-        <Tip keys={['⌘', '↵']}>
-          <Button variant="primary" onClick={send}>
-            Send
-          </Button>
-        </Tip>
+        <Button variant="primary" onClick={send}>
+          Send
+        </Button>
+
         {/* On a phone the row takes a line of its own, so its tools keep their size. */}
         <span className={s.format}>
           <FormatBar editor={editor} />
@@ -248,7 +247,7 @@ export function Composer({ d, compose, page, onBack }: Props) {
     <section className={s.page} aria-label="New message" onKeyDown={onKeyDown} {...drop}>
       {dropHint}
       <div className={s.bar}>
-        <Tip label="Back" keys={['Esc']}>
+        <Tip label="Back">
           <Button variant="ghost" icon aria-label="Back" onClick={onBack}>
             <ChevronLeft {...ic} />
           </Button>

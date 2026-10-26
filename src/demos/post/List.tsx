@@ -61,7 +61,7 @@ function Bar({ post, chrome }: { post: Post; chrome: Chrome }) {
           <span className={s.title}>{ticked.length} selected</span>
           <span className={s.tools}>
             {ticked.some((c) => c.folder === 'inbox') && (
-              <Tip label="Archive" keys={['E']}>
+              <Tip label="Archive">
                 <Button variant="ghost" icon aria-label="Archive" onClick={() => post.archive(ids)}>
                   <Archive {...ic} />
                 </Button>
@@ -72,7 +72,7 @@ function Bar({ post, chrome }: { post: Post; chrome: Chrome }) {
                 {anyUnread ? <MailOpen {...ic} /> : <Mail {...ic} />}
               </Button>
             </Tip>
-            <Tip label="Star" keys={['S']}>
+            <Tip label="Star">
               <Button variant="ghost" icon aria-label="Star" onClick={() => post.star(ids, !ticked.every((c) => c.starred))}>
                 <Star {...ic} />
               </Button>

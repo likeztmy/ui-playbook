@@ -70,7 +70,7 @@ export function Line({ c, post, rowRef, pin }: Props) {
         {/* Beside the time, never over it. */}
         <span className={s.actions}>
           {c.folder === 'inbox' && (
-            <Tip label="Archive" keys={['E']}>
+            <Tip label="Archive">
               <Button variant="ghost" size="sm" icon aria-label="Archive" onClick={() => post.archive([c.id])}>
                 <Archive {...ic} />
               </Button>
@@ -83,7 +83,7 @@ export function Line({ c, post, rowRef, pin }: Props) {
               </Button>
             </Tip>
           )}
-          <Tip label={c.starred ? 'Unstar' : 'Star'} keys={['S']}>
+          <Tip label={c.starred ? 'Unstar' : 'Star'}>
             <Button variant="ghost" size="sm" icon aria-label={c.starred ? 'Unstar' : 'Star'} onClick={() => post.star([c.id], !c.starred)}>
               <Star {...ic} />
             </Button>

@@ -108,13 +108,13 @@ export function Conversation({ post, compose, c, single }: { post: Post; compose
     <section className={s.conversation} aria-label="Conversation">
       <TipGroup>
         <div className={s.bar}>
-          <Tip label="Back" keys={['U']}>
+          <Tip label="Back">
             <Button variant="ghost" icon aria-label="Back" className={s.back} onClick={post.close}>
               <ChevronLeft {...ic} />
             </Button>
           </Tip>
           {c.folder === 'inbox' && (
-            <Tip label="Archive" keys={['E']}>
+            <Tip label="Archive">
               <Button variant="ghost" icon aria-label="Archive" onClick={() => post.archive([c.id])}>
                 <Archive {...ic} />
               </Button>
@@ -146,7 +146,7 @@ export function Conversation({ post, compose, c, single }: { post: Post; compose
         <div className={s.column}>
           <header className={s.head}>
             <h1 className={s.subject}>{c.subject}</h1>
-            <Tip label={c.starred ? 'Unstar' : 'Star'} keys={['S']}>
+            <Tip label={c.starred ? 'Unstar' : 'Star'}>
               <Button
                 variant="ghost"
                 icon
@@ -180,20 +180,19 @@ export function Conversation({ post, compose, c, single }: { post: Post; compose
             // Where reading ends, a reply is already waiting: the action on the path people take.
             <TipGroup>
               <div className={s.answer}>
-                <Tip keys={['R']}>
-                  <button ref={field} type="button" className={s.replyField} onClick={() => compose.reply(c, 'reply')}>
-                    <Avatar id="me" size="sm" />
-                    <span>Reply to {replyName}…</span>
-                  </button>
-                </Tip>
+                <button ref={field} type="button" className={s.replyField} onClick={() => compose.reply(c, 'reply')}>
+                  <Avatar id="me" size="sm" />
+                  <span>Reply to {replyName}…</span>
+                </button>
+
                 {many && (
-                  <Tip label="Reply all" keys={['A']}>
+                  <Tip label="Reply all">
                     <Button variant="ghost" icon aria-label="Reply all" onClick={() => compose.reply(c, 'replyAll')}>
                       <ReplyAll {...ic} />
                     </Button>
                   </Tip>
                 )}
-                <Tip label="Forward" keys={['F']}>
+                <Tip label="Forward">
                   <Button variant="ghost" icon aria-label="Forward" onClick={() => compose.reply(c, 'forward')}>
                     <Forward {...ic} />
                   </Button>
@@ -202,13 +201,11 @@ export function Conversation({ post, compose, c, single }: { post: Post; compose
             </TipGroup>
           )}
           {next && (
-            <Tip keys={['J']}>
-              <button type="button" className={s.next} onClick={() => post.step(1)}>
-                <span className={s.nextLabel}>Next conversation</span>
-                <span className={s.nextSubject}>{next.subject}</span>
-                <ChevronRight {...ic} />
-              </button>
-            </Tip>
+            <button type="button" className={s.next} onClick={() => post.step(1)}>
+              <span className={s.nextLabel}>Next conversation</span>
+              <span className={s.nextSubject}>{next.subject}</span>
+              <ChevronRight {...ic} />
+            </button>
           )}
         </div>
       </div>

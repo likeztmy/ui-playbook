@@ -81,7 +81,6 @@ function LinkTool({ editor }: { editor: Editor | null }) {
       // Closing returns to the text, with the selection as it was.
       finalFocus={false}
       tip="Link"
-      tipKeys={['⌘', 'K']}
       title="Link"
       hideTitle
       side="top"
@@ -145,30 +144,20 @@ export function FormatBar({ editor }: { editor: Editor | null }) {
 
   return (
     <Toolbar.Root flat aria-label="Formatting" className={s.bar}>
-      <Toolbar.Toggle label="Bold" keys={['⌘', 'B']} pressed={on('bold')} onPressedChange={() => run((c) => c.toggleBold())}>
+      <Toolbar.Toggle label="Bold" pressed={on('bold')} onPressedChange={() => run((c) => c.toggleBold())}>
         <Bold {...ic} />
       </Toolbar.Toggle>
-      <Toolbar.Toggle label="Italic" keys={['⌘', 'I']} pressed={on('italic')} onPressedChange={() => run((c) => c.toggleItalic())}>
+      <Toolbar.Toggle label="Italic" pressed={on('italic')} onPressedChange={() => run((c) => c.toggleItalic())}>
         <Italic {...ic} />
       </Toolbar.Toggle>
       <Toolbar.Separator />
-      <Toolbar.Toggle
-        label="Bulleted list"
-        keys={['⌘', '⇧', '8']}
-        pressed={on('bulletList')}
-        onPressedChange={() => run((c) => c.toggleBulletList())}
-      >
+      <Toolbar.Toggle label="Bulleted list" pressed={on('bulletList')} onPressedChange={() => run((c) => c.toggleBulletList())}>
         <List {...ic} />
       </Toolbar.Toggle>
-      <Toolbar.Toggle
-        label="Numbered list"
-        keys={['⌘', '⇧', '7']}
-        pressed={on('orderedList')}
-        onPressedChange={() => run((c) => c.toggleOrderedList())}
-      >
+      <Toolbar.Toggle label="Numbered list" pressed={on('orderedList')} onPressedChange={() => run((c) => c.toggleOrderedList())}>
         <ListOrdered {...ic} />
       </Toolbar.Toggle>
-      <Toolbar.Toggle label="Quote" keys={['⌘', '⇧', 'B']} pressed={on('blockquote')} onPressedChange={() => run((c) => c.toggleBlockquote())}>
+      <Toolbar.Toggle label="Quote" pressed={on('blockquote')} onPressedChange={() => run((c) => c.toggleBlockquote())}>
         <TextQuote {...ic} />
       </Toolbar.Toggle>
       <Toolbar.Separator />

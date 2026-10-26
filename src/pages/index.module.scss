@@ -79,6 +79,9 @@
 }
 
 .cardMeta {
+  // The count stays one line; a long title wraps beside it instead.
+  flex: none;
+  white-space: nowrap;
   font-size: 12px;
   line-height: 16px;
   color: var(--ink-muted);

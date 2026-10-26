@@ -34,11 +34,11 @@ const SECTIONS = [
  * The sections, flat, so Measured sees every header and row. `above` is the
  * share of a header's space that goes above it; `scale` multiplies every gap.
  */
-function Sections({ above, scale = 1, show }: { above: number; scale?: number; show?: boolean }) {
+function Sections({ above, scale = 1, show, count }: { above: number; scale?: number; show?: boolean; count?: number }) {
   const vars = { '--rat-scale': scale, '--rat-above': above } as CSSProperties;
   return (
     <Measured className={s.ratList} show={show}>
-      {SECTIONS.flatMap((sec, i) => [
+      {SECTIONS.slice(0, count).flatMap((sec, i) => [
         <div key={sec.title} className={s.ratHead} data-first={i === 0 ? '' : undefined} style={vars}>
           {sec.title}
         </div>,
@@ -73,6 +73,15 @@ export const RatioScene = localized(function RatioScene() {
     />
   );
 });
+
+/** The home page's card: the sections as the page settles them, with their gaps measured. */
+export function RatioPreview() {
+  return (
+    <div className={s.ratPreview} aria-hidden>
+      <Sections above={0.85} show count={2} />
+    </div>
+  );
+}
 
 // ── More space doesn't fix it ────────────────────────────
 

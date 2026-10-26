@@ -1129,13 +1129,14 @@ test('mail, direction one: date sections join their rows; the sender column fits
   await expect(heads).toHaveText(['Today', 'Yesterday', 'This week', 'Earlier']);
   // Around “Yesterday”: from the last Today sender to the header, and from the header to the first Yesterday sender.
   const [above, below] = await heads.nth(1).evaluate((h) => {
-    const text = (el: Element) => {
+    const text = (el: Node) => {
       const r = document.createRange();
       r.selectNodeContents(el);
       return r.getBoundingClientRect();
     };
-    const prev = h.previousElementSibling!.querySelector('[data-from]')!;
-    const next = h.nextElementSibling!.querySelector('[data-from]')!;
+    // The name's own text: a thread's count after it is set smaller and would stretch the box.
+    const prev = h.previousElementSibling!.querySelector('[data-from]')!.firstChild!;
+    const next = h.nextElementSibling!.querySelector('[data-from]')!.firstChild!;
     const head = text(h);
     return [head.top - text(prev).bottom, text(next).top - head.bottom];
   });

@@ -141,7 +141,7 @@ function Shell({ onToasts }: { onToasts: (el: HTMLDivElement | null) => void }) 
             post.search(q);
           }}
         />
-        <Tip label="New message" keys={['C']}>
+        <Tip label="New message">
           <Button ref={composeButton} variant="primary" className={s.newMessage} aria-label="New message" onClick={compose.compose}>
             <Pencil {...ic} />
             <span className={s.newLabel}>New message</span>

@@ -2667,7 +2667,7 @@
   display: flex;
   align-items: center;
   gap: var(--space-0-5);
-  height: 44px;
+  height: 48px;
   padding: 0 var(--space-2);
   border-bottom: 1px solid var(--line);
 }
@@ -2676,10 +2676,10 @@
   position: relative;
 }
 
-// Over the button's lower edge, like a keycap label.
+// Over the button's lower edge, like a keycap label: clear of the glyph, inside the bar.
 .fkKey {
   position: absolute;
-  bottom: -6px;
+  bottom: -7px;
   left: 50%;
   min-width: 16px;
   padding: 0 3px;
@@ -2688,7 +2688,7 @@
   color: var(--surface);
   font-family: var(--font-mono);
   font-size: 10px;
-  line-height: 16px;
+  line-height: 14px;
   text-align: center;
   translate: -50% 0;
   pointer-events: none;
@@ -2764,4 +2764,14 @@
   &[data-held] {
     color: var(--ink);
   }
+}
+
+// The home page's cards for Space groups by ratio and The faster way: the pages' own scenes, card-sized.
+.ratPreview {
+  width: min(320px, 100%);
+}
+
+.fkPreview {
+  width: min(320px, 100%);
+  pointer-events: none;
 }

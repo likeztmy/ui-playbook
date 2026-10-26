@@ -158,3 +158,32 @@ export const FasterExpose = localized(function FasterExpose() {
     />
   );
 });
+
+/** The home page's card: the triage list's commands with every key showing at once, as while the modifier is held. */
+export function FasterPreview() {
+  const tool = (name: string, key: string, icon: ReactNode) => (
+    <span className={s.fkTool}>
+      <Button variant="ghost" icon aria-label={name} tabIndex={-1}>
+        {icon}
+      </Button>
+      <kbd className={s.fkKey}>{key}</kbd>
+    </span>
+  );
+  return (
+    <div className={`${s.fkApp} ${s.fkPreview}`} aria-hidden>
+      <div className={s.fkBar}>
+        {tool('Archive', 'E', <Archive {...ic} />)}
+        {tool('Star', 'S', <Star {...ic} />)}
+        {tool('Mark as read', 'I', <MailOpen {...ic} />)}
+      </div>
+      <div className={s.fkRows}>
+        {START.slice(0, 3).map((m, i) => (
+          <div key={m.subject} className={s.fkRow} data-current={i === 0 ? '' : undefined} data-unread="">
+            <span className={s.fkFrom}>{m.from}</span>
+            <span className={s.fkSubject}>{m.subject}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
