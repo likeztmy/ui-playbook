@@ -891,10 +891,10 @@ test('how waiting feels: a quick refresh shows no spinner in the After; once sho
   await expect(stars.getByText('Couldn’t unstar “Q4 roadmap”. Try again.')).toBeVisible();
 });
 
-test('let motion change its mind: locked clicks are dropped, a keyframe sheet snaps open before closing, a spring keeps the flick', async ({
+test('never too busy to listen: locked clicks are dropped, a keyframe sheet snaps open before closing, a spring keeps the flick', async ({
   page,
 }) => {
-  await page.goto('/principles/let-motion-change-its-mind');
+  await page.goto('/principles/never-too-busy-to-listen');
   await hydrateAll(page);
   const figure = (i: number) => page.locator('figure').nth(i);
 
@@ -1904,8 +1904,8 @@ test('sheet: on a phone Post writes a new message in a sheet that lowers to a ba
   await expect(page.getByText('Ferry on Monday')).toBeVisible();
 });
 
-test('more often: the flourish drops presses while it plays, the brief archive takes every one; only the day’s last tick celebrates', async ({ page }) => {
-  await page.goto('/principles/the-more-often-the-shorter');
+test('attention wears off: the flourish drops presses while it plays, the brief archive takes every one; only the day’s last tick celebrates', async ({ page }) => {
+  await page.goto('/principles/attention-wears-off-waiting-doesnt');
   await hydrateAll(page);
   const sides = page.locator('[class*="_compare_"]').first().locator('[class*="_side_"]');
   const [before, after] = [sides.nth(0), sides.nth(1)];
