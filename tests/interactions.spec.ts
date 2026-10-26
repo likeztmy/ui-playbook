@@ -1903,3 +1903,25 @@ test('sheet: on a phone Post writes a new message in a sheet that lowers to a ba
   await page.getByRole('menuitemradio', { name: /Drafts/ }).click();
   await expect(page.getByText('Ferry on Monday')).toBeVisible();
 });
+
+test('more often: the flourish drops presses while it plays, the brief archive takes every one; only the day’s last tick celebrates', async ({ page }) => {
+  await page.goto('/principles/the-more-often-the-shorter');
+  await hydrateAll(page);
+  const sides = page.locator('[class*="_compare_"]').first().locator('[class*="_side_"]');
+  const [before, after] = [sides.nth(0), sides.nth(1)];
+  for (const side of [before, after]) {
+    for (let i = 0; i < 5; i++) await side.getByRole('button', { name: 'Archive' }).press('Enter');
+  }
+  await expect(after.getByText('25 in Inbox')).toBeVisible();
+  await expect(after.getByText('Waited 0.0 s · 0 presses lost')).toBeVisible();
+  await expect(before.getByText(/[1-4] presses? lost/)).toBeVisible();
+  await expect(before.getByText(/2[6-9] in Inbox/)).toBeVisible();
+
+  const tasks = page.locator('[class*="_compare_"]').nth(1).locator('[class*="_side_"]').nth(1);
+  const boxes = tasks.getByRole('checkbox');
+  await boxes.first().click();
+  await expect(tasks.locator('[class*="_burst_"]')).toHaveCount(0);
+  for (let i = 1; i < (await boxes.count()); i++) await boxes.nth(i).click();
+  await expect(tasks.getByText('All done for today')).toBeVisible();
+  await expect(tasks.locator('[class*="_burst_"]')).toHaveCount(1);
+});

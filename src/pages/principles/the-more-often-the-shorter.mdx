@@ -1,0 +1,61 @@
+---
+layout: ../../layouts/Entry.astro
+slug: the-more-often-the-shorter
+---
+import { NoveltyArchive, NoveltySwitches, NoveltyCelebrate } from '../../demos/novelty';
+
+## The rule
+
+**Attention wears off, waiting doesn't.** A motion seen often stops being noticed, but its length is still paid every time it plays. So the more often something happens, the shorter it should be and the less it should hold up the next action. The rarer it is, the more it may say.
+
+<NoveltyArchive client:visible />
+
+Apple asks for the first half and names both costs: “generally avoid adding motion to UI interactions that occur frequently”, and “don't make people wait for an animation to complete”, “especially if they have to experience the animation more than once” ([Apple HIG, Motion](https://developer.apple.com/design/human-interface-guidelines/motion)). Carbon keeps its expressive motion for “occasional, important moments” ([Carbon, Motion](https://carbondesignsystem.com/elements/motion/overview/)).
+
+## Details
+
+### What repeats stops being seen
+
+The intuition that motion costs attention every time is wrong for mild motion. Attention to a repeated event habituates, and the more often it comes, the faster ([Rankin et al., 2009](https://doi.org/10.1016/j.nlm.2008.09.012)). A flash at the edge of a task stopped distracting people with practice and took minutes to days to recover ([Turatto & Pascucci, 2016](https://doi.org/10.1016/j.nlm.2016.02.010)). At a 50% or 80% rate its pull fell to nothing; at 20% it was still distracting at the end of the session ([Dissegna et al., 2025](https://doi.org/10.3758/s13414-025-03185-5)). Brain activity for a security warning dropped sharply from its second showing ([Anderson et al., 2015](https://scholarsarchive.byu.edu/cgi/viewcontent.cgi?article=10197&context=facpub)).
+
+Two costs survive. One is **time**: people who already know what an animation shows still wait for it. In Phosphor's study, task time tracked the animation's length, longer ones bought no accuracy below 2 s, and people disliked the slow ones despite their lower error rates ([Baudisch et al., 2006](https://doi.org/10.1145/1166253.1166280)). What makes a transition feel fast is how early the result appears ([Huhtala et al., 2010](https://doi.org/10.1145/1753326.1753527)). The other is **intensity**: “very intense stimuli may yield no significant observable response decrement” ([Rankin et al., 2009](https://doi.org/10.1016/j.nlm.2008.09.012)). When 72 ads were each paired with a still of their last frame, the animated ones were rated more annoying, 3.6 against 2.4 out of 5, and animation was the most common reason given ([Goldstein, McAfee & Suri, 2014](https://doi.org/10.1509/jmr.13.0439)).
+
+So the rule is about length and blocking, not about whether something moves. A short motion that never holds a press can stay on a frequent action. Once habituated, an onset that came often even sped people up, as a cue to when the next thing would come ([Dissegna et al., 2025](https://doi.org/10.3758/s13414-025-03185-5)).
+
+### Bounce is not the cost
+
+<NoveltySwitches client:visible />
+
+Material 3's expressive springs overshoot, and it uses them on switches and buttons in expressive products; at fast and default speeds they take exactly as long as its standard ones ([Material 3, Motion specs](https://m3.material.io/styles/motion/overview/specs)). Carbon gives expressive motion to “clicking the primary action button”, often the most frequent click on a screen ([Carbon, Motion](https://carbondesignsystem.com/elements/motion/overview/)). Both are about importance. Importance can buy a more noticeable motion, never a longer one: the primary button may bounce, inside the same few hundred milliseconds, and take the next press throughout.
+
+### Delight belongs to rare moments
+
+<NoveltyCelebrate client:visible />
+
+Pleasure from a repeated experience declines with exposure ([Galak & Redden, 2018](https://doi.org/10.1146/annurev-psych-122216-011542)). Breaks bring it back, though people avoid taking them ([Nelson & Meyvis, 2008](https://doi.org/10.1509/jmkr.45.6.654)). A celebration on every tick turns into background, while its motion still plays over the next task. Asana's version is “occasional celebrations”: a creature appears at random when a task is done, and it's a setting people can turn off ([Asana, Display settings](https://help.asana.com/s/article/display-settings)). Occasional keeps it rare; random keeps it from being predicted, the same reason a warning that changes its look resists habituation ([Vance et al., 2018](https://doi.org/10.25300/misq/2018/14124)).
+
+### Show the result first
+
+When something must be explained, show the new state at once and explain it after. Phosphor puts the outcome in place immediately and leaves a fading afterglow of what moved; its task times were no different from a 125 ms animation’s, and it kept the explanation ([Baudisch et al., 2006](https://doi.org/10.1145/1166253.1166280)). People who are fast don't wait, and people who weren't looking can still see what changed.
+
+## How to set it
+
+| How often | How long | Holds the next press | May say |
+| --- | --- | --- | --- |
+| Many times a minute: archive, tick, switch, tab | `duration-fast` 120 or less | never | that it happened |
+| A few times a session: open a panel, a sheet, a dialog | a spring, about 400 | never; it turns mid-way | where it came from |
+| Rarely: a day's last task, a launch, a milestone | as long as it needs | only if it asks nothing | anything, once |
+
+Keyboard actions sit in the first row: a held key repeats, and each repeat is a press that a longer motion would drop.
+
+## When it doesn't apply
+
+- **The first time.** Onboarding and a first empty state are seen once; motion there can teach.
+- **Reduced motion.** A floor for everyone who needs it, not this rule ([WCAG 2.2, 2.3.3](https://www.w3.org/WAI/WCAG22/Understanding/animation-from-interactions.html)). This rule applies to everyone else.
+- **What the evidence doesn't say.** Every habituation study used distractors people didn't cause; no study has measured capture by an animation the user triggered, or where “frequent” starts in a working day.
+
+## Where the playbook applies it
+
+- [Mail](/practice/mail): Archive takes the row away at once and says so in a toast with Undo; nothing plays between one archive and the next.
+- [Let motion change its mind](/principles/let-motion-change-its-mind): a motion that runs on a frequent action must take the next press mid-way.
+- [How waiting feels](/principles/how-waiting-feels): a wait the product didn't choose.

@@ -26,8 +26,8 @@ These are editorial judgements, not measurements.
 | 3 | Who, before what: faces in lists (T1, absorbs *Avatar*). **Done:** *Who, before what* | principle | 4 | 4 | 3 | 5 | 5 | 4 | **25** |
 | 4 | Focus is not selection | principle | 4 | 4 | 3 | 5 | 3 | 4 | **23** |
 | 5 | Drawer / Sheet. **Done:** *Sheet* | component | 4 | 5 | 4 | 3 | 4 | 3 | **23** |
-| 6 | A novelty budget (T5, merged with *The more often, the less motion*). **Next**, research in `docs/research/2026-10-27-novelty-budget.md`; the owner wants its demo free of Post | principle | 4 | 4 | 4 | 3 | 5 | 3 | **23** |
-| 7 | Preview the destination | principle | 5 | 5 | 3 | 2 | 3 | 2 | **20** |
+| 6 | A novelty budget (T5, merged with *The more often, the less motion*). **Done:** *The more often, the shorter*; research in `docs/research/2026-10-27-novelty-budget.md` | principle | 4 | 4 | 4 | 3 | 5 | 3 | **23** |
+| 7 | Preview the destination. **Next** | principle | 5 | 5 | 3 | 2 | 3 | 2 | **20** |
 | 8 | Command menu | component | 5 | 4 | 4 | 1 | 2 | 3 | **19** |
 | 9 | Keep the comparison in sight | principle | 4 | 4 | 2 | 2 | 3 | 3 | **18** |
 | 10 | Count what the reader sees | principle | 5 | 4 | 4 | 2 | 2 | 1 | **18** |

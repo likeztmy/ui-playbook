@@ -1,0 +1,247 @@
+// ── Archive thirty ──────────────────────────────────────
+
+.inbox,
+.tasks {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  width: min(100%, 300px);
+  min-height: 0;
+  font-size: 13px;
+  line-height: 18px;
+}
+
+// The stage's height less its padding, so the tally stays in sight below the list.
+.inbox {
+  height: 332px;
+}
+
+.inboxHead {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--line);
+
+  > :last-child {
+    margin-left: auto;
+  }
+}
+
+.count {
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.rows {
+  flex: 1;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  list-style: none;
+}
+
+// Two lines, 52 tall with its rule: the height a leaving row gives back.
+.row {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 52px;
+  padding: 0 var(--space-2);
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+  overflow: hidden;
+
+  &[data-leaving='brief'] {
+    animation: close-up var(--duration-fast) var(--ease-out) forwards;
+  }
+
+  // The flourish: lifts in the first third, flies off in the second, closes up in the last.
+  &[data-leaving='flourish'] {
+    position: relative;
+    animation: flourish 450ms var(--ease-out) forwards;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &[data-leaving] {
+      animation-name: fade-out;
+    }
+  }
+}
+
+.from {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.subject {
+  color: var(--ink-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tally {
+  margin: 0;
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--line);
+  color: var(--ink-muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+@keyframes close-up {
+  to {
+    height: 0;
+    opacity: 0;
+    border-bottom-width: 0;
+  }
+}
+
+@keyframes flourish {
+  33% {
+    height: 52px;
+    transform: translateY(-4px) scale(1.03);
+    box-shadow: var(--shadow-lg);
+    border-radius: var(--radius-md);
+    opacity: 1;
+  }
+  70% {
+    height: 52px;
+    transform: translate(110%, -16px) rotate(4deg) scale(0.9);
+    opacity: 0;
+  }
+  to {
+    height: 0;
+    transform: translate(110%, -16px);
+    opacity: 0;
+    border-bottom-width: 0;
+  }
+}
+
+@keyframes fade-out {
+  to {
+    height: 0;
+    opacity: 0;
+    border-bottom-width: 0;
+  }
+}
+
+// ── Celebrations ────────────────────────────────────────
+
+.taskList {
+  margin: 0;
+  padding: var(--space-2) 0 0;
+  list-style: none;
+}
+
+.task {
+  position: relative;
+  padding: var(--space-2) 0;
+}
+
+// Thrown from the checkbox's centre, or the list's for the day's end.
+.burst {
+  position: absolute;
+  top: calc(var(--space-2) + 10px);
+  left: 8px;
+  pointer-events: none;
+
+  &[data-big] {
+    top: 50%;
+    left: 50%;
+  }
+
+  span {
+    position: absolute;
+    width: 6px;
+    height: 10px;
+    margin: -5px 0 0 -3px;
+    border-radius: 1px;
+    opacity: 0;
+    animation: throw 700ms var(--ease-out) forwards;
+  }
+
+  &[data-big] span {
+    width: 8px;
+    height: 14px;
+    animation-duration: 1100ms;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    display: none;
+  }
+}
+
+@keyframes throw {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0);
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--x), calc(var(--y) + 24px)) rotate(var(--turn));
+  }
+}
+
+// ── Bounce is not the cost ──────────────────────────────
+
+.switches {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  width: min(100%, 280px);
+}
+
+.readout {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+// Doubled to outrank the switch's own transition. Material 3's expressive fast spatial curve, and the
+// same 350 ms settling without it; the blocking one is slower and holds the next press.
+.expressive.expressive {
+  transition-duration: 350ms;
+  transition-timing-function: cubic-bezier(0.42, 1.67, 0.21, 0.9);
+}
+
+.standard.standard {
+  transition-duration: 350ms;
+  transition-timing-function: var(--ease-out);
+}
+
+.blocking.blocking {
+  transition-duration: 500ms;
+  transition-timing-function: var(--ease-out);
+}
+
+// ── Preview ─────────────────────────────────────────────
+
+.preview {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  height: 64px;
+
+  span {
+    display: block;
+    width: 6px;
+    border-radius: 3px;
+    background: var(--ink-disabled);
+  }
+
+  [data-rare] {
+    background: var(--accent);
+  }
+}

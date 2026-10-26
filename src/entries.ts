@@ -252,6 +252,14 @@ export const entries: Entry[] = [
     keywords: ['interruptible', 'interruption', 'redirect', 'carousel', 'sheet', 'swipe', 'keyframes', 'transition', 'spring', 'velocity', 'reversing', 'fluid'],
   },
   {
+    slug: 'the-more-often-the-shorter',
+    kind: 'principle',
+    title: 'The more often, the shorter',
+    summary: 'Attention to a repeated motion wears off; the wait for it doesn’t. Keep what repeats brief and never in the way, and save delight for what’s rare.',
+    details: 4,
+    keywords: ['frequency', 'novelty', 'delight', 'celebration', 'confetti', 'habituation', 'duration', 'blocking', 'expressive', 'productive', 'bounce', 'repetition'],
+  },
+  {
     slug: 'space-groups-by-ratio',
     kind: 'principle',
     title: 'Space groups by ratio',
