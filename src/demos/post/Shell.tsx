@@ -1,4 +1,4 @@
-import { ArrowLeft, ChevronDown, Pencil } from 'lucide-react';
+import { ArrowLeft, ChevronDown, Pencil, Rows4 } from 'lucide-react';
 import { useEffect, useRef, useState, type RefObject } from 'react';
 import { Button } from '../../ui/Button';
 import { Menu } from '../../ui/Menu';
@@ -16,6 +16,9 @@ import type { Folder } from './model';
 import { useCompose, type Compose } from './useCompose';
 import { usePost, type Post } from './usePost';
 import s from './Shell.module.scss';
+
+type Density = 'comfortable' | 'compact';
+const DENSITY = 'post:density';
 
 const ic = { size: 16, strokeWidth: 1.5, nonScalingStroke: true, 'aria-hidden': true } as const;
 
@@ -42,6 +45,23 @@ export function Shell({ onToasts, spot, control, pinned, back, embedded }: Shell
   if (control) control.current = { post, compose, root: root.current };
   const rows = useRef(new Map<string, HTMLButtonElement>());
   const search = useRef<HTMLInputElement>(null);
+  // How tightly the list is set: a face and three lines, or one line each for working through a lot.
+  // Kept in this browser at full screen; a page around the app always shows it as it comes.
+  const [density, setDensity] = useState<Density>('comfortable');
+  useEffect(() => {
+    if (embedded) return;
+    try {
+      if (localStorage.getItem(DENSITY) === 'compact') setDensity('compact');
+    } catch {}
+  }, []);
+  const toggleDensity = () => {
+    const next = density === 'compact' ? 'comfortable' : 'compact';
+    setDensity(next);
+    if (embedded) return;
+    try {
+      localStorage.setItem(DENSITY, next);
+    } catch {}
+  };
   const composeButton = useRef<HTMLButtonElement>(null);
   const reading = !!post.open || !!compose.writing;
 
@@ -76,6 +96,7 @@ export function Shell({ onToasts, spot, control, pinned, back, embedded }: Shell
   const chrome: Chrome = {
     outbox: null,
     search,
+    density,
     folders: (
       <Menu.Root>
         <Menu.Trigger render={<Button variant="ghost" className={s.folderMenu} />}>
@@ -96,6 +117,11 @@ export function Shell({ onToasts, spot, control, pinned, back, embedded }: Shell
     ),
     actions: (
       <>
+        <Tip label="Compact">
+          <Button variant="ghost" icon aria-label="Compact" aria-pressed={density === 'compact'} className={s.density} onClick={toggleDensity}>
+            <Rows4 {...ic} />
+          </Button>
+        </Tip>
         <Find
           value={post.query}
           inputRef={search}
@@ -164,15 +190,7 @@ export function Shell({ onToasts, spot, control, pinned, back, embedded }: Shell
           </a>
         )}
       </nav>
-      {embedded ? (
-        <div className={s.main}>
-          {main}
-        </div>
-      ) : (
-        <main className={s.main}>
-          {main}
-        </main>
-      )}
+      {embedded ? <div className={s.main}>{main}</div> : <main className={s.main}>{main}</main>}
       {/* Toasts rise in their own layer, laid over the main area. */}
       <div ref={onToasts} className={s.toastLayer} data-overlay />
     </div>

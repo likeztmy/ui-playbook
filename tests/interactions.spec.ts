@@ -1592,3 +1592,19 @@ test('post: a reply sent now sorts after what it answers; Sent names who it went
   await page.locator('[data-row="gym"]').getByRole('button', { name: 'Archive' }).click({ force: true });
   await expect(page.getByText('Archived “Your membership renews next week”')).toBeVisible();
 });
+
+test('post: Compact sets one line a conversation and is kept in this browser; phones keep two lines', async ({ page }) => {
+  await page.goto('/practice/mail/app');
+  await hydrateAll(page);
+  const row = page.locator('[data-row="roadmap"]');
+  const tall = (await row.boundingBox())!.height;
+  await page.getByRole('button', { name: 'Compact' }).click();
+  await expect.poll(async () => (await row.boundingBox())!.height).toBeLessThan(tall);
+  await page.reload();
+  await hydrateAll(page);
+  await expect(page.getByRole('button', { name: 'Compact' })).toHaveAttribute('aria-pressed', 'true');
+  expect(await layoutProblems(page.locator('[class*="_app_"][data-view]'))).toEqual([]);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect(page.getByRole('button', { name: 'Compact' })).toBeHidden();
+  expect((await row.boundingBox())!.height).toBeGreaterThan(60);
+});

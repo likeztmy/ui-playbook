@@ -57,7 +57,7 @@ export function DraftList({ compose, chrome }: { compose: Compose; chrome: Chrom
   // Subjects start where the senders end, measured as the other lists are.
   const fromWidth = useFromWidth(box, [drafts.length]);
   return (
-    <section className={s.list} aria-label="Drafts">
+    <section className={s.list} aria-label="Drafts" data-density={chrome.density}>
       <div className={s.bar}>
         <span className={s.check} />
         <span className={s.title}>Drafts</span>

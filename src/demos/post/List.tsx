@@ -39,6 +39,8 @@ export type Chrome = {
   outbox: ReactNode;
   /** The search field, for focus to stay in when a search widens. */
   search: RefObject<HTMLInputElement | null>;
+  /** How tightly the rows are set. */
+  density: 'comfortable' | 'compact';
 };
 
 /** The bar over the list: select all, then the selection's actions or where you are; then search and New message. */
@@ -108,7 +110,7 @@ export function List({ post, rows, chrome, pinned }: ListProps) {
   const fromWidth = useFromWidth(box, [post.list]);
   const q = post.query.trim();
   return (
-    <section className={s.list} aria-label="Conversations">
+    <section className={s.list} aria-label="Conversations" data-density={chrome.density}>
       <Bar post={post} chrome={chrome} />
       {chrome.outbox}
       {/* New mail waits here, over the list, until asked for: nothing moves under the pointer on its own. */}

@@ -179,6 +179,11 @@
     display: none;
   }
 
+  // A phone's rows are already as tight as a finger allows. Over the button's own display.
+  .app .density {
+    display: none;
+  }
+
   .main,
   .toastLayer {
     margin: 0;
@@ -202,4 +207,10 @@
 .app [data-row][data-spot],
 .app [role='list'] > [data-spot='sections'] {
   outline-offset: -2px;
+}
+
+// Compact on: the toggle stays pressed, a filled ground under its icon.
+.density[aria-pressed='true'] {
+  background: var(--fill-control);
+  color: var(--ink);
 }
