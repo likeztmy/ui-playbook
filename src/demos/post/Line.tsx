@@ -5,7 +5,7 @@ import { Checkbox } from '../../ui/Checkbox';
 import { ContextMenu, Menu } from '../../ui/Menu';
 import { Tip } from '../../ui/Tooltip';
 import { latest, snippet, unread, type Conversation } from './model';
-import { participants } from './people';
+import { faceOf, participants } from './people';
 import { Avatar } from './Avatar';
 import { Marked } from './Marked';
 import type { Post } from './usePost';
@@ -47,16 +47,15 @@ export function Line({ c, post, rowRef, pin }: Props) {
         <span className={s.dot} aria-hidden data-spot={unread(c) ? 'colour' : undefined} />
         <span
           className={s.check}
-         
           onClickCapture={(e) => (shift.current = e.shiftKey)}
           // Shift-click extends a text selection across the rows; here it means a range of rows.
           onMouseDown={(e) => e.shiftKey && e.preventDefault()}
         >
           <Checkbox aria-label={`Select ${c.subject}`} checked={checked} onCheckedChange={(v) => post.tick(c.id, !!v, shift.current)} />
         </span>
-        {/* Who it's from, as a face: found before a name is read. The checkbox takes its place when wanted. */}
+        {/* Who's on the other side, in a column of its own, after the checkbox's. */}
         <span className={s.face}>
-          <Avatar id={latest(c).from} />
+          <Avatar id={faceOf(c)} />
         </span>
         <button type="button" ref={rowRef} className={s.main} aria-current={post.open?.id === c.id || undefined} onClick={() => post.show(c.id)}>
           <span className={s.from} data-from="">

@@ -40,8 +40,8 @@
   align-items: center;
   gap: var(--space-4);
   height: 44px;
-  // On the senders' edge: the rows' margin, inset, face and gap.
-  padding: 0 var(--space-4) 0 calc(var(--space-2) + 20px + 36px + var(--space-3));
+  // On the senders' edge: the rows' margin, inset, checkbox, face and gaps.
+  padding: 0 var(--space-4) 0 calc(var(--space-2) + 20px + 20px + 36px + 2 * var(--space-3));
   border-bottom: 1px solid var(--line);
   // Neutral: a pale accent would say "chosen", and this isn't.
   background: var(--surface-sunken);
@@ -191,6 +191,11 @@
 
   .main {
     border-radius: 0;
+  }
+
+  // Phones' rows have no checkbox column.
+  .outbox {
+    padding-left: calc(var(--space-2) + 20px + 36px + var(--space-3));
   }
 }
 

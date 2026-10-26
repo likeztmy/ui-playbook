@@ -1,0 +1,60 @@
+---
+layout: ../../layouts/Entry.astro
+slug: who-before-what
+---
+import { FacesFind, FacesColumn, FacesDots } from '../../demos/faces';
+
+## What a face in a list is for
+
+**A face in a list says who, to people who know them; the column it sits in is what finds the row.** The famous speed of faces is for finding *a* face. Eyes land on a face about 100 milliseconds after a picture appears ([Crouzet, Kirchner & Thorpe, 2010](https://doi.org/10.1167/10.4.16); [Grandjean et al., 2025](https://doi.org/10.1167/jov.25.14.16)), but those faces filled 3° to 14° of view, and finding one face is not finding whose. Detection is effortless however many faces there are; telling who is not ([Qarooni et al., 2022](https://doi.org/10.1016/j.cognition.2022.105227)). Picking one familiar face out of twenty took people 5.7 seconds ([Dunn, Kemp & White, 2018](https://pmc.ncbi.nlm.nih.gov/articles/PMC6156691/)). A 36px avatar at a laptop's distance is under 1°, and in a list every row has one.
+
+<FacesFind client:visible />
+
+No study has compared finding a row by name, by photo and by initials. The test above is one reader's answer, and it's yours.
+
+## How to set it
+
+### Faces for the people you know
+
+A photo tells you who only if you know them. Shown photos of two strangers, people sorted them into many more than two; people who knew them did not ([Jenkins et al., 2011](https://doi.org/10.1016/j.cognition.2011.08.001)). Searching twenty faces for a stranger whose photo they'd just seen, people were right 46% of the time, against 90% for someone familiar ([Dunn, Kemp & White, 2018](https://pmc.ncbi.nlm.nih.gov/articles/PMC6156691/)). Most of an inbox is neither: half of Post's rows are companies. Mail clients don't claim speed for their avatars either; Apple and Gmail show a sender's logo to say it's been verified ([Apple, Branded Mail](https://business.apple.com/partners/assets/branded-mail.pdf); [Google, BIMI](https://workspaceupdates.googleblog.com/2024/09/gmail-additional-bimi-protections.html)).
+
+A company isn't a person, and shouldn't be drawn as one. Material keeps “circular or expressive shapes to represent a person or entity” and squares for other things ([Material 3, Lists](https://m3.material.io/components/lists/guidelines)); Atlassian gives people circles and projects squares ([Atlassian, Avatar](https://atlassian.design/components/avatar/usage)).
+
+### The column is the anchor
+
+<FacesColumn client:visible />
+
+Where to look is learned, quickly and for long: people who often find a target in one region start looking there first within dozens of trials, and still do a week later ([Jiang et al., 2013](https://doi.org/10.1037/a0027611)). Material's list guidance follows: “Place supporting visuals and primary text in the same position in each list item”, and “Don't vary the position of elements within a list” ([Material 3, Lists](https://m3.material.io/components/lists/guidelines)). So the column is always filled, in every row and every state, and the checkbox for selecting gets a column of its own in front of it rather than taking the face's place. Ticking rows by sender is when the faces are wanted most. Where only some rows would have a picture, NN/g moves the pictures to the right, so the text keeps the edge ([NN/g, Mobile list thumbnails](https://www.nngroup.com/articles/mobile-list-thumbnail/)).
+
+### A colour narrows; the letters decide
+
+When there's no photo, the initials sit on a colour made from the person. It's a weak cue. Seven hues for eight people means two share one, and a small patch needs a far bigger step in hue than in lightness to look different ([Szafir, 2018](https://doi.org/10.1109/TVCG.2017.2744359); replicated by [Hye, McNutt & Isaacs, 2026](https://arxiv.org/abs/2608.24789)). Fluent's avatars are grey unless asked to be colourful ([Fluent 2, Avatar](https://github.com/microsoft/fluentui/blob/master/packages/react-components/react-avatar/library/src/components/Avatar/useAvatar.tsx)). The colour narrows the search to a few rows; reading the letters decides. Seed it from the address, which stays the same, not the name, which doesn't.
+
+### Identity in pastel, state in colour
+
+<FacesDots client:visible />
+
+A salient thing that isn't the target makes people search less of the screen and give up sooner, and miss more ([Shaikh et al., 2025](https://doi.org/10.3758/s13414-025-03188-2)); an appealing one slows the search ([Reppa & McDougall, 2022](https://doi.org/10.3758/s13414-022-02567-3)). The unread dot is the row's one saturated mark, at five times an avatar's chroma, and avatars stay off the accent's hue, whose pale tint marks the chosen row ([Colour means one thing](/principles/colour-means-one-thing)).
+
+## The playbook's faces
+
+| | Comfortable | Compact | Phone |
+| --- | --- | --- | --- |
+| Size | 36px | 24px | 36px |
+| Person | initials on one of seven pastel hues, from their address | | |
+| Company | first letter on a grey rounded square | | |
+| Checkbox | its own column before the face, shown on hover and focus, and on every row while selecting | | none: a long press opens the row’s menu |
+| Not on a face | the accent's hue, red, presence or status badges | | |
+
+Working this page through changed four things in [Post](/practice/mail). Ticking a row used to swap every face for a checkbox; the checkbox now has its own column before the face, and no face gives way. Companies moved from coloured circles to grey squares. The hue nearest the accent was dropped, and colours now come from the address. Sent shows who a message went to, not your own initial.
+
+## When it doesn't apply
+
+- **A list of things.** Files, tasks and settings have no faces; an icon there says what kind, and the same rule of one column holds.
+- **Pictures from elsewhere.** Fetching a sender's image tells the sender when you read: about 30% of commercial emails leak the reader's address to third parties when viewed ([Englehardt, Han & Narayanan, 2018](https://doi.org/10.1515/popets-2018-0006)). Use photos from your own contacts and verified logos, nothing fetched by default.
+- **What the evidence doesn't say.** No study has tested faces smaller than 1°, or whether people learn a colour for each person.
+
+## Where the playbook applies it
+
+- [Mail](/practice/mail): one face column on every row, people round and companies square, faces kept while selecting.
+- [Colour means one thing](/principles/colour-means-one-thing): the unread dot and the selection keep their colours to themselves.

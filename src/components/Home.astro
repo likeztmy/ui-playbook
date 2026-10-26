@@ -18,6 +18,7 @@ import { PostPreview } from '../demos/post/Preview';
 import { ShadowPreview } from '../demos/shadow';
 import { LightnessPreview } from '../demos/lightness';
 import { ReadingPreview } from '../demos/reading';
+import { FacesPreview } from '../demos/faces';
 import { RatioPreview } from '../demos/ratio';
 import { FasterPreview } from '../demos/faster';
 import { TooltipPreview } from '../demos/tooltip';
@@ -98,6 +99,7 @@ const groups = [
                   {e.slug === 'a-shadow-says-how-high' && <ShadowPreview />}
                   {e.slug === 'lightness-first' && <LightnessPreview />}
                   {e.slug === 'reading-text' && <ReadingPreview />}
+                  {e.slug === 'who-before-what' && <FacesPreview />}
                   {e.slug === 'error-timing' && <ErrorTimingPreview />}
                   {e.slug === 'colour-means-one-thing' && <ColourPreview client:visible />}
                   {e.slug === 'where-the-eye-goes' && <EyePreview client:visible />}

@@ -180,6 +180,14 @@ export const entries: Entry[] = [
     keywords: ['shadow', 'box-shadow', 'elevation', 'depth', 'dark mode', 'layers', 'raised'],
   },
   {
+    slug: 'who-before-what',
+    kind: 'principle',
+    title: 'Who, before what',
+    summary: 'A face says who only to people who know them. Its column is what finds the row: keep it filled, in every row and every state.',
+    details: 4,
+    keywords: ['avatar', 'faces', 'initials', 'profile picture', 'list', 'inbox', 'scanning', 'visual search', 'identity', 'monogram', 'selection'],
+  },
+  {
     slug: 'reading-text',
     kind: 'principle',
     title: 'Set reading text for the reader',

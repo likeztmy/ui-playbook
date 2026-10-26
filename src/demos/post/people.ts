@@ -1,4 +1,4 @@
-import type { Person } from './model';
+import { latest, type Conversation, type Person } from './model';
 
 // Everyone in Post's sample mail. Names and companies are made up.
 const LIST: Person[] = [
@@ -61,3 +61,10 @@ export const participants = (from: string[]) => {
   const seen = [...new Set(from)].map(shortName);
   return seen.length > 3 ? `${seen.slice(0, 2).join(', ')} … ${seen[seen.length - 1]}` : seen.join(', ');
 };
+
+/**
+ * Whose face a row shows: the other side, and the first name beside it. Who it went to in Sent; else
+ * the first who wrote that isn't you, as the names are listed oldest first.
+ */
+export const faceOf = (c: Conversation) =>
+  c.folder === 'sent' ? latest(c).to[0] : (c.messages.find((m) => !person(m.from).me)?.from ?? latest(c).to[0]);

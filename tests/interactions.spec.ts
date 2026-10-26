@@ -1762,3 +1762,59 @@ test('reading text: the font test reads three passages, then shows each face’s
   await expect(page.getByText('Faster than anyone reads')).toBeVisible();
   await expect(page.getByRole('button', { name: 'Try again' })).toBeFocused();
 });
+
+test('who before what: Post’s checkbox has its own column before the face, companies are square, Sent shows the recipient', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 820 });
+  await page.goto('/practice/mail/app');
+  await hydrateAll(page);
+  const row = (subject: string) => page.locator('[data-row]').filter({ hasText: subject });
+  await row('Q4 roadmap').getByRole('checkbox').click();
+  await page.mouse.move(0, 0);
+  // The checkbox has its own column before the face: ticking shows every row's box and hides no face.
+  const face = (subject: string) => row(subject).locator('[class*="_face_"]');
+  const box = (subject: string) => row(subject).locator('[class*="_check_"] > [role="checkbox"]');
+  for (const subject of ['Q4 roadmap', 'Photos from the offsite']) {
+    await expect.poll(() => face(subject).evaluate((e) => getComputedStyle(e).opacity)).toBe('1');
+    await expect.poll(() => box(subject).evaluate((e) => getComputedStyle(e).opacity)).toBe('1');
+  }
+  const [b, f] = [await box('Q4 roadmap').boundingBox(), await face('Q4 roadmap').boundingBox()];
+  expect(b!.x + b!.width).toBeLessThanOrEqual(f!.x);
+  await expect(row('Invoice #2041').locator('[data-org]')).toHaveCSS('border-radius', '10px');
+  await page.getByRole('button', { name: 'Sent' }).first().click();
+  const sent = page.locator('[data-row]').first().locator('[class*="_face_"]');
+  await expect(sent).not.toHaveText('Y');
+});
+
+test('who before what: the find test runs fifteen trials and reports a median for each way of showing who', async ({ page }) => {
+  await page.goto('/principles/who-before-what');
+  await hydrateAll(page);
+  await page.getByRole('button', { name: 'Start' }).click();
+  for (let i = 0; i < 15; i++) {
+    await page.getByRole('button', { name: 'Show the list' }).click();
+    const name = (await page.getByText(/^Open .+’s message$/).first().textContent())!.match(/^Open (.+)’s message$/)![1];
+    await page.locator('button[class*="_row_"]').filter({ has: page.locator('[class*="_from_"]', { hasText: new RegExp(`^${name}`) }) }).first().click();
+  }
+  await expect(page.getByText(/^\d+\.\d\d s$/)).toHaveCount(3);
+  await expect(page.getByText(/people on \d hues/)).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Try again' })).toBeFocused();
+});
+
+test('who before what: ticking in the After hides no face; a glance asks for a count and hands focus back', async ({ page }) => {
+  await page.goto('/principles/who-before-what');
+  await hydrateAll(page);
+  const after = page.locator('[class*="_compare_"]').first().locator('[class*="_side_"]').nth(1);
+  await after.getByRole('checkbox', { name: /Q4 roadmap/ }).click();
+  await page.mouse.move(0, 0);
+  // The After never swaps a face out: its checkboxes have their own column.
+  await expect(after.locator('[data-show="check"]')).toHaveCount(0);
+  await expect(after.locator('[data-selecting]')).toHaveCount(1);
+  const before = page.locator('[class*="_compare_"]').first().locator('[class*="_side_"]').nth(0);
+  await before.getByRole('checkbox', { name: /Q4 roadmap/ }).click();
+  await expect.poll(() => before.locator('[data-show="check"]').count()).toBeGreaterThan(5);
+
+  await page.getByRole('button', { name: 'Glance at the list' }).click();
+  await expect(page.getByText('How many were unread?')).toBeVisible({ timeout: 3000 });
+  await page.getByRole('button', { name: '3', exact: true }).click();
+  await expect(page.locator('code').filter({ hasText: /unread/ })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Another glance' })).toBeFocused();
+});

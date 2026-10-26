@@ -1,0 +1,279 @@
+.readout {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+
+  &[data-off] {
+    color: var(--danger);
+  }
+}
+
+.full {
+  width: 100%;
+}
+
+// ── A row ───────────────────────────────────────────────
+
+.column {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  &[data-hidden] {
+    visibility: hidden;
+  }
+}
+
+// One line: unread's dot, the first column, then who, what and when. A row without a lead keeps its
+// text on the same edge the others' faces start at.
+.row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 28px 128px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  height: 44px;
+  padding: 0 var(--space-3) 0 var(--space-5);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+  white-space: nowrap;
+
+  &[data-lead='none'] {
+    grid-template-columns: 128px minmax(0, 1fr) auto;
+  }
+
+  &[data-check] {
+    grid-template-columns: 20px 28px 128px minmax(0, 1fr) auto;
+  }
+
+  &:is(button) {
+    cursor: pointer;
+
+    &:hover {
+      background: var(--fill-hover);
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: inset 0 0 0 2px var(--accent);
+    }
+  }
+}
+
+.dot {
+  position: absolute;
+  top: 50%;
+  left: 7px;
+  display: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  translate: 0 -50%;
+
+  [data-unread] > & {
+    display: block;
+  }
+}
+
+.lead {
+  display: grid;
+  place-items: center;
+}
+
+.from,
+.subject {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.from {
+  font-weight: 600;
+}
+
+.subject {
+  color: var(--ink-muted);
+}
+
+.time {
+  color: var(--ink-muted);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+// The After's checkbox column: kept even when empty, shown on the hovered row, the ticked rows, and every
+// row once one is ticked.
+.check {
+  display: grid;
+  place-items: center;
+
+  > * {
+    opacity: 0;
+    transition: opacity var(--duration-fast) var(--ease-out);
+  }
+}
+
+.row:hover .check > *,
+.check:focus-within > *,
+.check > [data-on],
+[data-selecting] .check > * {
+  opacity: 1;
+}
+
+// The face and the checkbox in one place: the face, until the check is wanted.
+.swap {
+  display: grid;
+  place-items: center;
+
+  > * {
+    grid-area: 1 / 1;
+    transition: opacity var(--duration-fast) var(--ease-out);
+  }
+}
+
+.swapFace {
+  display: grid;
+  pointer-events: none;
+}
+
+.swapCheck {
+  opacity: 0;
+}
+
+.row:hover .swapCheck,
+.swap:focus-within .swapCheck,
+.swap[data-show='check'] .swapCheck {
+  opacity: 1;
+}
+
+.row:hover .swapFace,
+.swap:focus-within .swapFace,
+.swap[data-show='check'] .swapFace {
+  opacity: 0;
+}
+
+// ── Find someone ────────────────────────────────────────
+
+.find {
+  width: 100%;
+}
+
+.prompt {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-4);
+  min-height: 160px;
+
+  p {
+    margin: 0;
+    color: var(--ink-muted);
+  }
+}
+
+.target {
+  margin: 0 0 var(--space-2);
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 600;
+
+  .prompt & {
+    color: var(--ink);
+  }
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.results {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--space-2);
+
+  > button {
+    align-self: flex-start;
+    margin-top: var(--space-2);
+  }
+}
+
+.result {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--fill-control);
+  font-size: 14px;
+}
+
+.resultTime {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.note {
+  margin: var(--space-2) 0 0;
+  color: var(--ink-muted);
+  font-size: 13px;
+}
+
+// ── A glance at the dots ────────────────────────────────
+
+.dots {
+  position: relative;
+  width: 100%;
+}
+
+.ask {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-3);
+
+  p {
+    margin: 0;
+    font-weight: 600;
+  }
+}
+
+.counts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+// ── Home card ───────────────────────────────────────────
+
+.preview {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: min(100%, 240px);
+}
+
+.previewRow {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  align-items: center;
+  gap: var(--space-3);
+
+  > span:last-child {
+    height: 6px;
+    border-radius: 3px;
+    background: var(--ink-disabled);
+  }
+}

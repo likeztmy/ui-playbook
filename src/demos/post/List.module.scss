@@ -1,9 +1,10 @@
 @use '../../styles/states' as *;
 
-// The rows' left inset: room for unread's dot, before the face. Rows sit $margin in from the list's
-// edge, each on its own rounded surface; the face takes $face.
+// The rows' left inset: room for unread's dot. Then the checkbox's own column, then the face. Rows sit
+// $margin in from the list's edge, each on its own rounded surface.
 $inset: 20px;
 $margin: var(--space-2);
+$check: 20px;
 $face: 36px;
 $gap: var(--space-3);
 
@@ -22,8 +23,8 @@ $gap: var(--space-3);
   align-items: center;
   gap: var(--space-1);
   height: 56px;
-  // Select all centred on the faces' column below it.
-  padding: 0 var(--space-3) 0 calc(#{$margin} + #{$inset} + 10px);
+  // Select all centred on the checkboxes' column below it (the bar's checkbox box is 32px wide).
+  padding: 0 var(--space-3) 0 calc(#{$margin} + #{$inset} + #{$check} / 2 - 16px);
 }
 
 .tools {
@@ -66,8 +67,8 @@ $gap: var(--space-3);
 // A date section's header: 20 above, 4 below, so it reads with the rows under it. No line under it,
 // which would split what the spacing joins.
 .section {
-  // On the senders' edge: the row's margin, inset, face and gap.
-  padding: 24px var(--space-3) 4px calc(#{$margin} + #{$inset} + #{$face} + #{$gap});
+  // On the senders' edge: the row's margin, inset, checkbox, face and gaps.
+  padding: 24px var(--space-3) 4px calc(#{$margin} + #{$inset} + #{$check} + #{$face} + 2 * #{$gap});
   color: var(--ink-muted);
   font-size: 12px;
   font-weight: 600;
@@ -85,32 +86,15 @@ $gap: var(--space-3);
   width: 32px;
 }
 
-// A row's checkbox shares the face's place: the face at rest, the checkbox once the pointer rests on
-// the row, with focus, and on every row once one is ticked. Selection is the rarer task.
-.line > .check,
-.line > .face {
-  grid-row: 1;
-  grid-column: 1;
-  place-self: center;
+// A row's checkbox has a column of its own, before the face, so ticking never hides who a row is from.
+// It shows when the pointer rests on the row, with focus, on ticked rows, and on every row once you're
+// selecting. The column is always kept, so nothing moves when it shows.
+.line > .check {
+  width: auto;
 }
 
 .face {
   display: grid;
-  // Under the pointer the checkbox is what answers: the face only shows who.
-  pointer-events: none;
-  transition: opacity var(--duration-fast) var(--ease-out);
-}
-
-.line:hover > .face,
-.line[data-pin~='hover'] > .face {
-  opacity: 0;
-  transition-delay: 300ms;
-}
-
-.line[data-checked] > .face,
-.line:has(.check:focus-within) > .face,
-[data-selecting] .line > .face {
-  opacity: 0;
 }
 
 .line .check > * {
@@ -126,6 +110,7 @@ $gap: var(--space-3);
   opacity: 1;
 }
 
+// At rest it waits for the pointer to settle: sweeping down the list shouldn't flicker a column of boxes.
 .line:hover .check > *,
 .line[data-pin~='hover'] .check > * {
   transition-delay: 300ms;
@@ -138,7 +123,7 @@ $gap: var(--space-3);
   --row: var(--surface);
   position: relative;
   display: grid;
-  grid-template-columns: $face minmax(0, 1fr);
+  grid-template-columns: $check $face minmax(0, 1fr);
   column-gap: $gap;
   align-items: center;
   margin: 2px $margin;
@@ -347,7 +332,7 @@ $gap: var(--space-3);
     --face: 24px;
 
     .line {
-      grid-template-columns: var(--face) minmax(0, 1fr);
+      grid-template-columns: $check var(--face) minmax(0, 1fr);
       height: 44px;
       margin-block: 0;
       padding-block: 0;
@@ -391,7 +376,7 @@ $gap: var(--space-3);
 
     .section {
       padding-top: 20px;
-      padding-left: calc(#{$margin} + #{$inset} + var(--face) + #{$gap});
+      padding-left: calc(#{$margin} + #{$inset} + #{$check} + var(--face) + 2 * #{$gap});
     }
   }
 }
@@ -405,8 +390,13 @@ $gap: var(--space-3);
     display: none;
   }
 
-  .line > .face {
-    opacity: 1;
+  // No checkbox column: the face starts the row.
+  .line {
+    grid-template-columns: $face minmax(0, 1fr);
+  }
+
+  .section {
+    padding-left: calc(#{$margin} + #{$inset} + #{$face} + #{$gap});
   }
 
   .title {

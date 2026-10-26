@@ -23,7 +23,7 @@ These are editorial judgements, not measurements.
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | Choosing a colour system (absorbs *A colour changes with its neighbours*). **Done:** *Lightness first, hue last* | principle | 5 | 5 | 5 | 5 | 5 | 3 | **28** |
 | 2 | A reading face is not a UI face (T4). **Done:** *Set reading text for the reader* | principle | 4 | 5 | 3 | 5 | 5 | 4 | **26** |
-| 3 | Who, before what: faces in lists (T1, absorbs *Avatar*) | principle | 4 | 4 | 3 | 5 | 5 | 4 | **25** |
+| 3 | Who, before what: faces in lists (T1, absorbs *Avatar*). **Done:** *Who, before what* | principle | 4 | 4 | 3 | 5 | 5 | 4 | **25** |
 | 4 | Focus is not selection | principle | 4 | 4 | 3 | 5 | 3 | 4 | **23** |
 | 5 | Drawer / Sheet | component | 4 | 5 | 4 | 3 | 4 | 3 | **23** |
 | 6 | A novelty budget (T5, merged with *The more often, the less motion*) | principle | 4 | 4 | 4 | 3 | 5 | 3 | **23** |
