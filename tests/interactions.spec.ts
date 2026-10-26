@@ -1608,3 +1608,20 @@ test('post: Compact sets one line a conversation and is kept in this browser; ph
   await expect(page.getByRole('button', { name: 'Compact' })).toBeHidden();
   expect((await row.boundingBox())!.height).toBeGreaterThan(60);
 });
+
+test('a shadow says how high: the offset moves the estimate, blur doesn’t; a light patch lifts nothing; layers switch', async ({ page }) => {
+  await page.goto('/principles/a-shadow-says-how-high');
+  await hydrateAll(page);
+  const readout = page.locator('figure').first().locator('code');
+  await expect(readout).toHaveText('0 4px 8px · reads ≈ 5px up');
+  await page.getByRole('slider', { name: 'Blur' }).focus();
+  for (let i = 0; i < 10; i++) await page.keyboard.press('ArrowRight');
+  await expect(readout).toContainText('reads ≈ 5px up');
+  await page.getByRole('slider', { name: 'Offset' }).focus();
+  for (let i = 0; i < 6; i++) await page.keyboard.press('ArrowRight');
+  await expect(readout).toContainText('reads ≈ 13px up');
+  await page.getByRole('radio', { name: 'Light patch' }).click();
+  await expect(readout).toHaveText('a light patch · no lift');
+  await page.getByRole('checkbox', { name: 'Distance' }).click();
+  await expect(page.getByRole('checkbox', { name: 'Distance' })).not.toBeChecked();
+});

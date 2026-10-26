@@ -15,6 +15,7 @@ import { ShiftPreview } from '../demos/shift';
 import { WaitPreview } from '../demos/wait';
 import { InterruptPreview } from '../demos/interrupt';
 import { PostPreview } from '../demos/post/Preview';
+import { ShadowPreview } from '../demos/shadow';
 import { RatioPreview } from '../demos/ratio';
 import { FasterPreview } from '../demos/faster';
 import { TooltipPreview } from '../demos/tooltip';
@@ -92,6 +93,7 @@ const groups = [
                   {e.slug === 'table' && <TablePreview />}
                   {e.slug === 'toast' && <ToastPreview />}
                   {e.slug === 'concentric-radius' && <ConcentricPreview />}
+                  {e.slug === 'a-shadow-says-how-high' && <ShadowPreview />}
                   {e.slug === 'error-timing' && <ErrorTimingPreview />}
                   {e.slug === 'colour-means-one-thing' && <ColourPreview client:visible />}
                   {e.slug === 'where-the-eye-goes' && <EyePreview client:visible />}

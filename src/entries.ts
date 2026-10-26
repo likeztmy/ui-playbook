@@ -172,6 +172,14 @@ export const entries: Entry[] = [
     keywords: ['border radius', 'corners', 'nesting', 'padding', 'inset'],
   },
   {
+    slug: 'a-shadow-says-how-high',
+    kind: 'principle',
+    title: 'A shadow says how high',
+    summary: 'The offset says how far a thing floats; blur and darkness only make it a shadow. In the dark, depth is lightness.',
+    details: 3,
+    keywords: ['shadow', 'box-shadow', 'elevation', 'depth', 'dark mode', 'layers', 'raised'],
+  },
+  {
     slug: 'colour-means-one-thing',
     kind: 'principle',
     title: 'Colour means one thing',

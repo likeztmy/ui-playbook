@@ -136,11 +136,11 @@
   overflow: hidden;
   border-radius: 18px;
   background: var(--surface);
-  // One soft light from above, warm like the desk; in dark a hairline does what shadow can't.
+  // One step off the desk: a hairline for the edge, a 2px drop (half its blur) for the height, in the
+  // desk's own hue. In dark, the lighter surface and the hairline do what shadow can't.
   box-shadow:
-    0 1px 2px oklch(0.35 0.02 75 / 0.04),
-    0 4px 16px oklch(0.35 0.02 75 / 0.05),
-    0 0 0 1px light-dark(oklch(0.35 0.02 75 / 0.04), var(--line));
+    0 0 0 1px light-dark(oklch(0.35 0.02 75 / 0.06), var(--line)),
+    0 2px 4px oklch(0.35 0.02 75 / 0.06);
 }
 
 // Over the mail, not the whole app: a toast rises at the foot of the area where its action was

@@ -442,7 +442,7 @@
       {
         "name": "shadow-xs",
         "value": {
-          "light": "0 1px 1px #18181b0a, 0 0 0 1px #18181b14",
+          "light": "0 1px 2px #18181b0f, 0 0 0 1px #18181b14",
           "dark": "0 0 0 1px #ffffff14"
         },
         "usage": "静止的次要按钮、卡片：几乎看不见，只给边缘。"
@@ -450,7 +450,7 @@
       {
         "name": "shadow-sm",
         "value": {
-          "light": "0 1px 2px #18181b0f, 0 2px 6px #18181b0a, 0 0 0 1px #18181b12",
+          "light": "0 2px 4px #18181b0f, 0 0 0 1px #18181b12",
           "dark": "0 1px 2px #00000066, 0 0 0 1px #ffffff12"
         },
         "usage": "工具面板、浮在画布上的调色板。"
@@ -458,16 +458,16 @@
       {
         "name": "shadow-md",
         "value": {
-          "light": "0 4px 12px #18181b14, 0 1px 3px #18181b0f, 0 0 0 1px #18181b14",
-          "dark": "0 8px 24px #00000080, 0 0 0 1px #ffffff17"
+          "light": "0 6px 12px #18181b12, 0 1px 2px #18181b0a, 0 0 0 1px #18181b14",
+          "dark": "0 6px 12px #00000066, 0 0 0 1px #ffffff17"
         },
         "usage": "菜单、弹出框、下拉。"
       },
       {
         "name": "shadow-lg",
         "value": {
-          "light": "0 16px 40px -8px #18181b29, 0 4px 12px #18181b0f, 0 0 0 1px #18181b14",
-          "dark": "0 24px 56px -8px #000000b3, 0 0 0 1px #ffffff1a"
+          "light": "0 12px 24px #18181b14, 0 2px 4px #18181b0a, 0 0 0 1px #18181b14",
+          "dark": "0 12px 24px #00000080, 0 0 0 1px #ffffff1a"
         },
         "usage": "对话框、命令面板。"
       },
