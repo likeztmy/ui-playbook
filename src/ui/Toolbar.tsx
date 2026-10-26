@@ -7,14 +7,20 @@ import { cx } from './cx';
 import { Tip, TipGroup } from './Tooltip';
 import s from './Toolbar.module.scss';
 
-
 // Tooltips sit space-1 from the panel's edge, not the tool's: tools are inset 4.
 const TIP_OFFSET = 8;
 
-function Root({ className, ...props }: ComponentProps<typeof BaseToolbar.Root>) {
+export { s as toolbarClasses };
+
+type RootProps = ComponentProps<typeof BaseToolbar.Root> & {
+  /** Sits in a row of other controls (a composer's footer) rather than floating as its own panel. */
+  flat?: boolean;
+};
+
+function Root({ className, flat, ...props }: RootProps) {
   return (
     <TipGroup>
-      <BaseToolbar.Root {...props} className={cx(s.toolbar, className as string)} />
+      <BaseToolbar.Root {...props} className={cx(s.toolbar, flat && s.flat, className as string)} />
     </TipGroup>
   );
 }
@@ -59,6 +65,27 @@ function Tool({ value, label, keys, children, className, pin, nativeTitle }: Too
   );
 }
 
+type ToggleProps = Omit<ToolProps, 'value' | 'nativeTitle'> & {
+  pressed: boolean;
+  onPressedChange: (pressed: boolean) => void;
+};
+
+/** A tool that's on or off by itself, e.g. Bold: pressed shows it applies where you are. */
+function ToolToggle({ label, keys, children, className, pin, pressed, onPressedChange }: ToggleProps) {
+  return (
+    <Tip label={label} keys={keys} offset={TIP_OFFSET}>
+      <BaseToolbar.Button
+        render={<Toggle pressed={pressed} onPressedChange={onPressedChange} />}
+        aria-label={label}
+        data-pin={pin}
+        className={cx(buttonClass({ icon: true }), s.tool, className)}
+      >
+        {children}
+      </BaseToolbar.Button>
+    </Tip>
+  );
+}
+
 type ActionProps = ComponentProps<typeof BaseToolbar.Button> & {
   primary?: boolean;
   /** Icon-only action: names it for screen readers and in a tooltip. */
@@ -72,11 +99,7 @@ function Action({ primary, label, keys, className, ...props }: ActionProps) {
     <BaseToolbar.Button
       {...props}
       aria-label={label ?? props['aria-label']}
-      className={cx(
-        buttonClass({ variant: primary ? 'primary' : 'secondary', icon: Boolean(label) }),
-        !primary && s.tool,
-        className as string,
-      )}
+      className={cx(buttonClass({ variant: primary ? 'primary' : 'secondary', icon: Boolean(label) }), !primary && s.tool, className as string)}
     />
   );
   return label ? (
@@ -92,4 +115,7 @@ function Separator() {
   return <BaseToolbar.Separator className={s.separator} />;
 }
 
-export const Toolbar = { Root, Tools, Tool, Action, Separator };
+/** The bare toolbar button, for composing with a trigger (a Popover's) that renders its own. */
+const Button = BaseToolbar.Button;
+
+export const Toolbar = { Root, Tools, Tool, Toggle: ToolToggle, Action, Button, Separator };

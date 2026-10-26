@@ -105,3 +105,7 @@ Research for the colour system of **Post** (the demo mail app) and its unread/re
 1. **Dot plus bold** (Apple). The dot is a presence cue on the target, in a fixed left column, on the blue axis. It is documented first-party, matches Material's "simple circle" for unread, and passes 1.4.1 as shape. Needs a 3:1 check on hover and selection fills.
 2. **Edge bar plus coloured subject plus bold** (Outlook 2013). The cue is larger and also on the target, but hue spreads into text, which costs the one-accent rule and needs G183's 3:1 against read subjects.
 3. **Read rows tinted** (Gmail). The cue goes on the distractors, its luminance step is usually small, and it re-groups the list. It has no first-party documentation. Test it, but expect it to lose.
+
+## Decision (owner, 2026-10-27)
+
+Direction A: a blue dot on unread rows, beside the bold. Selection and the current folder keep the pale accent tint, not grey as first shown: "Colour means one thing" lets blue mark what's chosen as a pale tint, and a grey selection would read as hover.

@@ -1,5 +1,8 @@
 @use '../../styles/states' as *;
 
+// The rows' left inset: room for unread's dot, before the checkbox.
+$inset: 20px;
+
 .list {
   display: flex;
   flex-direction: column;
@@ -14,7 +17,7 @@
   align-items: center;
   gap: var(--space-1);
   height: 48px;
-  padding: 0 var(--space-4) 0 var(--post-row-inset, var(--space-2));
+  padding: 0 var(--space-4) 0 $inset;
   border-bottom: 1px solid var(--line);
 }
 
@@ -49,7 +52,7 @@
 // A date section's header: 20 above, 4 below, so it reads with the rows under it. No line under it,
 // which would split what the spacing joins.
 .section {
-  padding: 20px var(--space-3) 4px calc(32px + 32px + var(--post-row-inset, var(--space-2)) + var(--space-1));
+  padding: 20px var(--space-3) 4px calc(32px + 32px + #{$inset} + var(--space-1));
   color: var(--ink-muted);
   font-size: 12px;
   font-weight: 600;
@@ -74,23 +77,8 @@
   grid-template-columns: 32px 32px minmax(0, 1fr);
   align-items: center;
   height: 44px;
-  padding: 0 var(--space-2) 0 var(--post-row-inset, var(--space-2));
+  padding: 0 var(--space-2) 0 $inset;
   border-bottom: 1px solid var(--line);
-  // The look's colours (see looks.scss): read rows, then unread ones.
-  background-color: var(--post-row, transparent);
-
-  &[data-unread] {
-    background-color: var(--post-row-unread, var(--post-row, transparent));
-  }
-
-  // An edge on unread rows, where the look has one.
-  &[data-unread]::before {
-    position: absolute;
-    inset: 0 auto 0 0;
-    width: var(--post-edge, 0);
-    background: var(--accent);
-    content: '';
-  }
 
   // Hover shades whatever the row's colour is, rather than replacing it.
   @include hover {
@@ -128,18 +116,19 @@
     background-image: linear-gradient(var(--fill-hover), var(--fill-hover));
   }
 
-  // Chosen rows, ticked or open, take the selection's tint; hover stays grey.
+  // Chosen rows, ticked or open, take the selection's pale tint; hover stays grey.
   &[data-checked],
   &[data-current] {
-    background-color: var(--post-selected, var(--accent-soft));
+    background-color: var(--accent-soft);
   }
 }
 
-// Unread's dot, in the row's inset, where the look has one.
+// Unread's mark: a mark on the rows you're looking for finds faster than its absence on the rest,
+// and blue survives red-green colour blindness. The bold beside it isn't enough on its own.
 .dot {
   position: absolute;
   top: 50%;
-  left: calc(var(--post-row-inset, var(--space-2)) / 2 - 4px);
+  left: calc(#{$inset} / 2 - 4px);
   display: none;
   width: 8px;
   height: 8px;
@@ -148,7 +137,7 @@
   translate: 0 -50%;
 
   [data-unread] > & {
-    display: var(--post-dot, none);
+    display: block;
   }
 }
 
@@ -236,22 +225,12 @@
   text-align: right;
 }
 
-// Read rows' sender and subject; unread rows' in bold, their subject in the look's colour.
-.from,
-.subject {
-  color: var(--post-read-ink, var(--ink));
-}
-
 [data-unread] {
   .from,
   .subject,
   .time {
     color: var(--ink);
     font-weight: 600;
-  }
-
-  .subject {
-    color: var(--post-unread-subject, var(--ink));
   }
 }
 
@@ -319,7 +298,7 @@
   }
 
   .section {
-    padding-left: calc(32px + var(--post-row-inset, var(--space-2)) + var(--space-1));
+    padding-left: calc(32px + #{$inset} + var(--space-1));
   }
 
   .main {

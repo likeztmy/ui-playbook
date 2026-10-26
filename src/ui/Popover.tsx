@@ -16,6 +16,8 @@ type PopoverProps = Pick<ComponentProps<typeof BasePopover.Root>, 'open' | 'onOp
     trigger: ReactElement;
     /** For an icon-only trigger: its name, shown as a tooltip. */
     tip?: string;
+    /** The trigger's shortcut, shown in its tooltip. */
+    tipKeys?: string[];
     /** Names the popover; shown as its heading unless `hideTitle`. */
     title: string;
     hideTitle?: boolean;
@@ -32,6 +34,7 @@ type PopoverProps = Pick<ComponentProps<typeof BasePopover.Root>, 'open' | 'onOp
 export function Popover({
   trigger,
   tip,
+  tipKeys,
   title,
   hideTitle,
   description,
@@ -48,7 +51,13 @@ export function Popover({
   const button = <BasePopover.Trigger render={trigger} />;
   return (
     <BasePopover.Root {...root}>
-      {tip ? <Tip label={tip}>{button}</Tip> : button}
+      {tip ? (
+        <Tip label={tip} keys={tipKeys}>
+          {button}
+        </Tip>
+      ) : (
+        button
+      )}
       <BasePopover.Portal container={container}>
         <BasePopover.Positioner className={s.positioner} side={side} align={align} sideOffset={6} collisionPadding={8}>
           <BasePopover.Popup

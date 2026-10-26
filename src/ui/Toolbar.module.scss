@@ -15,6 +15,13 @@
   box-shadow: var(--shadow-sm);
 }
 
+// In a row of other controls: no panel of its own.
+.flat {
+  padding: 0;
+  background: none;
+  box-shadow: none;
+}
+
 .group {
   display: flex;
   gap: var(--space-0-5);

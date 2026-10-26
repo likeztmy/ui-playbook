@@ -123,12 +123,10 @@
 }
 
 .status {
+  margin-left: auto;
   color: var(--ink-muted);
   font-size: 13px;
-}
-
-.discard {
-  margin-left: auto;
+  white-space: nowrap;
 }
 
 // A reply at the foot of its conversation: one card, its fields divided by hairlines.

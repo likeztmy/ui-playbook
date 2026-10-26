@@ -4,8 +4,10 @@ import { Button } from '../../ui/Button';
 import { Tip, TipGroup } from '../../ui/Tooltip';
 import { Attachments } from './Attachments';
 import { Blocks } from './Blocks';
+import type { Editor } from '@tiptap/react';
 import type { BodyHandle } from './Body';
 import { empty, valid, type Draft } from './draft';
+import { FormatBar } from './FormatBar';
 import { person } from './people';
 import { RecipientField } from './RecipientField';
 import type { Compose } from './useCompose';
@@ -41,6 +43,7 @@ export function Composer({ d, compose, page, onBack }: Props) {
   const [quoted, setQuoted] = useState(false);
   const toInput = useRef<HTMLInputElement>(null);
   const body = useRef<BodyHandle>(null);
+  const [editor, setEditor] = useState<Editor | null>(null);
   // Chosen once: switching from the lazy wrapper to the loaded editor would remount it.
   const [Body] = useState(() => Loaded ?? Lazy);
   // Send reads the draft as it is now, after a chip made by leaving a field has landed.
@@ -79,6 +82,8 @@ export function Composer({ d, compose, page, onBack }: Props) {
   };
 
   const onKeyDown = (e: KeyboardEvent) => {
+    // Keys from a popover portalled out of the composer (the link's) are that popover's.
+    if (!(e.currentTarget as HTMLElement).contains(e.target as Node)) return;
     if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
       e.preventDefault();
       // Whatever is half-typed in a recipient field becomes a chip first.
@@ -138,7 +143,7 @@ export function Composer({ d, compose, page, onBack }: Props) {
           />
         }
       >
-        <Body handle={body} content={d.body} autoFocus={!startInTo} onChange={(doc, text) => set({ body: doc, text })} />
+        <Body handle={body} content={d.body} autoFocus={!startInTo} onEditor={setEditor} onChange={(doc, text) => set({ body: doc, text })} />
       </Suspense>
       {d.quoted && (
         <>
@@ -168,11 +173,12 @@ export function Composer({ d, compose, page, onBack }: Props) {
             Send
           </Button>
         </Tip>
+        <FormatBar editor={editor} />
         <span className={s.status} aria-live="polite">
           {saved ? 'Saved' : ''}
         </span>
         <Tip label="Discard draft">
-          <Button variant="ghost" icon aria-label="Discard draft" className={s.discard} onClick={() => compose.discard(d.id)}>
+          <Button variant="ghost" icon aria-label="Discard draft" onClick={() => compose.discard(d.id)}>
             <Trash2 {...ic} />
           </Button>
         </Tip>

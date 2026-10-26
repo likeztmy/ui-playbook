@@ -1,5 +1,5 @@
 // The message body's editor. Loaded on first use, so reading never pays for it.
-import { EditorContent, useEditor, type JSONContent } from '@tiptap/react';
+import { EditorContent, useEditor, type Editor, type JSONContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { useEffect, useImperativeHandle, type Ref } from 'react';
 import { blocksClasses as b } from './Blocks';
@@ -13,9 +13,11 @@ type Props = {
   onChange: (doc: JSONContent, text: string) => void;
   autoFocus?: boolean;
   handle?: Ref<BodyHandle>;
+  /** Hands the editor to the formatting row, once it exists. */
+  onEditor?: (editor: Editor | null) => void;
 };
 
-export default function Body({ content, onChange, autoFocus, handle }: Props) {
+export default function Body({ content, onChange, autoFocus, handle, onEditor }: Props) {
   const editor = useEditor({
     extensions: [
       // What a message can hold, and what the reader renders: no headings, code or rules.
@@ -42,6 +44,11 @@ export default function Body({ content, onChange, autoFocus, handle }: Props) {
   // so keys typed straight after R never reach the app's shortcuts.
   useEffect(() => {
     if (autoFocus && editor) editor.commands.focus('end');
+  }, [editor]);
+
+  useEffect(() => {
+    onEditor?.(editor);
+    return () => onEditor?.(null);
   }, [editor]);
 
   useImperativeHandle(handle, () => ({ focus: () => editor?.commands.focus('end') }), [editor]);

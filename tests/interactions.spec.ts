@@ -1287,3 +1287,41 @@ test('post: R replies at the foot of the conversation, to the sender, and the re
   await expect(conversation.getByRole('article', { name: /^You/ }).last()).toContainText('See you there.');
   expect(await conversation.getByRole('article').count()).toBeGreaterThanOrEqual(before);
 });
+
+test('post: the formatting row marks what applies at the caret; ⌘K links the selection and Esc returns to the text', async ({ page }) => {
+  await page.goto('/lab/mail-one');
+  await hydrateAll(page);
+  await page.keyboard.press('c');
+  const composer = page.getByRole('region', { name: 'New message' });
+  const body = composer.getByRole('textbox', { name: 'Message' });
+  const bar = composer.getByRole('toolbar', { name: 'Formatting' });
+  await body.click();
+  await page.keyboard.press('ControlOrMeta+b');
+  await page.keyboard.type('Agenda');
+  await expect(bar.getByRole('button', { name: 'Bold' })).toHaveAttribute('aria-pressed', 'true');
+  await expect(body.locator('strong')).toHaveText('Agenda');
+  // A list from the row; the tool shows pressed while the caret is in it.
+  await page.keyboard.press('Enter');
+  await page.keyboard.press('ControlOrMeta+b');
+  await bar.getByRole('button', { name: 'Bulleted list' }).click();
+  await expect(body).toBeFocused();
+  await page.keyboard.type('Read the plan');
+  await expect(body.locator('ul li')).toHaveText('Read the plan');
+  await expect(bar.getByRole('button', { name: 'Bulleted list' })).toHaveAttribute('aria-pressed', 'true');
+  // Select "plan", ⌘K, an address, Enter: linked, and back in the text.
+  for (let i = 0; i < 4; i++) await page.keyboard.press('Shift+ArrowLeft');
+  await page.keyboard.press('ControlOrMeta+k');
+  const address = page.getByRole('textbox', { name: 'Address' });
+  await expect(address).toBeFocused();
+  await address.fill('example.com/plan');
+  await address.press('Enter');
+  await expect(body.locator('a')).toHaveText('plan');
+  await expect(body.locator('a')).toHaveAttribute('href', 'https://example.com/plan');
+  await expect(body).toBeFocused();
+  // Esc closes the popover and nothing else: the composer stays.
+  await page.keyboard.press('ControlOrMeta+k');
+  await expect(address).toBeFocused();
+  await page.keyboard.press('Escape');
+  await expect(address).toHaveCount(0);
+  await expect(composer).toBeVisible();
+});

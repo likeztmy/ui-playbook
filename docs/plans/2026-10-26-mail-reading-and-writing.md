@@ -72,6 +72,20 @@ Other decisions (owner, 2026-10-26): Markdown input rules only for lists and quo
 
 Deviation, kept: recipient suggestions open under the field at the chips' left edge, not under the caret as Gmail's do, so names and addresses line up with the chips they become.
 
+### Step 2 · Formatting (state table)
+
+Reference: Gmail's formatting row sits over Send; ⌘B / ⌘I / ⌘K / ⌘⇧7 / ⌘⇧8 as in Gmail; tools show pressed for the marks at the caret. Post offers only what a message can hold and the reader renders: bold, italic, bulleted and numbered lists, quote, link.
+
+| Trigger | Main area | Focus | Feedback | Way back |
+| --- | --- | --- | --- | --- |
+| Caret or selection moves | — | Stays in text | Tools for the marks there show pressed | — |
+| Click a tool / ⌘B ⌘I ⌘⇧8 ⌘⇧7 ⌘⇧B | Mark or block applied to the selection | Back in the text, selection kept | Tool pressed | Same again, or ⌘Z |
+| Link tool / ⌘K, text selected | Popover under the tool: the address field | Address field | — | Esc: back to the text, selection as it was |
+| Link tool / ⌘K, caret in a link | Popover with its address and Remove | Address field, address selected | — | Remove unlinks; Esc leaves it |
+| Enter in the address | Link applied (an empty selection inserts the address as its text) | Text, after the link | Link underlined | ⌘Z |
+
+The row sits on the footer's line, between Send and Discard, in both a new message and a reply; on a phone it stays one line.
+
 ### Build order
 
 1. Composer shell, recipients chips, send / undo / Drafts folder, reply inline.
