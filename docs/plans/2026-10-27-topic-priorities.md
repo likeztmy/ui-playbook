@@ -58,3 +58,7 @@ Not topics, but they lower the credibility of every new page while they stay ope
 3. Align section structure on error-timing and concentric-radius with the newer principle pages.
 4. Check Post's compact density in dark mode.
 5. `og:image` for every page.
+
+## Parked by the owner
+
+- **A style tweak panel (2026-10-27).** Pick an app to host it. The panel tunes the whole design system: colour from three inputs, plus probably type, radius, density, shadow and motion. The controls restyle with it and must look good. It ships with built-in presets in the style of common apps (Instagram, X, WhatsApp, Linear and more). Not started; plan first when it comes back.
