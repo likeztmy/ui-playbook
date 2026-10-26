@@ -1,5 +1,5 @@
 import { ArrowDown, ArrowUp } from 'lucide-react';
-import type { CSSProperties, ReactNode } from 'react';
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { Checkbox } from './Checkbox';
 import { cx } from './cx';
 import s from './Table.module.scss';
@@ -72,10 +72,30 @@ export function Table<R>({
     return sort?.dir === 'desc' ? out.reverse() : out;
   })();
 
+  const wrap = useRef<HTMLDivElement>(null);
+  const [scrolls, setScrolls] = useState(false);
+  useEffect(() => {
+    const el = wrap.current;
+    if (!el) return;
+    const measure = () => setScrolls(el.scrollWidth > el.clientWidth || el.scrollHeight > el.clientHeight);
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    measure();
+    return () => ro.disconnect();
+  }, []);
+
   const toggle = (k: string, on: boolean) => onSelectedChange?.(on ? [...selected!, k] : selected!.filter((x) => x !== k));
 
   return (
-    <div className={cx(s.wrap, className)} style={maxHeight ? ({ maxHeight } as CSSProperties) : undefined}>
+    <div
+      ref={wrap}
+      className={cx(s.wrap, className)}
+      style={maxHeight ? ({ maxHeight } as CSSProperties) : undefined}
+      // While it scrolls, the keyboard can scroll it too: a Tab stop, named as the table is.
+      tabIndex={scrolls ? 0 : undefined}
+      role={scrolls ? 'region' : undefined}
+      aria-label={scrolls ? label : undefined}
+    >
       <table aria-label={label} className={cx(s.table, stickyFirst && s.stickyFirst, stickyFirst && selectable && s.hasCheck)}>
         <thead>
           <tr>

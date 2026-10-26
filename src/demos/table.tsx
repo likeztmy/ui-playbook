@@ -106,7 +106,7 @@ export function TableVariants() {
 
 export function TableStates() {
   return (
-    <Frame label="All states: default, hover, selected" height={0}>
+    <Frame label="All states: default, hover, selected" height={0} still>
       <div className={cx(s.stack, s.fill)}>
         <Table
           label="Row states"

@@ -38,7 +38,7 @@ const withWords = (t: Task) => (
 );
 
 const dotsOnly = (t: Task) => (
-  <span className={m.dotOnly} aria-label={t.state} title={t.state}>
+  <span className={m.dotOnly} role="img" aria-label={t.state} title={t.state}>
     <Badge tone={t.tone} status>
       {''}
     </Badge>

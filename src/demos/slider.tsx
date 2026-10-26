@@ -84,7 +84,7 @@ const STATES: [string, string | undefined, number][] = [
 
 export function SliderStates() {
   return (
-    <Frame label="All states" height={0}>
+    <Frame label="All states" height={0} still>
       <div className={s.sliderStates}>
         {STATES.map(([name, pin, value]) => (
           <div key={name} className={s.sliderState}>

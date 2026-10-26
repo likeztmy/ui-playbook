@@ -142,7 +142,7 @@ export function InputVariants() {
 /** The focus edge and an embedded key, held still and magnified. */
 export function InputAnatomy() {
   return (
-    <Frame label="Focus and an embedded key, at 2×" height={0}>
+    <Frame label="Focus and an embedded key, at 2×" height={0} still>
       <div className={s.anatomyPair}>
         <figure className={s.anatomyItem}>
           <div className={cx(s.magnify, s.magnifiedField)}>
@@ -172,7 +172,7 @@ const STATES: [string, { pin?: string; disabled?: boolean; readOnly?: boolean; e
 
 export function InputStates() {
   return (
-    <Frame label="All states" height={0}>
+    <Frame label="All states" height={0} still>
       <div className={s.fieldGrid}>
         {STATES.map(([name, props]) => (
           <TextField key={name} label={name} defaultValue={name === 'Invalid' ? 'ana@studio' : 'ana@studio.com'} {...props} />

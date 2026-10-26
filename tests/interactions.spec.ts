@@ -1119,13 +1119,12 @@ test('the faster way: holding the modifier shows every key at once; the tally co
   await expect(after.getByText('Mira Okafor')).toHaveCount(0);
 });
 
-test('post: E archives the ticked conversations', async ({ page }) => {
+test('post: Archive on the bar archives the ticked conversations', async ({ page }) => {
   await page.goto('/practice/mail/app');
   await hydrateAll(page);
   await page.locator('[data-row="invoice"] [role="checkbox"]').click();
   await page.locator('[data-row="lunch"] [role="checkbox"]').click();
-  await page.locator('[data-row="roadmap"] [class*="_main_"]').focus();
-  await page.keyboard.press('e');
+  await page.getByRole('region', { name: 'Conversations' }).getByRole('button', { name: 'Archive' }).first().click();
   await expect(page.locator('[data-row="invoice"], [data-row="lunch"]')).toHaveCount(0);
   await expect(page.locator('[data-row="roadmap"]')).toHaveCount(1);
 });
@@ -1241,7 +1240,7 @@ test('post: R replies at the foot of the conversation, to the sender, and the re
   await page.locator('[data-row="lunch"] [class*="_main_"]').click();
   const conversation = page.getByRole('region', { name: 'Conversation' });
   const before = await conversation.getByRole('article').count();
-  await page.keyboard.press('r');
+  await conversation.getByRole('button', { name: /^Reply to/ }).click();
   const reply = conversation.getByRole('region', { name: 'Reply' });
   await expect(reply.getByRole('textbox', { name: 'Message' })).toBeFocused();
   await expect(reply.getByText('Daniel Brooks')).toBeVisible();
@@ -1263,7 +1262,8 @@ test('post: R replies at the foot of the conversation, to the sender, and the re
 test('post: the formatting row marks what applies at the caret; ⌘K links the selection and Esc returns to the text', async ({ page }) => {
   await page.goto('/practice/mail/app');
   await hydrateAll(page);
-  await page.keyboard.press('c');
+  await page.getByRole('button', { name: 'New message' }).click();
+  await page.mouse.move(0, 0);
   const composer = page.getByRole('region', { name: 'New message' });
   const body = composer.getByRole('textbox', { name: 'Message' });
   const bar = composer.getByRole('toolbar', { name: 'Formatting' });
@@ -1301,7 +1301,8 @@ test('post: the formatting row marks what applies at the caret; ⌘K links the s
 test('post: @ and a name mentions a contact and puts them on To; Esc closes only the list', async ({ page }) => {
   await page.goto('/practice/mail/app');
   await hydrateAll(page);
-  await page.keyboard.press('c');
+  await page.getByRole('button', { name: 'New message' }).click();
+  await page.mouse.move(0, 0);
   const composer = page.getByRole('region', { name: 'New message' });
   const body = composer.getByRole('textbox', { name: 'Message' });
   await body.click();
@@ -1326,7 +1327,8 @@ test('post: @ and a name mentions a contact and puts them on To; Esc closes only
 test('post: files attach by picking or dropping, each with its own progress; Send waits for them, then sends', async ({ page }) => {
   await page.goto('/practice/mail/app');
   await hydrateAll(page);
-  await page.keyboard.press('c');
+  await page.getByRole('button', { name: 'New message' }).click();
+  await page.mouse.move(0, 0);
   const composer = page.getByRole('region', { name: 'New message' });
   await composer.getByRole('combobox', { name: 'To' }).fill('mira');
   await composer.getByRole('combobox', { name: 'To' }).press('Enter');
@@ -1344,7 +1346,8 @@ test('post: files attach by picking or dropping, each with its own progress; Sen
   await expect(page.locator('[data-outbox]').getByRole('status')).toContainText('Sending', { timeout: 6000 });
   await expect(composer).toHaveCount(0);
   // Dropping onto the composer: an outline while over it, a card after.
-  await page.keyboard.press('c');
+  await page.getByRole('button', { name: 'New message' }).click();
+  await page.mouse.move(0, 0);
   const drop = await page.evaluateHandle(() => {
     const dt = new DataTransfer();
     dt.items.add(new File(['x'.repeat(2048)], 'notes.txt', { type: 'text/plain' }));
@@ -1393,14 +1396,9 @@ test('post: a row keeps its time under the pointer; its actions come once the po
   await expect(list.locator('[data-row="invoice"]').getByLabel('Starred')).toHaveCount(0);
 });
 
-test('post: / searches from anywhere, and a draft is marked in ink', async ({ page }) => {
+test('post: a draft is marked in ink', async ({ page }) => {
   await page.goto('/practice/mail/app');
   await hydrateAll(page);
-  await page.locator('[data-row="lunch"] [class*="_main_"]').click();
-  await page.keyboard.press('/');
-  await expect(page.getByRole('textbox', { name: 'Search mail' })).toBeFocused();
-  // Esc empties the search and leaves focus in it, where C is a letter, not New message.
-  await page.keyboard.press('Escape');
   await page.getByRole('region', { name: 'Conversations' }).getByRole('button', { name: 'New message' }).click();
   await page.getByRole('combobox', { name: 'To' }).fill('mira');
   await page.getByRole('combobox', { name: 'To' }).press('Enter');
@@ -1446,13 +1444,15 @@ test('tip: focus the app moves back opens no tooltip; focus the person moves wit
   const newMessage = list.getByRole('button', { name: 'New message' });
   const tip = openTip(page, 'New message');
   // Esc out of a new message: focus comes back to New message, quietly.
-  await page.keyboard.press('c');
+  await page.getByRole('button', { name: 'New message' }).click();
+  await page.mouse.move(0, 0);
   await page.keyboard.press('Escape');
   await expect(newMessage).toBeFocused();
   await page.waitForTimeout(800);
   await expect(tip).toHaveCount(0);
   // Sent with ⌘↵: the same.
-  await page.keyboard.press('c');
+  await page.getByRole('button', { name: 'New message' }).click();
+  await page.mouse.move(0, 0);
   await page.getByRole('combobox', { name: 'To' }).fill('mira');
   await page.getByRole('combobox', { name: 'To' }).press('Enter');
   await page.getByRole('textbox', { name: 'Message' }).click();
@@ -1466,4 +1466,69 @@ test('tip: focus the app moves back opens no tooltip; focus the person moves wit
   await page.keyboard.press('Tab');
   await expect(newMessage).toBeFocused();
   await expect(tip).toBeVisible();
+});
+
+test('site: a link reached by Tab shows a ring, and a link in prose is underlined', async ({ page }) => {
+  await page.goto('/principles/colour-means-one-thing');
+  await hydrateAll(page);
+  const link = page.locator('main p a:not([class])').first();
+  expect(await link.evaluate((a) => getComputedStyle(a).textDecorationLine)).toBe('underline');
+  await link.focus();
+  await page.keyboard.press('Shift+Tab');
+  await page.keyboard.press('Tab');
+  expect(await link.evaluate((a) => a === document.activeElement && getComputedStyle(a).boxShadow !== 'none')).toBe(true);
+});
+
+test('site: specimens held still take no focus; a home card is one Tab stop', async ({ page }) => {
+  await page.goto('/components/checkbox');
+  await hydrateAll(page);
+  const inside = await page.locator('[inert] :is(button, input, [tabindex="0"], [role="checkbox"])').count();
+  expect(inside).toBeGreaterThan(0);
+  expect(await page.locator('[inert]').evaluateAll((els) => els.every((e) => (e as HTMLElement).inert))).toBe(true);
+  await page.goto('/');
+  await hydrateAll(page);
+  const card = page.locator('[data-card]').first();
+  await card.locator('a').focus();
+  await page.keyboard.press('Tab');
+  // The next stop is the next card's link, not a control inside the first card's preview.
+  expect(await page.evaluate(() => document.activeElement?.closest('[data-card]') !== document.querySelector('[data-card]'))).toBe(true);
+});
+
+test('dialog: a press on the scrim keeps focus in the dialog', async ({ page }) => {
+  await page.goto('/components/dialog');
+  await hydrateAll(page);
+  await page.getByRole('button', { name: 'Delete project…' }).first().click();
+  const dialog = page.getByRole('alertdialog');
+  await expect(dialog).toBeVisible();
+  await page.mouse.click(5, 300);
+  await expect(dialog).toBeVisible();
+  expect(await page.evaluate(() => !!document.activeElement?.closest('[role="alertdialog"]'))).toBe(true);
+});
+
+test('toast: deleting a row hands focus to the next row’s Delete', async ({ page }) => {
+  await page.goto('/components/toast');
+  await hydrateAll(page);
+  const del = page.getByRole('button', { name: 'Delete', exact: true });
+  await del.first().focus();
+  await page.keyboard.press('Enter');
+  await expect.poll(() => page.evaluate(() => document.activeElement?.textContent)).toBe('Delete');
+});
+
+test('post: focus lands where the action leaves it — unfolding, closing a message, Undo, Search all mail', async ({ page }) => {
+  await page.goto('/practice/mail/app');
+  await hydrateAll(page);
+  const tag = () =>
+    page.evaluate(() => (document.activeElement === document.body ? 'body' : (document.activeElement?.textContent ?? '').slice(0, 40)));
+  await page.locator('[data-row="roadmap"] [class*="_main_"]').click();
+  await page.getByRole('button', { name: /earlier messages/ }).click();
+  await expect.poll(tag).not.toBe('body');
+  await page.keyboard.press('Enter');
+  await expect.poll(tag).not.toBe('body');
+  await page.getByRole('button', { name: 'Back' }).click();
+  await page.locator('[data-row="lunch"]').getByRole('button', { name: 'Archive' }).click({ force: true });
+  await page.getByRole('button', { name: 'Undo', exact: true }).click();
+  await expect.poll(tag).not.toBe('body');
+  await page.getByRole('textbox', { name: 'Search mail' }).fill('handover');
+  await page.getByRole('button', { name: 'Search all mail' }).click();
+  await expect(page.getByRole('textbox', { name: 'Search mail' })).toBeFocused();
 });

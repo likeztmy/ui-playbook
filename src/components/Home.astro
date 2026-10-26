@@ -68,7 +68,8 @@ const groups = [
                   <span class={s.cardTitle}>{titleIn(e, lang)}</span>
                   <span class={s.cardMeta}>{e.kind === 'practice' ? t.decisions(e.details) : t.details(e.details)}</span>
                 </a>
-                <div class={s.cardStage}>
+                {/* Something to look at, not to use: the card is one link, one Tab stop. */}
+                <div class={s.cardStage} inert>
                   {e.slug === 'button' && <ButtonPreview client:visible />}
                   {e.slug === 'space-groups-by-ratio' && <RatioPreview client:visible />}
                   {e.slug === 'the-faster-way' && <FasterPreview />}

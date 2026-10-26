@@ -14,6 +14,10 @@
   background: var(--surface);
   // Too many columns: scroll sideways inside the frame, first column fixed.
   overflow: auto;
+
+  &:focus-visible {
+    box-shadow: var(--focus-ring);
+  }
   overscroll-behavior-x: contain;
 }
 

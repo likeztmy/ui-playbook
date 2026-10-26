@@ -189,7 +189,7 @@ export function CheckboxMixed() {
 /** Alignment and edge, held still and magnified. */
 export function CheckboxAnatomy() {
   return (
-    <Frame label="At 2×" height={0}>
+    <Frame label="At 2×" height={0} still>
       <div className={s.anatomyPair}>
         <figure className={s.anatomyItem}>
           <div className={s.magnify}>

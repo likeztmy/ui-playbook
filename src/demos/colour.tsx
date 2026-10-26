@@ -107,7 +107,7 @@ export function ColourOneBlue() {
         <>
           Every “current” is blue, so the one blue that means “do this now” has to be read for, not seen. A single colour pops out of a
           scene only while it’s the only one; mixed in with others, finding it becomes a search item by item (
-          <a href="https://www.csc2.ncsu.edu/faculty/healey/PP/">Healey</a>).
+          <a href="https://doi.org/10.1109/TVCG.2011.127">Healey and Enns 2012</a>).
         </>
       }
       afterNote="Current states speak in shape and shade: an ink bar, a raised segment, a pale tint. The one solid blue is Publish."

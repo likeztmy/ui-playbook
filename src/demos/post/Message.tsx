@@ -24,7 +24,7 @@ export function Message({ m, open, onToggle, headRef, undo }: Props) {
   const from = person(m.from);
   if (!open) {
     return (
-      <button ref={headRef} type="button" className={s.collapsed} data-unread={m.unread ? '' : undefined} onClick={onToggle}>
+      <button ref={headRef} type="button" className={s.collapsed} data-message={m.id} data-unread={m.unread ? '' : undefined} onClick={onToggle}>
         <Avatar id={m.from} size="sm" />
         <span className={s.name}>{from.name}</span>
         <span className={s.snippet}>{snippet(m.body)}</span>
@@ -33,7 +33,7 @@ export function Message({ m, open, onToggle, headRef, undo }: Props) {
     );
   }
   return (
-    <article className={s.message} aria-label={`${from.name}, ${m.at}`}>
+    <article className={s.message} data-message={m.id} aria-label={`${from.name}, ${m.at}`}>
       <header className={s.head}>
         <Avatar id={m.from} />
         {/* The name collapses the message; the recipients open their own list. */}

@@ -66,7 +66,7 @@ export function PostExample() {
         </div>
         <div ref={frame} className={s.frame}>
           <ToastProvider container={toasts} contained>
-            <Shell onToasts={setToasts} spot={spot} pinned={pinned} control={control} />
+            <Shell onToasts={setToasts} spot={spot} pinned={pinned} control={control} embedded />
           </ToastProvider>
         </div>
       </div>

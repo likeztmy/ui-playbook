@@ -96,16 +96,28 @@ export function Conversation({ post, compose, c, single }: { post: Post; compose
   const newest = latest(c).id;
   useEffect(() => setOpen((o) => (o.has(newest) ? o : new Set([...o, newest]))), [newest]);
 
-  const toggle = (id: string) =>
+  // Opening or closing a message swaps the button focus was on: focus goes to the one that replaces it.
+  const box = useRef<HTMLElement>(null);
+  // A fresh object each time, so the same message asked for twice in a row still lands.
+  const [land, setLand] = useState<{ id: string } | null>(null);
+  useEffect(() => {
+    if (!land) return;
+    const at = box.current?.querySelector(`[data-message="${land.id}"]`);
+    (at instanceof HTMLButtonElement ? at : at?.querySelector('button'))?.focus({ preventScroll: true });
+  }, [land]);
+
+  const toggle = (id: string) => {
+    setLand({ id });
     setOpen((o) => {
       const next = new Set(o);
       if (next.has(id)) next.delete(id);
       else next.add(id);
       return next;
     });
+  };
 
   return (
-    <section className={s.conversation} aria-label="Conversation">
+    <section ref={box} className={s.conversation} aria-label="Conversation">
       <TipGroup>
         <div className={s.bar}>
           <Tip label="Back">
@@ -161,7 +173,14 @@ export function Conversation({ post, compose, c, single }: { post: Post; compose
           <div className={s.messages}>
             {rows(c, open, unfolded).map((r) =>
               r.kind === 'run' ? (
-                <Run key={`run-${r.from}`} messages={c.messages.slice(r.from, r.from + r.count)} onOpen={() => setUnfolded(true)} />
+                <Run
+                  key={`run-${r.from}`}
+                  messages={c.messages.slice(r.from, r.from + r.count)}
+                  onOpen={() => {
+                    setUnfolded(true);
+                    setLand({ id: c.messages[r.from].id });
+                  }}
+                />
               ) : (
                 <Message
                   key={c.messages[r.index].id}

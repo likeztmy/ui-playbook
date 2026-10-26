@@ -1,11 +1,14 @@
 import { AlertDialog as BaseAlertDialog } from '@base-ui/react/alert-dialog';
 import { Dialog as BaseDialog } from '@base-ui/react/dialog';
-import type { ComponentProps, ReactNode } from 'react';
+import type { ComponentProps, MouseEvent, ReactNode } from 'react';
 import { cx } from './cx';
 import { usePortalContainer } from './portal';
 import s from './Dialog.module.scss';
 
 export { s as dialogClasses };
+
+// A press on the scrim around the panel keeps focus where it was: in the dialog, never on <body>.
+const keepFocus = (e: MouseEvent<HTMLElement>) => e.target === e.currentTarget && e.preventDefault();
 
 type Shell = {
   title: ReactNode;
@@ -25,8 +28,8 @@ function DialogPopup({ title, description, children, actions, size = 'md', class
   const container = usePortalContainer();
   return (
     <BaseDialog.Portal container={container}>
-      <BaseDialog.Backdrop className={s.backdrop} />
-      <BaseDialog.Viewport className={s.viewport}>
+      <BaseDialog.Backdrop className={s.backdrop} onMouseDown={keepFocus} />
+      <BaseDialog.Viewport className={s.viewport} onMouseDown={keepFocus}>
         <BaseDialog.Popup {...focus} className={cx(s.popup, size === 'sm' && s.sm, className)}>
           <BaseDialog.Title className={s.title}>{title}</BaseDialog.Title>
           {description && <BaseDialog.Description className={s.description}>{description}</BaseDialog.Description>}
@@ -55,13 +58,11 @@ function AlertPopup({ title, description, children, actions, size = 'sm', classN
   const container = usePortalContainer();
   return (
     <BaseAlertDialog.Portal container={container}>
-      <BaseAlertDialog.Backdrop className={s.backdrop} />
-      <BaseAlertDialog.Viewport className={s.viewport}>
+      <BaseAlertDialog.Backdrop className={s.backdrop} onMouseDown={keepFocus} />
+      <BaseAlertDialog.Viewport className={s.viewport} onMouseDown={keepFocus}>
         <BaseAlertDialog.Popup {...focus} className={cx(s.popup, size === 'sm' && s.sm, className)}>
           <BaseAlertDialog.Title className={s.title}>{title}</BaseAlertDialog.Title>
-          {description && (
-            <BaseAlertDialog.Description className={s.description}>{description}</BaseAlertDialog.Description>
-          )}
+          {description && <BaseAlertDialog.Description className={s.description}>{description}</BaseAlertDialog.Description>}
           {children && <div className={s.body}>{children}</div>}
           <div className={s.footer}>{actions}</div>
         </BaseAlertDialog.Popup>

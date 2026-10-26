@@ -61,7 +61,14 @@ export function usePost(seed: Conversation[] = CONVERSATIONS) {
     const n = ids.length;
     toast({
       title: to === 'archive' ? (n === 1 ? 'Archived' : `${n} archived`) : n === 1 ? 'Moved to Inbox' : `${n} moved to Inbox`,
-      action: { label: 'Undo', onClick: () => setMail((all) => all.map((c) => (before.has(c.id) ? { ...c, folder: before.get(c.id)! } : c))) },
+      action: {
+        label: 'Undo',
+        onClick: () => {
+          setMail((all) => all.map((c) => (before.has(c.id) ? { ...c, folder: before.get(c.id)! } : c)));
+          // The toast that held focus goes; focus goes to the row that came back.
+          requestAnimationFrame(() => document.querySelector<HTMLElement>(`[data-row="${ids[0]}"] > button`)?.focus());
+        },
+      },
     });
   };
 

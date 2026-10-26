@@ -37,6 +37,8 @@ export type Chrome = {
   actions: ReactNode;
   /** New messages just sent, atop the list with their Undo: where the eye comes back to. */
   outbox: ReactNode;
+  /** The search field, for focus to stay in when a search widens. */
+  search: RefObject<HTMLInputElement | null>;
 };
 
 /** The bar over the list: select all, then the selection's actions or where you are; then search and New message. */
@@ -154,7 +156,13 @@ export function List({ post, rows, chrome, pinned }: ListProps) {
                   No conversations match “{q}” in {post.everywhere ? 'All mail' : FOLDER_NAME[post.folder]}.
                 </p>
                 {!post.everywhere && (
-                  <Button size="sm" onClick={post.searchEverywhere}>
+                  <Button
+                    size="sm"
+                    onClick={() => {
+                      post.searchEverywhere();
+                      chrome.search.current?.focus();
+                    }}
+                  >
                     Search all mail
                   </Button>
                 )}

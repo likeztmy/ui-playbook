@@ -9,7 +9,14 @@ const HUES = [20, 60, 100, 150, 200, 250, 290, 330];
 const hue = (id: string) => HUES[[...id].reduce((n, ch) => (n * 31 + ch.charCodeAt(0)) >>> 0, 7) % HUES.length];
 
 const initials = (name: string, org?: boolean) =>
-  (org ? name.replace(/^The /, '')[0] : name.split(' ').map((w) => w[0]).slice(0, 2).join('')).toUpperCase();
+  (org
+    ? name.replace(/^The /, '')[0]
+    : name
+        .split(' ')
+        .map((w) => w[0])
+        .slice(0, 2)
+        .join('')
+  ).toUpperCase();
 
 /** A person's initials on their colour. */
 export function Avatar({ id, size = 'md' }: { id: string; size?: 'sm' | 'md' }) {

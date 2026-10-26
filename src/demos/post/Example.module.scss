@@ -69,11 +69,6 @@
 
 .text a {
   display: block;
-  color: var(--accent-text);
+  width: fit-content;
   font-size: 13px;
-  text-decoration: none;
-
-  &:hover {
-    text-decoration: underline;
-  }
 }

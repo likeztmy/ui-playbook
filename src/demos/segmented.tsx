@@ -85,7 +85,7 @@ export function SegmentedVariants() {
 
 export function SegmentedStates() {
   return (
-    <Frame label="All states" height={0}>
+    <Frame label="All states" height={0} still>
       <div className={s.sliderStates}>
         {(
           [
@@ -163,7 +163,7 @@ export function SegmentedRaised() {
 /** The track and thumb, magnified. */
 export function SegmentedAnatomy() {
   return (
-    <Frame label="At 2×" height={0}>
+    <Frame label="At 2×" height={0} still>
       <figure className={s.anatomyItem}>
         <div className={s.magnify}>
           <Own label="View" segments={VIEWS} initial="list" />

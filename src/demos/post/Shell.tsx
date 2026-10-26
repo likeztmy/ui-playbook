@@ -19,61 +19,6 @@ import s from './Shell.module.scss';
 
 const ic = { size: 16, strokeWidth: 1.5, nonScalingStroke: true, 'aria-hidden': true } as const;
 
-/** Gmail's keys: J older, K newer, X tick, E archive, S star, U back, / search; C compose, R reply, A reply all, F forward. */
-function useKeys(post: Post, compose: Compose, rows: RefObject<Map<string, HTMLButtonElement>>, search: RefObject<HTMLInputElement | null>) {
-  const moved = useRef(false);
-  // Focus follows a conversation the keyboard moved to.
-  useEffect(() => {
-    if (moved.current && post.open) rows.current.get(post.open.id)?.focus();
-    moved.current = false;
-  }, [post.open, rows]);
-
-  return (e: KeyboardEvent) => {
-    if (e.metaKey || e.ctrlKey || e.altKey || compose.writing) return;
-    if (
-      (e.target as HTMLElement).closest(
-        'input, textarea, [contenteditable="true"], [role="dialog"], [role="menu"], section[aria-label="Reply"], section[aria-label="Forward"]',
-      )
-    )
-      return;
-    const row = (e.target as HTMLElement).closest('[data-row]')?.getAttribute('data-row');
-    const id = row ?? post.open?.id;
-    const c = post.mail.find((x) => x.id === id);
-    const ticked = [...post.checked];
-    const act: Record<string, () => void> = {
-      j: () => post.step(1, id),
-      k: () => post.step(-1, id),
-      // With conversations ticked, E and S act on them, as the bar's buttons do.
-      e: () => (ticked.length ? post.archive(ticked) : c && post.archive([c.id])),
-      s: () => {
-        if (ticked.length) post.star(ticked, !post.mail.filter((x) => post.checked.has(x.id)).every((x) => x.starred));
-        else if (c) post.star([c.id], !c.starred);
-      },
-      x: () => {
-        if (!c) return;
-        const next = new Set(post.checked);
-        if (next.has(c.id)) next.delete(c.id);
-        else next.add(c.id);
-        post.setChecked(next);
-      },
-      u: post.close,
-      // Search filters the list: from a conversation, back to the list first.
-      '/': () => {
-        post.close();
-        requestAnimationFrame(() => search.current?.focus());
-      },
-      c: compose.compose,
-      r: () => post.open && compose.reply(post.open, 'reply'),
-      a: () => post.open && compose.reply(post.open, 'replyAll'),
-      f: () => post.open && compose.reply(post.open, 'forward'),
-    };
-    if (!act[e.key]) return;
-    e.preventDefault();
-    moved.current = e.key === 'j' || e.key === 'k';
-    act[e.key]();
-  };
-}
-
 /** What a page around Post reads and drives, to play a decision in the app. Current as of the last render. */
 export type Control = { post: Post; compose: Compose; root: HTMLDivElement | null };
 
@@ -86,9 +31,11 @@ type ShellProps = {
   pinned?: string | null;
   /** At full screen: the page Post came from, at the folders' foot. */
   back?: string;
+  /** Inside a page that has its own main content: the app's main area is a plain region then. */
+  embedded?: boolean;
 };
 
-export function Shell({ onToasts, spot, control, pinned, back }: ShellProps) {
+export function Shell({ onToasts, spot, control, pinned, back, embedded }: ShellProps) {
   const post = usePost();
   const compose = useCompose(post);
   const root = useRef<HTMLDivElement>(null);
@@ -96,15 +43,6 @@ export function Shell({ onToasts, spot, control, pinned, back }: ShellProps) {
   const rows = useRef(new Map<string, HTMLButtonElement>());
   const search = useRef<HTMLInputElement>(null);
   const composeButton = useRef<HTMLButtonElement>(null);
-  const keys = useKeys(post, compose, rows, search);
-  // On the whole page, as Gmail's are: they work before anything in the app has focus.
-  const latestKeys = useRef(keys);
-  latestKeys.current = keys;
-  useEffect(() => {
-    const on = (e: KeyboardEvent) => latestKeys.current(e);
-    document.addEventListener('keydown', on);
-    return () => document.removeEventListener('keydown', on);
-  }, []);
   const reading = !!post.open || !!compose.writing;
 
   useEffect(() => {
@@ -117,7 +55,9 @@ export function Shell({ onToasts, spot, control, pinned, back }: ShellProps) {
   // Back from a conversation puts focus on its row; leaving a new message, on Compose. Never on <body>.
   const was = useRef<{ open?: string; writing: boolean }>({ writing: false });
   useEffect(() => {
-    if (!compose.writing && !post.open) {
+    // Only when focus was in the app: a page around it keeps its own.
+    const here = document.activeElement === document.body || !!root.current?.contains(document.activeElement);
+    if (!compose.writing && !post.open && here) {
       if (was.current.open) rows.current.get(was.current.open)?.focus({ preventScroll: true });
       else if (was.current.writing) composeButton.current?.focus();
     }
@@ -132,6 +72,7 @@ export function Shell({ onToasts, spot, control, pinned, back }: ShellProps) {
   // What every list's bar carries besides its own tools: where you are on a phone, search, and New message.
   const chrome: Chrome = {
     outbox: null,
+    search,
     folders: (
       <Menu.Root>
         <Menu.Trigger render={<Button variant="ghost" className={s.folderMenu} />}>
@@ -192,7 +133,8 @@ export function Shell({ onToasts, spot, control, pinned, back }: ShellProps) {
   return (
     <div ref={root} className={s.app} data-view={reading ? 'message' : 'list'} data-spot={spot ?? undefined}>
       <nav className={s.side} aria-label="Folders">
-        <span className={s.brand}>Post</span>
+        {/* The app's name heads the page at full screen; on a page with its own title it's a label. */}
+        {embedded ? <span className={s.brand}>Post</span> : <h1 className={s.brand}>Post</h1>}
         {FOLDERS.map((f) => {
           const count = f.id === 'inbox' ? post.unreadCount : f.id === 'drafts' ? compose.drafts.length : 0;
           return (
@@ -210,7 +152,7 @@ export function Shell({ onToasts, spot, control, pinned, back }: ShellProps) {
           </a>
         )}
       </nav>
-      <main className={s.main}>{main}</main>
+      {embedded ? <div className={s.main}>{main}</div> : <main className={s.main}>{main}</main>}
       {/* Toasts rise in their own layer, laid over the main area. */}
       <div ref={onToasts} className={s.toastLayer} data-overlay />
     </div>

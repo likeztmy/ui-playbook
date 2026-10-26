@@ -74,9 +74,9 @@ export function EyeChange() {
       after={<Shop near />}
       beforeNote={
         <>
-          The count changes in the corner while the eye is on the button. A change outside the point of focus, with no motion to pull the
-          eye, goes unseen: <a href="https://www.nngroup.com/articles/change-blindness-definition/">change blindness</a>. Was it added? The
-          only way to know is to look away from the button.
+          The count changes in the corner while the eye is on the button. A change outside the point of focus, with no motion to pull the eye, goes
+          unseen: <a href="https://www.nngroup.com/articles/change-blindness-definition/">change blindness</a>. Was it added? The only way to know is
+          to look away from the button.
         </>
       }
       afterNote="The button answers where the click was, and the count moves as it changes, so the eye that glances up finds it. The button keeps its width, so nothing shifts under the pointer."
@@ -95,7 +95,12 @@ const PLANS = [
 /** A pricing page in a short window. `cut` lets the fold fall through the plans. */
 function Pricing({ cut }: { cut?: boolean }) {
   return (
-    <div className={s.floorPane} tabIndex={0} role="region" aria-label="Pricing page">
+    <div
+      className={s.floorPane}
+      tabIndex={0}
+      role="region"
+      aria-label={cut ? 'Pricing page, the fold through the plans' : 'Pricing page, the first screen ending with the band'}
+    >
       <div className={cx(s.floorHero, cut && s.floorHeroShort)}>
         <span className={s.floorTitle}>Simple pricing</span>
         <span className={s.floorLead}>One plan per team. Change or cancel any time.</span>
@@ -133,8 +138,8 @@ export function EyeFloor() {
       beforeNote={
         <>
           The band ends where the window does, and the first screen looks finished: the{' '}
-          <a href="https://www.nngroup.com/videos/illusion-completeness/">illusion of completeness</a>. Scroll bars that hide until used, as
-          on the Mac and on phones, leave no other hint.
+          <a href="https://www.nngroup.com/videos/illusion-completeness/">illusion of completeness</a>. Scroll bars that hide until used, as on the
+          Mac and on phones, leave no other hint.
         </>
       }
       afterNote="The fold cuts through the plans. Half a card can only mean there is more, so the page asks to be scrolled without an arrow saying so."
@@ -198,9 +203,9 @@ export function EyeBanner() {
       after={<Billing inline />}
       beforeNote={
         <>
-          A bright, rounded band with a sparkle and a close button is how promotions look, and people have learned to look past them: in
-          NN/g’s eye-tracking, <a href="https://www.nngroup.com/articles/banner-blindness-old-and-new-findings/">banner blindness</a> holds
-          for anything ad-shaped, whatever it says.
+          A bright, rounded band with a sparkle and a close button is how promotions look, and people have learned to look past them: in NN/g’s
+          eye-tracking, <a href="https://www.nngroup.com/articles/banner-blindness-old-and-new-findings/">banner blindness</a> holds for anything
+          ad-shaped, whatever it says.
         </>
       }
       afterNote="The same words, in the interface’s own voice, beside the card they’re about. The eye reaches them on its way through Payment method, the one place it goes when it cares about the card."
@@ -236,8 +241,8 @@ export function EyeProximity() {
       beforeNote="Every gap is 12. Each label sits as near the field above as the one below, and the line about delivery could belong to Phone or to Company: the eye groups by distance before it reads a word."
       afterNote={
         <>
-          4 between a label, its field and its hint; 20 between fields. Inside a group the space is clearly smaller than between groups, so
-          each label points one way (<a href="https://www.nngroup.com/articles/gestalt-proximity/">NN/g, proximity</a>).
+          4 between a label, its field and its hint; 20 between fields. Inside a group the space is clearly smaller than between groups, so each label
+          points one way (<a href="https://www.nngroup.com/articles/gestalt-proximity/">NN/g, proximity</a>).
         </>
       }
     />
@@ -273,8 +278,8 @@ export function EyeScent() {
         <>
           People judge a link by what its words promise before they click: its{' '}
           <a href="https://www.nngroup.com/articles/information-scent/">information scent</a>, from Pirolli and Card’s{' '}
-          <a href="https://doi.org/10.1037/0033-295X.106.4.643">information foraging</a>. Specific labels are followed; vague ones are opened
-          one by one.
+          <a href="https://doi.org/10.1037/0033-295X.106.4.643">information foraging</a>. Specific labels are followed; vague ones are opened one by
+          one.
         </>
       }
     />
@@ -293,7 +298,7 @@ export function EyeSquint() {
       height={0}
       readout={<code className={s.readout}>filter: blur({blur}px)</code>}
       stage={
-        <div className={s.squint} style={{ filter: blur ? `blur(${blur}px)` : undefined }} aria-hidden>
+        <div className={s.squint} style={{ filter: blur ? `blur(${blur}px)` : undefined }} inert>
           {page === 'Billing' ? (
             <>
               <Billing />

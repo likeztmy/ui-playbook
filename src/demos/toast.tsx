@@ -1,5 +1,5 @@
 import { CircleCheck } from 'lucide-react';
-import { useState, type ReactNode } from 'react';
+import { useRef, useState, type ReactNode } from 'react';
 import { Button } from '../ui/Button';
 import { AlertDialog } from '../ui/Dialog';
 import { cx } from '../ui/cx';
@@ -26,16 +26,22 @@ const START = ['Q4 roadmap.fig', 'Brand guide.pdf', 'Metrics.csv'];
 function Files({ toastClass }: { toastClass?: string }) {
   const [files, setFiles] = useState(START);
   const toast = useToast();
+  const box = useRef<HTMLDivElement>(null);
   const remove = (f: string) => {
     const at = files.indexOf(f);
     setFiles((list) => list.filter((x) => x !== f));
+    // The Delete that had focus goes with its row: focus moves to the next row's, or the last one's.
+    requestAnimationFrame(() => {
+      const left = box.current?.querySelectorAll('button');
+      left?.[Math.min(at, left.length - 1)]?.focus();
+    });
     toast({
       title: `Deleted “${f}”`,
       action: { label: 'Undo', onClick: () => setFiles((list) => [...list.slice(0, at), f, ...list.slice(at)]) },
     });
   };
   return (
-    <div className={cx(s.toastFiles, toastClass)}>
+    <div ref={box} className={cx(s.toastFiles, toastClass)}>
       {files.map((f) => (
         <div key={f}>
           <span>{f}</span>

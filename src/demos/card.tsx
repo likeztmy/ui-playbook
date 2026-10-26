@@ -120,7 +120,7 @@ export function CardVariants() {
 
 export function CardStates() {
   return (
-    <Frame label="All states" height={0}>
+    <Frame label="All states" height={0} still>
       <div className={s.cardStates}>
         {(
           [

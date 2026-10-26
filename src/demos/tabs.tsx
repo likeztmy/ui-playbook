@@ -83,7 +83,7 @@ export function TabsVariants() {
 
 export function TabsStates() {
   return (
-    <Frame label="All states" height={0}>
+    <Frame label="All states" height={0} still>
       <Tabs.Root defaultValue="current" className={s.tabsDemo}>
         <Tabs.List aria-label="States">
           <Tabs.Tab value="current">Current</Tabs.Tab>

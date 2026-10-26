@@ -59,7 +59,7 @@ function Carousel({ locked }: { locked?: boolean }) {
           <ChevronRight {...ic} />
         </button>
       </div>
-      <div className={s.intDots} aria-label={`Photo ${index + 1} of ${SLIDES.length}`}>
+      <div className={s.intDots} role="img" aria-label={`Photo ${index + 1} of ${SLIDES.length}`}>
         {SLIDES.map(([place], i) => (
           <span key={place} className={s.intDot} data-current={i === index ? '' : undefined} />
         ))}
@@ -265,7 +265,7 @@ function Swiper({ curve }: { curve?: boolean }) {
           ))}
         </motion.div>
       </div>
-      <div className={s.intDots} aria-label={`Photo ${index + 1} of ${SLIDES.length}`}>
+      <div className={s.intDots} role="img" aria-label={`Photo ${index + 1} of ${SLIDES.length}`}>
         {SLIDES.map(([place], i) => (
           <span key={place} className={s.intDot} data-current={i === index ? '' : undefined} />
         ))}

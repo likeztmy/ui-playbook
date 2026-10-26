@@ -129,6 +129,8 @@ type FrameProps = {
   gaps?: boolean;
   /** Shows the Gaps switch in the band. */
   onGapsChange?: (gaps: boolean) => void;
+  /** A specimen held still for reading: nothing in it takes focus or a click. */
+  still?: boolean;
 };
 
 type Box = { x: number; y: number; w: number; h: number };
@@ -198,7 +200,7 @@ function useStartFrame(on: boolean | undefined, stage: HTMLElement | null, porta
  * A demo stage with a band under it naming the scene or the verdict, after
  * Material 3's Do / Don't, and its own light/dark switch. Popups stay inside it.
  */
-export function Frame({ label, children, height = 200, className, defaultTheme, tone, slow, onSlowChange, gaps, onGapsChange }: FrameProps) {
+export function Frame({ label, children, height = 200, className, defaultTheme, tone, slow, onSlowChange, gaps, onGapsChange, still }: FrameProps) {
   const words = FRAME_UI[useLang()];
   const [theme, setTheme] = useState<Theme | null>(defaultTheme ?? null);
   const [portal, setPortal] = useState<HTMLElement | null>(null);
@@ -209,7 +211,7 @@ export function Frame({ label, children, height = 200, className, defaultTheme, 
 
   return (
     <figure className={cx(s.frame, className)} data-theme={theme ?? undefined} data-slow={slow ? '' : undefined}>
-      <div ref={setStage} className={s.stage} style={{ minHeight: height }}>
+      <div ref={setStage} className={s.stage} style={{ minHeight: height }} inert={still}>
         <PortalContainer.Provider value={portal}>
           <GapsOn.Provider value={!!gaps}>
             <TipGroup>{children}</TipGroup>
@@ -334,7 +336,7 @@ type StateGridProps = {
 /** Every variant × every state, pinned, so they can be read side by side. */
 export function StateGrid({ rows }: StateGridProps) {
   return (
-    <Frame label="All states" height={0}>
+    <Frame label="All states" height={0} still>
       <div className={s.grid} style={{ gridTemplateColumns: `auto repeat(${STATES.length}, 1fr)` }}>
         <span />
         {STATES.map((state) => (

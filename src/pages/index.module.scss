@@ -39,6 +39,7 @@
 
 // Card: radius-lg; the header row is the link, the stage is live.
 .card {
+  position: relative;
   display: flex;
   flex-direction: column;
   min-width: 0;
@@ -48,6 +49,11 @@
 
   &[hidden] {
     display: none;
+  }
+
+  // The whole card is its title's link: one target, one focus ring around the card.
+  &:has(.cardHead:focus-visible) {
+    box-shadow: var(--focus-ring);
   }
 }
 
@@ -62,7 +68,18 @@
   color: var(--ink);
   transition: background-color var(--duration-fast) var(--ease-out);
 
-  &:hover {
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+
+  &:focus-visible {
+    box-shadow: none;
+  }
+
+  .card:hover & {
     background: var(--fill-hover);
     transition-duration: var(--duration-instant);
   }
