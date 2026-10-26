@@ -1,0 +1,117 @@
+---
+layout: ../../layouts/Entry.astro
+slug: sheet
+---
+import { SheetScene, SheetBlock, SheetResult, SheetCases, SheetScroll, SheetEdge } from '../../demos/sheet';
+
+<SheetScene client:visible />
+
+## When to use
+
+A sheet is a panel that rises from an edge of the screen over what's there, at a height people can change. It suits content that belongs to the screen behind it: a place on a map, the details of a route, a message being written. A decision that must be answered is a Dialog; a small job beside a button is a Popover; a list of actions is a Menu; a task of its own is a page.
+
+## What goes in one
+
+<SheetCases client:visible />
+
+A sheet earns its place when what's in it is about the screen behind: the place on the map, the filters on the results, the style of the selected word, the song in the library. Those are standard sheets, and the screen behind keeps working. A short list of actions you pick one of, like Share, is a modal sheet: you pick, it closes, and the result shows where you were. What doesn't belong is anything that has a life of its own: a checkout, a settings page, a second sheet, or a message nobody asked for. Apple keeps modality for when “there's a clear benefit” and the task is short, or people “can lose track of the task they suspended” ([Apple HIG, Modality](https://developer.apple.com/design/human-interface-guidelines/modality)).
+
+## Kinds
+
+### Standard: a tool beside the screen
+
+What's behind stays in use. Material's standard sheet “co-exists with the screen's main UI region”, and its example is “location information over a map” ([Material 3, Bottom sheets](https://m3.material.io/components/bottom-sheets/guidelines)). Apple's non-modal sheet is for “supplementary items that affect the main task in the parent view” ([Apple HIG, Sheets](https://developer.apple.com/design/human-interface-guidelines/sheets)).
+
+- **No dim, and no press outside closes it**, until it's dragged up to cover the screen. Then it dims and blocks.
+- **Focus stays where it is** when the sheet's content changes.
+- **Close, Escape, or a swipe down** closes it.
+
+### Modal: a short pause
+
+Everything behind stops, as for a Dialog. On phones, Material uses one for a long list of actions or a short form ([Material 3, Bottom sheets](https://m3.material.io/components/bottom-sheets/guidelines)).
+
+- **A dim behind it**, and a press on it closes the sheet.
+- **Focus moves in**; what's behind is `inert`, so Tab skips it.
+
+### Kinds side by side
+
+| Part | Standard | Modal |
+| --- | --- | --- |
+| What's behind, below the top height | in use | dimmed, inert |
+| What's behind, at the top height | dimmed, inert | dimmed, inert |
+| Press outside | nothing; on the dim, back down a height | closes |
+| Focus on open | stays, or moves in when opened from a button | moves in |
+| Heights | half and full | from content, at most full |
+
+## Details
+
+### It blocks exactly when it covers
+
+<SheetBlock client:visible />
+
+A modal sheet turns a glance at the map into close, look and reopen, and the route goes each time. When looking costs a move, people lean on memory instead ([Draschkow, Kallmayer & Nobre, 2021](https://doi.org/10.1016/j.cub.2020.11.013)), and comparisons made by navigating had much higher error rates than ones made by moving the eyes ([Plumlee & Ware, 2006](https://doi.org/10.1145/1165734.1165736)). No study has tested sheets themselves.
+
+But being non-modal isn't a fixed property either. Apple dims a sheet only from a height the app chooses: below it “the undimmed area around the sheet responds to user interaction”, above it the sheet blocks ([UIKit, `largestUndimmedDetentIdentifier`](https://developer.apple.com/documentation/uikit/uisheetpresentationcontroller/largestundimmeddetentidentifier)). SwiftUI does the same with `presentationBackgroundInteraction` ([SwiftUI](https://developer.apple.com/documentation/swiftui/view/presentationbackgroundinteraction(_:))). A sheet at full height has covered what it would leave in use, so the playbook's standard sheet dims and blocks there, and a press on the dim takes it back down to half.
+
+The dim and `inert` behind change on the same frame. WAI-ARIA asks for `aria-modal` “only when both” the outside is blocked and visibly obscured ([APG, Dialog](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/)). A dim without `inert`, or `inert` without a dim, tells eyes and screen readers different things.
+
+### What it did shows behind it
+
+<SheetResult client:visible />
+
+A modal sheet's answer is closing: the screen behind comes back changed. A standard sheet stays, so that signal is gone. Apple met this in its own photo picker: once picking stopped closing the sheet, “it's not obvious that anything happened”, and the fix was to lower the sheet to half so the result shows ([WWDC21, Customize and resize sheets in UIKit](https://developer.apple.com/videos/play/wwdc2021/10063/)). When an action changes what's behind, the sheet moves to show it.
+
+### The edge follows the window
+
+<SheetEdge client:visible />
+
+Which edge a sheet comes from means nothing about what it does. Material swaps a bottom sheet for a side sheet on larger windows, with the same content, and uses modal side sheets on phones and standard ones on wider screens ([Material 3, Side sheets](https://m3.material.io/components/side-sheets/guidelines)). On macOS and visionOS a sheet is always modal; the non-modal tool there is a panel or a split view ([Apple HIG, Sheets](https://developer.apple.com/design/human-interface-guidelines/sheets)). The playbook's sheet is for narrow screens; on a wide one, the same content gets a column of its own.
+
+Nor is the bottom edge there for the thumb. On phones from 77 to 132 cm², the thumb's comfortable area stayed near 35 cm², so it covered 44% of the smallest and 26% of the largest ([Le et al., 2018](https://doi.org/10.1145/3173574.3173605)); people prefer to look at and touch the middle of the screen ([Hoober, 2017](https://www.uxmatters.com/mt/archives/2017/03/design-for-fingers-touch-and-people-part-1.php)). A tall sheet's top is out of reach, which is why a swipe down closes it.
+
+### A drag, a scroll, or a fling
+
+<SheetScroll client:visible />
+
+- **Where a release lands.** A quick flick goes to the next height whatever the distance; a slow drag goes to the nearest. Base UI counts a flick from 0.5 px/ms, measured over the last 80 ms; Material's 500 px/s is in device pixels, about a third of that speed on a typical phone.
+- **Past the top**, the sheet follows the finger by the square root of the distance: 100px of drag moves it 10px. It says there's no more, without stopping dead.
+- **Scrolling the content.** In a standard sheet the list scrolls, and the grabber and header move the sheet. Apple's default grows the sheet when its content is scrolled, and Apple itself advises turning that off for a non-modal sheet, “to avoid obscuring the content underneath” ([UIKit](https://developer.apple.com/documentation/uikit/uisheetpresentationcontroller/prefersscrollingexpandswhenscrolledtoedge)).
+- **Axis.** Nothing is decided until the finger has moved 6px, so a sideways swipe in the content isn't taken for a drag.
+
+### Keyboard and screen readers
+
+- **Escape closes it**, standard or modal. A non-modal `<dialog>` opened with `show()` ignores Escape unless `closedby` says otherwise ([HTML](https://html.spec.whatwg.org/multipage/interactive-elements.html)), so a standard sheet does it itself.
+- **Tab reaches it after what's behind.** While standard, focus moves freely between the two; once it covers, what's behind is `inert`, so Tab skips it.
+- **Its content changing is announced politely**, and focus isn't pulled to it.
+- **The grabber is a height control too.** Material requires a single-pointer way to change height when there's no handle to press.
+
+## Anatomy
+
+| Part | Token | Value |
+| --- | --- | --- |
+| Panel | `surface-raised`, `shadow-lg` | |
+| Top corners | `radius-xl` | 18 |
+| Gap at full height | `space-3`: what's behind stays in sight above it | 12 |
+| Grabber | `line-strong`, `space-2` from the top | 36 × 5 |
+| Header | title 17 / 24, weight 600; actions trailing | 44 |
+| Inset | `space-5` | 20 |
+| Heights | half, full | 50%, 100% |
+| Dim | `scrim`, fading in `duration-base` | |
+| Motion | settles on the gentle spring, quicker after a fling; leaves in `duration-base`, accelerating | |
+
+## Common mistakes
+
+- **A modal sheet over a map.** The thing people came to look at is the thing they can't touch.
+- **A full-height sheet that doesn't block.** It frees a screen no one can see; dim it there.
+- **Trusting `modal={false}`.** In Base UI a non-modal drawer still closes on a press outside, and on focus leaving it, unless `disablePointerDismissal` is set; in vaul it doesn't. Check what the library means by it.
+- **A scroll that grows the sheet.** In a standard sheet, it covers what the person is using.
+- **Sheets on sheets.** One at a time; the second job belongs in the first sheet, or on a page.
+
+## Copy
+
+- Title: what's in it, as the screen behind would name it: **Walk to the ferry**, **Harbour Beans**, **New message**.
+- Actions: **Close** as an icon with its label; a way back within the sheet names where it goes: **Back to route**.
+
+## Where the playbook applies it
+
+- [Mail](/practice/mail): on a phone, a new message is written in a sheet. Swipe it down to a bar and the list is in use above it; tap the bar to carry on writing.

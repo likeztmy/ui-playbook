@@ -12,6 +12,8 @@ const DIAGRAMS = new Set([
   'src/demos/canvas.tsx',
   // A colour-vision filter, not an icon: it draws nothing.
   'src/demos/lightness/Vision.tsx',
+  // A street map behind the sheet demos: content, not an icon.
+  'src/demos/sheet/Map.tsx',
 ]);
 
 function* files(dir) {

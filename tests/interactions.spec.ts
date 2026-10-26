@@ -1818,3 +1818,88 @@ test('who before what: ticking in the After hides no face; a glance asks for a c
   await expect(page.locator('code').filter({ hasText: /unread/ })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Another glance' })).toBeFocused();
 });
+
+test('sheet: a standard sheet leaves the map in use and blocks only at full height; a modal one spends the tap', async ({ page }) => {
+  await page.goto('/components/sheet');
+  await hydrateAll(page);
+  const sides = page.locator('[class*="_compare_"]').first().locator('[class*="_side_"]');
+  const [before, after] = [sides.nth(0), sides.nth(1)];
+  // After: the café shows in the sheet, which stays.
+  await after.getByRole('button', { name: 'Kettle & Crumb' }).click();
+  await expect(after.getByRole('dialog', { name: 'Kettle & Crumb' })).toBeVisible();
+  await expect(after.getByText('Open now · until 15:00')).toBeVisible();
+  // Before: the tap lands on the dim and only closes the sheet.
+  const pin = await before.getByRole('button', { name: 'Kettle & Crumb' }).boundingBox();
+  await page.mouse.click(pin!.x + pin!.width / 2, pin!.y + pin!.height / 2);
+  await expect(before.getByRole('dialog')).toHaveCount(0);
+  await expect(before.getByRole('button', { name: 'Kettle & Crumb' })).toHaveAttribute('aria-pressed', 'false');
+  // The press closed only its own demo's sheet.
+  await expect(after.getByRole('dialog')).toHaveCount(1);
+  // The grabber cycles the heights: at full height, what's behind is inert.
+  await after.getByRole('button', { name: 'Change height' }).click();
+  await expect(after.locator('[class*="_behind_"]')).toHaveAttribute('inert', '');
+  await after.getByRole('button', { name: 'Change height' }).press('Enter');
+  await expect(after.locator('[class*="_behind_"]')).not.toHaveAttribute('inert', '');
+});
+
+test('sheet: Escape closes only the sheet with focus in it, and focus goes back to Route', async ({ page }) => {
+  await page.goto('/components/sheet');
+  await hydrateAll(page);
+  const count = await page.getByRole('dialog').count();
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('dialog')).toHaveCount(count);
+  const scene = page.locator('figure').first();
+  await scene.getByRole('button', { name: 'Close' }).focus();
+  await page.keyboard.press('Escape');
+  await expect(scene.getByRole('dialog')).toHaveCount(0);
+  await expect(page.getByRole('dialog')).toHaveCount(count - 1);
+  await expect(scene.getByRole('button', { name: 'Route' })).toBeFocused();
+});
+
+test('sheet: adding a stop lowers the sheet in the After; live filters change the count, applied ones wait for Show', async ({ page }) => {
+  await page.goto('/components/sheet');
+  await hydrateAll(page);
+  const result = page.locator('[class*="_compare_"]').nth(1).locator('[class*="_side_"]');
+  await result.nth(0).getByRole('button', { name: 'Add stop' }).click();
+  await expect(result.nth(0).locator('[class*="_behind_"]')).toHaveAttribute('inert', '');
+  await result.nth(1).getByRole('button', { name: 'Add stop' }).click();
+  await expect(result.nth(1).locator('[class*="_behind_"]')).not.toHaveAttribute('inert', '');
+  await expect(result.nth(1).getByRole('button', { name: 'Remove stop' })).toBeFocused();
+
+  const cases = page.locator('figure').filter({ has: page.getByRole('group', { name: 'Good' }) });
+  await cases.getByRole('button', { name: 'Filters, live' }).click();
+  await cases.getByRole('switch', { name: 'Under £100' }).click();
+  await expect(cases.getByText('5 places to stay')).toBeVisible();
+  await cases.getByRole('button', { name: 'Filters, applied' }).click();
+  await cases.getByRole('switch', { name: 'Under £100' }).click();
+  await expect(cases.getByText('8 places to stay')).toBeVisible();
+  await cases.getByRole('button', { name: 'Show 5 places' }).click();
+  await expect(cases.getByText('5 places to stay')).toBeVisible();
+  await expect(cases.getByRole('button', { name: 'Filters', exact: true })).toBeFocused();
+});
+
+test('sheet: on a phone Post writes a new message in a sheet that lowers to a bar over a list still in use', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/practice/mail/app');
+  await hydrateAll(page);
+  await page.getByRole('button', { name: 'New message' }).click();
+  const sheet = page.getByRole('dialog', { name: 'New message' });
+  await expect(sheet).toBeVisible();
+  await expect(sheet.getByRole('combobox').first()).toBeFocused();
+  await sheet.getByRole('textbox', { name: 'Subject' }).fill('Ferry on Monday');
+  // The sheet takes its name from the subject.
+  const named = page.getByRole('dialog', { name: 'Ferry on Monday' });
+  await named.getByRole('button', { name: 'Change height' }).click();
+  // Lowered to its header, the list above is in use: a conversation opens behind the bar.
+  await page.locator('[data-row]').filter({ hasText: 'Photos from the offsite' }).click();
+  await expect(page.getByRole('heading', { name: 'Photos from the offsite' })).toBeVisible();
+  await named.getByRole('heading', { name: 'Ferry on Monday' }).click();
+  await expect(page.locator('[class*="_behind_"]')).toHaveAttribute('inert', '');
+  await named.getByRole('button', { name: 'Close' }).click();
+  await expect(page.getByRole('dialog')).toHaveCount(0);
+  // Kept in Drafts.
+  await page.getByRole('button', { name: 'Back' }).click();
+  await page.getByRole('button', { name: /Inbox/ }).click();
+  await page.getByRole('menuitemradio', { name: /Drafts/ }).click();
+  await expect(page.getByText('Ferry on Monday')).toBeVisible();
+});

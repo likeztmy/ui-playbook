@@ -9,6 +9,10 @@
   min-height: 0;
 }
 
+.page[data-sheet] {
+  flex: 1;
+}
+
 .bar {
   display: flex;
   flex: none;

@@ -32,11 +32,13 @@ type Props = {
   compose: Compose;
   /** A new message in the main area, with its own bar; otherwise a reply at the foot of its conversation. */
   page?: boolean;
+  /** In a sheet on a phone: the sheet's header names it and closes it, so there's no bar of its own. */
+  sheet?: boolean;
   onBack?: () => void;
 };
 
 /** Writing one message: who to, (for a new one) the subject, the body, and Send. */
-export function Composer({ d, compose, page, onBack }: Props) {
+export function Composer({ d, compose, page, sheet, onBack }: Props) {
   const [cc, setCc] = useState(d.cc.length > 0);
   const [bcc, setBcc] = useState(d.bcc.length > 0);
   const [error, setError] = useState<string | null>(null);
@@ -252,16 +254,18 @@ export function Composer({ d, compose, page, onBack }: Props) {
     );
 
   return (
-    <section className={s.page} aria-label="New message" onKeyDown={onKeyDown} {...drop}>
+    <section className={s.page} data-sheet={sheet ? '' : undefined} aria-label="New message" onKeyDown={onKeyDown} {...drop}>
       {dropHint}
-      <div className={s.bar}>
-        <Tip label="Back">
-          <Button variant="ghost" icon aria-label="Back" onClick={onBack}>
-            <ChevronLeft {...ic} />
-          </Button>
-        </Tip>
-        <h1 className={s.title}>{d.subject.trim() || 'New message'}</h1>
-      </div>
+      {!sheet && (
+        <div className={s.bar}>
+          <Tip label="Back">
+            <Button variant="ghost" icon aria-label="Back" onClick={onBack}>
+              <ChevronLeft {...ic} />
+            </Button>
+          </Tip>
+          <h1 className={s.title}>{d.subject.trim() || 'New message'}</h1>
+        </div>
+      )}
       <div className={s.scroll}>
         <div className={s.column}>{fields}</div>
       </div>

@@ -1,0 +1,199 @@
+// The case gallery: the cases to pick on one side, the phone on the other; stacked on a narrow page.
+
+.cases {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--space-6);
+  width: 100%;
+
+  > :last-child {
+    flex: 0 1 340px;
+    margin: 0 auto;
+  }
+}
+
+.picker {
+  flex: 1 1 240px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.groupLabel {
+  flex-basis: 100%;
+  color: var(--ink-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.pick {
+  height: var(--control-sm);
+  padding: 0 var(--space-3);
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--fill-control);
+  color: var(--ink);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--fill-control-hover);
+  }
+
+  &[aria-pressed='true'] {
+    background: var(--ink);
+    color: var(--surface);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+}
+
+.why {
+  margin: 0;
+  max-width: 36em;
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 21px;
+}
+
+// ── Inside the phones ───────────────────────────────────
+
+.fill {
+  height: 100%;
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  height: 100%;
+  padding: var(--space-4) var(--space-4) 80px;
+  box-sizing: border-box;
+  overflow: auto;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.count {
+  margin: 0 0 var(--space-2);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.row,
+.rowButton {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.rowButton {
+  border-top: 0;
+  border-right: 0;
+  border-left: 0;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+
+  &[aria-current] {
+    color: var(--accent-text);
+    font-weight: 600;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--focus-ring);
+  }
+}
+
+.meta {
+  margin: 0;
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.float {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  box-shadow: var(--shadow-sm);
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.action {
+  justify-content: flex-start;
+  gap: var(--space-3);
+}
+
+.wide {
+  margin-top: var(--space-4);
+}
+
+.note {
+  margin: 0;
+  font-size: 15px;
+  line-height: 24px;
+}
+
+// The selected word wears the system's selection, and the styles the sheet sets on it.
+.picked {
+  border-radius: 2px;
+  background: var(--accent-soft);
+  color: inherit;
+
+  &[data-styles~='bold'] {
+    font-weight: 700;
+  }
+
+  &[data-styles~='italic'] {
+    font-style: italic;
+  }
+
+  &[data-styles~='underline'] {
+    text-decoration: underline;
+  }
+}
+
+.tools {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.cover {
+  aspect-ratio: 1;
+  margin-bottom: var(--space-3);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(160deg, color-mix(in oklch, var(--info) 40%, var(--surface)), var(--accent));
+}
+
+.photo {
+  aspect-ratio: 4 / 3;
+  margin-bottom: var(--space-2);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(180deg, color-mix(in oklch, var(--info) 30%, var(--surface)), color-mix(in oklch, var(--info) 60%, var(--surface-sunken)));
+}
+
+.shareRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}

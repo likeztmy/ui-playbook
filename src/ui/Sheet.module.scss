@@ -1,0 +1,154 @@
+// A sheet rises over its area, not the window: the area clips it and is the box its heights are
+// measured against. The top keeps space-8 32 of what's behind in sight even at full height, so it
+// reads as a layer you can push down, as Apple's and Material's sheets do.
+
+.area {
+  position: relative;
+  display: grid;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.behind {
+  display: grid;
+  min-width: 0;
+  min-height: 0;
+}
+
+// The dim arrives with covering and leaves with it: one switch with `inert` behind.
+.dim {
+  position: absolute;
+  inset: 0;
+  background: var(--scrim);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--duration-base) var(--ease-out);
+
+  &[data-on] {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+// Presses pass through to what's behind; only the sheet takes them.
+.layer,
+.viewport {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.popup {
+  box-sizing: border-box;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  height: calc(100% - var(--space-8));
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  background: var(--surface-raised);
+  box-shadow: var(--shadow-lg);
+  color: var(--ink);
+  // Its own type size: it may portal into 15/24 page prose.
+  font-size: 14px;
+  line-height: 20px;
+  outline: none;
+  pointer-events: auto;
+  touch-action: none;
+  // Base UI sets the height's offset and the finger's travel; a release settles on the gentle spring,
+  // quicker after a hard fling (swipe strength scales it down).
+  transform: translateY(calc(var(--drawer-snap-point-offset) + var(--drawer-swipe-movement-y)));
+  transition: transform calc(var(--spring-gentle-duration) * var(--drawer-swipe-strength, 1)) var(--ease-spring-gentle);
+
+  &[data-swiping],
+  &[data-instant] {
+    transition: none;
+  }
+
+  // Open from the start: already in place, no rise from below.
+  &[data-instant][data-starting-style] {
+    transform: translateY(calc(var(--drawer-snap-point-offset) + var(--drawer-swipe-movement-y)));
+  }
+
+  &[data-starting-style],
+  &[data-ending-style] {
+    transform: translateY(100%);
+  }
+
+  &[data-ending-style] {
+    transition: transform var(--duration-base) var(--ease-in);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition-duration: var(--duration-fast);
+  }
+}
+
+// The grabber says it moves: 36 × 5, Apple's size, centred space-2 8 from the top. Its target is
+// 44 wide and 21 tall, for a press.
+.handle {
+  flex: none;
+  align-self: center;
+  width: 44px;
+  height: 21px;
+  border-radius: var(--radius-sm);
+  cursor: grab;
+  user-select: none;
+
+  &::before {
+    content: '';
+    display: block;
+    width: 36px;
+    height: 5px;
+    margin: var(--space-2) auto;
+    border-radius: var(--radius-full);
+    background: var(--line-strong);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--focus-ring);
+  }
+}
+
+.header {
+  flex: none;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding: 0 var(--space-2) 0 var(--space-5);
+}
+
+.popup .title {
+  // .popup raises specificity over page prose's h2 rules.
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  font-size: 17px;
+  line-height: 24px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0 var(--space-5) var(--space-5);
+}
+
+.fill {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0;
+}

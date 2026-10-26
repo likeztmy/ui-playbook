@@ -127,6 +127,17 @@
   font-variant-numeric: tabular-nums;
 }
 
+// The main area is where a phone's message sheet rises; it fills the card.
+.sheetArea {
+  min-width: 0;
+  min-height: 0;
+}
+
+// Above the draft's bar, so the list's last row can be scrolled clear of it. The bar is 65.
+.withBar > :first-child {
+  padding-bottom: 65px;
+}
+
 .main {
   display: grid;
   grid-area: main;

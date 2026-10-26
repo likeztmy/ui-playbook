@@ -1,7 +1,8 @@
-import { ArrowLeft, ChevronDown, Pencil, Rows4 } from 'lucide-react';
+import { ArrowLeft, ChevronDown, Pencil, Rows4, X } from 'lucide-react';
 import { useEffect, useRef, useState, type RefObject } from 'react';
 import { Button } from '../../ui/Button';
 import { Menu } from '../../ui/Menu';
+import { Sheet } from '../../ui/Sheet';
 import { Tip } from '../../ui/Tooltip';
 import { ToastProvider } from '../../ui/Toast';
 import { Composer, preloadBody } from './Composer';
@@ -19,6 +20,9 @@ import s from './Shell.module.scss';
 
 type Density = 'comfortable' | 'compact';
 const DENSITY = 'post:density';
+// A new message on a phone is a sheet: at full height, or lowered to its header, a bar over the list.
+const BAR = '65px';
+const HEIGHTS = [BAR, 1];
 
 const ic = { size: 16, strokeWidth: 1.5, nonScalingStroke: true, 'aria-hidden': true } as const;
 
@@ -63,7 +67,23 @@ export function Shell({ onToasts, spot, control, pinned, back, embedded }: Shell
     } catch {}
   };
   const composeButton = useRef<HTMLButtonElement>(null);
-  const reading = !!post.open || !!compose.writing;
+
+  // As narrow as the container query that makes it a phone: then a new message is written in a sheet.
+  const [narrow, setNarrow] = useState(false);
+  useEffect(() => {
+    const el = root.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([e]) => setNarrow(e.contentRect.width <= 760));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+  const inSheet = narrow ? compose.writing : null;
+  const [height, setHeight] = useState<number | string | null>(1);
+  useEffect(() => {
+    if (inSheet) setHeight(1);
+  }, [inSheet?.id]);
+  const writingHere = !!compose.writing && !narrow;
+  const reading = !!post.open || writingHere;
 
   useEffect(() => {
     preloadBody();
@@ -87,8 +107,9 @@ export function Shell({ onToasts, spot, control, pinned, back, embedded }: Shell
   /** What a folder's count says: the Inbox's unread, the drafts kept. */
   const count = (f: Folder) => (f === 'inbox' ? post.unreadCount : f === 'drafts' ? compose.drafts.length : 0);
 
+  // Moving elsewhere leaves a draft in the main area; one in a sheet stays, a bar over wherever you go.
   const go = (f: Folder) => {
-    compose.leave();
+    if (!narrow) compose.leave();
     post.go(f);
   };
 
@@ -126,7 +147,7 @@ export function Shell({ onToasts, spot, control, pinned, back, embedded }: Shell
           value={post.query}
           inputRef={search}
           onChange={(q) => {
-            compose.leave();
+            if (!narrow) compose.leave();
             post.search(q);
           }}
         />
@@ -152,14 +173,47 @@ export function Shell({ onToasts, spot, control, pinned, back, embedded }: Shell
       </div>
     ));
 
-  const main = compose.writing ? (
-    <Composer key={compose.writing.id} d={compose.writing} compose={compose} page onBack={() => compose.close(compose.writing!.id)} />
+  const main = writingHere ? (
+    <Composer key={compose.writing!.id} d={compose.writing!} compose={compose} page onBack={() => compose.close(compose.writing!.id)} />
   ) : post.open ? (
     <Conversation key={post.open.id} post={post} compose={compose} c={post.open} single />
   ) : post.folder === 'drafts' && !post.query ? (
     <DraftList compose={compose} chrome={chrome} />
   ) : (
     <List post={post} rows={rows} chrome={chrome} pinned={pinned} />
+  );
+
+  // A standard sheet: lowered to a bar, the list above it is in use; at full height it covers it.
+  // Swiping down past the bar keeps the bar; Close, Escape or sending ends it, the draft kept.
+  const sheeted = (
+    <Sheet.Root
+      open={!!inSheet}
+      onOpenChange={(o, why) => {
+        if (o || !inSheet) return;
+        if (why === 'swipe') setHeight(BAR);
+        else compose.close(inSheet.id);
+      }}
+      snapPoints={HEIGHTS}
+      snapPoint={height}
+      onSnapPointChange={setHeight}
+    >
+      <Sheet.Area className={inSheet && height !== 1 ? `${s.sheetArea} ${s.withBar}` : s.sheetArea}>{main}</Sheet.Area>
+      {inSheet && (
+        <Sheet.Popup
+          title={inSheet.subject.trim() || 'New message'}
+          fill
+          initialFocus={false}
+          finalFocus={false}
+          actions={
+            <Sheet.Close render={<Button variant="ghost" icon aria-label="Close" />}>
+              <X {...ic} />
+            </Sheet.Close>
+          }
+        >
+          <Composer key={inSheet.id} d={inSheet} compose={compose} page sheet onBack={() => compose.close(inSheet.id)} />
+        </Sheet.Popup>
+      )}
+    </Sheet.Root>
   );
 
   return (
@@ -190,7 +244,7 @@ export function Shell({ onToasts, spot, control, pinned, back, embedded }: Shell
           </a>
         )}
       </nav>
-      {embedded ? <div className={s.main}>{main}</div> : <main className={s.main}>{main}</main>}
+      {embedded ? <div className={s.main}>{sheeted}</div> : <main className={s.main}>{sheeted}</main>}
       {/* Toasts rise in their own layer, laid over the main area. */}
       <div ref={onToasts} className={s.toastLayer} data-overlay />
     </div>

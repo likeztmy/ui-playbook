@@ -57,7 +57,15 @@ export const entries: Entry[] = [
     title: 'Dialog',
     summary: 'Stops everything for a decision or a short job. Rarely the right call.',
     details: 3,
-    keywords: ['modal', 'alert', 'confirm', 'alert dialog', 'sheet', 'popup', 'delete'],
+    keywords: ['modal', 'alert', 'confirm', 'alert dialog', 'popup', 'delete'],
+  },
+  {
+    slug: 'sheet',
+    kind: 'component',
+    title: 'Sheet',
+    summary: 'A panel that rises from the edge over a screen still in use. It blocks only once it covers it.',
+    details: 5,
+    keywords: ['bottom sheet', 'drawer', 'side sheet', 'detent', 'snap point', 'modal', 'non-modal', 'map', 'swipe'],
   },
   {
     slug: 'input',
