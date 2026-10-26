@@ -2,6 +2,7 @@ import { FileSpreadsheet, FileText, X } from 'lucide-react';
 import type { CSSProperties } from 'react';
 import { Tip } from '../../ui/Tooltip';
 import type { DraftFile } from './draft';
+import { fileType } from './model';
 import s from './Uploads.module.scss';
 
 const ic = { size: 16, strokeWidth: 1.5, nonScalingStroke: true, 'aria-hidden': true } as const;
@@ -23,7 +24,7 @@ export function Uploads({ files, onRemove }: { files: DraftFile[]; onRemove: (id
             </span>
             <span className={s.text}>
               <span className={s.name}>{f.name}</span>
-              <span className={s.meta}>{up ? `Uploading · ${pct}%` : `${f.kind.toUpperCase()} · ${f.size}`}</span>
+              <span className={s.meta}>{up ? `Uploading · ${pct}%` : `${fileType(f)} · ${f.size}`}</span>
             </span>
             <Tip label={up ? 'Cancel upload' : 'Remove'}>
               <button

@@ -39,7 +39,7 @@ let n = 0;
 const id = (kind = 'draft') => `${kind}-${Date.now().toString(36)}-${n++}`;
 
 const KB = 1024;
-const size = (bytes: number) => (bytes < KB * KB ? `${Math.max(1, Math.round(bytes / KB))} KB` : `${(bytes / KB / KB).toFixed(1)} MB`);
+const size = (bytes: number) => (bytes < KB ? `${bytes} B` : bytes < KB * KB ? `${Math.round(bytes / KB)} KB` : `${(bytes / KB / KB).toFixed(1)} MB`);
 const kind = (f: File): Attachment['kind'] =>
   f.type.startsWith('image/')
     ? 'image'
@@ -93,7 +93,14 @@ export function replyTo(c: Conversation, kind: Exclude<DraftKind, 'new'>): Draft
     });
   const to = fromMe ? m.to : [m.from];
   const others = kind === 'replyAll' ? [...(fromMe ? [] : m.to), ...(m.cc ?? [])].filter((p) => notMe(p) && !to.includes(p)) : [];
-  return blank(kind, { conversation: c.id, to: to.filter(notMe).map(address), cc: others.map(address), subject: c.subject, quoted: m.body, quotes: { from: m.from, at: m.at } });
+  return blank(kind, {
+    conversation: c.id,
+    to: to.filter(notMe).map(address),
+    cc: others.map(address),
+    subject: c.subject,
+    quoted: m.body,
+    quotes: { from: m.from, at: m.at },
+  });
 }
 
 /** Nothing written and no one to send it to: closing it leaves no draft. */

@@ -206,3 +206,12 @@
   // A step toward ink: `line` alone is ~1.1:1 on a dark raised surface.
   background: color-mix(in srgb, var(--line), var(--ink) 10%);
 }
+
+// A value's own count, in the column shortcuts take elsewhere.
+.detail {
+  margin-left: auto;
+  padding-left: var(--space-4);
+  color: var(--ink-muted);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}

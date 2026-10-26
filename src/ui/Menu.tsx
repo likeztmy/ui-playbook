@@ -21,13 +21,7 @@ function Popup({ side = 'bottom', align = 'start', sub, className, ...props }: P
   const container = usePortalContainer();
   return (
     <BaseMenu.Portal container={container}>
-      <BaseMenu.Positioner
-        className={s.positioner}
-        side={sub ? 'right' : side}
-        align={align}
-        sideOffset={sub ? 0 : 6}
-        alignOffset={sub ? -4 : 0}
-      >
+      <BaseMenu.Positioner className={s.positioner} side={sub ? 'right' : side} align={align} sideOffset={sub ? 0 : 6} alignOffset={sub ? -4 : 0}>
         <BaseMenu.Popup {...props} className={cx(s.popup, sub && s.subPopup, className as string)} />
       </BaseMenu.Positioner>
     </BaseMenu.Portal>
@@ -153,16 +147,21 @@ function Submenu({ icon, label, children, className }: SubmenuProps) {
   );
 }
 
-type RadioItemProps = Omit<ComponentProps<typeof BaseMenu.RadioItem>, 'children'> & { children: string };
+type RadioItemProps = Omit<ComponentProps<typeof BaseMenu.RadioItem>, 'children'> & {
+  children: string;
+  /** Trailing, muted: a count that belongs to the value, such as a folder's unread. */
+  detail?: string | number;
+};
 
 /** One value in a choice menu (Sort by, View as). Picking it closes the menu. */
-function RadioItem({ children, className, closeOnClick = true, ...props }: RadioItemProps) {
+function RadioItem({ children, detail, className, closeOnClick = true, ...props }: RadioItemProps) {
   return (
     <BaseMenu.RadioItem {...props} closeOnClick={closeOnClick} label={children} className={cx(s.item, className as string)}>
       <BaseMenu.RadioItemIndicator keepMounted className={s.check}>
         <Check size={16} strokeWidth={1.75} nonScalingStroke aria-hidden />
       </BaseMenu.RadioItemIndicator>
       <span className={s.text}>{children}</span>
+      {detail !== undefined && <span className={s.detail}>{detail}</span>}
     </BaseMenu.RadioItem>
   );
 }

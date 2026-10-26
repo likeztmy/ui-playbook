@@ -1,4 +1,5 @@
 import { Archive, ArchiveRestore, Mail, MailOpen, Star } from 'lucide-react';
+import { useRef } from 'react';
 import { Button } from '../../ui/Button';
 import { Checkbox } from '../../ui/Checkbox';
 import { ContextMenu, Menu } from '../../ui/Menu';
@@ -24,12 +25,8 @@ export function Line({ c, post, rowRef, pin }: Props) {
   const q = post.query.trim();
   const checked = post.checked.has(c.id);
   const count = c.messages.length;
-  const check = (on: boolean) => {
-    const next = new Set(post.checked);
-    if (on) next.add(c.id);
-    else next.delete(c.id);
-    post.setChecked(next);
-  };
+  // Read when the checkbox reports its change: Shift held means a range.
+  const shift = useRef(false);
   return (
     <ContextMenu.Root>
       <ContextMenu.Trigger
@@ -47,12 +44,18 @@ export function Line({ c, post, rowRef, pin }: Props) {
         }
       >
         <span className={s.dot} aria-hidden data-spot={unread(c) ? 'colour' : undefined} />
-        <span className={s.check}>
-          <Checkbox aria-label={`Select ${c.subject}`} checked={checked} onCheckedChange={(v) => check(!!v)} />
+        <span
+          className={s.check}
+          onClickCapture={(e) => (shift.current = e.shiftKey)}
+          // Shift-click extends a text selection across the rows; here it means a range of rows.
+          onMouseDown={(e) => e.shiftKey && e.preventDefault()}
+        >
+          <Checkbox aria-label={`Select ${c.subject}`} checked={checked} onCheckedChange={(v) => post.tick(c.id, !!v, shift.current)} />
         </span>
         <button type="button" ref={rowRef} className={s.main} aria-current={post.open?.id === c.id || undefined} onClick={() => post.show(c.id)}>
           <span className={s.from} data-from="">
-            <Marked text={participants(c.messages.map((m) => m.from))} q={q} />
+            {/* In Sent, who it went to: that's what's looked for there. */}
+            <Marked text={c.folder === 'sent' ? `To ${participants(latest(c).to)}` : participants(c.messages.map((m) => m.from))} q={q} />
             {count > 1 && <span className={s.count}>{count}</span>}
           </span>
           <span className={s.text}>

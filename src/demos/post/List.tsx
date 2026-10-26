@@ -50,12 +50,14 @@ function Bar({ post, chrome }: { post: Post; chrome: Chrome }) {
   return (
     <div className={s.bar}>
       <span className={s.check}>
-        <Checkbox
-          aria-label={all ? 'Select none' : 'Select all'}
-          checked={all}
-          indeterminate={ticked.length > 0 && !all}
-          onCheckedChange={() => post.setChecked(all || ticked.length ? new Set() : new Set(post.list.map((c) => c.id)))}
-        />
+        {post.list.length > 0 && (
+          <Checkbox
+            aria-label={all ? 'Select none' : 'Select all'}
+            checked={all}
+            indeterminate={ticked.length > 0 && !all}
+            onCheckedChange={() => post.setChecked(all || ticked.length ? new Set() : new Set(post.list.map((c) => c.id)))}
+          />
+        )}
       </span>
       {ticked.length > 0 ? (
         // What's chosen, then what can be done with it: the count reads before the tools.

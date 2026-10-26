@@ -8,7 +8,7 @@ import { empty, valid, type Draft } from './draft';
 import { FormatBar } from './FormatBar';
 import { QuotedFold } from './QuotedFold';
 import { Uploads } from './Uploads';
-import { person } from './people';
+import { addressOf } from './people';
 import { RecipientField } from './RecipientField';
 import type { Compose } from './useCompose';
 import s from './Composer.module.scss';
@@ -52,6 +52,14 @@ export function Composer({ d, compose, page, onBack }: Props) {
   const live = useRef({ d, compose });
   live.current = { d, compose };
 
+  // A reply opens at the conversation's foot: brought whole into view, Send included, so on a short
+  // screen it isn't written blind below the fold.
+  const inline = useRef<HTMLElement>(null);
+  // Again once the editor is in, which makes the reply taller.
+  useEffect(() => {
+    if (!page) inline.current?.scrollIntoView({ block: 'nearest' });
+  }, [editor]);
+
   // A reply starts in its body; a new message or a forward needs someone to send it to first.
   const startInTo = d.kind === 'forward' || (d.kind === 'new' && !d.to.length);
   useEffect(() => {
@@ -72,7 +80,7 @@ export function Composer({ d, compose, page, onBack }: Props) {
   const send = () => {
     const { d, compose } = live.current;
     const all = [...d.to, ...d.cc, ...d.bcc];
-    const bad = all.filter((a) => !valid(person(a).email));
+    const bad = all.filter((a) => !valid(addressOf(a)));
     // Names the address, so the message doesn't lean on the chip's colour alone.
     const problem = !all.length
       ? 'Add a recipient'
@@ -236,7 +244,7 @@ export function Composer({ d, compose, page, onBack }: Props) {
 
   if (!page)
     return (
-      <section className={s.inline} aria-label={d.kind === 'forward' ? 'Forward' : 'Reply'} onKeyDown={onKeyDown} {...drop}>
+      <section ref={inline} className={s.inline} aria-label={d.kind === 'forward' ? 'Forward' : 'Reply'} onKeyDown={onKeyDown} {...drop}>
         {dropHint}
         {fields}
         {footer}

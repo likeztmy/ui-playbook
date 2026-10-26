@@ -1,18 +1,32 @@
-// Post on its page. The app breaks out of the text column to a size a mail app is used at; the
-// decisions under it keep the column's measure.
+// Post on its page. The app breaks out of the text column to a size a mail app is used at. Where
+// the window is wide, the decisions sit beside it and scroll while the app stays in view, so each
+// Show plays next to the line that asked for it; narrower, they follow under it at the column's measure.
 .example {
+  --gutter: var(--space-4);
   display: flex;
   flex-direction: column;
   gap: var(--space-6);
   margin: var(--space-6) 0 var(--space-8);
+
+  @media (min-width: 1200px) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    align-items: start;
+    margin-inline: calc(50% - min(660px, 50vw - var(--gutter)));
+  }
 }
 
 .wide {
-  --gutter: var(--space-4);
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
   margin-inline: calc(50% - min(620px, 50vw - var(--gutter)));
+
+  @media (min-width: 1200px) {
+    position: sticky;
+    top: calc(56px + var(--space-4));
+    margin-inline: 0;
+  }
 }
 
 .head {
@@ -29,6 +43,10 @@
   border-radius: var(--radius-lg);
   // Show scrolls it clear of the sticky page header.
   scroll-margin: 72px 0 var(--space-4);
+
+  @media (min-width: 1200px) {
+    height: min(760px, 100dvh - 56px - var(--space-4) * 2 - 40px);
+  }
 }
 
 .decisions {
@@ -37,6 +55,11 @@
   margin: 0;
   padding: 0;
   list-style: none;
+
+  // Level with the app's top edge, under the head over it.
+  @media (min-width: 1200px) {
+    margin-top: calc(28px + var(--space-2));
+  }
 }
 
 .decision {

@@ -64,6 +64,9 @@ export function Shell({ onToasts, spot, control, pinned, back, embedded }: Shell
     was.current = { open: post.open?.id, writing: !!compose.writing };
   }, [compose.writing, post.open]);
 
+  /** What a folder's count says: the Inbox's unread, the drafts kept. */
+  const count = (f: Folder) => (f === 'inbox' ? post.unreadCount : f === 'drafts' ? compose.drafts.length : 0);
+
   const go = (f: Folder) => {
     compose.leave();
     post.go(f);
@@ -80,11 +83,14 @@ export function Shell({ onToasts, spot, control, pinned, back, embedded }: Shell
           <ChevronDown {...ic} />
         </Menu.Trigger>
         <Menu.Popup>
-          {FOLDERS.map((f) => (
-            <Menu.Item key={f.id} icon={f.icon} onClick={() => go(f.id)}>
-              {FOLDER_NAME[f.id]}
-            </Menu.Item>
-          ))}
+          {/* Where you are is checked; each folder's count, as in the sidebar. */}
+          <Menu.RadioGroup value={post.folder} onValueChange={(f) => go(f as Folder)}>
+            {FOLDERS.map((f) => (
+              <Menu.RadioItem key={f.id} value={f.id} detail={count(f.id) || undefined}>
+                {FOLDER_NAME[f.id]}
+              </Menu.RadioItem>
+            ))}
+          </Menu.RadioGroup>
         </Menu.Popup>
       </Menu.Root>
     ),
@@ -136,12 +142,18 @@ export function Shell({ onToasts, spot, control, pinned, back, embedded }: Shell
         {/* The app's name heads the page at full screen; on a page with its own title it's a label. */}
         {embedded ? <span className={s.brand}>Post</span> : <h1 className={s.brand}>Post</h1>}
         {FOLDERS.map((f) => {
-          const count = f.id === 'inbox' ? post.unreadCount : f.id === 'drafts' ? compose.drafts.length : 0;
+          const n = count(f.id);
           return (
-            <button key={f.id} type="button" className={s.folder} aria-current={post.folder === f.id || undefined} onClick={() => go(f.id)}>
+            <button
+              key={f.id}
+              type="button"
+              className={s.folder}
+              aria-current={(post.folder === f.id && !post.everywhere) || undefined}
+              onClick={() => go(f.id)}
+            >
               <f.icon {...ic} />
               <span>{FOLDER_NAME[f.id]}</span>
-              {count > 0 && <span className={s.folderCount}>{count}</span>}
+              {n > 0 && <span className={s.folderCount}>{n}</span>}
             </button>
           );
         })}

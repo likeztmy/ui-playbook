@@ -1,7 +1,7 @@
 import { X } from 'lucide-react';
 import { useId, useState, type ClipboardEvent, type KeyboardEvent, type ReactNode, type Ref } from 'react';
 import { valid } from './draft';
-import { findContacts, person } from './people';
+import { addressOf, findContacts, person } from './people';
 import { Suggestions } from './Suggestions';
 import s from './RecipientField.module.scss';
 
@@ -91,7 +91,7 @@ export function RecipientField({ label, value, onChange, inputRef, trailing, err
             <span
               key={a}
               className={s.chip}
-              data-invalid={valid(p.email) ? undefined : ''}
+              data-invalid={valid(addressOf(a)) ? undefined : ''}
               data-selected={selected && i === value.length - 1 ? '' : undefined}
               title={p.email}
             >

@@ -71,7 +71,28 @@ export type Conversation = {
   messages: Message[];
 };
 
+/** A file's type as people name it: its extension, "PDF", "TXT", "XLSX". */
+export const fileType = (a: Attachment) => (a.name.includes('.') ? a.name.split('.').pop()!.toUpperCase() : a.kind.toUpperCase());
+
 export const unread = (c: Conversation) => c.messages.some((m) => m.unread);
+
+// The sample mailbox's "now": Thursday at 10:00, just after its newest mail, running on from when the
+// page opened. What's sent or arrives here is stamped by it, so it sorts after what it answers.
+const OPENED = Date.now();
+export const clock = () => {
+  const m = 10 * 60 + Math.floor((Date.now() - OPENED) / 60000);
+  return `${Math.floor(m / 60) % 24}:${String(m % 60).padStart(2, '0')}`;
+};
+export const TODAY = 'Thu';
+
+/** Minutes into the day of a list time like "9:41", or null for "Tue" and "17 Oct". */
+const minutes = (t: string) => {
+  const m = /^(\d{1,2}):(\d{2})$/.exec(t);
+  return m ? Number(m[1]) * 60 + Number(m[2]) : null;
+};
+
+/** Newest first: by day, then by time within a day. */
+export const newest = (a: Conversation, b: Conversation) => a.day - b.day || (minutes(b.time) ?? 0) - (minutes(a.time) ?? 0);
 export const latest = (c: Conversation) => c.messages[c.messages.length - 1];
 /** Sent holds every conversation you wrote in, as Gmail's does; drafts aren't conversations. */
 export const inFolder = (c: Conversation, f: Folder) =>

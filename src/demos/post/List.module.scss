@@ -200,6 +200,13 @@ $inset: 20px;
   white-space: nowrap;
 }
 
+// Names after a marker: they give way, with an ellipsis, before the marker does.
+.names {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 // A draft's marker, where a sent conversation names its people: in ink, with a pencil. Red would
 // say something is wrong, and a draft isn't.
 .draft {

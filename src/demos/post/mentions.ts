@@ -3,7 +3,7 @@ import Mention from '@tiptap/extension-mention';
 import { PluginKey } from '@tiptap/pm/state';
 import { useMemo, useRef, useState } from 'react';
 import type { Person } from './model';
-import { findContacts } from './people';
+import { CONTACTS, findContacts } from './people';
 
 type Open = {
   items: Person[];
@@ -33,7 +33,8 @@ export function useMentions(onMention: (email: string) => void) {
         suggestions: ['@', '+'].map((char) => ({
           char,
           pluginKey: new PluginKey(`mention-${char}`),
-          items: ({ query }: { query: string }) => findContacts(query),
+          // "@" alone lists the first contacts, so the list says who can be mentioned before a letter is typed.
+          items: ({ query }: { query: string }) => (query ? findContacts(query) : CONTACTS.slice(0, 6)),
           render: () => {
             const show = (p: { items: Person[]; clientRect?: (() => DOMRect | null) | null; command: Open['insert'] }) =>
               setMenu((m) =>

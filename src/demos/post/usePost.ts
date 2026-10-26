@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState } from 'react';
 import { useToast } from '../../ui/Toast';
 import { CONVERSATIONS, incoming } from './conversations';
-import { inFolder, plain, unread, type Conversation, type Folder, type Message } from './model';
+import { clock, inFolder, newest, plain, unread, type Conversation, type Folder, type Message } from './model';
 import { person } from './people';
 
 /** Post's state and the actions on it. Views read it and call its actions; they hold only view state. */
@@ -20,11 +20,13 @@ export function usePost(seed: Conversation[] = CONVERSATIONS) {
   const q = query.trim().toLowerCase();
   const list = useMemo(
     () =>
-      mail.filter((c) => {
-        if (!q) return inFolder(c, folder);
-        const text = [c.subject, ...c.messages.map((m) => `${person(m.from).name} ${plain(m.body)}`)].join(' ').toLowerCase();
-        return (everywhere || inFolder(c, folder)) && text.includes(q);
-      }),
+      mail
+        .filter((c) => {
+          if (!q) return inFolder(c, folder);
+          const text = [c.subject, ...c.messages.map((m) => `${person(m.from).name} ${plain(m.body)}`)].join(' ').toLowerCase();
+          return (everywhere || inFolder(c, folder)) && text.includes(q);
+        })
+        .sort(newest),
     [mail, folder, q, everywhere],
   );
   const open = mail.find((c) => c.id === openId) ?? null;
@@ -60,7 +62,11 @@ export function usePost(seed: Conversation[] = CONVERSATIONS) {
     setChecked(new Set());
     const n = ids.length;
     toast({
-      title: to === 'archive' ? (n === 1 ? 'Archived' : `${n} archived`) : n === 1 ? 'Moved to Inbox' : `${n} moved to Inbox`,
+      // What happened, to what: Undo then says what it brings back.
+      title:
+        n === 1
+          ? `${to === 'archive' ? 'Archived' : 'Moved to Inbox'} “${mail.find((c) => c.id === ids[0])?.subject}”`
+          : `${n} conversations ${to === 'archive' ? 'archived' : 'moved to Inbox'}`,
       action: {
         label: 'Undo',
         onClick: () => {
@@ -72,12 +78,27 @@ export function usePost(seed: Conversation[] = CONVERSATIONS) {
     });
   };
 
+  // The last row ticked or unticked: a shift-click runs from it.
+  const anchor = useRef<string | null>(null);
+  /** Ticks a row, or with `range` every row from the last one ticked, to the same state. */
+  const tick = (id: string, on: boolean, range = false) => {
+    const from = range && anchor.current ? list.findIndex((c) => c.id === anchor.current) : -1;
+    const to = list.findIndex((c) => c.id === id);
+    const ids = from >= 0 && to >= 0 ? list.slice(Math.min(from, to), Math.max(from, to) + 1).map((c) => c.id) : [id];
+    const next = new Set(checked);
+    for (const x of ids) {
+      if (on) next.add(x);
+      else next.delete(x);
+    }
+    setChecked(next);
+    anchor.current = id;
+  };
+
   const star = (ids: string[], on: boolean) => update(ids, (c) => ({ ...c, starred: on }));
 
   /** Puts a sent message at the end of its conversation, or starts a conversation in Sent. Returns how to take it back. */
   const deliver = (m: Message, subject: string, into?: string) => {
-    const now = new Date();
-    const time = `${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}`;
+    const time = clock();
     const was = into ? mail.find((c) => c.id === into) : undefined;
     const id = was?.id ?? `c-${m.id}`;
     if (was) setMail((all) => all.map((c) => (c.id === id ? { ...c, day: 0, time, messages: [...c.messages, m] } : c)));
@@ -91,8 +112,7 @@ export function usePost(seed: Conversation[] = CONVERSATIONS) {
   };
 
   const arrive = () => {
-    const now = new Date();
-    setWaiting((w) => [incoming(++arrived.current, `${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}`), ...w]);
+    setWaiting((w) => [incoming(++arrived.current, clock()), ...w]);
   };
   /** What has arrived joins the top of the list, when asked for. */
   const letIn = () => {
@@ -108,7 +128,21 @@ export function usePost(seed: Conversation[] = CONVERSATIONS) {
     setChecked(new Set());
   };
 
+  /** Everything a demo can change, to put back afterwards. */
+  const snapshot = () => ({ mail, folder, query, everywhere, openId, checked, waiting });
+  const restore = (x: ReturnType<typeof snapshot>) => {
+    setMail(x.mail);
+    setFolder(x.folder);
+    setQuery(x.query);
+    setEverywhere(x.everywhere);
+    setOpenId(x.openId);
+    setChecked(x.checked);
+    setWaiting(x.waiting);
+  };
+
   return {
+    snapshot,
+    restore,
     mail,
     list,
     open,
@@ -117,6 +151,7 @@ export function usePost(seed: Conversation[] = CONVERSATIONS) {
     everywhere,
     checked,
     setChecked,
+    tick,
     search: (v: string) => {
       setQuery(v);
       setEverywhere(false);

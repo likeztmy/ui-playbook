@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { TIMEOUT, useToast } from '../../ui/Toast';
 import { toBlocks } from './doc';
 import { blank, empty, fileFrom, loadDrafts, replyTo, storeDrafts, uploading, type Draft, type DraftKind } from './draft';
-import type { Conversation, Message } from './model';
+import { clock, TODAY, type Conversation, type Message } from './model';
 import type { Post } from './usePost';
 
 // Uploads are simulated: a steady rate, and a floor so a small file still shows its bar.
@@ -12,8 +12,6 @@ const TICK = 100;
 
 /** A message just sent, while it can still be taken back. */
 type Sending = { message: string; conversation?: string; subject: string; to: string[]; undo: () => void; done?: boolean };
-
-const at = (d: Date) => `${d.toLocaleDateString('en-GB', { weekday: 'short' })} ${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`;
 
 /** Writing: the drafts, the one open in the main area, and sending them. Replies live in their conversation. */
 export function useCompose(post: Post) {
@@ -130,7 +128,7 @@ export function useCompose(post: Post) {
       from: 'me',
       to: d.to,
       cc: d.cc.length ? d.cc : undefined,
-      at: at(new Date()),
+      at: `${TODAY} ${clock()}`,
       body: toBlocks(d.body),
       quoted: d.quoted,
       quotes: d.quotes,
@@ -184,6 +182,14 @@ export function useCompose(post: Post) {
   }, [drafts, waiting]);
 
   return {
+    /** The drafts and what's open, to put back after a demo; what it sent is forgotten. */
+    snapshot: () => ({ drafts, writing }),
+    restore: (x: { drafts: Draft[]; writing: string | null }) => {
+      setDrafts(x.drafts);
+      setWriting(x.writing);
+      setSending([]);
+      setWaiting(new Set());
+    },
     drafts: drafts.filter((d) => !empty(d)),
     writing: drafts.find((d) => d.id === writing) ?? null,
     /** The reply being written in a conversation, if any. */

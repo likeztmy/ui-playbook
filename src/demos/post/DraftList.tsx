@@ -29,7 +29,7 @@ function DraftLine({ d, compose }: { d: Draft; compose: Compose }) {
             <PencilLine size={14} strokeWidth={1.5} nonScalingStroke aria-hidden />
             Draft
           </span>
-          {to.length > 0 && `To ${participants(to)}`}
+          {to.length > 0 && <span className={s.names}>To {participants(to)}</span>}
         </span>
         <span className={s.text}>
           <span className={s.subject}>

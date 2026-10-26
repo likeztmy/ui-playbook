@@ -30,6 +30,9 @@ const BY_EMAIL: Record<string, Person> = Object.fromEntries(LIST.map((p) => [p.e
 /** Someone by id; an address typed in that matches no one stands for itself. */
 export const person = (id: string): Person => PEOPLE[id] ?? BY_EMAIL[id] ?? { id, name: id, email: id.includes('@') ? id : `${id}@example.com` };
 
+/** The address a chip stands for: a contact's, or exactly what was typed (which may not be one). */
+export const addressOf = (id: string) => (PEOPLE[id] ?? BY_EMAIL[id])?.email ?? id;
+
 /** Everyone you can write to, for suggestions. */
 export const CONTACTS = LIST.filter((p) => !p.me);
 

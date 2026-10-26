@@ -198,9 +198,9 @@ export const CONVERSATIONS: Conversation[] = [
     folder: 'inbox',
     starred: true,
     day: 1,
-    time: '15:40',
+    time: '17:40',
     messages: [
-      msg('review-1', 'priya', ['me'], 'Wed 15:40', [
+      msg('review-1', 'priya', ['me'], 'Wed 17:40', [
         p('Mostly small things. Three worth fixing before the beta:'),
         ol(
           'The empty state needs a next step, not just “Nothing here”.',
@@ -221,13 +221,13 @@ export const CONVERSATIONS: Conversation[] = [
     subject: 'This week: the case for slower software',
     folder: 'inbox',
     day: 1,
-    time: '7:00',
+    time: '17:05',
     messages: [
       msg(
         'notes-1',
         'notes',
         ['me'],
-        'Wed 7:00',
+        'Wed 17:05',
         [
           h('The case for slower software'),
           {
@@ -256,13 +256,13 @@ export const CONVERSATIONS: Conversation[] = [
     subject: 'Issue 112: the cost of a click',
     folder: 'inbox',
     day: 1,
-    time: '7:30',
+    time: '16:30',
     messages: [
       msg(
         'diff-1',
         'diff',
         ['me'],
-        'Wed 7:30',
+        'Wed 16:30',
         [
           h('The cost of a click'),
           p('Every extra step loses a share of the people who reach it. This week: how three products cut a step, and what it cost them.'),

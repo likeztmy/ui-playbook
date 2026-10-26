@@ -1563,3 +1563,40 @@ test('how waiting feels: the page loads behind a skeleton, a refreshed list keep
   await after.getByRole('button', { name: 'Refresh files' }).click();
   await expect(after.getByText('Type scale.fig')).toBeVisible();
 });
+
+test('post: an address that isn’t one is marked and stops Send; shift-click ticks a range', async ({ page }) => {
+  await page.goto('/practice/mail/app');
+  await hydrateAll(page);
+  await page.getByRole('button', { name: 'New message' }).click();
+  const to = page.getByRole('combobox', { name: 'To' });
+  await to.fill('notanemail');
+  await to.press('Enter');
+  await expect(page.locator('[data-invalid]')).toHaveCount(1);
+  await page.getByRole('button', { name: 'Send', exact: true }).click();
+  await expect(page.getByRole('alert')).toContainText('notanemail');
+  await expect(page.getByRole('region', { name: 'New message' })).toHaveCount(1);
+  await page.keyboard.press('Escape');
+  await page.getByRole('navigation', { name: 'Folders' }).getByRole('button', { name: /Inbox/ }).click();
+  const box = (id: string) => page.locator(`[data-row="${id}"] [role="checkbox"]`);
+  await box('review').click();
+  await box('lunch').click({ modifiers: ['Shift'] });
+  await expect(page.locator('[data-row][data-checked]')).toHaveCount(5);
+  expect(await page.evaluate(() => String(getSelection()))).toBe('');
+});
+
+test('post: a reply sent now sorts after what it answers; Sent names who it went to; Archive names what', async ({ page }) => {
+  await page.goto('/practice/mail/app');
+  await hydrateAll(page);
+  await page.locator('[data-row="lunch"] [class*="_main_"]').click();
+  await page.getByRole('button', { name: /^Reply to/ }).click();
+  await page.getByRole('textbox', { name: 'Message' }).fill('Great.');
+  await page.getByRole('button', { name: 'Send', exact: true }).click();
+  await expect(page.getByRole('article').last()).toHaveAccessibleName(/, Thu 10:\d\d$/);
+  await page.getByRole('button', { name: 'Back' }).click();
+  await expect(page.locator('[data-row]').first()).toHaveAttribute('data-row', 'lunch');
+  await page.getByRole('navigation', { name: 'Folders' }).getByRole('button', { name: /Sent/ }).click();
+  await expect(page.locator('[data-row="feedback"] [data-from]')).toHaveText(/^To /);
+  await page.getByRole('navigation', { name: 'Folders' }).getByRole('button', { name: /Inbox/ }).click();
+  await page.locator('[data-row="gym"]').getByRole('button', { name: 'Archive' }).click({ force: true });
+  await expect(page.getByText('Archived “Your membership renews next week”')).toBeVisible();
+});
