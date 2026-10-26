@@ -332,7 +332,7 @@ test('where the eye goes: only the After answers at the button; only its fold cu
   await hydrateAll(page);
   const [before, after] = [page.locator('figure').nth(0), page.locator('figure').nth(1)];
   await before.getByRole('button', { name: 'Add to cart' }).click();
-  await expect(before.getByRole('button', { name: 'Cart, 1 items' })).toBeVisible();
+  await expect(before.getByRole('button', { name: 'Cart, 1 item' })).toBeVisible();
   await expect(before.getByRole('button', { name: 'Add to cart' })).toBeVisible();
   const add = after.getByRole('button', { name: 'Add to cart' });
   const width = (await add.boundingBox())!.width;
@@ -783,7 +783,7 @@ test('table: header sorts and announces it, select-all goes mixed then all, name
   await all.click();
   await expect(live.getByText('5 selected')).toBeVisible();
   await all.click();
-  await expect(live.getByText('Select files to act on them')).toBeVisible();
+  await expect(live.getByText('5 files')).toBeVisible();
 
   const wide = page.locator('figure').filter({ hasText: 'After' }).filter({ hasText: 'Comments' }).getByRole('table');
   await wide.scrollIntoViewIfNeeded();

@@ -98,7 +98,7 @@ export const WaitFlash = localized(function WaitFlash() {
       afterNote={
         <>
           Nothing shows for the first 300 ms (<code>delay-loading</code>), so quick refreshes just land. Past that, the spinner stays at least half a
-          second, so a request that ends just after the delay can't flash it either: the second half of the rule, from{' '}
+          second, so a request that ends just after the delay can’t flash it either: the second half of the rule, from{' '}
           <a href="https://github.com/smeijer/spin-delay">spin-delay</a>.
         </>
       }
@@ -213,7 +213,7 @@ function Ribbed({ ribbed }: { ribbed?: boolean }) {
       <span className={s.waitMeta}>Uploading video</span>
       <div className={s.waitBar}>{run > 0 && <span key={run} className={cx(s.waitFill, s.waitLinear, ribbed && s.waitRibs)} />}</div>
       <Button size="sm" onClick={start} disabled={running}>
-        {run ? 'Upload again' : 'Upload'}
+        {running ? 'Uploading…' : run ? 'Upload again' : 'Upload'}
       </Button>
     </div>
   );

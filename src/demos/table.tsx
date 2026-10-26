@@ -58,7 +58,7 @@ function Files({ columns = COLUMNS, selectable, sortable = true, stickyFirst, cl
     <div className={cx(s.stack, s.fill)}>
       {selectable && (
         <div className={s.bulkBar} data-active={selected.length > 0 || undefined}>
-          <span aria-live="polite">{selected.length ? `${selected.length} selected` : 'Select files to act on them'}</span>
+          <span aria-live="polite">{selected.length ? `${selected.length} selected` : `${FILES.length} files`}</span>
           <Button size="sm" disabled={!selected.length}>
             Move…
           </Button>

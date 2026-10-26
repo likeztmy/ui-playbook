@@ -176,7 +176,7 @@ export function PressFeel() {
         </div>
       }
       beforeNote="At 0.9 the press is something you watch rather than feel, and the label moves under the cursor."
-      afterNote="0.97 is felt more than seen. Actions run from a keyboard shortcut, hundreds of times a day, don’t play it at all."
+      afterNote="0.97 is felt more than seen. An action run from a keyboard shortcut, hundreds of times a day, doesn’t play it at all."
     />
   );
 }

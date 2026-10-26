@@ -58,7 +58,7 @@ export function TooltipGrouping() {
       before={<Row grouped={false} />}
       after={<Row />}
       beforeNote="Every button waits the full 500ms. Slide along the row looking for Zoom out and you wait at each stop, so the tooltips never quite keep up."
-      afterNote="One shared delay: wait once, then each neighbour's label swaps in instantly and without animation (data-instant)."
+      afterNote="One shared delay: wait once, then each neighbour’s label swaps in instantly and without animation."
     />
   );
 }

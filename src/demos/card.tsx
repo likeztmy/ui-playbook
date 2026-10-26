@@ -84,7 +84,8 @@ export function CardLive() {
               Opened <b>{opened}</b>
             </>
           ) : (
-            'Nothing opened yet'
+            // Holds the line's height until there's something to say.
+            '\u00a0'
           )}
         </p>
       </div>
@@ -207,7 +208,7 @@ function NumberCard({ animated }: { animated: boolean }) {
       className={s.cardOne}
       stage={animated ? <Swap value={v} className={s.bigNumber} /> : <span className={s.bigNumber}>{v}</span>}
       title="Conversion"
-      subtitle="Click to refresh"
+      subtitle="Last 7 days"
       onOpen={next}
     />
   );

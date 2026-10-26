@@ -92,6 +92,7 @@
   margin: var(--space-3) 0 0;
   font-size: 13px;
   line-height: 18px;
+  text-wrap: pretty;
 
   &:lang(zh) {
     line-height: 20px;
@@ -253,6 +254,8 @@
   font-size: 13px;
   line-height: 18px;
   color: var(--ink-muted);
+  // A narrow column: no word left alone on the last line.
+  text-wrap: pretty;
 }
 
 .galleryLive {

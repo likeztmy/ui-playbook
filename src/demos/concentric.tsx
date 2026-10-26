@@ -113,7 +113,7 @@ export function BorderCounts() {
           </div>
         </div>
       }
-      beforeNote="Shown at 2×. The key copies the field's 10px corner. Inset is 3px plus a 1px border, so the key's corner bulges into the gap."
+      beforeNote="Shown at 2×. The key copies the field’s 10px corner. Inset is 3px plus a 1px border, so the key’s corner bulges into the gap."
       afterNote="10 − 3 inset − 1 border = 6. The border is part of the gap; leave it out and the result is off by a pixel per side."
     />
   );

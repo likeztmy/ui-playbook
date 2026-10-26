@@ -135,7 +135,7 @@ export function CheckboxTarget() {
       beforeNote={
         <>
           The eye lands on the words, but only a 16px box answers; the smaller the target, the longer it takes to hit (
-          <a href="https://www.nngroup.com/articles/fitts-law/">Fitts’s law</a>).
+          <a href="https://doi.org/10.1037/h0055392">Fitts, 1954</a>).
         </>
       }
       afterNote="A <label> around box and words makes the whole row the target."

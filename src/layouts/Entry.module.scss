@@ -209,6 +209,11 @@
     text-align: left;
   }
 
+  // A token is one word: it moves to the next line whole rather than breaking at its hyphen.
+  :global(code) {
+    white-space: nowrap;
+  }
+
   :global(th),
   :global(td) {
     padding: var(--space-2) var(--space-3) var(--space-2) 0;

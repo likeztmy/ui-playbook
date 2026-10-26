@@ -79,3 +79,13 @@ Mechanical results first, because they are short:
 2. Links in prose and captions: always a quiet underline, darker on hover.
 3. Post has no letter keys for now (J/K and the rest are removed, with what depended on them).
 4. /practice/mail: the app sticks at the top on wide screens while the decisions scroll under it; each Show leaves the app as it found it. Home cards: previews are inert and the whole card is the link.
+
+## Done (2026-10-27)
+
+Batches 1–5 shipped: 71625b5, 3597170, 2fd594d, c7ce979 and the batch 5 commit. Left open:
+
+- Mechanism claims with no source on Tooltip, Card, Menu, Popover, Table and Toolbar: needs reading, not editing.
+- Section structure differs between principle pages (error-timing, concentric-radius).
+- Combobox, Menu and Popover pairs still look identical until clicked (start open, or play once on entering).
+- A share image (`og:image`) for every page.
+- axe leftovers judged not to need change: disabled menu items (WCAG exempts inactive controls), an empty corner cell in comparison tables, Card's h3 title.

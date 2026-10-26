@@ -18,8 +18,8 @@ For an uncommon action that can't be undone. An alert dialog: `dialog-sm` (400),
 
 - **Cancel and a verb.** The verb names the result (*Delete project*), never *OK* or *Yes*.
 - **Focus starts on Cancel**, so Enter backs out. Esc cancels too.
-- **No outside dismissal.** A click on the scrim does nothing: the decision waits for a button. Precision's README lets the scrim cancel; we follow Apple and the WAI-ARIA alert dialog instead.
-- **The one fill is `danger-fill`** when the action destroys. Apple keeps a deliberately chosen action in the default style; Precision marks it red so it reads as a stop.
+- **No outside dismissal.** A click on the scrim does nothing: the decision waits for a button, as Apple's alerts and the WAI-ARIA alert dialog do. A click that lands outside by accident shouldn't answer the question.
+- **The one fill is `danger-fill`** when the action destroys. Apple keeps a deliberately chosen action in the default style; here it's red, so it reads as a stop before the hand gets there.
 
 ### Task: a short, scoped job
 
