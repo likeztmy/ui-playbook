@@ -30,6 +30,48 @@
   font-weight: 600;
 }
 
+// A new message just sent, atop the list: what it is, and the way back, for as long as Undo lasts.
+.outbox {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  height: 44px;
+  padding: 0 var(--space-4) 0 calc(32px + 20px + var(--space-1));
+  border-bottom: 1px solid var(--line);
+  background: var(--accent-soft);
+  color: var(--ink-muted);
+}
+
+// The way back follows the words, as a sent reply's does, not off at the row's far end.
+.outboxText {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  b {
+    color: var(--ink);
+    font-weight: 500;
+  }
+}
+
+.undo {
+  flex: none;
+  padding: 2px var(--space-1);
+  border: 0;
+  border-radius: var(--radius-xs);
+  background: none;
+  color: var(--accent-text);
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+}
+
 // The view's one filled button.
 .newMessage {
   flex: none;
@@ -136,6 +178,11 @@
 
   .newLabel {
     display: none;
+  }
+
+  // No checkbox column on a phone: on the senders' edge.
+  .outbox {
+    padding-left: calc(20px + var(--space-1));
   }
 
   .main,

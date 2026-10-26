@@ -32,7 +32,12 @@ export function useFromWidth(box: RefObject<HTMLDivElement | null>, deps: unknow
 }
 
 /** What a list's bar carries from the app: the folder menu (on a phone), and search with New message. */
-export type Chrome = { folders: ReactNode; actions: ReactNode };
+export type Chrome = {
+  folders: ReactNode;
+  actions: ReactNode;
+  /** New messages just sent, atop the list with their Undo: where the eye comes back to. */
+  outbox: ReactNode;
+};
 
 /** The bar over the list: select all, then the selection's actions or where you are; then search and New message. */
 function Bar({ post, chrome }: { post: Post; chrome: Chrome }) {
@@ -93,6 +98,7 @@ export function List({ post, rows, chrome }: { post: Post; rows: RefObject<Map<s
   return (
     <section className={s.list} aria-label="Conversations">
       <Bar post={post} chrome={chrome} />
+      {chrome.outbox}
       <div
         ref={box}
         className={s.rows}

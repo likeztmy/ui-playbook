@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useToast } from '../../ui/Toast';
+import { TIMEOUT, useToast } from '../../ui/Toast';
 import { toBlocks } from './doc';
 import { blank, empty, fileFrom, loadDrafts, replyTo, storeDrafts, uploading, type Draft, type DraftKind } from './draft';
 import type { Conversation, Message } from './model';
@@ -10,6 +10,9 @@ const RATE = 1.5 * 1024 * 1024;
 const FLOOR = 1500;
 const TICK = 100;
 
+/** A message just sent, while it can still be taken back. */
+type Sending = { message: string; conversation?: string; subject: string; to: string[]; undo: () => void };
+
 const at = (d: Date) => `${d.toLocaleDateString('en-GB', { weekday: 'short' })} ${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`;
 
 /** Writing: the drafts, the one open in the main area, and sending them. Replies live in their conversation. */
@@ -19,6 +22,8 @@ export function useCompose(post: Post) {
   const [saved, setSaved] = useState(0);
   const loaded = useRef(false);
   const timers = useRef(new Map<string, ReturnType<typeof setInterval>>());
+  // Messages just sent, still taken back with Undo where they landed.
+  const [sending, setSending] = useState<Sending[]>([]);
   // Drafts whose Send is waiting for their uploads.
   const [waiting, setWaiting] = useState<Set<string>>(new Set());
   const toast = useToast();
@@ -131,20 +136,20 @@ export function useCompose(post: Post) {
       quotes: d.quotes,
       attachments: d.attachments?.map(({ id: _, progress: __, bytes: ___, ...a }) => a),
     };
-    const undo = post.deliver(m, d.subject, d.conversation);
+    const undeliver = post.deliver(m, d.subject, d.conversation);
     remove(id);
     if (writing === id) setWriting(null);
-    toast({
-      title: 'Message sent',
-      action: {
-        label: 'Undo',
-        onClick: () => {
-          undo();
-          add(d);
-          open(d);
-        },
-      },
-    });
+    // Undo is offered where the message lands (in its thread, or atop the list), not at the screen's
+    // foot: the eye is on what it just did. As long as a toast's Undo would last.
+    const drop = () => setSending((all) => all.filter((x) => x.message !== m.id));
+    const undo = () => {
+      drop();
+      undeliver();
+      add(d);
+      open(d);
+    };
+    setSending((all) => [...all, { message: m.id, conversation: d.conversation, subject: d.subject, to: d.to, undo }]);
+    setTimeout(drop, TIMEOUT.action);
   };
 
   /** Send now, or, while a file is still uploading, once it's up. */
@@ -182,6 +187,7 @@ export function useCompose(post: Post) {
     /** The reply being written in a conversation, if any. */
     replyIn: (c: string) => drafts.find((d) => d.conversation === c) ?? null,
     saved,
+    sending,
     open,
     compose,
     reply,

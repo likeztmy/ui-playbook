@@ -14,10 +14,12 @@ type Props = {
   onToggle: () => void;
   /** Focus lands here when the conversation opens. */
   headRef?: Ref<HTMLButtonElement>;
+  /** Just sent: takes it back. While set, the message says it's sending, with Undo, where its time goes. */
+  undo?: () => void;
 };
 
 /** One message in a conversation: a single line when collapsed, the whole message when open. */
-export function Message({ m, open, onToggle, headRef }: Props) {
+export function Message({ m, open, onToggle, headRef, undo }: Props) {
   const from = person(m.from);
   if (!open) {
     return (
@@ -41,7 +43,16 @@ export function Message({ m, open, onToggle, headRef }: Props) {
           </button>
           <Recipients m={m} />
         </span>
-        <span className={s.time}>{m.at}</span>
+        {undo ? (
+          <span className={s.sending} role="status">
+            Sending ·{' '}
+            <button type="button" className={s.undo} onClick={undo}>
+              Undo
+            </button>
+          </span>
+        ) : (
+          <span className={s.time}>{m.at}</span>
+        )}
       </header>
       <div className={s.body}>
         {m.letter ? (

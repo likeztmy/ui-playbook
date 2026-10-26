@@ -1,4 +1,4 @@
-import { Archive, ArchiveRestore, ChevronLeft, ChevronRight, Forward, Mail, Reply, ReplyAll, Star } from 'lucide-react';
+import { Archive, ArchiveRestore, ChevronLeft, ChevronRight, Forward, Mail, ReplyAll, Star } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { Button } from '../../ui/Button';
 import { Tip, TipGroup } from '../../ui/Tooltip';
@@ -75,6 +75,15 @@ export function Conversation({ post, compose, c, single }: { post: Post; compose
   const reply = compose.replyIn(c.id);
   const last = latest(c);
   // Reply all only when there's someone besides the sender to reach.
+  // Who a reply goes to: the sender, or, after your own message, whoever you wrote to.
+  const replyName = (person(last.from).me ? last.to : [last.from]).map(called).join(', ');
+  const field = useRef<HTMLButtonElement>(null);
+  // A reply sent or closed hands focus back to the field it came from.
+  const replied = useRef(false);
+  useEffect(() => {
+    if (replied.current && !reply) field.current?.focus({ preventScroll: true });
+    replied.current = !!reply;
+  }, [reply]);
   const many = new Set([last.from, ...last.to, ...(last.cc ?? [])].filter((p) => !person(p).me)).size > 1;
 
   // Arriving: scroll to the first open message and put focus on it.
@@ -160,6 +169,7 @@ export function Conversation({ post, compose, c, single }: { post: Post; compose
                   open={open.has(c.messages[r.index].id)}
                   onToggle={() => toggle(c.messages[r.index].id)}
                   headRef={r.index === firstOpen ? first : undefined}
+                  undo={compose.sending.find((x) => x.message === c.messages[r.index].id)?.undo}
                 />
               ),
             )}
@@ -167,26 +177,25 @@ export function Conversation({ post, compose, c, single }: { post: Post; compose
           {reply ? (
             <Composer key={reply.id} d={reply} compose={compose} />
           ) : (
+            // Where reading ends, a reply is already waiting: the action on the path people take.
             <TipGroup>
               <div className={s.answer}>
                 <Tip label="Reply" keys={['R']}>
-                  <Button onClick={() => compose.reply(c, 'reply')}>
-                    <Reply {...ic} />
-                    Reply
-                  </Button>
+                  <button ref={field} type="button" className={s.replyField} onClick={() => compose.reply(c, 'reply')}>
+                    <Avatar id="me" size="sm" />
+                    <span>Reply to {replyName}…</span>
+                  </button>
                 </Tip>
                 {many && (
                   <Tip label="Reply all" keys={['A']}>
-                    <Button onClick={() => compose.reply(c, 'replyAll')}>
+                    <Button variant="ghost" icon aria-label="Reply all" onClick={() => compose.reply(c, 'replyAll')}>
                       <ReplyAll {...ic} />
-                      Reply all
                     </Button>
                   </Tip>
                 )}
                 <Tip label="Forward" keys={['F']}>
-                  <Button onClick={() => compose.reply(c, 'forward')}>
+                  <Button variant="ghost" icon aria-label="Forward" onClick={() => compose.reply(c, 'forward')}>
                     <Forward {...ic} />
-                    Forward
                   </Button>
                 </Tip>
               </div>

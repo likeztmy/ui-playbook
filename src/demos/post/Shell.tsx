@@ -9,6 +9,7 @@ import { Conversation } from './Conversation';
 import { DraftList } from './DraftList';
 import { Find } from './Find';
 import { FOLDERS, FOLDER_NAME } from './folders';
+import { participants } from './people';
 import { List, type Chrome } from './List';
 import type { Folder } from './model';
 import { useCompose, type Compose } from './useCompose';
@@ -110,6 +111,7 @@ function Shell({ onToasts }: { onToasts: (el: HTMLDivElement | null) => void }) 
 
   // What every list's bar carries besides its own tools: where you are on a phone, search, and New message.
   const chrome: Chrome = {
+    outbox: null,
     folders: (
       <Menu.Root>
         <Menu.Trigger render={<Button variant="ghost" className={s.folderMenu} />}>
@@ -144,6 +146,20 @@ function Shell({ onToasts }: { onToasts: (el: HTMLDivElement | null) => void }) 
       </>
     ),
   };
+
+  chrome.outbox = compose.sending
+    .filter((x) => !x.conversation)
+    .map((x) => (
+      <div key={x.message} className={s.outbox} role="status">
+        <span className={s.outboxText}>
+          Sending <b>{x.subject.trim() || '(no subject)'}</b>
+          {x.to.length > 0 && ` to ${participants(x.to)}`} ·
+        </span>
+        <button type="button" className={s.undo} onClick={x.undo}>
+          Undo
+        </button>
+      </div>
+    ));
 
   const main = compose.writing ? (
     <Composer key={compose.writing.id} d={compose.writing} compose={compose} page onBack={() => compose.close(compose.writing!.id)} />

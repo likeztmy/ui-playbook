@@ -64,6 +64,7 @@ export function DraftList({ compose, chrome }: { compose: Compose; chrome: Chrom
         <span className={s.where}>{chrome.folders}</span>
         <span className={s.barActions}>{chrome.actions}</span>
       </div>
+      {chrome.outbox}
       <div ref={box} className={s.rows} role="list" style={{ '--from': `${fromWidth}px` } as CSSProperties}>
         {drafts.map((d) => (
           <DraftLine key={d.id} d={d} compose={compose} />

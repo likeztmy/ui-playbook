@@ -1254,8 +1254,9 @@ test('post: compose picks and types recipients, sends with ⌘↵, and Undo brin
   await expect(composer.getByText('Saved')).toBeVisible();
   await sound('written');
   await page.keyboard.press('ControlOrMeta+Enter');
-  await expect(page.getByText('Message sent')).toBeVisible();
   await expect(composer).toHaveCount(0);
+  // Sent: it's atop the list you come back to, with its Undo, not in a toast at the screen's foot.
+  await expect(page.getByRole('status').filter({ hasText: 'Sending Beta invite list to Priya' })).toBeVisible();
   await page.getByRole('navigation', { name: 'Folders' }).getByRole('button', { name: 'Sent' }).click();
   await expect(page.getByRole('list').getByText('Beta invite list')).toBeVisible();
   // Undo: the message leaves Sent and the composer is back as it was.
@@ -1288,8 +1289,16 @@ test('post: R replies at the foot of the conversation, to the sender, and the re
   await page.keyboard.type('See you there.');
   await page.keyboard.press('ControlOrMeta+Enter');
   await expect(reply).toHaveCount(0);
-  await expect(conversation.getByRole('article', { name: /^You/ }).last()).toContainText('See you there.');
+  const sent = conversation.getByRole('article', { name: /^You/ }).last();
+  await expect(sent).toContainText('See you there.');
   expect(await conversation.getByRole('article').count()).toBeGreaterThanOrEqual(before);
+  // The reply says it's sending, with its Undo, where its time will be; focus is back on the reply field.
+  await expect(sent.getByRole('status')).toHaveText(/Sending/);
+  await expect(conversation.getByRole('button', { name: 'Reply to Daniel…' })).toBeFocused();
+  // Undo takes it back out of the thread and reopens the reply as it was.
+  await sent.getByRole('button', { name: 'Undo' }).click();
+  await expect(conversation.getByText('See you there.', { exact: true })).toHaveCount(1);
+  await expect(conversation.getByRole('region', { name: 'Reply' }).getByRole('textbox', { name: 'Message' })).toContainText('See you there.');
 });
 
 test('post: the formatting row marks what applies at the caret; ⌘K links the selection and Esc returns to the text', async ({ page }) => {
@@ -1373,7 +1382,7 @@ test('post: files attach by picking or dropping, each with its own progress; Sen
   await expect(composer.getByText('Sends when the files are up')).toBeVisible();
   await expect(composer.getByRole('button', { name: 'Cancel sending' })).toBeVisible();
   await expect(files.getByText('PDF · 40 KB')).toBeVisible({ timeout: 5000 });
-  await expect(page.getByText('Message sent')).toBeVisible({ timeout: 6000 });
+  await expect(page.getByRole('status').filter({ hasText: /^Sending/ })).toBeVisible({ timeout: 6000 });
   await expect(composer).toHaveCount(0);
   // Dropping onto the composer: an outline while over it, a card after.
   await page.keyboard.press('c');

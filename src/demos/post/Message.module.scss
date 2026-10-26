@@ -49,6 +49,29 @@ $indent: calc(36px + var(--space-3));
   font-weight: 400;
 }
 
+// Just sent, in the time's place: what's happening, and the way back.
+.sending {
+  color: var(--ink-muted);
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.undo {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent-text);
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+
+  &:focus-visible {
+    border-radius: var(--radius-xs);
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+}
+
 .time {
   color: var(--ink-muted);
   font-size: 13px;
