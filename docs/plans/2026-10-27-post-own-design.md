@@ -1,6 +1,6 @@
 # Post, argued from the playbook: where it reads as a Gmail copy, and what replaces it
 
-Owner's rule (2026-10-27): Post proves the playbook. A choice is justified by a playbook principle or its research, never by "Gmail does it"; a replica persuades no one. This audit lists what in Post today reads as Gmail, sorts it, and proposes replacements argued from the principles. Nothing changes before sign-off.
+Owner's rule (2026-10-27): Post proves the playbook. A choice is justified by a playbook principle or its research, never by "Gmail does it"; a replica persuades no one. This audit lists what in Post today reads as Gmail, sorts it, and proposes replacements argued from the principles. Signed off 2026-10-27 (all 11; search and New message on the list's bar; Undo inline for sending only) and built in three stages: the list (bd926c8), reading (d8b4782), writing (1a5a61d and its review fixes).
 
 Sorting:
 
@@ -43,3 +43,10 @@ Sorting:
 3. Reply field and inline Undo (8, 9) — writing.
 
 Each step: state-table rows in the reading/writing plan rewritten from principles, tests and `layoutProblems` per flow, the independent screenshot review, deploy.
+
+## What review changed along the way
+
+- Selection reads "2 selected" before its tools; the folder's count shows once (unread, in the folders).
+- A run also names its span in the times' column; recipients use first names, so they fit a phone.
+- When Undo runs out, a sent message says "Sent" in place and goes with the next move: a row removed on a timer would shift the list under the pointer (*Nothing shifts*). Its row is neutral, not the selection's tint (*Colour means one thing*). The reply field's edge is 3:1 (WCAG 1.4.11).
+- Open: a Tip opens when focus is moved back to its trigger by the app (New message, the reply field); a kit-level fix for programmatic focus.

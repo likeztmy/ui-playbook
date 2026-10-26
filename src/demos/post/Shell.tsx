@@ -94,6 +94,9 @@ function Shell({ onToasts }: { onToasts: (el: HTMLDivElement | null) => void }) 
     preloadBody();
   }, []);
 
+  // What's been sent goes with the next move, never on a timer under the pointer.
+  useEffect(() => compose.clearSent(), [post.folder, post.open?.id, compose.writing?.id]);
+
   // Back from a conversation puts focus on its row; leaving a new message, on Compose. Never on <body>.
   const was = useRef<{ open?: string; writing: boolean }>({ writing: false });
   useEffect(() => {
@@ -152,12 +155,15 @@ function Shell({ onToasts }: { onToasts: (el: HTMLDivElement | null) => void }) 
     .map((x) => (
       <div key={x.message} className={s.outbox} role="status">
         <span className={s.outboxText}>
-          Sending <b>{x.subject.trim() || '(no subject)'}</b>
-          {x.to.length > 0 && ` to ${participants(x.to)}`} ·
+          {x.done ? 'Sent' : 'Sending'} <b>{x.subject.trim() || '(no subject)'}</b>
+          {x.to.length > 0 && ` to ${participants(x.to)}`}
+          {!x.done && ' · '}
         </span>
-        <button type="button" className={s.undo} onClick={x.undo}>
-          Undo
-        </button>
+        {!x.done && (
+          <button type="button" className={s.undo} onClick={x.undo}>
+            Undo
+          </button>
+        )}
       </div>
     ));
 

@@ -169,7 +169,7 @@ export function Conversation({ post, compose, c, single }: { post: Post; compose
                   open={open.has(c.messages[r.index].id)}
                   onToggle={() => toggle(c.messages[r.index].id)}
                   headRef={r.index === firstOpen ? first : undefined}
-                  undo={compose.sending.find((x) => x.message === c.messages[r.index].id)?.undo}
+                  undo={compose.sending.find((x) => x.message === c.messages[r.index].id && !x.done)?.undo}
                 />
               ),
             )}

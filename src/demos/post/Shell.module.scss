@@ -34,11 +34,11 @@
 .outbox {
   display: flex;
   align-items: center;
-  gap: var(--space-1);
   height: 44px;
   padding: 0 var(--space-4) 0 calc(32px + 20px + var(--space-1));
   border-bottom: 1px solid var(--line);
-  background: var(--accent-soft);
+  // Neutral: a pale accent would say "chosen", and this isn't.
+  background: var(--surface-sunken);
   color: var(--ink-muted);
 }
 
@@ -47,7 +47,7 @@
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: pre;
 
   b {
     color: var(--ink);
@@ -57,7 +57,7 @@
 
 .undo {
   flex: none;
-  padding: 2px var(--space-1);
+  padding: 2px 0;
   border: 0;
   border-radius: var(--radius-xs);
   background: none;

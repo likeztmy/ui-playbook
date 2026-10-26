@@ -1451,3 +1451,26 @@ test('post: / searches from anywhere, and a draft is marked in ink', async ({ pa
   const ink = await mark.evaluate((el) => [getComputedStyle(el).color, getComputedStyle(document.body).getPropertyValue('--danger')]);
   expect(ink[0]).not.toBe('rgb(187, 54, 16)');
 });
+
+test('post: when Undo runs out, a sent message says so in place; nothing under the pointer moves until you do', async ({ page }) => {
+  await page.goto('/lab/mail-one');
+  await hydrateAll(page);
+  const list = page.getByRole('region', { name: 'Conversations' });
+  await list.getByRole('button', { name: 'New message' }).click();
+  await page.getByRole('combobox', { name: 'To' }).fill('mira');
+  await page.getByRole('combobox', { name: 'To' }).press('Enter');
+  await page.getByRole('textbox', { name: 'Subject' }).fill('Lunch');
+  await page.getByRole('textbox', { name: 'Message' }).click();
+  await page.keyboard.type('Noon?');
+  await page.keyboard.press('ControlOrMeta+Enter');
+  const status = list.getByRole('status');
+  await expect(status).toHaveText(/^Sending Lunch to Mira/);
+  const first = list.locator('[data-row]').first();
+  const before = (await first.boundingBox())!.y;
+  await expect(status).toHaveText('Sent Lunch to Mira', { timeout: 8000 });
+  await expect(status.getByRole('button', { name: 'Undo' })).toHaveCount(0);
+  expect((await first.boundingBox())!.y).toBe(before);
+  // It goes with the next move.
+  await page.getByRole('navigation', { name: 'Folders' }).getByRole('button', { name: 'Sent' }).click();
+  await expect(list.getByRole('status')).toHaveCount(0);
+});

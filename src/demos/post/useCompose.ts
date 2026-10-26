@@ -11,7 +11,7 @@ const FLOOR = 1500;
 const TICK = 100;
 
 /** A message just sent, while it can still be taken back. */
-type Sending = { message: string; conversation?: string; subject: string; to: string[]; undo: () => void };
+type Sending = { message: string; conversation?: string; subject: string; to: string[]; undo: () => void; done?: boolean };
 
 const at = (d: Date) => `${d.toLocaleDateString('en-GB', { weekday: 'short' })} ${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`;
 
@@ -140,8 +140,10 @@ export function useCompose(post: Post) {
     remove(id);
     if (writing === id) setWriting(null);
     // Undo is offered where the message lands (in its thread, or atop the list), not at the screen's
-    // foot: the eye is on what it just did. As long as a toast's Undo would last.
+    // foot: the eye is on what it just did. As long as a toast's Undo would last; then it says it's
+    // sent, in place, and goes with the next move, so nothing shifts on its own.
     const drop = () => setSending((all) => all.filter((x) => x.message !== m.id));
+    const settle = () => setSending((all) => all.map((x) => (x.message === m.id ? { ...x, done: true } : x)));
     const undo = () => {
       drop();
       undeliver();
@@ -149,7 +151,7 @@ export function useCompose(post: Post) {
       open(d);
     };
     setSending((all) => [...all, { message: m.id, conversation: d.conversation, subject: d.subject, to: d.to, undo }]);
-    setTimeout(drop, TIMEOUT.action);
+    setTimeout(settle, TIMEOUT.action);
   };
 
   /** Send now, or, while a file is still uploading, once it's up. */
@@ -188,6 +190,8 @@ export function useCompose(post: Post) {
     replyIn: (c: string) => drafts.find((d) => d.conversation === c) ?? null,
     saved,
     sending,
+    /** Clears what's been sent, on the next move elsewhere. */
+    clearSent: () => setSending((all) => all.filter((x) => !x.done)),
     open,
     compose,
     reply,
