@@ -1,0 +1,26 @@
+// Floats at the bottom of the window, out of the prose's way, as a review tool does.
+.bar {
+  position: fixed;
+  bottom: var(--space-4);
+  left: 50%;
+  z-index: var(--z-sticky);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1);
+  border-radius: var(--radius-full);
+  background: var(--surface-raised);
+  box-shadow: var(--shadow-lg);
+  translate: -50% 0;
+  max-width: calc(100vw - var(--space-4) * 2);
+  overflow-x: auto;
+}
+
+.slow {
+  font-family: var(--font-mono);
+  font-size: 12px;
+
+  &[aria-pressed='true'] {
+    background: var(--fill-active);
+  }
+}

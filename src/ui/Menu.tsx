@@ -149,8 +149,8 @@ function Submenu({ icon, label, children, className }: SubmenuProps) {
 
 type RadioItemProps = Omit<ComponentProps<typeof BaseMenu.RadioItem>, 'children'> & {
   children: string;
-  /** Trailing, muted: a count that belongs to the value, such as a folder's unread. */
-  detail?: string | number;
+  /** Trailing, muted: a count that belongs to the value, such as a folder's unread, or a swatch. */
+  detail?: ReactNode;
 };
 
 /** One value in a choice menu (Sort by, View as). Picking it closes the menu. */

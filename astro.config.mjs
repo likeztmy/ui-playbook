@@ -20,6 +20,10 @@ const isDev = process.argv.includes('dev');
 export default defineConfig({
   site: 'https://ui-playbook.suspense.site',
   integrations: [react(), mdx()],
+  // Code shows in both themes: Shiki writes each colour as a variable, and the page picks one.
+  markdown: {
+    shikiConfig: { themes: { light: 'github-light', dark: 'github-dark' }, defaultColor: false },
+  },
   vite: {
     cacheDir: isDev ? 'node_modules/.vite-dev' : 'node_modules/.vite',
     optimizeDeps: {

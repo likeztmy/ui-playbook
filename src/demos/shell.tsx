@@ -15,6 +15,8 @@ import { Ruler } from 'lucide-react';
 import { CheckIcon, ContrastIcon, CrossIcon } from '../ui/icons';
 import { SliderPanel } from '../ui/Slider';
 import { cx } from '../ui/cx';
+import { SegmentedControl } from '../ui/SegmentedControl';
+import { useBox, useNarrow } from './box';
 import { Tip, TipGroup } from '../ui/Tooltip';
 import s from './shell.module.scss';
 
@@ -228,9 +230,53 @@ export function Frame({ label, children, height = 200, className, defaultTheme, 
   // Read at click time: the page theme may have changed since render.
   const flip = () => setTheme((t) => ((t ?? pageTheme()) === 'dark' ? 'light' : 'dark'));
 
+  // The frame's own tools: on the band under the stage, or at the end of the label's row above it.
+  const tools = (
+    <span className={s.tools}>
+      {onGapsChange && (
+        <Tip label={words.gaps}>
+          <Button
+            variant="ghost"
+            size="sm"
+            icon
+            aria-label={words.gaps}
+            aria-pressed={gaps}
+            className={s.slow}
+            onClick={() => onGapsChange(!gaps)}
+          >
+            <Ruler size={14} strokeWidth={1.5} nonScalingStroke aria-hidden />
+          </Button>
+        </Tip>
+      )}
+      {onSlowChange && (
+        <Tip label={words.slow}>
+          <Button variant="ghost" size="sm" aria-pressed={slow} className={s.slow} onClick={() => onSlowChange(!slow)}>
+            0.1×
+          </Button>
+        </Tip>
+      )}
+      <Tip label={words.theme}>
+        <Button variant="ghost" size="sm" icon aria-label={words.theme} onClick={flip}>
+          <ContrastIcon />
+        </Button>
+      </Tip>
+    </span>
+  );
+
+  // Without a band, the label sits above the stage (in its corner on a plate), its tools at the row's end.
+  const box = useBox();
+  const banded = box === 'band';
+  const caption = !banded && (
+    <figcaption className={s.caption} data-tone={tone}>
+      <span className={s.captionLabel}>{label}</span>
+      {tools}
+    </figcaption>
+  );
   return (
-    <figure className={cx(s.frame, className)} data-theme={theme ?? undefined} data-slow={slow ? '' : undefined}>
+    <figure className={cx(s.frame, className)} data-theme={theme ?? undefined} data-slow={slow ? '' : undefined} data-box={banded ? undefined : box}>
+      {box !== 'plate' && caption}
       <div ref={setStage} className={s.stage} style={{ minHeight: height }} inert={still}>
+        {box === 'plate' && caption}
         <PortalContainer.Provider value={portal}>
           <GapsOn.Provider value={!!gaps}>
             <TipGroup>{children}</TipGroup>
@@ -239,38 +285,12 @@ export function Frame({ label, children, height = 200, className, defaultTheme, 
         {start && <span className={s.startFrame} style={{ left: start.x, top: start.y, width: start.w, height: start.h }} aria-hidden />}
         {origin && <span className={s.origin} style={{ left: origin.x, top: origin.y }} aria-hidden />}
       </div>
-      <div className={s.bar} data-tone={tone}>
-        <span className={s.label}>{label}</span>
-        <span className={s.tools}>
-          {onGapsChange && (
-            <Tip label={words.gaps}>
-              <Button
-                variant="ghost"
-                size="sm"
-                icon
-                aria-label={words.gaps}
-                aria-pressed={gaps}
-                className={s.slow}
-                onClick={() => onGapsChange(!gaps)}
-              >
-                <Ruler size={14} strokeWidth={1.5} nonScalingStroke aria-hidden />
-              </Button>
-            </Tip>
-          )}
-          {onSlowChange && (
-            <Tip label={words.slow}>
-              <Button variant="ghost" size="sm" aria-pressed={slow} className={s.slow} onClick={() => onSlowChange(!slow)}>
-                0.1×
-              </Button>
-            </Tip>
-          )}
-          <Tip label={words.theme}>
-            <Button variant="ghost" size="sm" icon aria-label={words.theme} onClick={flip}>
-              <ContrastIcon />
-            </Button>
-          </Tip>
-        </span>
-      </div>
+      {banded && (
+        <div className={s.bar} data-tone={tone}>
+          <span className={s.label}>{label}</span>
+          {tools}
+        </div>
+      )}
       <div ref={setPortal} />
     </figure>
   );
@@ -289,24 +309,54 @@ type CompareProps = {
   motion?: boolean;
   /** Offers the Gaps switch, shared by both sides, for demos whose point is spacing. */
   measure?: boolean;
+  /** What each side does, in a few words, for the pilot's frames: "Fades both ways". */
+  beforeLabel?: string;
+  afterLabel?: string;
 };
 
 /** The same thing twice: the common version and the better one. */
-export function Compare({ before, after, beforeNote, afterNote, height, stacked, motion, measure }: CompareProps) {
+export function Compare({ before, after, beforeNote, afterNote, height, stacked, motion, measure, beforeLabel, afterLabel }: CompareProps) {
+  const box = useBox();
+  const narrow = useNarrow();
+  const [shown, setShown] = useState<'before' | 'after'>('after');
   const [slow, setSlow] = useState(false);
   const slowing = motion ? { slow, onSlowChange: setSlow } : {};
   const [gaps, setGaps] = useState(false);
   const measuring = measure ? { gaps, onGapsChange: setGaps } : {};
+  if (box === 'toggle' || (box !== 'band' && narrow && !stacked)) {
+    const good = shown === 'after';
+    return (
+      <div className={s.toggled}>
+        <Frame label={<Verdict good={good} />} height={height} tone={good ? 'good' : 'bad'} {...measuring}>
+          <div key={shown} className={s.toggledStage}>
+            {good ? after : before}
+          </div>
+        </Frame>
+        <SegmentedControl
+          className={s.toggle}
+          label="Compare"
+          value={shown}
+          onValueChange={setShown}
+          segments={[
+            { value: 'before', label: beforeLabel ?? 'Before' },
+            { value: 'after', label: afterLabel ?? 'After' },
+          ]}
+        />
+        <p className={s.note}>{good ? afterNote : beforeNote}</p>
+      </div>
+    );
+  }
+  const own = box !== 'band';
   return (
-    <div className={cx(s.compare, stacked && s.stacked)}>
+    <div className={cx(s.compare, stacked && s.stacked, box === 'plate' && s.plate)}>
       <div className={s.side}>
-        <Frame label={<Verdict good={false} />} height={height} tone="bad" {...slowing} {...measuring}>
+        <Frame label={<Verdict good={false} words={own ? beforeLabel : undefined} />} height={height} tone="bad" {...slowing} {...measuring}>
           {before}
         </Frame>
         <p className={s.note}>{beforeNote}</p>
       </div>
       <div className={s.side}>
-        <Frame label={<Verdict good />} height={height} tone="good" {...slowing} {...measuring}>
+        <Frame label={<Verdict good words={own ? afterLabel : undefined} />} height={height} tone="good" {...slowing} {...measuring}>
           {after}
         </Frame>
         <p className={s.note}>{afterNote}</p>
@@ -315,12 +365,12 @@ export function Compare({ before, after, beforeNote, afterNote, height, stacked,
   );
 }
 
-function Verdict({ good }: { good: boolean }) {
-  const words = FRAME_UI[useLang()];
+function Verdict({ good, words }: { good: boolean; words?: string }) {
+  const ui = FRAME_UI[useLang()];
   return (
     <span className={s.verdict} data-good={good ? '' : undefined}>
       {good ? <CheckIcon size={14} /> : <CrossIcon size={14} />}
-      {good ? words.after : words.before}
+      {words ?? (good ? ui.after : ui.before)}
     </span>
   );
 }

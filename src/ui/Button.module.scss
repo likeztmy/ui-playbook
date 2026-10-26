@@ -138,7 +138,7 @@
 // Destructive confirm: the dialog's one filled button.
 .dangerFill {
   background: var(--danger);
-  color: var(--on-accent);
+  color: var(--on-danger);
 
   &:not([data-disabled]) {
     @include hover {

@@ -153,7 +153,7 @@
         "name": "accent-text",
         "value": {
           "light": "#0066cc",
-          "dark": "#2997ff"
+          "dark": "#7dbbff"
         },
         "usage": "蓝色文字：链接、选中工具的图标、强调文字。用于所有表面与 `accent-soft` 之上（≥4.8:1）。#007aff / #0a84ff 直接当文字用对比度不够，所以文字单独一档。"
       },
@@ -161,7 +161,7 @@
         "name": "danger",
         "value": {
           "light": "#a11f01",
-          "dark": "#ff8a65"
+          "dark": "#ff9c7d"
         },
         "usage": "破坏性操作与错误。始终配合图标或文字出现，不单靠颜色。"
       },
@@ -174,10 +174,18 @@
         "usage": "错误提示的浅底，文字用 `danger`。"
       },
       {
+        "name": "on-danger",
+        "value": {
+          "light": "#ffffff",
+          "dark": "#0e0f11"
+        },
+        "usage": "危险填充上的文字。暗色里 `danger` 是亮色，配白字看不清，所以用近黑。"
+      },
+      {
         "name": "success",
         "value": {
           "light": "#127a5a",
-          "dark": "#4fc79a"
+          "dark": "#54cc9e"
         },
         "usage": "成功与完成状态。始终配合图标或文字出现，不单靠颜色与 `danger` 区分。"
       },
@@ -193,7 +201,7 @@
         "name": "warning",
         "value": {
           "light": "#9d5e02",
-          "dark": "#f5b042"
+          "dark": "#eeaa3b"
         },
         "usage": "需要注意但不阻断的状态：配额将满、未保存的修改。作为文字用于所有表面与 `warning-soft` 之上。比 `danger` 亮一截（OKLCH L 54% 对 46%），红绿色弱也分得开；仍配图标或文字。"
       },
@@ -230,6 +238,462 @@
           "dark": "#f4f4f6"
         },
         "usage": "开关的滑块。在 `line-strong`（关）和 `accent`（开）上都保持清晰。"
+      }
+    ],
+    "palettes": [
+      {
+        "id": "blue",
+        "name": "Blue",
+        "values": {
+          "accent": {
+            "light": "#0071e3",
+            "dark": "#0071e3"
+          }
+        }
+      },
+      {
+        "id": "ink",
+        "name": "Ink",
+        "values": {
+          "accent": {
+            "light": "#18181b",
+            "dark": "#ececef"
+          },
+          "accent-hover": {
+            "light": "#3f3f46",
+            "dark": "#d4d4d8"
+          },
+          "on-accent": {
+            "light": "#ffffff",
+            "dark": "#0e0f11"
+          },
+          "accent-soft": {
+            "light": "#e2e2e6",
+            "dark": "#303137"
+          },
+          "accent-text": {
+            "light": "#18181b",
+            "dark": "#ececef"
+          },
+          "info": {
+            "light": "#18181b",
+            "dark": "#ececef"
+          },
+          "info-soft": {
+            "light": "#e2e2e6",
+            "dark": "#303137"
+          },
+          "knob": {
+            "light": "#ffffff",
+            "dark": "#0e0f11"
+          },
+          "focus-ring": {
+            "light": "0 0 0 2px #ffffff, 0 0 0 4px #18181b",
+            "dark": "0 0 0 2px #0e0f11, 0 0 0 4px #ececef"
+          }
+        }
+      },
+      {
+        "id": "clay",
+        "name": "Clay",
+        "values": {
+          "bg": {
+            "light": "#f9f6f0",
+            "dark": "#11100f"
+          },
+          "surface": {
+            "light": "#ffffff",
+            "dark": "#191816"
+          },
+          "surface-raised": {
+            "light": "#ffffff",
+            "dark": "#22201d"
+          },
+          "surface-sunken": {
+            "light": "#f2eee6",
+            "dark": "#0d0c0b"
+          },
+          "line": {
+            "light": "#e7e2da",
+            "dark": "#2a2925"
+          },
+          "line-strong": {
+            "light": "#8a8479",
+            "dark": "#726e67"
+          },
+          "ink": {
+            "light": "#181714",
+            "dark": "#efece7"
+          },
+          "ink-muted": {
+            "light": "#625d54",
+            "dark": "#bab5ac"
+          },
+          "ink-disabled": {
+            "light": "#aca79e",
+            "dark": "#504d47"
+          },
+          "fill-hover": {
+            "light": "#1817140d",
+            "dark": "#ffffff0f"
+          },
+          "fill-active": {
+            "light": "#18171417",
+            "dark": "#ffffff1a"
+          },
+          "fill-control": {
+            "light": "#1817140f",
+            "dark": "#ffffff17"
+          },
+          "fill-control-hover": {
+            "light": "#1817141a",
+            "dark": "#ffffff21"
+          },
+          "accent": {
+            "light": "#b55934",
+            "dark": "#b55934"
+          },
+          "accent-hover": {
+            "light": "#a64c25",
+            "dark": "#a64c25"
+          },
+          "accent-soft": {
+            "light": "#ffe9e1",
+            "dark": "#3d2014"
+          },
+          "accent-text": {
+            "light": "#a74d26",
+            "dark": "#fca07c"
+          },
+          "danger": {
+            "light": "#a21a44",
+            "dark": "#ff98ab"
+          },
+          "danger-soft": {
+            "light": "#feeaed",
+            "dark": "#3b1b22"
+          },
+          "success": {
+            "light": "#287b41",
+            "dark": "#78c98a"
+          },
+          "success-soft": {
+            "light": "#e3f6e6",
+            "dark": "#122d19"
+          },
+          "warning": {
+            "light": "#776401",
+            "dark": "#c6b860"
+          },
+          "warning-soft": {
+            "light": "#f6f1da",
+            "dark": "#2c2705"
+          },
+          "info": {
+            "light": "#427097",
+            "dark": "#8bbce7"
+          },
+          "info-soft": {
+            "light": "#e4f2fe",
+            "dark": "#0e293d"
+          },
+          "scrim": {
+            "light": "#18171452",
+            "dark": "#000000a3"
+          },
+          "knob": {
+            "light": "#ffffff",
+            "dark": "#f5f3ef"
+          },
+          "shadow-xs": {
+            "light": "0 1px 2px #1817140f, 0 0 0 1px #18171414",
+            "dark": "0 0 0 1px #ffffff14"
+          },
+          "shadow-sm": {
+            "light": "0 2px 4px #1817140f, 0 0 0 1px #18171412",
+            "dark": "0 1px 2px #00000066, 0 0 0 1px #ffffff12"
+          },
+          "shadow-md": {
+            "light": "0 6px 12px #18171412, 0 1px 2px #1817140a, 0 0 0 1px #18171414",
+            "dark": "0 6px 12px #00000066, 0 0 0 1px #ffffff17"
+          },
+          "shadow-lg": {
+            "light": "0 12px 24px #18171414, 0 2px 4px #1817140a, 0 0 0 1px #18171414",
+            "dark": "0 12px 24px #00000080, 0 0 0 1px #ffffff1a"
+          },
+          "focus-ring": {
+            "light": "0 0 0 2px #ffffff, 0 0 0 4px #b55934",
+            "dark": "0 0 0 2px #11100f, 0 0 0 4px #fca07c"
+          }
+        }
+      },
+      {
+        "id": "petrol",
+        "name": "Petrol",
+        "values": {
+          "bg": {
+            "light": "#f5f7f9",
+            "dark": "#0c1011"
+          },
+          "surface": {
+            "light": "#ffffff",
+            "dark": "#13181a"
+          },
+          "surface-raised": {
+            "light": "#ffffff",
+            "dark": "#1b2022"
+          },
+          "surface-sunken": {
+            "light": "#ecf0f2",
+            "dark": "#090b0c"
+          },
+          "line": {
+            "light": "#e0e6e8",
+            "dark": "#22292b"
+          },
+          "line-strong": {
+            "light": "#7c888d",
+            "dark": "#667074"
+          },
+          "ink": {
+            "light": "#15191b",
+            "dark": "#e9edef"
+          },
+          "ink-muted": {
+            "light": "#566166",
+            "dark": "#acb7bc"
+          },
+          "ink-disabled": {
+            "light": "#a1abaf",
+            "dark": "#454d50"
+          },
+          "fill-hover": {
+            "light": "#15191b0d",
+            "dark": "#ffffff0f"
+          },
+          "fill-active": {
+            "light": "#15191b17",
+            "dark": "#ffffff1a"
+          },
+          "fill-control": {
+            "light": "#15191b0f",
+            "dark": "#ffffff17"
+          },
+          "fill-control-hover": {
+            "light": "#15191b1a",
+            "dark": "#ffffff21"
+          },
+          "accent": {
+            "light": "#037f91",
+            "dark": "#037f91"
+          },
+          "accent-hover": {
+            "light": "#047181",
+            "dark": "#047181"
+          },
+          "accent-soft": {
+            "light": "#daf6fc",
+            "dark": "#002c34"
+          },
+          "accent-text": {
+            "light": "#007384",
+            "dark": "#5cc5d9"
+          },
+          "danger": {
+            "light": "#a51f1b",
+            "dark": "#ff9c88"
+          },
+          "danger-soft": {
+            "light": "#ffebe8",
+            "dark": "#3b1c17"
+          },
+          "success": {
+            "light": "#257c3a",
+            "dark": "#6fcb7e"
+          },
+          "success-soft": {
+            "light": "#e3f6e5",
+            "dark": "#142d18"
+          },
+          "warning": {
+            "light": "#9b6002",
+            "dark": "#efa844"
+          },
+          "warning-soft": {
+            "light": "#feeddb",
+            "dark": "#352206"
+          },
+          "info": {
+            "light": "#007384",
+            "dark": "#5cc5d9"
+          },
+          "info-soft": {
+            "light": "#daf6fc",
+            "dark": "#002c34"
+          },
+          "scrim": {
+            "light": "#15191b52",
+            "dark": "#000000a3"
+          },
+          "knob": {
+            "light": "#ffffff",
+            "dark": "#f1f4f5"
+          },
+          "shadow-xs": {
+            "light": "0 1px 2px #15191b0f, 0 0 0 1px #15191b14",
+            "dark": "0 0 0 1px #ffffff14"
+          },
+          "shadow-sm": {
+            "light": "0 2px 4px #15191b0f, 0 0 0 1px #15191b12",
+            "dark": "0 1px 2px #00000066, 0 0 0 1px #ffffff12"
+          },
+          "shadow-md": {
+            "light": "0 6px 12px #15191b12, 0 1px 2px #15191b0a, 0 0 0 1px #15191b14",
+            "dark": "0 6px 12px #00000066, 0 0 0 1px #ffffff17"
+          },
+          "shadow-lg": {
+            "light": "0 12px 24px #15191b14, 0 2px 4px #15191b0a, 0 0 0 1px #15191b14",
+            "dark": "0 12px 24px #00000080, 0 0 0 1px #ffffff1a"
+          },
+          "focus-ring": {
+            "light": "0 0 0 2px #ffffff, 0 0 0 4px #037f91",
+            "dark": "0 0 0 2px #0c1011, 0 0 0 4px #5cc5d9"
+          }
+        }
+      },
+      {
+        "id": "moss",
+        "name": "Moss",
+        "values": {
+          "bg": {
+            "light": "#f7f7f3",
+            "dark": "#100f0e"
+          },
+          "surface": {
+            "light": "#ffffff",
+            "dark": "#181815"
+          },
+          "surface-raised": {
+            "light": "#ffffff",
+            "dark": "#20201d"
+          },
+          "surface-sunken": {
+            "light": "#efefea",
+            "dark": "#0b0b0a"
+          },
+          "line": {
+            "light": "#e5e4de",
+            "dark": "#282824"
+          },
+          "line-strong": {
+            "light": "#87877c",
+            "dark": "#6f6f67"
+          },
+          "ink": {
+            "light": "#181814",
+            "dark": "#edede8"
+          },
+          "ink-muted": {
+            "light": "#5f5f55",
+            "dark": "#b6b6ac"
+          },
+          "ink-disabled": {
+            "light": "#a9a9a0",
+            "dark": "#4d4c46"
+          },
+          "fill-hover": {
+            "light": "#1818140d",
+            "dark": "#ffffff0f"
+          },
+          "fill-active": {
+            "light": "#18181417",
+            "dark": "#ffffff1a"
+          },
+          "fill-control": {
+            "light": "#1818140f",
+            "dark": "#ffffff17"
+          },
+          "fill-control-hover": {
+            "light": "#1818141a",
+            "dark": "#ffffff21"
+          },
+          "accent": {
+            "light": "#607132",
+            "dark": "#607132"
+          },
+          "accent-hover": {
+            "light": "#546425",
+            "dark": "#546425"
+          },
+          "accent-soft": {
+            "light": "#ecf4de",
+            "dark": "#232a0f"
+          },
+          "accent-text": {
+            "light": "#536228",
+            "dark": "#c8da9f"
+          },
+          "danger": {
+            "light": "#a41f1a",
+            "dark": "#ff9c88"
+          },
+          "danger-soft": {
+            "light": "#ffebe8",
+            "dark": "#3b1c17"
+          },
+          "success": {
+            "light": "#047b63",
+            "dark": "#5ecaab"
+          },
+          "success-soft": {
+            "light": "#ddf7ee",
+            "dark": "#032e24"
+          },
+          "warning": {
+            "light": "#a15b01",
+            "dark": "#f3a649"
+          },
+          "warning-soft": {
+            "light": "#ffecde",
+            "dark": "#362107"
+          },
+          "info": {
+            "light": "#536228",
+            "dark": "#c8da9f"
+          },
+          "info-soft": {
+            "light": "#ecf4de",
+            "dark": "#232a0f"
+          },
+          "scrim": {
+            "light": "#18181452",
+            "dark": "#000000a3"
+          },
+          "knob": {
+            "light": "#ffffff",
+            "dark": "#f4f4f1"
+          },
+          "shadow-xs": {
+            "light": "0 1px 2px #1818140f, 0 0 0 1px #18181414",
+            "dark": "0 0 0 1px #ffffff14"
+          },
+          "shadow-sm": {
+            "light": "0 2px 4px #1818140f, 0 0 0 1px #18181412",
+            "dark": "0 1px 2px #00000066, 0 0 0 1px #ffffff12"
+          },
+          "shadow-md": {
+            "light": "0 6px 12px #18181412, 0 1px 2px #1818140a, 0 0 0 1px #18181414",
+            "dark": "0 6px 12px #00000066, 0 0 0 1px #ffffff17"
+          },
+          "shadow-lg": {
+            "light": "0 12px 24px #18181414, 0 2px 4px #1818140a, 0 0 0 1px #18181414",
+            "dark": "0 12px 24px #00000080, 0 0 0 1px #ffffff1a"
+          },
+          "focus-ring": {
+            "light": "0 0 0 2px #ffffff, 0 0 0 4px #607132",
+            "dark": "0 0 0 2px #100f0e, 0 0 0 4px #c8da9f"
+          }
+        }
       }
     ]
   },

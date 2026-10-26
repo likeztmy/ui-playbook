@@ -25,8 +25,8 @@ define(readFileSync('src/styles/tokens.css', 'utf8'));
 const sources = files.map((f) => [f, readFileSync(f, 'utf8')]);
 sources.forEach(([, t]) => define(t));
 
-// Set by Base UI on its parts at runtime.
-const RUNTIME = /^--(anchor|available|transform-origin|active-tab|popup|positioner|collapsible|accordion|slider|toast|drawer)/;
+// Set at runtime: by Base UI on its parts, and by Shiki on highlighted code.
+const RUNTIME = /^--(anchor|available|transform-origin|active-tab|popup|positioner|collapsible|accordion|slider|toast|drawer|shiki)/;
 
 let bad = 0;
 for (const [f, t] of sources) {

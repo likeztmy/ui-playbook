@@ -1,6 +1,7 @@
 ---
 import '../styles/tokens.css';
 import '../styles/global.scss';
+import { PalettePicker } from '../components/palette/PalettePicker';
 import { ThemeToggle } from '../components/ThemeToggle';
 import { ZH_LIVE, hasZh, langOf, pathIn, ui } from '../i18n';
 import s from './Base.module.scss';
@@ -37,6 +38,9 @@ const translated = ZH_LIVE && (lang === 'zh' || !isEntry || hasZh(bare));
       try {
         const t = localStorage.getItem('theme');
         if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+        // And a saved palette; an id no stylesheet knows draws the default.
+        const p = localStorage.getItem('palette');
+        if (p && /^[a-z]+$/.test(p)) document.documentElement.dataset.palette = p;
       } catch {}
     </script>
   </head>
@@ -46,6 +50,7 @@ const translated = ZH_LIVE && (lang === 'zh' || !isEntry || hasZh(bare));
         <a class={s.wordmark} href={lang === 'zh' ? '/zh' : '/'}>UI Playbook</a>
         <span class={s.actions}>
           {ZH_LIVE && <a class={s.lang} href={other} hreflang={t.otherLang} lang={t.otherLang}>{t.other}</a>}
+          <PalettePicker client:load lang={lang} />
           <ThemeToggle client:load sunClass={s.sun} moonClass={s.moon} lang={lang} />
         </span>
       </header>

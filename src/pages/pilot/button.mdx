@@ -1,0 +1,113 @@
+---
+layout: ../../layouts/Pilot.astro
+kind: Component
+title: Button
+summary: Runs an action now. A filled pill that answers the press, quick down and soft back.
+lede: The control people press most, hundreds of times a day. How it answers is felt long before it's seen.
+---
+import { ButtonScene, ButtonShape, OnePrimary, LoadingState, ButtonVariants, ButtonStates } from '../../demos/button';
+import { PilotPress, PilotEdge, PilotHover } from '../../demos/button-pilot';
+
+Press **Publish** and keep holding. It sinks a little, three percent, and comes back with a small spring when you let go. That isn’t decoration: it’s the button saying it heard you, before the publish has had time to answer.
+
+<ButtonScene client:visible />
+
+A button runs an action now. Going somewhere is a link, even when it looks like a button; a state that stays is a switch; more actions than room go in a menu, with the main one left out in view.
+
+## A fill says press; a line says type
+
+<ButtonShape client:visible />
+
+## Find the press yourself
+
+<PilotPress client:visible />
+
+Three numbers make a press: how far it sinks, how fast it gets there, and how it comes back. The playbook lands on **0.97, down in 80 ms, back on a spring**. Anywhere from 0.96 to 0.98 is felt more than seen; at 0.95 and below people watch the button instead of the click. The way down has to beat the finger, so it's short; the way back can take its time, because by then the eye has moved on.
+
+## Bigger things press less
+
+<PilotEdge client:visible />
+
+What the eye reads in a press is the edge moving in. At 0.97 a 100 px button's edge moves 1.5 px; a 280 px card's moves more than 4. So a card shouldn't share the button's scale. Past a button's width, give it the scale that moves its edge 1.5 px, `1 − 3 / width`, and a tag, a button and a card all feel like the same press.
+
+## Hover answers at once and leaves softly
+
+A pointer crossing a row of buttons is on its way somewhere. Watch the two rows below as one sweeps across each.
+
+<PilotHover client:visible />
+
+## One fill per view
+
+A fill is a claim: this is why the view exists. Two of them cancel each other out.
+
+<OnePrimary client:visible />
+
+## Loading waits, and keeps its width
+
+Press each button a few times. Most requests come back before a spinner is worth seeing.
+
+<LoadingState client:visible />
+
+## Take it with you
+
+```css
+.button {
+  --spring: linear(
+    0, 0.281, 0.615, 0.815, 0.917, 0.964,
+    0.985, 0.994, 0.997, 0.999, 1
+  );
+  /* Name what changes, so a press doesn't drag the hover colour. */
+  transition:
+    background-color 120ms ease-out,
+    scale 394ms var(--spring);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.button:hover {
+  transition-duration: 0ms, 394ms;
+}
+
+.button:active:not(:disabled) {
+  scale: 0.97;
+  transition:
+    background-color 0ms,
+    scale 80ms ease-out;
+}
+```
+
+- **`scale`, not `transform: scale()`.** The separate property composes with any `transform` the button already has, such as a toolbar sliding in.
+- **Transition what changes, by name.** `transition: all` lets the press timing leak into the hover colour.
+- **A disabled button doesn't press.** It can't run, so it shouldn't say it heard you.
+- **Clear the tap highlight.** On iOS and Android a grey flash covers the press otherwise.
+- **Shortcuts skip it.** An action run from the keyboard has no button under a finger; don't play the press on a button nobody touched.
+
+<details>
+<summary>Reference</summary>
+
+### Variants
+
+<ButtonVariants client:visible />
+
+Pick by weight, not colour: primary for the reason the view exists, secondary for everything else, ghost to step back. The danger pair marks destruction.
+
+### Anatomy
+
+| Part | Token | Value |
+| --- | --- | --- |
+| Height | `control-md` · `control-sm` · `control-lg` | 32 · 24 · 40 |
+| Horizontal padding | `space-3` (sm: `space-2`, lg: `space-4`) | 12 |
+| Radius | `radius-full`, every size | pill |
+| Label | body, weight 500 | 14 / 20 |
+| Press | `press-scale` in 80 ms, back on `ease-spring-snappy` | 0.97 |
+| Busy | after `delay-loading`; `loader-circle` in the icon slot | 300 |
+
+### States
+
+<ButtonStates client:visible />
+
+### Copy
+
+- Start with a verb that names the result: **Save changes**, **Create project**, not *OK* or *Submit*.
+- Sentence case, and match the dialog's title: *Delete project?* confirms with **Delete project**.
+
+</details>

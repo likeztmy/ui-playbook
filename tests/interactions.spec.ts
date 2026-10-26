@@ -58,7 +58,7 @@ test('badge: the states are words, so the list filters by them', async ({ page }
 test('loading waits delay-loading, keeps its width, ignores presses', async ({ page }) => {
   await page.goto('/components/button');
   await hydrateAll(page);
-  const after = page.locator('figure').filter({ hasText: 'Requests sent' }).filter({ hasText: 'After' });
+  const after = page.locator('figure').filter({ hasText: 'Requests sent' }).filter({ hasText: 'Waits 300 ms' });
   const publish = after.getByRole('button', { name: /^Publish/ });
   await publish.scrollIntoViewIfNeeded();
   const meter = after.getByText(/^Requests sent:/);

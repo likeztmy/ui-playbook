@@ -1,0 +1,31 @@
+---
+// A redesign pilot: one page in the candidate shape, with a switch between frame styles. Not
+// listed and not indexed; it exists to be compared, then folded into Entry.
+import Base from './Base.astro';
+import { BoxSwitch } from '../demos/button-pilot/BoxSwitch';
+import s from './Pilot.module.scss';
+
+const { frontmatter } = Astro.props;
+---
+
+<Base title={frontmatter.title} description={frontmatter.summary}>
+  <Fragment slot="head">
+    <meta name="robots" content="noindex" />
+    <script is:inline>
+      // The frame style before first paint, so the demos don't swap after hydrating.
+      const q = new URLSearchParams(location.search).get('box');
+      document.documentElement.dataset.box = ['band', 'caption', 'plate', 'toggle'].includes(q) ? q : 'caption';
+    </script>
+  </Fragment>
+  <article class={s.page}>
+    <header class={s.head}>
+      <p class={s.kind}>{frontmatter.kind}</p>
+      <h1 class={s.title}>{frontmatter.title}</h1>
+      <p class={s.lede}>{frontmatter.lede}</p>
+    </header>
+    <div class={s.body}>
+      <slot />
+    </div>
+  </article>
+  <BoxSwitch client:load />
+</Base>

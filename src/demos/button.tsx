@@ -54,9 +54,7 @@ function DocHeader() {
           </Button>
         </div>
       </div>
-      <div className={s.docBody}>
-        Ship offline sync to everyone, cut cold start below a second, and retire the old exporter before the holidays.
-      </div>
+      <div className={s.docBody}>Ship offline sync to everyone, cut cold start below a second, and retire the old exporter before the holidays.</div>
     </div>
   );
 }
@@ -102,6 +100,8 @@ export function ButtonStates() {
 export function HoverTiming() {
   return (
     <Compare
+      beforeLabel="Fades both ways"
+      afterLabel="In at once, out softly"
       before={
         <div className={s.row}>
           <Button className={m.slowHover}>Duplicate</Button>
@@ -118,9 +118,8 @@ export function HoverTiming() {
       }
       beforeNote={
         <>
-          The same fade in as out, as in{' '}
-          <a href="https://getbootstrap.com/docs/5.3/components/buttons/">Bootstrap</a>’s 0.15s both ways. On the way in, any delay reads as
-          lag.
+          The same fade in as out, as in <a href="https://getbootstrap.com/docs/5.3/components/buttons/">Bootstrap</a>’s 0.15s both ways. On the way
+          in, any delay reads as lag.
         </>
       }
       afterNote="What the pointer is on answers at once; what it has left can take its time."
@@ -131,6 +130,8 @@ export function HoverTiming() {
 export function ButtonShape() {
   return (
     <Compare
+      beforeLabel="Outlined"
+      afterLabel="Filled"
       before={
         <div className={s.row}>
           <Button className={m.outlined}>Cancel</Button>
@@ -161,6 +162,8 @@ export function ButtonShape() {
 export function PressFeel() {
   return (
     <Compare
+      beforeLabel="Down to 0.9"
+      afterLabel="Down to 0.97"
       before={
         <div className={s.row}>
           <Button className={m.bigPress}>Duplicate</Button>
@@ -184,6 +187,8 @@ export function PressFeel() {
 export function OnePrimary() {
   return (
     <Compare
+      beforeLabel="Two fills"
+      afterLabel="One fill, and it’s danger"
       before={
         <div className={s.footer}>
           <Button variant="primary">Cancel</Button>
@@ -199,7 +204,8 @@ export function OnePrimary() {
       beforeNote="Cancel weighs as much as the action it backs out of."
       afterNote={
         <>
-          Blue says go; a destructive confirm is a stop, so its one fill is danger. <a href="/principles/colour-means-one-thing">Colour means one thing</a>.
+          The accent says go; a destructive confirm is a stop, so its one fill is danger.{' '}
+          <a href="/principles/colour-means-one-thing">Colour means one thing</a>.
         </>
       }
     />
@@ -263,6 +269,8 @@ function LoadingPair({ careful }: { careful: boolean }) {
 export function LoadingState() {
   return (
     <Compare
+      beforeLabel="Spinner at once"
+      afterLabel="Waits 300 ms, keeps its width"
       before={<LoadingPair careful={false} />}
       after={<LoadingPair careful />}
       beforeNote="A spinner that comes and goes in 150ms reads as a glitch, not progress."

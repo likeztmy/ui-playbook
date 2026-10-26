@@ -1,0 +1,28 @@
+// The trigger's dot is the page's accent itself, so it changes with the palette and the theme.
+.current {
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-full);
+  background: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+// Each row's swatch is that palette's accent in the theme the page shows.
+.swatch {
+  display: block;
+  width: 12px;
+  height: 12px;
+  border-radius: var(--radius-full);
+  background: var(--light);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+:global(:root[data-theme='dark']) .swatch {
+  background: var(--dark);
+}
+
+@media (prefers-color-scheme: dark) {
+  :global(:root:not([data-theme])) .swatch {
+    background: var(--dark);
+  }
+}

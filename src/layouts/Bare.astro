@@ -24,6 +24,9 @@ const { title, noindex } = Astro.props;
       try {
         const t = localStorage.getItem('theme');
         if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+        // And a saved palette; an id no stylesheet knows draws the default.
+        const p = localStorage.getItem('palette');
+        if (p && /^[a-z]+$/.test(p)) document.documentElement.dataset.palette = p;
       } catch {}
     </script>
   </head>
