@@ -1,5 +1,6 @@
 # Mail, direction one: reading and writing
 
+> **Rule (owner, 2026-10-27):** Post is argued from the playbook, never from a reference product. "Gmail does it" is not a reason; a replica persuades no one. The product citations below are from before this rule and are to be replaced by the principle each decision rests on.
 Direction one has a good list and almost nothing past it: a message is a few plain paragraphs and writing is three fields. Reading and writing are what a mail app is for, and both are real needs, so they are the next work. Order: reading first (a reply opens inside a conversation, so writing sits on it), then writing.
 
 ## Phase 1 · Reading
