@@ -4,49 +4,64 @@ import Heads from '../../components/directions/Heads.astro';
 import Opening from '../../components/directions/Opening.astro';
 import s from '../../components/directions/Directions.module.scss';
 
-// Three directions on the same real content: the home page's head and one principle page's opening.
-// Faces are system stand-ins (New York, Bradley Hand) until a direction is chosen.
+// Two directions on the same real content: the home page's head and one principle page's opening.
+// The picker sets the title and note faces for both; body text stays Geist.
+const faces = [
+  { id: 'jetbrains', name: 'JetBrains Mono' },
+  { id: 'quattro', name: 'iA Writer Quattro' },
+  { id: 'recursive', name: 'Recursive' },
+  { id: 'grotesk', name: 'Space Grotesk' },
+  { id: 'geist', name: 'Geist' },
+];
+
 const directions = [
   {
     id: 'workbench',
     name: 'A · Workbench',
-    after: 'After DialKit and Josh Puckett',
-    note: 'Quiet and precise. Serif titles, rank by ink, figures as flat wells, and the site’s own settings as dials around the title.',
+    note: 'After DialKit and Josh Puckett. Quiet and precise: rank by ink, figures as flat wells, and the dials around the title really set this canvas. Press one.',
   },
   {
     id: 'field',
     name: 'B · Field guide',
-    after: 'After Ciechanowski and Josh Comeau',
-    note: 'Warm and explanatory. Clay paper, prose that names the demo’s parts in their colours, one hand-drawn note at the first demo, figures without a frame.',
-  },
-  {
-    id: 'shelf',
-    name: 'C · Specimen book',
-    after: 'After Interface Craft and Rauno',
-    note: 'Bold and collectable. Each component a cover on a shelf; each page opens like a poster, then reads as quietly as A.',
+    note: 'After Ciechanowski and Josh Comeau. Warm paper; the prose names each switch in the colour it turns on; one hand-written note at the first thing to try; contents that track where you are.',
   },
 ] as const;
+
+const contents = ['The rule', 'What repeats stops being seen', 'Bounce is not the cost', 'Delight belongs to rare moments'];
 ---
 
 <Base title="Directions">
   <meta name="robots" content="noindex" slot="head" />
-  <div class={s.lab}>
+  <div class={s.lab} data-faces="jetbrains">
+    <div class={s.faces} role="group" aria-label="Title face">
+      {
+        faces.map((f, i) => (
+          <button type="button" data-face={f.id} aria-pressed={i === 0 ? "true" : "false"}>
+            {f.name}
+          </button>
+        ))
+      }
+    </div>
     {
       directions.map((d) => (
         <section class={s.dir} data-direction={d.id} data-palette={d.id === 'field' ? 'clay' : undefined}>
           <header class={s.meta}>
             <h2>{d.name}</h2>
-            <p>
-              {d.after}. {d.note}
-            </p>
+            <p>{d.note}</p>
           </header>
-          <div class={s.canvas} data-theme={d.id === 'field' ? 'light' : undefined}>
+          <div class={s.canvas} data-canvas data-theme="light">
             <Heads direction={d.id} />
+            {d.id === 'field' && (
+              <nav class={s.rail} aria-label="On this page">
+                {contents.map((c, i) => (
+                  <span data-current={i === 2 ? '' : undefined}>{c}</span>
+                ))}
+              </nav>
+            )}
             <article class={s.page}>
-              {d.id === 'shelf' && <span class={s.disc} aria-hidden="true" />}
               <Opening keyed={d.id === 'field'}>
                 {d.id === 'field' && (
-                  <span slot="note" class={s.hand} style="right: -8px; top: -36px">
+                  <span slot="note" class={s.hand} style="right: 48px; top: -14px">
                     flip one a few times
                     <svg viewBox="0 0 60 40" width="48" height="32" aria-hidden="true">
                       <path d="M56 4 C 40 4, 20 12, 12 34" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
@@ -61,4 +76,7 @@ const directions = [
       ))
     }
   </div>
+  <script>
+    import '../../components/directions/lab';
+  </script>
 </Base>

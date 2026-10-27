@@ -1,13 +1,91 @@
 @use '../../styles/reading';
+@use '@fontsource-variable/jetbrains-mono';
+@use '@fontsource/ia-writer-quattro/400' as quattro-regular;
+@use '@fontsource/ia-writer-quattro/700' as quattro-bold;
+@use '@fontsource-variable/recursive/full';
+@use '@fontsource-variable/space-grotesk';
+@use '@fontsource/monaspace-radon/400' as radon;
 
-// Stand-in faces until a direction is chosen.
-$serif: ui-serif, 'New York', Georgia, serif;
-$hand: 'Bradley Hand', 'Segoe Print', cursive;
-
+// The picker's pairs: a face for titles, one for the hand-written note. Body text stays Geist.
 .lab {
+  --title: 'JetBrains Mono Variable', var(--font-mono);
+  --title-vars: normal;
+  --title-track: -0.04em;
+  --title-weight: 600;
+  --hand: 'Monaspace Radon', var(--font-mono);
+  --hand-vars: normal;
+
   display: grid;
-  gap: 96px;
-  padding: var(--space-12) var(--space-4) 120px;
+  gap: 80px;
+  padding: var(--space-8) var(--space-4) 120px;
+
+  &[data-faces='quattro'] {
+    --title: 'iA Writer Quattro', var(--font-sans);
+    --title-track: -0.03em;
+    --title-weight: 700;
+  }
+
+  // One family for all three: Linear, half mono, for titles; Casual and cursive for the note.
+  &[data-faces='recursive'] {
+    --title: 'Recursive Variable', var(--font-sans);
+    --title-vars: 'MONO' 0.5, 'CASL' 0;
+    --title-track: -0.03em;
+    --hand: 'Recursive Variable', var(--font-sans);
+    --hand-vars: 'MONO' 1, 'CASL' 1, 'CRSV' 1;
+  }
+
+  &[data-faces='grotesk'] {
+    --title: 'Space Grotesk Variable', var(--font-sans);
+    --title-track: -0.035em;
+  }
+
+  &[data-faces='geist'] {
+    --title: var(--font-sans);
+    --title-track: -0.03em;
+  }
+}
+
+.faces {
+  position: sticky;
+  top: 72px;
+  z-index: var(--z-sticky);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2px;
+  justify-self: center;
+  padding: 2px;
+  border-radius: 10px;
+  background: var(--surface);
+  box-shadow: var(--shadow-xs);
+
+  button {
+    border: 0;
+    background: none;
+    font-family: inherit;
+    cursor: pointer;
+    height: 32px;
+    padding: 0 var(--space-3);
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-muted);
+    transition: background-color var(--duration-fast) var(--ease-out);
+
+    &:hover {
+      background: var(--fill-hover);
+      transition-duration: var(--duration-instant);
+    }
+
+    &[aria-pressed='true'] {
+      background: var(--fill-control);
+      color: var(--ink);
+    }
+
+    &:focus-visible {
+      box-shadow: var(--focus-ring);
+    }
+  }
 }
 
 .dir {
@@ -35,7 +113,7 @@ $hand: 'Bradley Hand', 'Segoe Print', cursive;
   }
 }
 
-// Each direction draws on its own canvas, so the three read as separate sites.
+// Each direction draws on its own canvas, so the two read as separate sites.
 .canvas {
   position: relative;
   overflow: hidden;
@@ -56,6 +134,10 @@ $hand: 'Bradley Hand', 'Segoe Print', cursive;
 
   [data-part='title'] {
     @include reading.title;
+    font-family: var(--title);
+    font-variation-settings: var(--title-vars);
+    font-weight: var(--title-weight);
+    letter-spacing: var(--title-track);
   }
 
   [data-part='lede'] {
@@ -65,6 +147,12 @@ $hand: 'Bradley Hand', 'Segoe Print', cursive;
   [data-part='body'] {
     @include reading.body;
     margin-top: var(--space-12);
+
+    h2 {
+      font-family: var(--title);
+      font-variation-settings: var(--title-vars);
+      letter-spacing: calc(var(--title-track) / 2);
+    }
   }
 
   [data-part='demo'] {
@@ -73,6 +161,24 @@ $hand: 'Bradley Hand', 'Segoe Print', cursive;
     font-size: 15px;
     line-height: 24px;
   }
+}
+
+// One hand-written note, in the accent, at the first thing to try.
+.hand {
+  position: absolute;
+  z-index: 1;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  font-family: var(--hand);
+  font-variation-settings: var(--hand-vars);
+  font-size: 15px;
+  line-height: 20px;
+  color: var(--accent);
+  rotate: -3deg;
+  white-space: nowrap;
+  pointer-events: none;
 }
 
 // ── A · Workbench ────────────────────────────────────────
@@ -87,11 +193,12 @@ $hand: 'Bradley Hand', 'Segoe Print', cursive;
 
 .benchTitle {
   margin: 0;
-  font-family: $serif;
+  font-family: var(--title);
+  font-variation-settings: var(--title-vars);
   font-size: 72px;
   line-height: 76px;
-  font-weight: 400;
-  letter-spacing: -0.02em;
+  font-weight: var(--title-weight);
+  letter-spacing: var(--title-track);
 }
 
 .benchLine {
@@ -105,6 +212,9 @@ $hand: 'Bradley Hand', 'Segoe Print', cursive;
 // A DialKit row lifted off its panel: 36 tall, radius 8, the label at 60% ink, the value in mono.
 .chip {
   position: absolute;
+  border: 0;
+  font-family: inherit;
+  cursor: pointer;
   display: inline-flex;
   align-items: center;
   gap: var(--space-6);
@@ -118,21 +228,31 @@ $hand: 'Bradley Hand', 'Segoe Print', cursive;
   font-size: 13px;
   font-weight: 500;
   color: color-mix(in srgb, var(--ink) 60%, transparent);
+  transition:
+    scale var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out);
 
   code {
     font-size: 13px;
     color: var(--ink);
   }
+
+  &:hover {
+    background: color-mix(in srgb, var(--surface), var(--ink) 4%);
+    transition-duration: var(--duration-instant);
+  }
+
+  &:active {
+    scale: 0.96;
+  }
+
+  &:focus-visible {
+    box-shadow: var(--focus-ring);
+  }
 }
 
 [data-direction='workbench'] .page {
-  [data-part='title'] {
-    font-family: $serif;
-    font-weight: 400;
-    letter-spacing: -0.02em;
-  }
-
-  // Rank by ink: headings near-black, text a step down.
+  // Rank by ink: headings at full ink, text a step down.
   [data-part='body'] {
     color: color-mix(in srgb, var(--ink) 72%, var(--bg));
 
@@ -140,16 +260,15 @@ $hand: 'Bradley Hand', 'Segoe Print', cursive;
       color: var(--ink);
       font-size: 20px;
       line-height: 28px;
-      font-weight: 500;
-      letter-spacing: 0;
+      font-weight: 600;
     }
   }
 
-  // Figures as flat wells, the caption quiet above.
+  // Figures as flat wells.
   :global(figure) > [class*='_stage_'] {
     background: color-mix(in srgb, var(--ink) 3%, var(--bg));
     box-shadow: none;
-    border-radius: 16px;
+    border-radius: var(--radius-xl);
   }
 }
 
@@ -164,17 +283,19 @@ $hand: 'Bradley Hand', 'Segoe Print', cursive;
 
 .fieldTitle {
   margin: 0;
+  font-family: var(--title);
+  font-variation-settings: var(--title-vars);
   font-size: 56px;
   line-height: 60px;
-  font-weight: 650;
-  letter-spacing: -0.03em;
+  font-weight: var(--title-weight);
+  letter-spacing: var(--title-track);
 }
 
 .fieldLine {
   max-width: 460px;
   margin: var(--space-4) 0 var(--space-8);
-  font-size: 19px;
-  line-height: 30px;
+  font-size: 18px;
+  line-height: 28px;
   color: var(--ink-muted);
 }
 
@@ -198,27 +319,36 @@ $hand: 'Bradley Hand', 'Segoe Print', cursive;
   }
 }
 
-// One hand-drawn note, in the accent, at the first thing to try.
-.hand {
+// Where you are: the page's sections, the current one marked, pinned in the left margin.
+.rail {
   position: absolute;
-  z-index: 1;
-  display: inline-flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 2px;
-  font-family: $hand;
-  font-size: 18px;
-  line-height: 22px;
-  color: var(--accent);
-  rotate: -3deg;
-  pointer-events: none;
+  top: 560px;
+  left: var(--space-4);
+  display: grid;
+  gap: var(--space-2);
+  width: 128px;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--ink-muted);
+
+  span {
+    padding-left: var(--space-3);
+    box-shadow: inset 1px 0 var(--line);
+  }
+
+  [data-current] {
+    color: var(--ink);
+    font-weight: 500;
+    box-shadow: inset 2px 0 var(--accent);
+  }
+
+  @media (max-width: 1180px) {
+    display: none;
+  }
 }
 
 [data-direction='field'] .page {
-  font-size: 17px;
-  line-height: 28px;
-
-  // The words that name a demo's parts, in the colours the parts would wear.
+  // The words that name a demo's parts, in the colours the parts turn on.
   [data-key] {
     font-weight: 600;
   }
@@ -235,94 +365,19 @@ $hand: 'Bradley Hand', 'Segoe Print', cursive;
     color: var(--danger);
   }
 
-  // No frame: the demo sits on the paper.
+  // No frame: the demo sits on the paper, each switch in its word's colour.
   :global(figure) > [class*='_stage_'] {
     background: transparent;
     box-shadow: none;
   }
-}
 
-// ── C · Specimen book ────────────────────────────────────
-
-.shelf {
-  position: relative;
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 72px 0 96px;
-  text-align: center;
-}
-
-.covers {
-  display: flex;
-  justify-content: center;
-  gap: var(--space-3);
-  margin-bottom: var(--space-12);
-}
-
-// A cover: tall, in its own palette's accent, the name in serif at the top and its count at the foot.
-.cover {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: flex-start;
-  width: 148px;
-  height: 200px;
-  padding: var(--space-4);
-  border-radius: 14px;
-  font-family: $serif;
-  font-size: 26px;
-  line-height: 28px;
-  text-align: left;
-  background: var(--accent);
-  color: var(--on-accent);
-  box-shadow: 0 12px 32px color-mix(in srgb, var(--ink) 12%, transparent);
-
-  small {
-    font: 500 12px/16px var(--font-sans);
-    opacity: 0.75;
+  [class*='_switches_'] > :nth-child(2) {
+    --accent: var(--success);
+    --accent-hover: var(--success);
   }
 
-}
-
-.shelfTitle {
-  margin: 0;
-  font-size: 88px;
-  line-height: 88px;
-  font-weight: 600;
-  letter-spacing: -0.045em;
-}
-
-.shelfLine {
-  max-width: 440px;
-  margin: var(--space-4) auto 0;
-  font-size: 17px;
-  line-height: 26px;
-  color: var(--ink-muted);
-}
-
-// The page opens like a poster: a big title over one large accent shape.
-.disc {
-  position: absolute;
-  top: 8px;
-  right: -140px;
-  width: 220px;
-  height: 220px;
-  border-radius: 50%;
-  background: var(--accent);
-  opacity: 0.9;
-}
-
-[data-direction='shelf'] .page {
-  [data-part='title'] {
-    position: relative;
-    max-width: 560px;
-    font-size: 64px;
-    line-height: 64px;
-    letter-spacing: -0.045em;
-  }
-
-  [data-part='lede'] {
-    position: relative;
-    max-width: 520px;
+  [class*='_switches_'] > :nth-child(3) {
+    --accent: var(--danger);
+    --accent-hover: var(--danger);
   }
 }
