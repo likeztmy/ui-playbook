@@ -88,14 +88,31 @@ $indent: calc(36px + var(--space-3));
   font-size: 14px;
   text-align: left;
   cursor: pointer;
+  position: relative;
+  isolation: isolate;
+
+  // The fill reaches a step past the columns and rounds, so the avatar and the time aren't
+  // flush with its edge, and stops short of the lines between messages.
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 2px calc(-1 * var(--space-2));
+    z-index: -1;
+    border-radius: var(--radius-md);
+  }
 
   @include hover {
-    background: var(--fill-hover);
+    &::before {
+      background: var(--fill-hover);
+    }
   }
 
   &:focus-visible {
     outline: none;
-    box-shadow: inset 0 0 0 2px var(--accent);
+
+    &::before {
+      box-shadow: var(--focus-ring);
+    }
   }
 
   // On the open messages' name edge: their 36px avatar plus its gap, where this one is 28 inset 4.
