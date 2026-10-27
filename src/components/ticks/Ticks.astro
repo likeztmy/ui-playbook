@@ -1,0 +1,27 @@
+---
+// A tick per block of an article, in its left margin: the block you are reading is marked, a hover
+// or focus shows its heading and opening words, a press scrolls to it (ticks.ts).
+import s from './Ticks.module.scss';
+
+interface Props {
+  // The ancestor to look for blocks in, and the blocks: CSS selectors.
+  scope: string;
+  blocks: string;
+  // `page`: fixed in the window's margin. `canvas`: pinned inside a positioned box (the lab).
+  pinned?: 'page' | 'canvas';
+}
+const { scope, blocks, pinned = 'page' } = Astro.props;
+---
+
+<nav class={s.rail} data-pinned={pinned} aria-label="On this page">
+  <div class={s.ticks} data-ticks data-scope={scope} data-blocks={blocks}>
+    <div class={s.peek} data-peek aria-hidden="true">
+      <b></b>
+      <span></span>
+    </div>
+  </div>
+</nav>
+
+<script>
+  import './ticks';
+</script>

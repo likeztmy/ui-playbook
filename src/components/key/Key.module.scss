@@ -1,0 +1,44 @@
+// The legend: one set of colours for the parts a page's demo names, kept apart from status
+// colours, so a keyed word means only "this part". Equal OKLCH lightness, so no part outranks
+// another. `--key-*` fill the parts; `--key-text-*` colour the words, lighter on dark, each
+// ≥ 4.5:1 on the page.
+:global(:root) {
+  --key-1: oklch(0.5 0.17 258);
+  --key-2: oklch(0.52 0.13 150);
+  --key-3: oklch(0.52 0.18 25);
+  --key-text-1: var(--key-1);
+  --key-text-2: var(--key-2);
+  --key-text-3: var(--key-3);
+}
+
+@mixin dark-text {
+  --key-text-1: oklch(0.72 0.13 258);
+  --key-text-2: oklch(0.74 0.14 150);
+  --key-text-3: oklch(0.72 0.15 25);
+}
+
+:global(:root[data-theme='dark']) {
+  @include dark-text;
+}
+
+@media (prefers-color-scheme: dark) {
+  :global(:root:not([data-theme])) {
+    @include dark-text;
+  }
+}
+
+:global([data-key]) {
+  font-weight: 600;
+}
+
+:global([data-key='1']) {
+  color: var(--key-text-1);
+}
+
+:global([data-key='2']) {
+  color: var(--key-text-2);
+}
+
+:global([data-key='3']) {
+  color: var(--key-text-3);
+}

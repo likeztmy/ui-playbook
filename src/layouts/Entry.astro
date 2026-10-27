@@ -5,6 +5,7 @@ import Base from './Base.astro';
 import { entries, href, titleIn, summaryIn } from '../entries';
 import { langOf, linkIn, ui } from '../i18n';
 import { BackIcon } from '../ui/icons';
+import Ticks from '../components/ticks/Ticks.astro';
 import s from './Entry.module.scss';
 
 const { frontmatter } = Astro.props;
@@ -29,12 +30,21 @@ const kind = kindName[entry.kind];
     </a>
     <header class={s.head}>
       <p class={s.kind}>{kind}</p>
-      <h1 class={s.title}>{titleIn(entry, lang)}</h1>
+      <h1 class={s.title} data-tick>{titleIn(entry, lang)}</h1>
       <p class={s.summary}>{summaryIn(entry, lang)}</p>
     </header>
-    <div class={s.body}>
+    <div class={s.body} data-body>
       <slot />
     </div>
+    {
+      // A practice page is a full-width app with a few lines round it: the rail would sit on the app.
+      entry.kind !== 'practice' && (
+        <Ticks
+          scope="article"
+          blocks="[data-tick], [data-body] > h2, [data-body] > h3, [data-body] > p, [data-body] > astro-island, [data-body] > [data-noted], [data-body] > pre"
+        />
+      )
+    }
     <nav class={s.pager} aria-label={t.more}>
       {
         prev && (

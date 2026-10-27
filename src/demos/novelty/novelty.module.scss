@@ -202,6 +202,22 @@
   width: min(100%, 280px);
 }
 
+// Each switch in the colour of the word that names it (Key.astro).
+.keyed > :nth-child(1) {
+  --accent: var(--key-1);
+  --accent-hover: var(--key-1);
+}
+
+.keyed > :nth-child(2) {
+  --accent: var(--key-2);
+  --accent-hover: var(--key-2);
+}
+
+.keyed > :nth-child(3) {
+  --accent: var(--key-3);
+  --accent-hover: var(--key-3);
+}
+
 .readout {
   font-family: var(--font-mono);
   font-size: 12px;

@@ -1,23 +1,25 @@
-// Field guide's margin: one tick per block of the article. The block you are reading is marked,
-// a hover or focus shows its heading and opening words, and a press scrolls to it.
+// The tick rail (Ticks.astro): one tick per block of the article. The block you are reading is
+// marked, a hover or focus shows its heading and opening words, and a press scrolls to it.
 
-const BLOCKS = '[data-part=title], [data-part=body] > h2, [data-part=body] > p, [data-part=demo]';
 const still = matchMedia('(prefers-reduced-motion: reduce)');
 
 for (const rail of document.querySelectorAll<HTMLElement>('[data-ticks]')) {
-  const article = rail.closest('[data-canvas]')!.querySelector('article')!;
+  const scope = rail.closest(rail.dataset.scope!)!;
   const peek = rail.querySelector<HTMLElement>('[data-peek]')!;
   const [peekTitle, peekText] = peek.children as unknown as [HTMLElement, HTMLElement];
-  const blocks = [...article.querySelectorAll<HTMLElement>(BLOCKS)];
+  const blocks = [...scope.querySelectorAll<HTMLElement>(rail.dataset.blocks!)];
+  if (!blocks.length) continue;
+  // Rows shrink on a long page, so the rail stays inside 60% of the window.
+  rail.style.setProperty('--tick-h', `${Math.min(20, Math.floor((innerHeight * 0.6) / blocks.length))}px`);
 
   // A block's heading is the nearest heading at or before it.
   let heading = '';
   const ticks = blocks.map((block) => {
-    // What a reader sees, less the decorative note beside a demo.
-    const copy = block.cloneNode(true) as HTMLElement;
-    for (const hidden of copy.querySelectorAll('[aria-hidden=true]')) hidden.remove();
+    // What a reader sees: a demo by its caption, else the text less any decorative note.
+    const copy = (block.querySelector('figcaption') ?? block).cloneNode(true) as HTMLElement;
+    for (const hidden of copy.querySelectorAll('[aria-hidden=true], button')) hidden.remove();
     const text = copy.textContent!.replace(/\s+/g, ' ').trim();
-    if (/^H[12]$/.test(block.tagName)) heading = text;
+    if (/^H[1-3]$/.test(block.tagName)) heading = text;
     const title = heading;
     const tick = document.createElement('button');
     tick.type = 'button';

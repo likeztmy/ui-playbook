@@ -1,0 +1,137 @@
+// Where you are: a tick per block of the article, in the left margin as you scroll.
+// The current tick is longer and full ink; the ticks beside the pointer lengthen a step.
+.rail {
+  z-index: var(--z-sticky);
+  width: 40px;
+
+  @media (max-width: 1180px) {
+    display: none;
+  }
+
+  // Fixed in the window's margin, centred in its height, beside the 720px column.
+  &[data-pinned='page'] {
+    position: fixed;
+    top: 50%;
+    left: max(var(--space-4), calc(50vw - 360px - 160px));
+    translate: 0 -50%;
+  }
+
+  // Spanning a positioned box, so the ticks stay put at 40vh while a press scrolls in it.
+  &[data-pinned='canvas'] {
+    position: absolute;
+    top: 0;
+    bottom: 96px;
+    left: var(--space-6);
+
+    .ticks {
+      position: sticky;
+      top: 40vh;
+    }
+  }
+}
+
+.ticks {
+  position: relative;
+  display: grid;
+  justify-items: start;
+
+  // Set per page by ticks.ts.
+  --tick-h: 20px;
+
+  button {
+    border: 0;
+    background: none;
+    cursor: pointer;
+    // 20px rows, so each tick is a reasonable target, fewer on a long page (ticks.ts); the mark
+    // is the 2px line inside.
+    width: 40px;
+    height: var(--tick-h);
+    padding: 0;
+
+    &::before {
+      content: '';
+      display: block;
+      width: 12px;
+      height: 2px;
+      border-radius: 1px;
+      background: var(--line-strong);
+      opacity: 0.5;
+      transition:
+        width var(--duration-fast) var(--ease-out),
+        opacity var(--duration-fast) var(--ease-out);
+    }
+
+    &:has(+ :hover)::before,
+    &:hover + button::before {
+      width: 16px;
+    }
+
+    &:hover::before {
+      width: 20px;
+      opacity: 1;
+    }
+
+    &[aria-current]::before {
+      width: 24px;
+      background: var(--ink);
+      opacity: 1;
+    }
+
+    &:focus-visible {
+      border-radius: 4px;
+      box-shadow: var(--focus-ring);
+    }
+  }
+}
+
+// The peek: the hovered block's heading and opening words, beside its tick.
+.peek {
+  position: absolute;
+  left: 48px;
+  display: grid;
+  gap: var(--space-1);
+  width: 320px;
+  padding: var(--space-3) var(--space-4);
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--ink) 8%, transparent),
+    0 4px 20px color-mix(in srgb, var(--ink) 8%, transparent);
+  translate: 0 -50%;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity var(--duration-fast) var(--ease-out),
+    visibility 0s var(--duration-fast);
+
+  &[data-open] {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 0s;
+  }
+
+  b {
+    overflow: hidden;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 600;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  span {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    font-size: 13px;
+    line-height: 20px;
+    color: var(--ink-muted);
+
+    &:empty {
+      display: none;
+    }
+  }
+}
+

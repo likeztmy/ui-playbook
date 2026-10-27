@@ -160,6 +160,14 @@ const groups = [
       filter();
     }
   });
+  // "/" from anywhere on the page goes to the search, unless you're typing somewhere already.
+  addEventListener('keydown', (e) => {
+    if (e.key !== '/' || e.metaKey || e.ctrlKey || e.altKey) return;
+    const at = e.target as HTMLElement;
+    if (at.closest('input, textarea, select, [contenteditable]')) return;
+    e.preventDefault();
+    input.focus();
+  });
   document.getElementById('clear')!.addEventListener('click', () => {
     input.value = '';
     filter();

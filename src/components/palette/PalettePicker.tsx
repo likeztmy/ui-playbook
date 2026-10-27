@@ -5,20 +5,23 @@ import { Menu } from '../../ui/Menu';
 import { Tip } from '../../ui/Tooltip';
 import s from './PalettePicker.module.scss';
 
-const DEFAULT = PALETTES[0].id;
+// The tokens' own colours, drawn with no attribute.
+const BASE = PALETTES[0].id;
+// What a visitor sees until they pick one; Base.astro's boot script applies the same.
+const SITE: PaletteId = 'ink';
 
 function current(): PaletteId {
   const p = document.documentElement.dataset.palette;
-  return PALETTES.some((x) => x.id === p) ? (p as PaletteId) : DEFAULT;
+  return PALETTES.some((x) => x.id === p) ? (p as PaletteId) : BASE;
 }
 
-/** Sets the page's colour system and remembers it; the default has no attribute. */
+/** Sets the page's colour system and remembers any choice but the site's own. */
 function apply(id: PaletteId) {
   const html = document.documentElement;
-  if (id === DEFAULT) delete html.dataset.palette;
+  if (id === BASE) delete html.dataset.palette;
   else html.dataset.palette = id;
   try {
-    if (id === DEFAULT) localStorage.removeItem('palette');
+    if (id === SITE) localStorage.removeItem('palette');
     else localStorage.setItem('palette', id);
   } catch {}
 }
@@ -30,7 +33,7 @@ function Swatch({ light, dark }: { light: string | null; dark: string | null }) 
 
 /** Picks the colour system, from a choice menu by the theme toggle. Its button wears the current accent. */
 export function PalettePicker({ lang = 'en' }: { lang?: 'en' | 'zh' }) {
-  const [palette, setPalette] = useState<PaletteId>(DEFAULT);
+  const [palette, setPalette] = useState<PaletteId>(SITE);
   useEffect(() => setPalette(current()), []);
   const label = lang === 'zh' ? '配色' : 'Palette';
 

@@ -3,6 +3,8 @@ layout: ../../layouts/Entry.astro
 slug: attention-wears-off-waiting-doesnt
 ---
 import { NoveltyArchive, NoveltySwitches, NoveltyCelebrate } from '../../demos/novelty';
+import Key from '../../components/key/Key.astro';
+import Note from '../../components/note/Note.astro';
 
 ## The rule
 
@@ -24,7 +26,11 @@ So the rule is about length and blocking, not about whether something moves. A s
 
 ### Bounce is not the cost
 
-<NoveltySwitches client:visible />
+Three switches, each animating its own way. The <Key n={1}>expressive</Key> one overshoots and the <Key n={2}>standard</Key> one settles, in the same 350 ms; the <Key n={3}>blocking</Key> one holds the next press for 500.
+
+<Note text="flip one a few times" to="[role=switch]" at="right: 48px; top: -14px">
+  <NoveltySwitches client:visible keyed />
+</Note>
 
 Material 3's expressive springs overshoot, and it uses them on switches and buttons in expressive products; at fast and default speeds they take exactly as long as its standard ones ([Material 3, Motion specs](https://m3.material.io/styles/motion/overview/specs)). Carbon gives expressive motion to “clicking the primary action button”, often the most frequent click on a screen ([Carbon, Motion](https://carbondesignsystem.com/elements/motion/overview/)). Both are about importance. Importance can buy a more noticeable motion, never a longer one: the primary button may bounce, inside the same few hundred milliseconds, and take the next press throughout.
 

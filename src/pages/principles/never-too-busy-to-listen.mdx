@@ -3,12 +3,15 @@ layout: ../../layouts/Entry.astro
 slug: never-too-busy-to-listen
 ---
 import { InterruptQueue, InterruptKeyframes, InterruptVelocity } from '../../demos/interrupt';
+import Note from '../../components/note/Note.astro';
 
 ## The rule
 
 **An animation is never too busy to listen.** The next click can come at any moment, and it means the person has changed their mind. The motion should turn from wherever it is, at once, towards the new target, keeping the speed it had. Whether it can depends on how it was built: a lock that drops clicks, or keyframes, can't turn at all; a transition turns from where it is but starts again from rest; only a spring keeps the speed it had.
 
-<InterruptQueue client:visible />
+<Note text="three clicks, fast" to="[class*=_side_]:last-child [aria-label=Next]" at="left: calc(100% + 28px); top: 96px">
+  <InterruptQueue client:visible />
+</Note>
 
 ## Details
 

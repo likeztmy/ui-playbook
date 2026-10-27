@@ -1,91 +1,38 @@
-// Full-bleed band: breaks out of the page column so the rings run to the
-// window's edges, then fades out at the bottom into the gallery.
+// The home head: left on the gallery's edge, as a page title is, not a centred banner.
 .hero {
-  position: relative;
-  display: grid;
-  place-items: center;
-  margin: calc(var(--space-12) * -1) calc(50% - 50vw) var(--space-8);
-  padding: 120px var(--space-6) 104px;
-  overflow: hidden;
-  mask-image: linear-gradient(to bottom, black 72%, transparent);
+  padding: 72px 0 88px;
 
   @media (max-width: 640px) {
-    margin-top: calc(var(--space-8) * -1);
-    padding: 88px var(--space-4) 80px;
+    padding: 40px 0 56px;
   }
-}
 
-.text {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: min(100%, 440px);
-  text-align: center;
+  // The field and its note: the note writes in the space to the field's right.
+  > :global([data-noted]) {
+    max-width: 420px;
+  }
 }
 
 .title {
-  position: relative;
-  z-index: 1;
   margin: 0;
-  font-size: 40px;
-  line-height: 44px;
+  font-family: var(--font-title);
+  font-size: 56px;
+  line-height: 60px;
   font-weight: 600;
-  letter-spacing: -0.03em;
-}
-
-.lede {
-  position: relative;
-  z-index: 1;
-  margin: var(--space-3) 0 var(--space-8);
-  font-size: 15px;
-  line-height: 22px;
-  color: var(--ink-muted);
-  text-wrap: balance;
-}
-
-.field {
-  position: relative;
-  width: 100%;
-}
-
-// ── Rings ────────────────────────────────────────────────
-// The halo is a large box centred on the field, so one mask can clear the
-// title and lede. Rings are placed back onto the field's own box from it.
-
-$ring-step: 24px;
-$halo-y: 420px;
-$halo-x: 1600px;
-
-.halo {
-  position: absolute;
-  inset: calc(#{$halo-y} * -1) calc(#{$halo-x} * -1);
-  pointer-events: none;
-  // Clear an ellipse over the title and lede; the field's own ring stays.
-  mask-image: radial-gradient(ellipse 360px 112px at 50% calc(50% - 96px), transparent 60%, black 100%);
+  letter-spacing: -0.035em;
 
   @media (max-width: 640px) {
-    mask-image: radial-gradient(ellipse 240px 150px at 50% calc(50% - 116px), transparent 60%, black 100%);
+    font-size: 40px;
+    line-height: 44px;
   }
 }
 
-.ring {
-  position: absolute;
-  inset: calc(#{$halo-y} - var(--k) * #{$ring-step}) calc(#{$halo-x} - var(--k) * #{$ring-step});
-  border: 1px solid var(--line-strong);
-  border-radius: calc(var(--radius-lg) + var(--k) * #{$ring-step});
-  // Fainter with each step out: the rule radiates and dissolves.
-  opacity: calc(0.42 - var(--k) * 0.028);
-  transition:
-    border-color var(--duration-fast) var(--ease-out),
-    opacity var(--duration-fast) var(--ease-out);
-}
-
-// Focus lights the ring that hugs the field: the nearest echo of the
-// control you're using. On at once, off over duration-fast.
-.field:focus-within .ring:first-child {
-  border-color: var(--accent);
-  opacity: 0.8;
-  transition-duration: var(--duration-instant);
+.lede {
+  max-width: 460px;
+  margin: var(--space-4) 0 var(--space-8);
+  font-size: 18px;
+  line-height: 28px;
+  color: var(--ink-muted);
+  text-wrap: pretty;
 }
 
 // ── Search field ─────────────────────────────────────────
@@ -97,7 +44,7 @@ $halo-x: 1600px;
   align-items: center;
   gap: var(--space-2);
   height: var(--control-lg);
-  padding: 0 var(--space-3);
+  padding: 0 var(--space-2) 0 var(--space-3);
   border: 1px solid var(--line-strong);
   border-radius: var(--radius-lg);
   background: var(--surface);
@@ -119,9 +66,7 @@ $halo-x: 1600px;
   }
 
   input {
-
     // A long placeholder ends in an ellipsis on a narrow screen, not a cut.
-
     text-overflow: ellipsis;
     flex: 1;
     min-width: 0;
@@ -140,5 +85,21 @@ $halo-x: 1600px;
     &::-webkit-search-cancel-button {
       display: none;
     }
+  }
+}
+
+// The shortcut, shown while the field is empty and not in use.
+.key {
+  flex: none;
+  min-width: 20px;
+  padding: 2px 6px;
+  border-radius: var(--radius-xs);
+  background: var(--surface-sunken);
+  font: 500 12px/16px var(--font-mono);
+  text-align: center;
+  color: var(--ink-muted);
+
+  .search:focus-within & {
+    visibility: hidden;
   }
 }

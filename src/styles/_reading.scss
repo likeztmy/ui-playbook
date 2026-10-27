@@ -21,10 +21,11 @@
 
 @mixin title {
   margin: 0 0 var(--space-4);
+  font-family: var(--font-title);
   font-size: 40px;
   line-height: 48px;
   font-weight: 600;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.035em;
 }
 
 @mixin lede {
@@ -72,6 +73,7 @@
   > :global(h2) {
     margin-top: 72px;
     margin-bottom: var(--space-4);
+    font-family: var(--font-title);
     font-size: 24px;
     line-height: 32px;
     font-weight: 600;
@@ -86,8 +88,9 @@
     font-weight: 600;
   }
 
-  // A paragraph's gap and a half from the prose.
-  > :global(astro-island) {
+  // A paragraph's gap and a half from the prose; a demo wrapped in a hand-written note too.
+  > :global(astro-island),
+  > :global([data-noted]) {
     display: block;
     margin: var(--space-8) 0;
     // Demos keep interface type, whatever the prose around them is set in.

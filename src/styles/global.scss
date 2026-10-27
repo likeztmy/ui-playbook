@@ -1,5 +1,11 @@
 @use '@fontsource-variable/geist';
 @use '@fontsource-variable/geist-mono';
+@use '@fontsource-variable/space-grotesk';
+
+// Display type: titles and section heads. Body text and interface stay Geist.
+:root {
+  --font-title: 'Space Grotesk Variable', var(--font-sans);
+}
 
 *,
 *::before,

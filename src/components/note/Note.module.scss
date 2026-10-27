@@ -1,0 +1,57 @@
+// Recursive pinned to its casual, cursive, mono cut and subset to Latin: 17 KB, against 300 KB for
+// the variable font with every axis (fonts/Recursive-OFL.txt says how it was made).
+@font-face {
+  font-family: 'Playbook Hand';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./fonts/RecursiveCasual-Latin.woff2') format('woff2');
+}
+
+.noted {
+  position: relative;
+
+  // The note, its arrow and circle: one ink, the accent's text colour, so they follow the palette.
+  :global(.note-arrows),
+  :global(.rough-annotation) {
+    color: var(--accent-text);
+  }
+
+  :global(.note-arrows) {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+  }
+
+  // The stand-in box a control is circled through: RoughNotation draws beside the element it
+  // marks, and a control inside a React island mustn't get a foreign sibling.
+  :global(.mark-stand) {
+    position: absolute;
+    pointer-events: none;
+  }
+
+  // Margin furniture, like the tick rail: shown only when the page has a margin to hold it.
+  @media (max-width: 1180px) {
+    .hand,
+    :global(.note-arrows),
+    :global(.rough-annotation) {
+      display: none;
+    }
+  }
+}
+
+.hand {
+  position: absolute;
+  z-index: 1;
+  font-family: 'Playbook Hand', var(--font-mono);
+  font-size: 15px;
+  line-height: 20px;
+  color: var(--accent-text);
+  rotate: -3deg;
+  white-space: nowrap;
+  pointer-events: none;
+}

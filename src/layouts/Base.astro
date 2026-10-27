@@ -35,13 +35,15 @@ const translated = ZH_LIVE && (lang === 'zh' || !isEntry || hasZh(bare));
     <slot name="head" />
     <script is:inline>
       // Apply a saved theme before first paint. No saved theme: follow the system.
+      // And the palette: a saved one, else the site's Ink; Blue is the tokens' own, no attribute.
+      // An id no stylesheet knows draws Blue. The picker (PalettePicker.tsx) keeps the same rule.
+      let p = 'ink';
       try {
         const t = localStorage.getItem('theme');
         if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
-        // And a saved palette; an id no stylesheet knows draws the default.
-        const p = localStorage.getItem('palette');
-        if (p && /^[a-z]+$/.test(p)) document.documentElement.dataset.palette = p;
+        p = localStorage.getItem('palette') ?? p;
       } catch {}
+      if (p !== 'blue' && /^[a-z]+$/.test(p)) document.documentElement.dataset.palette = p;
     </script>
   </head>
   <body>

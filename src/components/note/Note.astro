@@ -1,0 +1,24 @@
+---
+// A hand-written note beside what it wraps, with an arrow to one control in it and a circle round
+// that control, drawn when it scrolls into view and gone once the control is used (note.ts).
+// Wide screens only: below the tick rail's width there's no margin to write in.
+import s from './Note.module.scss';
+
+interface Props {
+  // What to write, which element inside to point at (a CSS selector), and where the note sits,
+  // as an inline style against the wrapper (e.g. "right: 48px; top: -20px").
+  text: string;
+  to: string;
+  at: string;
+}
+const { text, to, at } = Astro.props;
+---
+
+<div class={s.noted} data-noted>
+  <slot />
+  <span class={s.hand} data-note={to} style={at} aria-hidden="true">{text}</span>
+</div>
+
+<script>
+  import './note';
+</script>

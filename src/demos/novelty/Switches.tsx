@@ -29,12 +29,15 @@ function Row({ kind, label, description, onLost }: (typeof KINDS)[number] & { on
   return <Switch label={label} description={description} checked={on} onCheckedChange={flip} thumbClassName={s[kind]} />;
 }
 
-/** Three switches to flip twenty times each: the bounce costs nothing, the hold does. */
-export function NoveltySwitches() {
+/**
+ * Three switches to flip twenty times each: the bounce costs nothing, the hold does. `keyed` fills
+ * each in its legend colour, for prose that names them with Key.astro.
+ */
+export function NoveltySwitches({ keyed = false }: { keyed?: boolean }) {
   const [lost, setLost] = useState(0);
   return (
     <Frame height={240} label={<code className={s.readout}>{lost === 1 ? '1 press lost' : `${lost} presses lost`}</code>}>
-      <div className={s.switches}>
+      <div className={keyed ? `${s.switches} ${s.keyed}` : s.switches}>
         {KINDS.map((k) => (
           <Row key={k.kind} {...k} onLost={() => setLost((n) => n + 1)} />
         ))}

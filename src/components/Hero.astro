@@ -1,28 +1,23 @@
 ---
-// The home hero. Rings grow out of the search field by the concentric rule:
-// ring k sits 24k px outside the field with radius 8 + 24k, so every ring
-// shares the field's corner centres at any width.
+// The home head, on the gallery's left edge: the title, a line, and the search field, with a
+// hand-written note at its shortcut. The search itself is wired in Home.astro.
 import { SearchIcon } from '../ui/icons';
 import { ui, type Lang } from '../i18n';
+import Note from './note/Note.astro';
 import s from './Hero.module.scss';
 
-const RINGS = 14;
 const { lang = 'en' } = Astro.props as { lang?: Lang };
 const t = ui[lang];
 ---
 
 <section class={s.hero}>
-  <div class={s.text}>
-    <h1 class={s.title}>UI Playbook</h1>
-    <p class={s.lede}>{t.lede}</p>
-    <div class={s.field}>
-      <div class={s.halo} aria-hidden="true">
-        {Array.from({ length: RINGS }, (_, i) => <span class={s.ring} style={`--k: ${i + 1}`} />)}
-      </div>
-      <label class={s.search}>
-        <SearchIcon />
-        <input id="search" type="search" placeholder={t.search} autocomplete="off" spellcheck="false" />
-      </label>
-    </div>
-  </div>
+  <h1 class={s.title}>UI Playbook</h1>
+  <p class={s.lede}>{t.lede}</p>
+  <Note text={t.searchNote} to="kbd" at="left: calc(100% + 72px); top: 36px">
+    <label class={s.search}>
+      <SearchIcon />
+      <input id="search" type="search" placeholder={t.search} autocomplete="off" spellcheck="false" />
+      <kbd class={s.key} aria-hidden="true">/</kbd>
+    </label>
+  </Note>
 </section>

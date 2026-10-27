@@ -3,12 +3,15 @@ layout: ../../layouts/Entry.astro
 slug: how-waiting-feels
 ---
 import { WaitFlash, WaitStall, WaitRibbing, WaitLabor, WaitSkeleton, WaitOptimistic } from '../../demos/wait';
+import Note from '../../components/note/Note.astro';
 
 ## The rule
 
 **A wait is judged by how it feels, not how long it is.** The same second can pass unnoticed or drag, depending on what the screen does with it. Sometimes the fix is to show more: a skeleton, the work being done. Sometimes it's to show less: nothing at all for a quick request, or the result before the server has answered.
 
-<WaitFlash client:visible />
+<Note text="refresh a few times" to="[class*=_side_]:last-child [aria-label=Refresh]" at="left: calc(100% + 28px); top: 36px">
+  <WaitFlash client:visible />
+</Note>
 
 ## Three limits
 

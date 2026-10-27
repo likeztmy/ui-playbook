@@ -2,6 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import Heads from '../../components/directions/Heads.astro';
 import Opening from '../../components/directions/Opening.astro';
+import Ticks from '../../components/ticks/Ticks.astro';
 import s from '../../components/directions/Directions.module.scss';
 
 // Two directions on the same real content: the home page's head and one principle page's opening.
@@ -90,14 +91,7 @@ const schemes = [
           <div class={s.canvas} data-canvas>
             <Heads direction={d.id} />
             {d.id === 'field' && (
-              <nav class={s.rail} aria-label="On this page">
-                <div class={s.ticks} data-ticks>
-                  <div class={s.peek} data-peek aria-hidden="true">
-                    <b />
-                    <span />
-                  </div>
-                </div>
-              </nav>
+              <Ticks pinned="canvas" scope="[data-canvas]" blocks="[data-part=title], [data-part=body] > h2, [data-part=body] > p, [data-part=demo]" />
             )}
             <article class={s.page}>
               <Opening keyed={d.id === 'field'}>
@@ -115,7 +109,6 @@ const schemes = [
   </div>
   <script>
     import '../../components/directions/lab';
-    import '../../components/directions/ticks';
     import '../../components/directions/notes';
   </script>
 </Base>

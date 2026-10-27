@@ -1,0 +1,12 @@
+---
+// A word in the prose that names one part of the demo beside it, in that part's legend colour.
+// The demo takes the same colour from `--key-{n}` (Key.module.scss), so word and part match.
+import './Key.module.scss';
+
+interface Props {
+  n: 1 | 2 | 3;
+}
+const { n } = Astro.props;
+---
+
+<span data-key={n}><slot /></span>

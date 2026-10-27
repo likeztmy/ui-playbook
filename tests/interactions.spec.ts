@@ -310,6 +310,8 @@ test('input: a failed submit focuses the first error with the caret at the end; 
 });
 
 test('colour: one solid blue in the After editor; the frame list answers arrow keys', async ({ page }) => {
+  // In Blue: under the default Ink the accent is the ink, which the tab underline shares.
+  await page.addInitScript(() => localStorage.setItem('palette', 'blue'));
   await page.goto('/principles/colour-means-one-thing');
   await hydrateAll(page);
   const after = page.locator('figure').nth(1);
