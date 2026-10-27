@@ -32,21 +32,45 @@ const stand = (row: HTMLElement, host: HTMLElement) => {
 const marks: HTMLElement[] = [...document.querySelectorAll<HTMLElement>('[data-direction=field] [data-mark]')];
 const demo = document.querySelector<HTMLElement>('[data-direction=field] [data-part=demo]');
 const row = demo?.querySelector<HTMLElement>('[class*=_switches_] > :first-child');
-if (demo && row) marks.push(stand(row, demo));
+// Each mark stays until the reader does what it points at: the switch's circle goes on its first flip.
+const done = new Map<Element, () => void>();
+if (demo && row) {
+  const box = stand(row, demo);
+  marks.push(box);
+  row.addEventListener(
+    'click',
+    () => {
+      // Drawn already: fade it. Not yet: leave a no-op, so it is never drawn.
+      const fade = done.get(box);
+      if (fade) fade();
+      else done.set(box, () => {});
+    },
+    { once: true },
+  );
+}
 
 const seen = new IntersectionObserver(
   (entries) => {
     for (const e of entries) {
       if (!e.isIntersecting) continue;
       seen.unobserve(e.target);
-      annotate(e.target as HTMLElement, {
+      if (done.has(e.target)) continue;
+      const mark = annotate(e.target as HTMLElement, {
         type: 'circle',
         color: 'currentColor',
         strokeWidth: 1.5,
         padding: e.target.classList.contains('mark-stand') ? [12, 24] : 8,
         animate: !still.matches,
         animationDuration: 600,
-      }).show();
+      });
+      mark.show();
+      const svg = e.target.nextElementSibling as SVGElement;
+      done.set(e.target, () => {
+        if (still.matches) return mark.remove();
+        svg.style.transition = 'opacity 300ms ease-out';
+        svg.style.opacity = '0';
+        svg.addEventListener('transitionend', () => mark.remove(), { once: true });
+      });
     }
   },
   // Mostly in view and clear of the bottom edge; a ratio of exactly 1 can miss by a sub-pixel.
