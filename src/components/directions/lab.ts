@@ -58,12 +58,21 @@ for (const chip of document.querySelectorAll<HTMLButtonElement>('[data-dial]')) 
   });
 }
 
+// The title face and the note's hand: each picker sets one attribute on the lab.
 const lab = document.querySelector<HTMLElement>('[data-faces]')!;
-for (const button of lab.querySelectorAll<HTMLButtonElement>('[data-face]')) {
-  button.addEventListener('click', () => {
-    lab.dataset.faces = button.dataset.face;
-    for (const b of lab.querySelectorAll('[data-face]')) b.setAttribute('aria-pressed', String(b === button));
-  });
+// [the button's data key, the lab's data key]
+const pickers = [
+  ['face', 'faces'],
+  ['handPick', 'hand'],
+] as const;
+for (const [key, attr] of pickers) {
+  const buttons = [...lab.querySelectorAll<HTMLButtonElement>('button')].filter((b) => b.dataset[key]);
+  for (const button of buttons) {
+    button.addEventListener('click', () => {
+      lab.dataset[attr] = button.dataset[key];
+      for (const b of buttons) b.setAttribute('aria-pressed', String(b === button));
+    });
+  }
 }
 
 for (const button of document.querySelectorAll<HTMLButtonElement>('[data-scheme-pick]')) {

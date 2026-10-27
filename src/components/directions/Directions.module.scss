@@ -5,8 +5,22 @@
 @use '@fontsource-variable/recursive/full';
 @use '@fontsource-variable/space-grotesk';
 @use '@fontsource/monaspace-radon/400' as radon;
+@use '@fontsource-variable/bricolage-grotesque/standard' as bricolage;
+@use '@fontsource-variable/host-grotesk';
+@use '@fontsource-variable/mona-sans/wdth' as mona;
+@use '@fontsource-variable/geist-mono';
+@use '@fontsource/commit-mono/600' as commit;
 
-// The picker's pairs: a face for titles, one for the hand-written note. Body text stays Geist.
+// Excalifont's Latin subset, from Excalidraw's own build (OFL; see fonts/Excalifont-OFL.txt).
+@font-face {
+  font-family: Excalifont;
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./fonts/Excalifont-Latin.woff2') format('woff2');
+}
+
+// The pickers: a face for titles, and a hand for the notes. Body text stays Geist.
 .lab {
   --title: 'JetBrains Mono Variable', var(--font-mono);
   --title-vars: normal;
@@ -25,13 +39,11 @@
     --title-weight: 700;
   }
 
-  // One family for all three: Linear, half mono, for titles; Casual and cursive for the note.
+  // Linear and half mono for titles; its Casual, cursive side is one of the hands.
   &[data-faces='recursive'] {
     --title: 'Recursive Variable', var(--font-sans);
     --title-vars: 'MONO' 0.5, 'CASL' 0;
     --title-track: -0.03em;
-    --hand: 'Recursive Variable', var(--font-sans);
-    --hand-vars: 'MONO' 1, 'CASL' 1, 'CRSV' 1;
   }
 
   &[data-faces='grotesk'] {
@@ -39,21 +51,68 @@
     --title-track: -0.035em;
   }
 
+  // Optical size follows the font size, so the display cut shows at 56–72px.
+  &[data-faces='bricolage'] {
+    --title: 'Bricolage Grotesque Variable', var(--font-sans);
+    --title-track: -0.02em;
+  }
+
+  &[data-faces='host'] {
+    --title: 'Host Grotesk Variable', var(--font-sans);
+    --title-track: -0.03em;
+  }
+
+  // A touch wide: Mona Sans's width axis is the point of it.
+  &[data-faces='mona'] {
+    --title: 'Mona Sans Variable', var(--font-sans);
+    --title-vars: 'wdth' 112;
+    --title-track: -0.015em;
+  }
+
   &[data-faces='geist'] {
     --title: var(--font-sans);
     --title-track: -0.03em;
   }
+
+  &[data-faces='geist-mono'] {
+    --title: 'Geist Mono Variable', var(--font-mono);
+    --title-track: -0.05em;
+  }
+
+  &[data-faces='commit'] {
+    --title: 'Commit Mono', var(--font-mono);
+    --title-track: -0.05em;
+  }
+
+  &[data-hand='casual'] {
+    --hand: 'Recursive Variable', var(--font-sans);
+    --hand-vars: 'MONO' 1, 'CASL' 1, 'CRSV' 1;
+  }
+
+  // A drawn hand, made for Rough.js strokes; a size up, as it runs small.
+  &[data-hand='excalifont'] {
+    --hand: Excalifont, var(--font-sans);
+    --hand-size: 18px;
+  }
 }
 
-.faces {
+.bar {
   position: sticky;
   top: 72px;
   z-index: var(--z-sticky);
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 2px;
+  gap: var(--space-2);
   justify-self: center;
+  max-width: 1120px;
+}
+
+.faces {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2px;
   padding: 2px;
   border-radius: 10px;
   background: var(--surface);
@@ -89,7 +148,6 @@
 }
 
 .schemes {
-  position: static;
   justify-self: start;
   margin-top: var(--space-3);
   width: fit-content;
@@ -181,7 +239,7 @@
   gap: 2px;
   font-family: var(--hand);
   font-variation-settings: var(--hand-vars);
-  font-size: 15px;
+  font-size: var(--hand-size, 15px);
   line-height: 20px;
   color: var(--accent-text);
   rotate: -3deg;

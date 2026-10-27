@@ -5,13 +5,24 @@ import Opening from '../../components/directions/Opening.astro';
 import s from '../../components/directions/Directions.module.scss';
 
 // Two directions on the same real content: the home page's head and one principle page's opening.
-// The picker sets the title and note faces for both; body text stays Geist.
+// The pickers set the title face and the note's hand for both; body text stays Geist.
 const faces = [
   { id: 'jetbrains', name: 'JetBrains Mono' },
   { id: 'quattro', name: 'iA Writer Quattro' },
   { id: 'recursive', name: 'Recursive' },
   { id: 'grotesk', name: 'Space Grotesk' },
+  { id: 'bricolage', name: 'Bricolage Grotesque' },
+  { id: 'host', name: 'Host Grotesk' },
+  { id: 'mona', name: 'Mona Sans' },
   { id: 'geist', name: 'Geist' },
+  { id: 'geist-mono', name: 'Geist Mono' },
+  { id: 'commit', name: 'Commit Mono' },
+];
+
+const hands = [
+  { id: 'radon', name: 'Monaspace Radon' },
+  { id: 'casual', name: 'Recursive Casual' },
+  { id: 'excalifont', name: 'Excalifont' },
 ];
 
 const directions = [
@@ -39,15 +50,26 @@ const schemes = [
 
 <Base title="Directions">
   <meta name="robots" content="noindex" slot="head" />
-  <div class={s.lab} data-faces="jetbrains">
-    <div class={s.faces} role="group" aria-label="Title face">
-      {
-        faces.map((f, i) => (
-          <button type="button" data-face={f.id} aria-pressed={i === 0 ? "true" : "false"}>
-            {f.name}
-          </button>
-        ))
-      }
+  <div class={s.lab} data-faces="jetbrains" data-hand="radon">
+    <div class={s.bar}>
+      <div class={s.faces} role="group" aria-label="Title face">
+        {
+          faces.map((f, i) => (
+            <button type="button" data-face={f.id} aria-pressed={i === 0 ? "true" : "false"}>
+              {f.name}
+            </button>
+          ))
+        }
+      </div>
+      <div class={s.faces} role="group" aria-label="Hand">
+        {
+          hands.map((h, i) => (
+            <button type="button" data-hand-pick={h.id} aria-pressed={i === 0 ? "true" : "false"}>
+              {h.name}
+            </button>
+          ))
+        }
+      </div>
     </div>
     {
       directions.map((d) => (
