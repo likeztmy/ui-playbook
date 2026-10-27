@@ -1,16 +1,53 @@
-// Field guide's hand-drawn marks: the notes' arrows drawn with Rough.js, and RoughNotation
-// circling what a note points at, drawn the first time it scrolls into view.
+// Field guide's hand-drawn marks: each note's arrow drawn with Rough.js from the note to what it
+// points at, and RoughNotation circling that, drawn the first time it scrolls into view.
 import rough from 'roughjs';
 import { annotate } from 'rough-notation';
 
 const still = matchMedia('(prefers-reduced-motion: reduce)');
-const points = (list: string) => list.split(' ').map((p) => p.split(',').map(Number) as [number, number]);
 
+type Point = [number, number];
 // A fixed seed, so an arrow is the same stroke on every load.
-const pen = { stroke: 'currentColor', strokeWidth: 1.75, roughness: 1.2, bowing: 1.5, seed: 7 };
-for (const svg of document.querySelectorAll<SVGSVGElement>('[data-direction=field] svg[data-arrow]')) {
+const pen = { stroke: 'currentColor', strokeWidth: 1.75, roughness: 0.9, bowing: 0.8, seed: 7 };
+
+// One arrow: a quadratic arc bowed `bend` (a share of its length) off the straight line, and a
+// head of two short strokes along the arc's last stretch.
+const arrow = (rc: ReturnType<typeof rough.svg>, from: Point, to: Point, bend: number) => {
+  const [dx, dy] = [to[0] - from[0], to[1] - from[1]];
+  const c: Point = [from[0] + dx / 2 - dy * bend, from[1] + dy / 2 + dx * bend];
+  const angle = Math.atan2(to[1] - c[1], to[0] - c[0]);
+  const barb = (turn: number): Point => [to[0] - 10 * Math.cos(angle + turn), to[1] - 10 * Math.sin(angle + turn)];
+  return [rc.path(`M${from} Q${c} ${to}`, pen), rc.linearPath([barb(0.5), to, barb(-0.5)], pen)];
+};
+
+// Where each arrow starts and ends, from the note's and the target's boxes: it leaves the note's
+// near edge and stops a step short of the circle drawn round the target.
+const ends = (note: DOMRect, target: DOMRect): [Point, Point, number] =>
+  note.bottom < target.top
+    ? // Above: down from the note's left end to the top of the circle.
+      [[note.left + 12, note.bottom + 6], [target.left + target.width / 2 + 8, target.top - 22], -0.25]
+    : // Beside: left from the note's start to the right of the circle.
+      [[note.left - 8, note.top + note.height / 2], [target.right + 18, target.top + target.height / 2], 0.3];
+
+for (const canvas of document.querySelectorAll<HTMLElement>('[data-direction=field] [data-canvas]')) {
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.classList.add('note-arrows');
+  svg.setAttribute('aria-hidden', 'true');
+  canvas.append(svg);
   const rc = rough.svg(svg);
-  svg.replaceChildren(rc.curve(points(svg.dataset.arrow!), pen), rc.linearPath(points(svg.dataset.head!), pen));
+  const notes = [...canvas.querySelectorAll<HTMLElement>('[data-note]')];
+  const draw = () => {
+    const c = canvas.getBoundingClientRect();
+    const local = (r: DOMRect) => new DOMRect(r.x - c.x, r.y - c.y, r.width, r.height);
+    svg.replaceChildren(
+      ...notes.flatMap((note) => {
+        const target = canvas.querySelector(note.dataset.note!);
+        return target ? arrow(rc, ...ends(local(note.getBoundingClientRect()), local(target.getBoundingClientRect()))) : [];
+      }),
+    );
+  };
+  const watch = new ResizeObserver(draw);
+  for (const el of [canvas, ...notes]) watch.observe(el);
+  document.fonts.ready.then(draw);
 }
 
 // RoughNotation draws its SVG beside the element it marks. A switch row belongs to a React island,
@@ -59,7 +96,7 @@ const seen = new IntersectionObserver(
         type: 'circle',
         color: 'currentColor',
         strokeWidth: 1.5,
-        padding: e.target.classList.contains('mark-stand') ? [12, 24] : 8,
+        padding: e.target.classList.contains('mark-stand') ? [14, 34] : 8,
         animate: !still.matches,
         animationDuration: 600,
       });

@@ -194,6 +194,18 @@
   color: var(--accent-text);
 }
 
+// The notes' arrows: one sheet over the canvas, drawn from the boxes of each note and its target.
+[data-direction='field'] :global(.note-arrows) {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  color: var(--accent-text);
+  pointer-events: none;
+}
+
 // The stand-in box a switch row is circled through: it only gives the circle its bounds.
 [data-direction='field'] :global(.mark-stand) {
   position: absolute;

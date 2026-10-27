@@ -8,9 +8,6 @@ const ROOT = new URL('../', import.meta.url).pathname;
 const DIAGRAMS = new Set([
   // Spec annotations (arcs, dimensions) and print crosshairs on the lab hero.
   'src/components/hero/Redline.astro',
-  // Hand-drawn note arrows in the lab's Field guide direction.
-  'src/components/directions/Heads.astro',
-  'src/pages/lab/directions.astro',
   // A pen stroke drawn on the Toolbar/Tooltip canvas: content, not an icon.
   'src/demos/canvas.tsx',
   // A colour-vision filter, not an icon: it draws nothing.
