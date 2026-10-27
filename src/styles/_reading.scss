@@ -1,15 +1,15 @@
-// Reading type, from the playbook's own Set reading text: 17 / 28, about 73 characters of Geist to
-// a line. Every block starts on one left edge; prose stops at its measure, demos, code and tables
+// Reading type, the playbook's own `reading` style: 16 / 26, and `prose-max` (34em), about 73
+// characters of Geist to a line. Every block starts on one left edge; prose stops at its measure, demos, code and tables
 // run the column. Both are in px: an em width follows each block's own size, and every size gets
 // its own edge.
 
 @mixin page {
   --column: 640px;
-  --measure: 561px;
+  --measure: 544px;
   max-width: var(--column);
   margin: 0 auto;
-  font-size: 17px;
-  line-height: 28px;
+  font-size: 16px;
+  line-height: 26px;
 }
 
 @mixin kind {
@@ -47,7 +47,7 @@
 
   // Chinese sets denser than Latin at the same size; give it more lead.
   &:lang(zh) {
-    line-height: 30px;
+    line-height: 28px;
   }
 
   > :global(p),
@@ -82,8 +82,8 @@
   > :global(h3) {
     margin-top: var(--space-8);
     margin-bottom: var(--space-2);
-    font-size: 17px;
-    line-height: 28px;
+    font-size: 16px;
+    line-height: 26px;
     font-weight: 600;
   }
 
@@ -102,7 +102,7 @@
     border-top: 1px solid var(--line);
 
     > :global(summary) {
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 600;
       cursor: pointer;
     }
