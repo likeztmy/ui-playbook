@@ -23,9 +23,17 @@ const directions = [
   {
     id: 'field',
     name: 'B · Field guide',
-    note: 'After Ciechanowski and Josh Comeau. Warm paper; the prose names each switch in the colour it turns on; one hand-written note at the first thing to try; contents that track where you are.',
+    note: 'After Ciechanowski and Josh Comeau. The prose names each switch in the colour it turns on; one hand-written note at the first thing to try; contents that track where you are.',
   },
 ] as const;
+
+// Field guide's colour schemes: a palette, and the three legend colours set in the stylesheet.
+const schemes = [
+  { id: 'ink', name: 'Ink' },
+  { id: 'blue', name: 'Blue' },
+  { id: 'petrol', name: 'Petrol' },
+  { id: 'mono', name: 'Mono' },
+];
 
 const contents = ['The rule', 'What repeats stops being seen', 'Bounce is not the cost', 'Delight belongs to rare moments'];
 ---
@@ -44,12 +52,21 @@ const contents = ['The rule', 'What repeats stops being seen', 'Bounce is not th
     </div>
     {
       directions.map((d) => (
-        <section class={s.dir} data-direction={d.id} data-palette={d.id === 'field' ? 'clay' : undefined}>
+        <section class={s.dir} data-direction={d.id} data-palette={d.id === 'field' ? 'ink' : undefined} data-scheme={d.id === 'field' ? 'ink' : undefined}>
           <header class={s.meta}>
             <h2>{d.name}</h2>
             <p>{d.note}</p>
+            {d.id === 'field' && (
+              <div class={`${s.faces} ${s.schemes}`} role="group" aria-label="Colour scheme">
+                {schemes.map((c, i) => (
+                  <button type="button" data-scheme-pick={c.id} aria-pressed={i === 0 ? "true" : "false"}>
+                    {c.name}
+                  </button>
+                ))}
+              </div>
+            )}
           </header>
-          <div class={s.canvas} data-canvas data-theme="light">
+          <div class={s.canvas} data-canvas>
             <Heads direction={d.id} />
             {d.id === 'field' && (
               <nav class={s.rail} aria-label="On this page">

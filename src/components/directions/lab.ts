@@ -11,6 +11,17 @@ const STILL = ['--duration-instant', '--duration-fast', '--duration-base', '--sp
 const next = <T>(list: T[], current: T) => list[(list.indexOf(current) + 1) % list.length];
 const title = (id: string) => id[0].toUpperCase() + id.slice(1);
 
+// Each canvas starts in the site's theme and follows it, until Workbench's dial sets its own.
+const dark = matchMedia('(prefers-color-scheme: dark)');
+const siteTheme = () => document.documentElement.dataset.theme ?? (dark.matches ? 'dark' : 'light');
+const follow = () => {
+  for (const canvas of document.querySelectorAll<HTMLElement>('[data-canvas]:not([data-own-theme])')) canvas.dataset.theme = siteTheme();
+  for (const value of document.querySelectorAll('[data-dial=theme]:not([data-own-theme]) code')) value.textContent = title(siteTheme());
+};
+follow();
+dark.addEventListener('change', follow);
+new MutationObserver(follow).observe(document.documentElement, { attributeFilter: ['data-theme'] });
+
 for (const chip of document.querySelectorAll<HTMLButtonElement>('[data-dial]')) {
   const section = chip.closest<HTMLElement>('section')!;
   const canvas = section.querySelector<HTMLElement>('[data-canvas]')!;
@@ -19,13 +30,14 @@ for (const chip of document.querySelectorAll<HTMLButtonElement>('[data-dial]')) 
     switch (chip.dataset.dial) {
       case 'palette': {
         const id = next(PALETTES, section.dataset.palette ?? 'blue');
-        if (id === 'blue') delete section.dataset.palette;
+        if (id === 'blue' || id === 'mono') delete section.dataset.palette;
         else section.dataset.palette = id;
         value.textContent = title(id);
         break;
       }
       case 'theme': {
         canvas.dataset.theme = canvas.dataset.theme === 'dark' ? 'light' : 'dark';
+        canvas.dataset.ownTheme = chip.dataset.ownTheme = '';
         value.textContent = title(canvas.dataset.theme);
         break;
       }
@@ -51,5 +63,16 @@ for (const button of lab.querySelectorAll<HTMLButtonElement>('[data-face]')) {
   button.addEventListener('click', () => {
     lab.dataset.faces = button.dataset.face;
     for (const b of lab.querySelectorAll('[data-face]')) b.setAttribute('aria-pressed', String(b === button));
+  });
+}
+
+for (const button of document.querySelectorAll<HTMLButtonElement>('[data-scheme-pick]')) {
+  button.addEventListener('click', () => {
+    const section = button.closest<HTMLElement>('section')!;
+    const id = button.dataset.schemePick!;
+    section.dataset.scheme = id;
+    if (id === 'blue' || id === 'mono') delete section.dataset.palette;
+    else section.dataset.palette = id;
+    for (const b of section.querySelectorAll('[data-scheme-pick]')) b.setAttribute('aria-pressed', String(b === button));
   });
 }

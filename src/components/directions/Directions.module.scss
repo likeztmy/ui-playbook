@@ -88,6 +88,13 @@
   }
 }
 
+.schemes {
+  position: static;
+  justify-self: start;
+  margin-top: var(--space-3);
+  width: fit-content;
+}
+
 .dir {
   max-width: 1120px;
   margin: 0 auto;
@@ -163,7 +170,7 @@
   }
 }
 
-// One hand-written note, in the accent, at the first thing to try.
+// One hand-written note, in the accent's text colour, at the first thing to try.
 .hand {
   position: absolute;
   z-index: 1;
@@ -175,7 +182,7 @@
   font-variation-settings: var(--hand-vars);
   font-size: 15px;
   line-height: 20px;
-  color: var(--accent);
+  color: var(--accent-text);
   rotate: -3deg;
   white-space: nowrap;
   pointer-events: none;
@@ -339,7 +346,7 @@
   [data-current] {
     color: var(--ink);
     font-weight: 500;
-    box-shadow: inset 2px 0 var(--accent);
+    box-shadow: inset 2px 0 var(--ink);
   }
 
   @media (max-width: 1180px) {
@@ -347,22 +354,77 @@
   }
 }
 
+// The legend: one set of colours for the parts a page's demo names, kept apart from status
+// colours, so a keyed word means only "this part". Equal OKLCH lightness, so no part outranks
+// another. `--key-*` fill the switches; `--text-*` colour the words, lighter on dark, each
+// ≥ 4.5:1 on its page. Set on the canvas, so they resolve in the canvas's own theme.
+[data-scheme='ink'] [data-canvas] {
+  --key-1: oklch(0.5 0.17 258);
+  --key-2: oklch(0.52 0.13 150);
+  --key-3: oklch(0.52 0.18 25);
+}
+
+[data-scheme='ink'] [data-theme='dark'] {
+  --text-1: oklch(0.72 0.13 258);
+  --text-2: oklch(0.74 0.14 150);
+  --text-3: oklch(0.72 0.15 25);
+}
+
+[data-scheme='blue'] [data-canvas] {
+  --key-1: oklch(0.5 0.17 258);
+  --key-2: oklch(0.52 0.08 205);
+  --key-3: oklch(0.52 0.12 155);
+}
+
+[data-scheme='blue'] [data-theme='dark'] {
+  --text-1: oklch(0.72 0.13 258);
+  --text-2: oklch(0.74 0.09 205);
+  --text-3: oklch(0.74 0.14 150);
+}
+
+[data-scheme='petrol'] [data-canvas] {
+  --key-1: oklch(0.5 0.08 220);
+  --key-2: oklch(0.52 0.09 140);
+  --key-3: oklch(0.4 0.02 250);
+}
+
+[data-scheme='petrol'] [data-theme='dark'] {
+  --text-1: oklch(0.72 0.08 220);
+  --text-2: oklch(0.74 0.1 140);
+  --text-3: oklch(0.74 0.02 250);
+}
+
+// No legend: the switches take the one accent and the named words stay ink.
+[data-scheme='mono'] [data-canvas] {
+  --key-1: var(--accent);
+  --key-2: var(--accent);
+  --key-3: var(--accent);
+  --text-1: var(--ink);
+  --text-2: var(--ink);
+  --text-3: var(--ink);
+}
+
 [data-direction='field'] .page {
-  // The words that name a demo's parts, in the colours the parts turn on.
   [data-key] {
     font-weight: 600;
   }
 
   [data-key='a'] {
-    color: var(--accent);
+    color: var(--text-1, var(--key-1));
   }
 
   [data-key='b'] {
-    color: var(--success);
+    color: var(--text-2, var(--key-2));
   }
 
   [data-key='c'] {
-    color: var(--danger);
+    color: var(--text-3, var(--key-3));
+  }
+
+  // Links are ink, underlined, so the legend's colours stay the only colour in the prose.
+  [data-part='body'] :global(a) {
+    color: var(--ink);
+    text-decoration-color: var(--line-strong);
   }
 
   // No frame: the demo sits on the paper, each switch in its word's colour.
@@ -371,13 +433,18 @@
     box-shadow: none;
   }
 
+  [class*='_switches_'] > :nth-child(1) {
+    --accent: var(--key-1);
+    --accent-hover: var(--key-1);
+  }
+
   [class*='_switches_'] > :nth-child(2) {
-    --accent: var(--success);
-    --accent-hover: var(--success);
+    --accent: var(--key-2);
+    --accent-hover: var(--key-2);
   }
 
   [class*='_switches_'] > :nth-child(3) {
-    --accent: var(--danger);
-    --accent-hover: var(--danger);
+    --accent: var(--key-3);
+    --accent-hover: var(--key-3);
   }
 }
