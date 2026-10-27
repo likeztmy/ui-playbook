@@ -15,9 +15,10 @@
   grid-template: 'side main' minmax(0, 1fr) / 232px minmax(0, 1fr);
   height: 100%;
   overflow: hidden;
-  // A few degrees warm in light, so the white mail is the brightest thing on screen; the page's own
-  // ground in dark, where the raised surface is the lighter one already.
-  background: light-dark(oklch(0.948 0.007 75), var(--bg));
+  // A grey with a breath of the accent in light, so the white mail is the brightest thing on screen
+  // and the desk shares the blue's temperature; the page's own ground in dark, where the raised
+  // surface is the lighter one already.
+  background: light-dark(color-mix(in oklab, var(--accent) 4%, oklch(0.962 0 0)), var(--bg));
   color: var(--ink);
   font-size: 14px;
 }
@@ -96,15 +97,24 @@
   text-align: left;
   cursor: pointer;
 
+  // Halfway to the mail's surface: hover leans toward what choosing it would make it.
   @include hover {
-    background: var(--fill-hover);
+    background: light-dark(color-mix(in oklab, var(--surface) 55%, transparent), var(--surface));
   }
 
-  // Where you are is chosen, so it takes the selection's tint; hover stays grey.
+  // Where you are is lifted onto a raised surface, in light the mail's own white, the sheet it
+  // opens; the blue stays for unread and the one filled button, with only the icon taking it here.
   &[aria-current] {
-    background: var(--accent-soft);
+    background: var(--surface-raised);
+    box-shadow:
+      0 0 0 1px light-dark(color-mix(in oklab, var(--ink) 6%, transparent), var(--line)),
+      0 1px 2px color-mix(in oklab, var(--ink) 7%, transparent);
     color: var(--ink);
     font-weight: 600;
+
+    svg {
+      color: var(--accent-text);
+    }
   }
 
   &:focus-visible {
@@ -148,10 +158,10 @@
   border-radius: 18px;
   background: var(--surface);
   // One step off the desk: a hairline for the edge, a 2px drop (half its blur) for the height, in the
-  // desk's own hue. In dark, the lighter surface and the hairline do what shadow can't.
+  // ink's own hue. In dark, the lighter surface and the hairline do what shadow can't.
   box-shadow:
-    0 0 0 1px light-dark(oklch(0.35 0.02 75 / 0.06), var(--line)),
-    0 2px 4px oklch(0.35 0.02 75 / 0.06);
+    0 0 0 1px light-dark(color-mix(in oklab, var(--ink) 6%, transparent), var(--line)),
+    0 2px 4px color-mix(in oklab, var(--ink) 6%, transparent);
 }
 
 // Over the mail, not the whole app: a toast rises at the foot of the area where its action was

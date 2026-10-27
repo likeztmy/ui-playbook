@@ -25,9 +25,9 @@
   // A step above the card, so a longer drop than the card's (the eye reads height from the offset),
   // at the same darkness; a hairline draws the edge over whatever scrolls beneath.
   box-shadow:
-    0 0 0 1px light-dark(oklch(0.35 0.02 75 / 0.08), var(--line)),
-    0 1px 2px oklch(0.35 0.02 75 / 0.04),
-    0 6px 12px oklch(0.35 0.02 75 / 0.07);
+    0 0 0 1px light-dark(color-mix(in oklab, var(--ink) 8%, transparent), var(--line)),
+    0 1px 2px color-mix(in oklab, var(--ink) 4%, transparent),
+    0 6px 12px color-mix(in oklab, var(--ink) 7%, transparent);
   backdrop-filter: blur(12px);
 }
 
