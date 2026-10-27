@@ -23,7 +23,7 @@ const directions = [
   {
     id: 'field',
     name: 'B · Field guide',
-    note: 'After Ciechanowski and Josh Comeau. The prose names each switch in the colour it turns on; one hand-written note at the first thing to try; contents that track where you are.',
+    note: 'After Ciechanowski and Josh Comeau. The prose names each switch in the colour it turns on; one hand-written note at the first thing to try; a tick for each block in the margin, the one you are reading marked.',
   },
 ] as const;
 
@@ -70,15 +70,18 @@ const contents = ['The rule', 'What repeats stops being seen', 'Bounce is not th
             <Heads direction={d.id} />
             {d.id === 'field' && (
               <nav class={s.rail} aria-label="On this page">
-                {contents.map((c, i) => (
-                  <span data-current={i === 2 ? '' : undefined}>{c}</span>
-                ))}
+                <div class={s.ticks} data-ticks>
+                  <div class={s.peek} data-peek aria-hidden="true">
+                    <b />
+                    <span />
+                  </div>
+                </div>
               </nav>
             )}
             <article class={s.page}>
               <Opening keyed={d.id === 'field'}>
                 {d.id === 'field' && (
-                  <span slot="note" class={s.hand} style="right: 48px; top: -14px">
+                  <span slot="note" class={s.hand} style="right: 48px; top: -14px" aria-hidden="true">
                     flip one a few times
                     <svg viewBox="0 0 60 40" width="48" height="32" aria-hidden="true">
                       <path d="M56 4 C 40 4, 20 12, 12 34" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
@@ -95,5 +98,6 @@ const contents = ['The rule', 'What repeats stops being seen', 'Bounce is not th
   </div>
   <script>
     import '../../components/directions/lab';
+    import '../../components/directions/ticks';
   </script>
 </Base>

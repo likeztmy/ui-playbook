@@ -123,7 +123,8 @@
 // Each direction draws on its own canvas, so the two read as separate sites.
 .canvas {
   position: relative;
-  overflow: hidden;
+  // clip, not hidden: hidden makes the canvas a scroll container and unpins the sticky ticks.
+  overflow: clip;
   border-radius: 20px;
   background: var(--bg);
   color: var(--ink);
@@ -326,31 +327,121 @@
   }
 }
 
-// Where you are: the page's sections, the current one marked, pinned in the left margin.
+// Where you are: a tick per block of the article, pinned in the left margin as you scroll.
+// The current tick is longer and full ink; the ticks beside the pointer lengthen a step.
+// The rail spans the whole canvas, so the ticks stay put at 40vh while a press scrolls.
 .rail {
   position: absolute;
-  top: 560px;
-  left: var(--space-4);
-  display: grid;
-  gap: var(--space-2);
-  width: 128px;
-  font-size: 12px;
-  line-height: 16px;
-  color: var(--ink-muted);
-
-  span {
-    padding-left: var(--space-3);
-    box-shadow: inset 1px 0 var(--line);
-  }
-
-  [data-current] {
-    color: var(--ink);
-    font-weight: 500;
-    box-shadow: inset 2px 0 var(--ink);
-  }
+  top: 0;
+  bottom: 96px;
+  z-index: var(--z-sticky);
+  left: var(--space-6);
+  width: 40px;
 
   @media (max-width: 1180px) {
     display: none;
+  }
+}
+
+.ticks {
+  position: sticky;
+  top: 40vh;
+  display: grid;
+  justify-items: start;
+
+  button {
+    border: 0;
+    background: none;
+    cursor: pointer;
+    // 20px tall rows, so each tick is a reasonable target; the mark is the 2px line inside.
+    width: 40px;
+    height: 20px;
+    padding: 0;
+
+    &::before {
+      content: '';
+      display: block;
+      width: 12px;
+      height: 2px;
+      border-radius: 1px;
+      background: var(--line-strong);
+      opacity: 0.5;
+      transition:
+        width var(--duration-fast) var(--ease-out),
+        opacity var(--duration-fast) var(--ease-out);
+    }
+
+    &:has(+ :hover)::before,
+    &:hover + button::before {
+      width: 16px;
+    }
+
+    &:hover::before {
+      width: 20px;
+      opacity: 1;
+    }
+
+    &[aria-current]::before {
+      width: 24px;
+      background: var(--ink);
+      opacity: 1;
+    }
+
+    &:focus-visible {
+      border-radius: 4px;
+      box-shadow: var(--focus-ring);
+    }
+  }
+}
+
+// The peek: the hovered block's heading and opening words, beside its tick.
+.peek {
+  position: absolute;
+  left: 48px;
+  display: grid;
+  gap: var(--space-1);
+  width: 320px;
+  padding: var(--space-3) var(--space-4);
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--ink) 8%, transparent),
+    0 4px 20px color-mix(in srgb, var(--ink) 8%, transparent);
+  translate: 0 -50%;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity var(--duration-fast) var(--ease-out),
+    visibility 0s var(--duration-fast);
+
+  &[data-open] {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 0s;
+  }
+
+  b {
+    overflow: hidden;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 600;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  span {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    font-size: 13px;
+    line-height: 20px;
+    color: var(--ink-muted);
+
+    &:empty {
+      display: none;
+    }
   }
 }
 
