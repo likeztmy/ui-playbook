@@ -30,9 +30,8 @@ for (const route of ROUTES) {
   }
 }
 
-// Every reading page's column: the title and every block under it start on one left edge, and
-// everything but prose (which stops at its measure) runs to one right edge, whatever size its type
-// is set in. The pilot is checked in each of its frame styles.
+// Every reading page's column: the title and every block under it start on one left edge and end
+// on one right edge, whatever size its type is set in. The pilot is checked in each of its frame styles.
 const READING = [
   ...ROUTES.filter((r) => /^(\/zh)?\/(components|principles|practice)\/[a-z-]+$/.test(r)).map((r) => ({ route: r, box: '' })),
   ...['band', 'caption', 'plate', 'toggle'].map((box) => ({ route: '/pilot/button', box })),
@@ -49,11 +48,10 @@ for (const { route, box } of READING) {
         const edge = (side: 'left' | 'right', els: Element[]) => [
           ...new Set(els.map((e) => Math.round(e.getBoundingClientRect()[side]))),
         ];
-        const wide = blocks.filter((e) => !['P', 'UL', 'OL'].includes(e.tagName));
-        return { lefts: edge('left', blocks), rights: edge('right', wide) };
+        return { lefts: edge('left', blocks), rights: edge('right', blocks) };
       });
       expect(edges.lefts, 'distinct left edges').toHaveLength(1);
-      expect(edges.rights, 'distinct right edges of demos, code, tables and headings').toHaveLength(1);
+      expect(edges.rights, 'distinct right edges').toHaveLength(1);
     });
   }
 }

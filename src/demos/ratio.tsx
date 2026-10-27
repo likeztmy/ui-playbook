@@ -57,6 +57,7 @@ function Sections({ above, scale = 1, show, count }: { above: number; scale?: nu
 export const RatioScene = localized(function RatioScene() {
   return (
     <Compare
+      stacked
       beforeLabel="Half above, half below"
       afterLabel="85% above, 15% below"
       height={0}

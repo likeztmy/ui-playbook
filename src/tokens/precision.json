@@ -1073,8 +1073,8 @@
       },
       {
         "name": "prose-max",
-        "value": "34em",
-        "usage": "文档页段落最大宽度：Geist 16px 下换行后约 73 个英文字符。用 em 而不是 `ch`：Geist 的“0”很宽，68ch 约 101 个字符。"
+        "value": "36em",
+        "usage": "文档页正文列宽：Geist 16px 下换行后约 80 个英文字符（WCAG 1.4.8 的上限）。用 em 而不是 `ch`：Geist 的“0”很宽，68ch 约 101 个字符。"
       },
       {
         "name": "reading-max",

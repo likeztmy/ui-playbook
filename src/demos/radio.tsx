@@ -193,6 +193,7 @@ const FIT = ['Fit to width', 'Fill the frame', 'Actual size', 'Tile'];
 export function RadioColumn() {
   return (
     <Compare
+      stacked
       beforeLabel="Inline, 16px apart"
       afterLabel="One column"
       height={160}
