@@ -33,7 +33,7 @@ const kind = kindName[entry.kind];
       <h1 class={s.title} data-tick>{titleIn(entry, lang)}</h1>
       <p class={s.summary}>{summaryIn(entry, lang)}</p>
     </header>
-    <div class={s.body} data-body>
+    <div class={s.body} data-body data-hued={frontmatter.hued ? '' : undefined}>
       <slot />
     </div>
     {

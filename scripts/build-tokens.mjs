@@ -80,6 +80,25 @@ const paletteBlocks = palettes.slice(1).flatMap((p) => {
   ];
 });
 
+// A palette whose accent is the ink has no hue to teach colour with. Under it, a subtree marked
+// [data-hued] (a page about colour) takes the default palette's values back, in either theme.
+const base = Object.fromEntries(themes.map((id) => [id, Object.fromEntries(vars[id].map((l) => l.trim().slice(2, -1).split(': ')))]));
+const monochrome = palettes.slice(1).filter((p) => (p.values.accent?.[primary] ?? p.values.accent) === base[primary].ink);
+const restore = (p, id) => Object.keys(p.values).map((name) => `  --${name}: ${base[id][name]};`);
+const huedBlocks = monochrome.flatMap((p) => {
+  const at = `[data-palette="${p.id}"]`;
+  const hued = (id) => `${at} [data-theme="${id}"] [data-hued], ${at} [data-hued] [data-theme="${id}"]`;
+  return [
+    block(`:root${at} [data-hued], ${hued(primary)}`, restore(p, primary)),
+    ...themes
+      .filter((id) => id !== primary)
+      .flatMap((id) => [
+        `@media (prefers-color-scheme: ${id}) {\n${block(`  :root${at}:not([data-theme]) [data-hued]`, restore(p, id).map((l) => '  ' + l)).replace(/\n}$/, '\n  }')}\n}`,
+        block(`:root${at}[data-theme="${id}"] [data-hued], ${hued(id)}`, restore(p, id)),
+      ]),
+  ];
+});
+
 // A [data-theme] attribute pins a subtree to one theme; without it the
 // document follows the system setting.
 const css = [
@@ -93,6 +112,7 @@ const css = [
       block(`[data-theme="${id}"]`, [`  color-scheme: ${id};`, ...vars[id]]),
     ]),
   ...paletteBlocks,
+  ...huedBlocks,
   ...typeClasses,
 ].join('\n\n');
 
