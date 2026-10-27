@@ -1,0 +1,11 @@
+// The value's own mark leads each row, in one column; the check ends it.
+.popup {
+  min-width: 180px;
+}
+
+.lead {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 16px;
+}

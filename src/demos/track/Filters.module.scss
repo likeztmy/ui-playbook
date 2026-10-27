@@ -1,0 +1,50 @@
+@use '../../styles/states' as *;
+
+.filters {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+// A filter is a quiet pill until it narrows something; then it says what, in ink on a fill.
+.filter {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-1);
+  height: 28px;
+  padding: 0 var(--space-2) 0 var(--space-3);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-full);
+  background: none;
+  color: var(--ink-muted);
+  font: inherit;
+  font-size: 13px;
+  white-space: nowrap;
+  cursor: pointer;
+
+  @include hover {
+    background: var(--fill-hover);
+    color: var(--ink);
+  }
+
+  &[data-on] {
+    border-style: solid;
+    border-color: transparent;
+    background: var(--fill-control);
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  &[data-popup-open] {
+    background: var(--fill-active);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+}

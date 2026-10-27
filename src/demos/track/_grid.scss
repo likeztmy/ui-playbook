@@ -1,0 +1,18 @@
+// The list's columns, shared by group headers and rows so every part keeps one edge.
+// tick · priority · id · status · title · labels · face · updated
+$margin: var(--space-2);
+// Less on the left: the tick's own column is the room there.
+$pad: var(--space-3);
+$gap: var(--space-3);
+
+@mixin columns {
+  position: relative;
+  display: grid;
+  grid-template-columns: 20px 14px 56px 14px minmax(0, 1fr) auto 22px 44px;
+  align-items: center;
+  column-gap: $gap;
+
+  @container (max-width: 760px) {
+    grid-template-columns: 14px 14px minmax(0, 1fr) 22px 36px;
+  }
+}

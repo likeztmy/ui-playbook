@@ -1,0 +1,88 @@
+@use '../../styles/states' as *;
+
+// The page's own bar: its name, the tabs beside it, the layout at the far end.
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  box-sizing: border-box;
+  height: 44px;
+  // On the rows' left edge: their margin and inset.
+  padding: 0 var(--space-2) 0 calc(var(--space-2) + var(--space-3));
+  border-bottom: 1px solid var(--line);
+}
+
+.show {
+  // Where the sidebar's Hide was: the sidebar's inset from the edge.
+  margin-left: calc(var(--space-3) * -1 - 1px);
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0 var(--space-4) 0 0;
+  font-family: var(--font-title);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 20px;
+  white-space: nowrap;
+}
+
+.team {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius-xs);
+  background: var(--fill-control);
+}
+
+.tabsRoot {
+  align-self: stretch;
+  min-width: 0;
+}
+
+// Down on the header's hairline, so the current tab's bar sits on it; the list's own line is the header's.
+.tabs {
+  height: 100%;
+  background: none;
+}
+
+.tab {
+  height: 100%;
+  font-size: 13px;
+}
+
+.view {
+  flex: none;
+  margin-left: auto;
+}
+
+@container (max-width: 760px) {
+  .header {
+    padding-left: var(--space-2);
+  }
+
+  .view {
+    display: none;
+  }
+
+  .show {
+    margin-left: 0;
+  }
+
+  // The tabs need the width; the team's mark still says where, and the sidebar says it in full.
+  .title:has(.team) .name {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .title {
+    margin-right: var(--space-2);
+  }
+
+}

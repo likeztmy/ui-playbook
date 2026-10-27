@@ -1,0 +1,21 @@
+.bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.count {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.tools {
+  display: flex;
+  align-items: center;
+  gap: var(--space-0-5);
+  margin-left: var(--space-2);
+  overflow-x: auto;
+  scrollbar-width: none;
+}

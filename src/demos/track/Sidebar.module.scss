@@ -1,0 +1,197 @@
+@use '../../styles/states' as *;
+
+// On the app's ground, beside the raised page of issues: one column of rows, icons on one line,
+// labels on the next. A team's places sit under its name, one step in.
+$inset: var(--space-2);
+$icon: 18px;
+$gap: var(--space-2);
+
+.sidebar {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-height: 0;
+  color: var(--ink);
+  font-size: 13px;
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  // The header's height above its hairline, so Hide here and Show there sit in one spot.
+  height: 43px;
+  padding: 0 var(--space-2);
+}
+
+.workspace {
+  font-family: var(--font-title);
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: $gap;
+  min-width: 0;
+  height: 28px;
+  margin-right: auto;
+  padding: 0 $inset;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+
+  @include hover {
+    background: var(--fill-hover);
+  }
+
+  &[data-popup-open] {
+    background: var(--fill-active);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+}
+
+.mark {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: $icon;
+  height: $icon;
+  border-radius: var(--radius-xs);
+  background: var(--ink);
+  color: var(--surface);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.muted {
+  flex: none;
+  color: var(--ink-muted);
+}
+
+// Full width, on the places' left edge.
+.compose {
+  justify-content: flex-start;
+  gap: $gap;
+  width: 100%;
+  margin-bottom: var(--space-3);
+  padding: 0 $inset;
+}
+
+.scroll {
+  min-height: 0;
+  padding: var(--space-2) var(--space-2) var(--space-4);
+  overflow-y: auto;
+}
+
+.list {
+  display: grid;
+  gap: 1px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.section {
+  margin-top: var(--space-5);
+}
+
+.sectionLabel {
+  display: flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 $inset;
+  color: var(--ink-muted);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.item {
+  display: grid;
+  grid-template-columns: $icon minmax(0, 1fr) auto;
+  align-items: center;
+  justify-items: center;
+  column-gap: $gap;
+  box-sizing: border-box;
+  width: 100%;
+  height: 28px;
+  padding: 0 $inset;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+
+  > svg {
+    color: var(--ink-muted);
+  }
+
+  // Halfway to the page's white: hover leans toward what choosing it would make it, as in Post.
+  @include hover {
+    background: light-dark(color-mix(in oklab, var(--surface) 60%, transparent), var(--fill-hover));
+  }
+
+  // Where you are, lifted onto the page's white; only its icon takes the blue. A folded team holding
+  // it carries the same lift.
+  &[aria-current='page'],
+  &[data-holds] {
+    background: var(--surface-raised);
+    box-shadow:
+      0 0 0 1px light-dark(color-mix(in oklab, var(--ink) 6%, transparent), var(--line)),
+      0 1px 2px color-mix(in oklab, var(--ink) 7%, transparent);
+    font-weight: 600;
+
+    > svg {
+      color: var(--accent-text);
+    }
+  }
+
+  // A place Track doesn't build: it looks like the rest and takes no press.
+  &[aria-disabled='true'] {
+    cursor: default;
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+
+  // Under its team, the icon on the team's name.
+  &[data-sub] {
+    padding-left: calc(#{$inset} + #{$icon} + #{$gap});
+  }
+}
+
+.label {
+  justify-self: stretch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.team {
+  display: grid;
+  place-items: center;
+  width: $icon;
+  height: $icon;
+  border-radius: var(--radius-xs);
+  background: var(--fill-control);
+  color: var(--ink);
+}
+
+.fold {
+  color: var(--ink-muted);
+  rotate: -90deg;
+  transition: rotate var(--duration-fast) var(--ease-out);
+
+  [aria-expanded='true'] > & {
+    rotate: 0deg;
+  }
+}

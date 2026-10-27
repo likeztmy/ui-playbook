@@ -1,0 +1,88 @@
+@use '../../styles/states' as *;
+
+// A card one step off its column: a hairline and a short drop, radius inside the column's.
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--surface-raised);
+  box-shadow:
+    0 0 0 1px light-dark(color-mix(in oklab, var(--ink) 8%, transparent), var(--line)),
+    0 1px 2px color-mix(in oklab, var(--ink) 6%, transparent);
+  outline: none;
+  cursor: grab;
+  user-select: none;
+  touch-action: pan-y;
+
+  @include hover {
+    box-shadow:
+      0 0 0 1px light-dark(color-mix(in oklab, var(--ink) 14%, transparent), var(--line-strong)),
+      0 1px 2px color-mix(in oklab, var(--ink) 6%, transparent);
+  }
+
+  &[aria-current] {
+    box-shadow:
+      0 0 0 1.5px var(--ink-muted),
+      0 1px 2px color-mix(in oklab, var(--ink) 6%, transparent);
+  }
+
+  &[data-checked] {
+    background: color-mix(in oklab, var(--accent-soft) 100%, var(--surface-raised));
+    box-shadow: 0 0 0 1.5px var(--accent);
+  }
+
+  &:focus-visible {
+    box-shadow: var(--focus-ring);
+  }
+
+  &[data-fresh] {
+    animation: fresh 2s var(--ease-out);
+  }
+
+  // Picked up: higher, so its shadow is longer and softer; a degree off true, as a card in the hand.
+  &[data-lifted] {
+    box-shadow:
+      0 0 0 1px light-dark(color-mix(in oklab, var(--ink) 8%, transparent), var(--line)),
+      var(--shadow-lg);
+    cursor: grabbing;
+    rotate: 1.5deg;
+  }
+}
+
+@keyframes fresh {
+  from {
+    background: color-mix(in oklab, var(--accent) 16%, var(--surface-raised));
+  }
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 22px;
+}
+
+.id {
+  color: var(--ink-muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.title {
+  display: -webkit-box;
+  overflow: hidden;
+  font-weight: 500;
+  line-height: 20px;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  text-wrap: pretty;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+}

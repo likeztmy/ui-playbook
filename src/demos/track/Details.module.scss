@@ -1,0 +1,272 @@
+@use '../../styles/states' as *;
+
+// The issue's surroundings, section by section: a heading with its count or state on one line, then
+// rows that share one grid, a mark column and a text column, so every section starts on one edge.
+
+.section {
+  margin-top: var(--space-6);
+}
+
+.head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-2);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.meta {
+  color: var(--ink-muted);
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
+
+.rows {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+// One related issue: its status, id, title, face. A press opens it here.
+.issue {
+  display: grid;
+  grid-template-columns: 14px 56px minmax(0, 1fr) 18px;
+  align-items: center;
+  gap: var(--space-2);
+  box-sizing: border-box;
+  width: calc(100% + 2 * var(--space-2));
+  height: 32px;
+  margin: 0 calc(-1 * var(--space-2));
+  padding: 0 var(--space-2);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+
+  @include hover {
+    background: var(--fill-hover);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+}
+
+.id {
+  color: var(--ink-muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// Where it sits: above the title, the one it's a step of.
+.parent {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  max-width: calc(100% + var(--space-2));
+  height: 26px;
+  margin: 0 0 var(--space-2) calc(-1 * var(--space-2));
+  padding: 0 var(--space-2);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: none;
+  color: var(--ink-muted);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+
+  b {
+    overflow: hidden;
+    color: var(--ink);
+    font-weight: 500;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  @include hover {
+    background: var(--fill-hover);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+}
+
+// How many steps are done, as a thin bar the width of the heading's count.
+.progress {
+  width: 48px;
+  height: 4px;
+  align-self: center;
+  overflow: hidden;
+  border-radius: var(--radius-full);
+  background: var(--line);
+
+  > span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--ink);
+  }
+}
+
+// A pull request: its state as a mark, the title on one line, and where it stands under it.
+.pr {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr);
+  column-gap: var(--space-2);
+  padding: var(--space-2) 0;
+
+  & + & {
+    border-top: 1px solid var(--line);
+  }
+
+  > svg {
+    margin-top: 2px;
+  }
+}
+
+.prTitle {
+  overflow: hidden;
+  font-size: 13px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.prMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 var(--space-2);
+  margin-top: 2px;
+  color: var(--ink-muted);
+  font-size: 12px;
+
+  > * + *::before {
+    content: '·';
+    // Two short parts that never wrap, so the dot never starts a line.
+    margin-right: var(--space-2);
+    color: var(--ink-disabled);
+  }
+}
+
+// Where it stands: each part led by its own mark or colour, so no separators to strand at a wrap.
+.prChecks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px var(--space-3);
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--ink-muted);
+
+  > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+}
+
+.repo {
+  font-family: var(--font-mono);
+}
+
+// A state reads by its mark's shape first; colour backs up only what needs acting on.
+.open {
+  color: var(--success);
+}
+
+.draft,
+.merged {
+  color: var(--ink-muted);
+}
+
+.closed,
+.failing {
+  color: var(--danger);
+}
+
+.passing {
+  color: var(--success);
+}
+
+// The build on Shipyard: four stages as one bar in four parts, the current one filled as far as it's got.
+.release {
+  padding: var(--space-3);
+  border-radius: var(--radius-lg);
+  background: var(--surface-sunken);
+}
+
+.releaseHead {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 13px;
+  font-weight: 500;
+
+  .meta {
+    margin-left: auto;
+    font-size: 12px;
+  }
+}
+
+.stages {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-1);
+  margin: var(--space-3) 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--ink-muted);
+  font-size: 11px;
+
+  li {
+    display: grid;
+    gap: 6px;
+  }
+
+  [data-at] {
+    color: var(--ink);
+    font-weight: 500;
+  }
+}
+
+.bar {
+  height: 4px;
+  overflow: hidden;
+  border-radius: var(--radius-full);
+  background: var(--line-strong);
+  opacity: 0.35;
+
+  [data-done] > &,
+  [data-at] > & {
+    opacity: 1;
+    background: var(--line);
+  }
+
+  > span {
+    display: block;
+    height: 100%;
+    background: var(--ink);
+  }
+}
+
+.releaseNote {
+  margin: var(--space-2) 0 0;
+  color: var(--ink-muted);
+  font-size: 12px;
+}

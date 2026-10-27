@@ -1,0 +1,30 @@
+// A face, or no one yet: the face's place, kept, as a dashed ring.
+.face,
+.none {
+  display: block;
+  flex: none;
+  box-sizing: border-box;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+
+  &[data-size='sm'] {
+    width: 18px;
+    height: 18px;
+  }
+
+  &[data-size='lg'] {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+.face {
+  // The text colour, faint: black on light, white on dark.
+  outline: 1px solid color-mix(in srgb, currentcolor 10%, transparent);
+  outline-offset: -1px;
+}
+
+.none {
+  border: 1.5px dashed var(--line-strong);
+}

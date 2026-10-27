@@ -14,6 +14,10 @@ const DIAGRAMS = new Set([
   'src/demos/lightness/Vision.tsx',
   // A street map behind the sheet demos: content, not an icon.
   'src/demos/sheet/Map.tsx',
+  // Track's status and priority marks draw a value (how far along, how pressing), as a chart does:
+  // a circle filled a share of the way round, bars filled to a level. Lucide has no partial fills.
+  'src/demos/track/PriorityIcon.tsx',
+  'src/demos/track/StatusIcon.tsx',
 ]);
 
 function* files(dir) {

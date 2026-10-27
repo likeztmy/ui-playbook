@@ -1,0 +1,104 @@
+// The history under a hairline: a mark column (faces, or an integration's mark), the text, the time
+// at the end. A comment's words sit under its line, on the text's edge.
+
+.activity {
+  margin-top: var(--space-6);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--line);
+}
+
+.heading {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin: var(--space-3) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.line {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--ink-muted);
+  font-size: 13px;
+
+  b {
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  time {
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.bot {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--surface);
+}
+
+// What someone said: a block of its own, set in the reading colour, on the names' edge.
+.comment {
+  padding: var(--space-3);
+  border-radius: var(--radius-lg);
+  background: var(--surface-sunken);
+}
+
+.body {
+  margin: var(--space-2) 0 0 calc(18px + var(--space-2));
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 20px;
+  white-space: pre-wrap;
+  text-wrap: pretty;
+}
+
+.compose {
+  display: grid;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+
+  &:focus-within {
+    border-color: var(--line-strong);
+  }
+}
+
+.box {
+  min-height: 20px;
+  max-height: 200px;
+  padding: var(--space-1) 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-size: 13px;
+  line-height: 20px;
+  field-sizing: content;
+  resize: none;
+  outline: none;
+
+  &::placeholder {
+    color: var(--ink-muted);
+  }
+}
+
+.send {
+  justify-self: end;
+}

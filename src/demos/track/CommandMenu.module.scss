@@ -1,0 +1,117 @@
+// Above everything in the app: a dialog's height, its own shadow, near the top so the list has room to grow.
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-dialog);
+  background: color-mix(in oklab, var(--scrim) 50%, transparent);
+  transition: opacity var(--duration-fast) var(--ease-out);
+
+  &[data-starting-style],
+  &[data-ending-style] {
+    opacity: 0;
+  }
+}
+
+.popup {
+  position: fixed;
+  top: 12vh;
+  left: 50%;
+  z-index: var(--z-dialog);
+  display: flex;
+  flex-direction: column;
+  width: min(560px, calc(100vw - 32px));
+  max-height: min(440px, 76vh);
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+  background: var(--surface-raised);
+  box-shadow: var(--shadow-lg);
+  color: var(--ink);
+  font-size: 14px;
+  translate: -50% 0;
+  outline: none;
+  transition:
+    opacity var(--duration-fast) var(--ease-out),
+    scale var(--duration-fast) var(--ease-out);
+
+  &[data-starting-style],
+  &[data-ending-style] {
+    opacity: 0;
+    scale: 0.98;
+  }
+}
+
+.target {
+  // What the commands act on, as a chip above where you type. flex: none, or the column squeezes it to nothing.
+  flex: none;
+  align-self: flex-start;
+  box-sizing: border-box;
+  max-width: calc(100% - 2 * var(--space-4));
+  margin: var(--space-3) var(--space-4) 0;
+  padding: 2px var(--space-2);
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  background: var(--fill-control);
+  color: var(--ink-muted);
+  font-size: 12px;
+  line-height: 18px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.input {
+  flex: none;
+  height: 44px;
+  padding: 0 var(--space-4);
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-size: 16px;
+  outline: none;
+
+  &::placeholder {
+    color: var(--ink-muted);
+  }
+}
+
+.list {
+  padding: var(--space-1) var(--space-2) var(--space-2);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.group {
+  padding: var(--space-3) var(--space-2) var(--space-1);
+  color: var(--ink-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  height: 36px;
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-md);
+  cursor: default;
+
+  &[data-highlighted] {
+    background: var(--fill-active);
+  }
+}
+
+.lead {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 16px;
+  color: var(--ink-muted);
+}
+
+.empty {
+  margin: 0;
+  padding: var(--space-4) var(--space-2);
+  color: var(--ink-muted);
+}

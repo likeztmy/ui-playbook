@@ -1,0 +1,42 @@
+.popup {
+  width: 240px;
+  padding: 0;
+}
+
+// The field heads the list, on the rows' text edge, with a hairline under it.
+.input {
+  box-sizing: border-box;
+  width: 100%;
+  height: 40px;
+  padding: 0 calc(var(--space-1) + var(--space-2));
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  outline: none;
+
+  &::placeholder {
+    color: var(--ink-muted);
+  }
+}
+
+.list {
+  padding: var(--space-1);
+
+  &:empty {
+    display: none;
+  }
+}
+
+.empty:not(:empty) {
+  padding: var(--space-3) calc(var(--space-1) + var(--space-2));
+  color: var(--ink-muted);
+}
+
+.lead {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 16px;
+}

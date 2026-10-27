@@ -1,0 +1,16 @@
+.mark {
+  display: inline-grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  margin-right: var(--space-1);
+  color: var(--ink-muted);
+
+  &[data-state='open'] {
+    color: var(--success);
+  }
+
+  &[data-trouble] {
+    color: var(--danger);
+  }
+}

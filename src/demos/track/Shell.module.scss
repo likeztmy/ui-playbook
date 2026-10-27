@@ -1,0 +1,203 @@
+// The frame is the container, so the app lays itself out by its own width.
+.frame {
+  container-type: inline-size;
+  height: 100dvh;
+}
+
+// A tool's frame, flat: the sidebar on Post's desk, a hairline, then the page edge to edge.
+.app {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  height: 100%;
+  overflow: hidden;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 14px;
+}
+
+// Folds to nothing and back; what's in it keeps its width, so nothing inside rewraps on the way.
+.side {
+  display: grid;
+  width: 240px;
+  overflow: hidden;
+  border-right: 1px solid var(--line);
+  // Post's desk: a grey with a breath of the accent in light, the page's ground in dark.
+  background: light-dark(color-mix(in oklab, var(--accent) 4%, oklch(0.962 0 0)), var(--bg));
+  transition:
+    width var(--duration-base) var(--ease-out),
+    border-right-width var(--duration-base) var(--ease-out);
+
+  > * {
+    width: 240px;
+  }
+
+  &[data-folded] {
+    width: 0;
+    border-right-width: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+.page {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+// How the issues are narrowed, or, once some are ticked, what to do with them: one row, one
+// height, so nothing below moves when it changes.
+.tools {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  height: 40px;
+  padding: 0 var(--space-3) 0 calc(var(--space-2) + var(--space-3) - var(--space-1));
+  border-bottom: 1px solid var(--line);
+}
+
+.main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-height: 0;
+
+  &[data-open] {
+    grid-template-columns: minmax(0, 1fr) minmax(360px, 440px);
+  }
+}
+
+.issues {
+  position: relative;
+  // The pill and the sticky headers stack among themselves, all under the panel.
+  isolation: isolate;
+  display: grid;
+  min-width: 0;
+  min-height: 0;
+}
+
+.panelSlot {
+  display: grid;
+  min-height: 0;
+}
+
+// Over the issues' top, centred: it stays until you let the changes in.
+.pill {
+  position: absolute;
+  top: var(--space-3);
+  left: 50%;
+  z-index: 1;
+  height: 30px;
+  padding: 0 var(--space-4);
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--ink);
+  color: var(--surface);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  translate: -50% 0;
+  animation: pill var(--duration-base) var(--ease-out);
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+}
+
+@keyframes pill {
+  from {
+    opacity: 0;
+    translate: -50% -8px;
+  }
+}
+
+.empty {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: var(--space-3);
+  color: var(--ink-muted);
+
+  p {
+    margin: 0;
+  }
+}
+
+// Toasts rise over the issues, at the app's foot.
+.toastLayer {
+  position: absolute;
+  inset: auto 0 0;
+  height: 0;
+  pointer-events: none;
+
+  > * {
+    pointer-events: auto;
+  }
+}
+
+// The phone's sidebar, over the page from the left.
+.drawer {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.scrim {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: var(--scrim);
+  animation: fade var(--duration-base) var(--ease-out);
+}
+
+.drawerPanel {
+  position: absolute;
+  inset: 0 auto 0 0;
+  display: grid;
+  width: min(280px, 85%);
+  background: var(--surface);
+  box-shadow: var(--shadow-lg);
+  animation: slide var(--duration-base) var(--ease-out);
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes slide {
+  from {
+    translate: -100% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .drawerPanel {
+    animation-name: fade;
+  }
+}
+
+@container (max-width: 760px) {
+  .app {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .main[data-open] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@container (max-width: 1000px) {
+  .main[data-open] {
+    grid-template-columns: minmax(0, 1fr) 360px;
+  }
+}

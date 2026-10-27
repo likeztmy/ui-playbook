@@ -1,0 +1,121 @@
+@use '../../styles/states' as *;
+@use './grid' as *;
+
+// A group's header: a strip of the desk the width of the list, so groups part by it and nothing
+// else, and folded ones stack into a plain list of statuses.
+.heading {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  margin: 0;
+  // Opaque, as it's sticky: a strip of the sidebar's desk across the page, light or dark.
+  background: light-dark(color-mix(in oklab, var(--accent) 3%, oklch(0.972 0 0)), color-mix(in oklab, var(--ink) 4%, var(--surface)));
+  font: inherit;
+  // A hairline where two folded bars meet, and where the bar meets the rows over it.
+  box-shadow: 0 -1px 0 var(--line);
+}
+
+.group:first-child .heading {
+  box-shadow: none;
+}
+
+.group:has([role='list']:not([hidden])) {
+  padding-bottom: var(--space-1);
+}
+
+// On the rows' columns: the fold where the tick is, the status over the statuses, the name on the titles' edge.
+.header {
+  display: grid;
+  flex: 1;
+  grid-template-columns: 20px 14px 56px 14px minmax(0, 1fr);
+  align-items: center;
+  column-gap: $gap;
+  min-width: 0;
+  height: 36px;
+  // The rows' margin and inset: their tick column is this one.
+  padding: 0 0 0 calc(#{$margin} + #{$pad});
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+
+  @include hover {
+    .chevron {
+      color: var(--ink);
+    }
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: inset var(--focus-ring);
+  }
+}
+
+.chevron {
+  color: var(--ink-muted);
+  rotate: 0deg;
+  transition: rotate var(--duration-fast) var(--ease-out);
+
+  [aria-expanded='true'] > & {
+    rotate: 90deg;
+  }
+}
+
+.name {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.hidden {
+  color: var(--ink-muted);
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.count {
+  color: var(--ink-muted);
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
+
+// On the rows' right edge.
+.add {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin-right: calc(#{$margin} + var(--space-1));
+  border: 0;
+  border-radius: var(--radius-md);
+  background: none;
+  color: var(--ink-muted);
+  cursor: pointer;
+
+  @include hover {
+    background: var(--fill-hover);
+    color: var(--ink);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+}
+
+@container (max-width: 760px) {
+  .header {
+    grid-template-columns: 14px 14px minmax(0, 1fr);
+  }
+
+  .spacer {
+    display: none;
+  }
+}

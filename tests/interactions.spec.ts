@@ -1933,3 +1933,169 @@ test('attention wears off: the flourish drops presses while it plays, the brief 
   await expect(tasks.getByText('All done for today')).toBeVisible();
   await expect(tasks.locator('[class*="_burst_"]')).toHaveCount(1);
 });
+
+test('track: issues grouped by status in order, with counts; Done starts folded and opens', async ({ page }) => {
+  await page.goto('/lab/track');
+  const headers = page.getByRole('heading', { level: 2 });
+  await expect(headers).toHaveText([/^Backlog\s*8$/, /^Todo\s*9$/, /^In progress\s*6$/, /^In review\s*4$/, /^Done\s*12$/]);
+  const done = page.getByRole('button', { name: /^Done/ });
+  await expect(done).toHaveAttribute('aria-expanded', 'false');
+  await expect(page.getByText('Guest checkout')).toBeHidden();
+  await done.click();
+  await expect(page.getByText('Guest checkout')).toBeVisible();
+  // The most pressing first in a group: the urgent payment bug heads In progress.
+  await expect(page.getByRole('region', { name: 'In progress' }).getByRole('listitem').first()).toContainText('3-D Secure');
+});
+
+test('track: open an issue beside the list, follow with arrows, Esc puts focus back on its row', async ({ page }) => {
+  await page.goto('/lab/track');
+  await page.getByText('Checkout in one page').click();
+  const panel = page.getByRole('complementary', { name: 'SHOP-48' });
+  await expect(panel).toBeVisible();
+  await expect(panel.getByRole('textbox', { name: 'Title' })).toHaveValue('Checkout in one page');
+  // Focus stays in the list: the next issue is one key away, and the panel follows it.
+  await page.keyboard.press('ArrowDown');
+  await expect(page.getByRole('complementary', { name: 'SHOP-46' })).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('complementary')).toHaveCount(0);
+  await expect(page.locator('[role="listitem"][data-n="46"]')).toBeFocused();
+});
+
+test('track: shift-click ticks a range, a bulk change can be undone, the ticks come back', async ({ page }) => {
+  await page.goto('/lab/track');
+  const row = (t: string) => page.getByRole('listitem').filter({ hasText: t });
+  await row('Apple Pay on the web').hover();
+  await row('Apple Pay on the web').getByRole('checkbox').click();
+  await row('Back in stock alerts').click({ modifiers: ['Shift'] });
+  await expect(page.getByText('5 selected')).toBeVisible();
+  await page.getByRole('toolbar').getByRole('button', { name: 'Status' }).click();
+  await page.getByRole('menuitemradio', { name: 'Todo' }).click();
+  await expect(page.getByRole('heading', { name: /^Backlog/ })).toHaveText(/3$/);
+  await page.getByRole('button', { name: 'Undo' }).click();
+  await expect(page.getByRole('heading', { name: /^Backlog/ })).toHaveText(/8$/);
+  await expect(page.getByText('5 selected')).toBeVisible();
+});
+
+test('track: arrows move focus without ticking; Space ticks; Delete deletes with Undo', async ({ page }) => {
+  await page.goto('/lab/track');
+  await hydrateAll(page);
+  const first = page.locator('[role="listitem"][data-n="63"]');
+  await first.focus();
+  await page.keyboard.press('ArrowDown');
+  await expect(page.locator('[role="listitem"][data-n="60"]')).toBeFocused();
+  await expect(page.locator('[role="listitem"][data-checked]')).toHaveCount(0);
+  await page.keyboard.press(' ');
+  await expect(page.locator('[role="listitem"][data-n="60"]')).toHaveAttribute('data-checked', '');
+  await page.keyboard.press('Delete');
+  await expect(page.locator('[data-n="60"]')).toHaveCount(0);
+  await page.getByRole('button', { name: 'Undo' }).click();
+  await expect(page.locator('[role="listitem"][data-n="60"]')).toBeVisible();
+});
+
+test('track: the command menu names its target first, and runs the first match on Enter', async ({ page }) => {
+  await page.goto('/lab/track');
+  await hydrateAll(page);
+  await page.locator('[role="listitem"][data-n="48"]').focus();
+  await page.keyboard.press('ControlOrMeta+k');
+  const menu = page.getByRole('dialog', { name: 'Commands' });
+  await expect(menu).toContainText('SHOP-48 Checkout in one page');
+  await page.keyboard.type('review');
+  await page.keyboard.press('Enter');
+  await expect(menu).toHaveCount(0);
+  await expect(page.getByRole('region', { name: 'In review' }).locator('[data-n="48"]')).toBeVisible();
+});
+
+test('track: a new issue needs a title only once you try; it lands focused in its group', async ({ page }) => {
+  await page.goto('/lab/track');
+  await page.getByRole('button', { name: 'New issue' }).click();
+  const title = page.getByRole('textbox', { name: 'Title' });
+  await expect(title).toBeFocused();
+  await expect(page.getByText('Give it a title')).toHaveCount(0);
+  await page.getByRole('button', { name: 'Create issue' }).click();
+  await expect(page.getByText('Give it a title')).toBeVisible();
+  await title.fill('W');
+  await expect(page.getByText('Give it a title'), 'clears with the first letter').toHaveCount(0);
+  await title.fill('Wishlist icon on product cards');
+  await page.getByRole('button', { name: 'Create issue' }).click();
+  await expect(page.getByRole('region', { name: 'Todo' }).locator('[role="listitem"]').first()).toBeFocused();
+  await expect(page.getByRole('region', { name: 'Todo' })).toContainText('Wishlist icon on product cards');
+});
+
+test('track: a filter counts what it shows and says what it hides', async ({ page }) => {
+  await page.goto('/lab/track');
+  await page.getByRole('button', { name: /^Assignee/ }).first().click();
+  await page.getByRole('menuitemcheckbox', { name: /Ana Ruiz/ }).click();
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('heading', { name: /^Todo/ })).toHaveText(/^Todo\s*2\s*7 hidden by filter$/);
+});
+
+test('track: drag a card to another column on the board', async ({ page }) => {
+  await page.goto('/lab/track');
+  await page.getByRole('radio', { name: 'Board' }).click();
+  const card = page.locator('[role="listitem"][data-n="48"]');
+  const from = (await card.boundingBox())!;
+  const to = (await page.locator('[data-column="review"]').boundingBox())!;
+  await page.mouse.move(from.x + 40, from.y + 20);
+  await page.mouse.down();
+  await page.mouse.move(from.x + 60, from.y + 30, { steps: 3 });
+  await page.mouse.move(to.x + 80, to.y + 60, { steps: 8 });
+  await page.mouse.up();
+  await expect(page.locator('[data-column="review"] [data-n="48"]')).toBeVisible();
+  await expect(page.getByRole('complementary'), 'a drop is not a click').toHaveCount(0);
+});
+
+test('track: the sidebar goes to My issues, the tabs count and narrow, and Hide sidebar comes back in its own spot', async ({ page }) => {
+  await page.goto('/lab/track');
+  await page.getByRole('navigation', { name: 'Track' }).getByRole('button', { name: 'My issues' }).click();
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('My issues');
+  await expect(page.getByRole('region', { name: 'Todo' }).getByRole('listitem')).toHaveCount(2);
+  await page.getByRole('button', { name: 'Issues', exact: true }).click();
+  await expect(page.getByRole('tab', { name: /^Active/ })).toHaveText(/19$/);
+  await page.getByRole('tab', { name: /^Backlog/ }).click();
+  await expect(page.getByRole('heading', { level: 2 })).toHaveText([/^Backlog\s*8$/]);
+  const hide = page.getByRole('button', { name: 'Hide sidebar' });
+  const at = (await hide.boundingBox())!;
+  await hide.click();
+  const show = page.getByRole('button', { name: 'Show sidebar' });
+  await expect(show).toBeFocused();
+  // It rides the page's edge as the sidebar folds, and stops where Hide was.
+  await expect.poll(async () => Math.abs((await show.boundingBox())!.x - at.x)).toBeLessThan(1.5);
+  await show.click();
+  await expect(hide).toBeFocused();
+});
+
+test('track: an issue shows what blocks it, its steps, its pull requests, and takes a comment', async ({ page }) => {
+  await page.goto('/lab/track');
+  await page.getByText('Checkout in one page').click();
+  const panel = page.getByRole('complementary', { name: 'SHOP-48' });
+  await expect(panel.getByRole('region', { name: 'Blocked by' })).toContainText('SHOP-51');
+  await expect(panel.getByRole('region', { name: 'Sub-issues' })).toContainText('0 of 4 done');
+  await expect(panel.getByRole('region', { name: 'Pull requests' })).toContainText('shop-ios #482');
+  await panel.getByRole('region', { name: 'Sub-issues' }).getByText('Show delivery dates before checkout').click();
+  const step = page.getByRole('complementary', { name: 'SHOP-43' });
+  await expect(step.getByRole('button', { name: /Sub-issue of SHOP-48/ })).toBeVisible();
+  await step.getByRole('textbox', { name: 'Comment' }).fill('Dates checked against the warehouse feed.');
+  await step.getByRole('button', { name: 'Comment', exact: true }).click();
+  await expect(step.getByRole('region', { name: 'Activity' })).toContainText('Dates checked against the warehouse feed.');
+  await expect(step.getByRole('textbox', { name: 'Comment' })).toHaveValue('');
+});
+
+test('track: closing a new issue keeps what you wrote, with Discard in the toast', async ({ page }) => {
+  await page.goto('/lab/track');
+  await page.getByRole('button', { name: 'New issue' }).click();
+  await page.getByRole('textbox', { name: 'Title' }).fill('Gift wrap option');
+  await page.keyboard.press('Escape');
+  await expect(page.getByText('Draft kept')).toBeVisible();
+  await page.getByRole('button', { name: 'New issue' }).click();
+  await expect(page.getByRole('textbox', { name: 'Title' })).toHaveValue('Gift wrap option');
+});
+
+test('track: folding the team that holds where you are moves the mark onto the team', async ({ page }) => {
+  await page.goto('/lab/track');
+  const team = page.getByRole('button', { name: 'Shop app' });
+  await team.click();
+  await expect(team).toHaveAttribute('aria-expanded', 'false');
+  await expect(team).toHaveAttribute('data-holds', '');
+  await team.click();
+  await expect(page.getByRole('button', { name: 'Issues', exact: true })).toHaveAttribute('aria-current', 'page');
+});

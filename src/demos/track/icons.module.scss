@@ -1,0 +1,21 @@
+// Status and priority marks: ink and shape only. Colour is spent on the one filled button and ticks.
+
+.status,
+.priority {
+  display: block;
+  flex: none;
+  color: var(--ink-muted);
+}
+
+// Work under way reads a step darker than work waiting.
+.status:is([data-status='progress'], [data-status='review'], [data-status='done']) {
+  color: var(--ink);
+}
+
+.priority[data-priority='urgent'] {
+  color: var(--ink);
+}
+
+.priority[data-priority='none'] {
+  color: var(--ink-disabled);
+}
