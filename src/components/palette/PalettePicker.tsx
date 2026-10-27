@@ -8,7 +8,7 @@ import s from './PalettePicker.module.scss';
 // The tokens' own colours, drawn with no attribute.
 const BASE = PALETTES[0].id;
 // What a visitor sees until they pick one; Base.astro's boot script applies the same.
-const SITE: PaletteId = 'ink';
+const SITE: PaletteId = 'blue';
 
 function current(): PaletteId {
   const p = document.documentElement.dataset.palette;
