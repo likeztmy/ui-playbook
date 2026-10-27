@@ -1,0 +1,36 @@
+---
+// The same principle page opening in every direction: real copy and a real demo.
+import { NoveltySwitches } from '../../demos/novelty';
+
+interface Props {
+  // Wraps the words that name a demo's parts, for the direction that colour-keys its prose.
+  keyed?: boolean;
+}
+const { keyed = false } = Astro.props;
+const k = (word: string, tone: string) => (keyed ? `<span data-key="${tone}">${word}</span>` : word);
+---
+
+<p data-part="kind">Principle</p>
+<h1 data-part="title">Attention wears off, waiting doesn’t</h1>
+<p data-part="lede">
+  A motion seen often stops being noticed, but its length is paid every time. Keep what repeats brief and never in the way; save
+  delight for what’s rare.
+</p>
+<div data-part="body">
+  <h2>Bounce is not the cost</h2>
+  <p>
+    Three switches, each animating its own way. Flip them a few times: the <Fragment set:html={k('expressive', 'a')} /> one overshoots
+    and the <Fragment set:html={k('standard', 'b')} /> one settles, in the same 350 ms; the <Fragment set:html={k('blocking', 'c')} /> one
+    holds the next press for 500.
+  </p>
+  <div data-part="demo">
+    <slot name="note" />
+    <NoveltySwitches client:visible />
+  </div>
+  <p>
+    Material 3’s expressive springs overshoot, and at fast and default speeds they take exactly as long as its standard ones (<a
+      href="https://m3.material.io/styles/motion/overview/specs">Material 3, Motion specs</a
+    >). Importance can buy a more noticeable motion, never a longer one: the primary button may bounce, inside the same few hundred
+    milliseconds, and take the next press throughout.
+  </p>
+</div>

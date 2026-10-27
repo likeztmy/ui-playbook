@@ -1,0 +1,64 @@
+---
+import Base from '../../layouts/Base.astro';
+import Heads from '../../components/directions/Heads.astro';
+import Opening from '../../components/directions/Opening.astro';
+import s from '../../components/directions/Directions.module.scss';
+
+// Three directions on the same real content: the home page's head and one principle page's opening.
+// Faces are system stand-ins (New York, Bradley Hand) until a direction is chosen.
+const directions = [
+  {
+    id: 'workbench',
+    name: 'A · Workbench',
+    after: 'After DialKit and Josh Puckett',
+    note: 'Quiet and precise. Serif titles, rank by ink, figures as flat wells, and the site’s own settings as dials around the title.',
+  },
+  {
+    id: 'field',
+    name: 'B · Field guide',
+    after: 'After Ciechanowski and Josh Comeau',
+    note: 'Warm and explanatory. Clay paper, prose that names the demo’s parts in their colours, one hand-drawn note at the first demo, figures without a frame.',
+  },
+  {
+    id: 'shelf',
+    name: 'C · Specimen book',
+    after: 'After Interface Craft and Rauno',
+    note: 'Bold and collectable. Each component a cover on a shelf; each page opens like a poster, then reads as quietly as A.',
+  },
+] as const;
+---
+
+<Base title="Directions">
+  <meta name="robots" content="noindex" slot="head" />
+  <div class={s.lab}>
+    {
+      directions.map((d) => (
+        <section class={s.dir} data-direction={d.id} data-palette={d.id === 'field' ? 'clay' : undefined}>
+          <header class={s.meta}>
+            <h2>{d.name}</h2>
+            <p>
+              {d.after}. {d.note}
+            </p>
+          </header>
+          <div class={s.canvas} data-theme={d.id === 'field' ? 'light' : undefined}>
+            <Heads direction={d.id} />
+            <article class={s.page}>
+              {d.id === 'shelf' && <span class={s.disc} aria-hidden="true" />}
+              <Opening keyed={d.id === 'field'}>
+                {d.id === 'field' && (
+                  <span slot="note" class={s.hand} style="right: -8px; top: -36px">
+                    flip one a few times
+                    <svg viewBox="0 0 60 40" width="48" height="32" aria-hidden="true">
+                      <path d="M56 4 C 40 4, 20 12, 12 34" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                      <path d="M6 26 L 12 35 L 20 28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                  </span>
+                )}
+              </Opening>
+            </article>
+          </div>
+        </section>
+      ))
+    }
+  </div>
+</Base>

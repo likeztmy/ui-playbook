@@ -1,0 +1,81 @@
+---
+// Each direction's home page head, on the same title and line.
+import s from './Directions.module.scss';
+
+interface Props {
+  direction: 'workbench' | 'field' | 'shelf';
+}
+const { direction } = Astro.props;
+
+// Dials around the title, as on dialkit.dev: each one a real setting of the site.
+const chips = [
+  { label: 'Density', value: '1.00', x: '6%', y: '18%', r: -6 },
+  { label: 'Motion', value: 'Calm', x: '74%', y: '8%', r: 5 },
+  { label: 'Palette', value: 'Clay', x: '80%', y: '70%', r: -4 },
+  { label: 'Radius', value: '10', x: '2%', y: '74%', r: 4 },
+];
+
+// Covers for the shelf: a name in serif, each in one palette's accent.
+const covers = [
+  { name: 'Button', tone: 'blue', r: -5, n: 5 },
+  { name: 'Menu', tone: 'clay', r: 3, n: 8 },
+  { name: 'Switch', tone: 'moss', r: -2, n: 3 },
+  { name: 'Toast', tone: 'ink', r: 4, n: 3 },
+  { name: 'Tabs', tone: 'petrol', r: -3, n: 4 },
+];
+---
+
+{
+  direction === 'workbench' && (
+    <div class={s.bench}>
+      {chips.map((c) => (
+        <span class={s.chip} style={`left: ${c.x}; top: ${c.y}; rotate: ${c.r}deg`}>
+          <span>{c.label}</span>
+          <code>{c.value}</code>
+        </span>
+      ))}
+      <h1 class={s.benchTitle}>UI Playbook</h1>
+      <p class={s.benchLine}>The small details that make interface components feel right, each one shown side by side.</p>
+    </div>
+  )
+}
+
+{
+  direction === 'field' && (
+    <div class={s.field}>
+      <h1 class={s.fieldTitle}>UI Playbook</h1>
+      <p class={s.fieldLine}>The small details that make interface components feel right, each one shown side by side.</p>
+      <div class={s.fieldSearch}>
+        <span>Search the playbook</span>
+        <kbd>/</kbd>
+      </div>
+      <span class={s.hand} style="left: 62%; top: 56%">
+        <svg viewBox="0 0 60 40" width="48" height="32" aria-hidden="true">
+          <path d="M56 6 C 40 4, 20 14, 8 30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          <path d="M4 22 L 8 31 L 17 28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+        type a component, or a feeling
+      </span>
+    </div>
+  )
+}
+
+{
+  direction === 'shelf' && (
+    <div class={s.shelf}>
+      <div class={s.covers}>
+        {covers.map((c) => (
+          // A palette's tokens reach a [data-theme] inside it, so the cover sits one level in.
+          <span data-palette={c.tone === 'blue' ? undefined : c.tone}>
+            <span class={s.cover} data-theme="light" style={`rotate: ${c.r}deg`}>
+              {c.name}
+              <small>{c.n} details</small>
+            </span>
+          </span>
+        ))}
+      </div>
+      <h1 class={s.shelfTitle}>UI Playbook</h1>
+      <p class={s.shelfLine}>The small details that make interface components feel right, each one shown side by side.</p>
+    </div>
+  )
+}
