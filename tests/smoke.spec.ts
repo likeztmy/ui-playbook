@@ -1,8 +1,8 @@
 import { expect, test } from '@playwright/test';
 import { hydrateAll, ROUTES, watchErrors } from './helpers';
 
-// Every page: loads, hydrates every island, logs no errors, and never scrolls
-// sideways, at a desktop and a phone width, in both themes.
+// Every page: loads, hydrates every island, logs no errors, never scrolls sideways and
+// keeps every demo inside its stage, at a desktop and a phone width, in both themes.
 for (const route of ROUTES) {
   for (const width of [1280, 375]) {
     for (const scheme of ['light', 'dark'] as const) {
@@ -16,31 +16,44 @@ for (const route of ROUTES) {
         const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
         expect(overflow, 'horizontal overflow (px)').toBeLessThanOrEqual(0);
         expect(errors).toEqual([]);
+        // Nor does a reading page's demo outgrow its stage: a scene wider than its frame is cut off
+        // at the edge. Labs are working comparisons, not pages.
+        if (route.includes('/lab/')) return;
+        const outgrown = await page.evaluate(() =>
+          [...document.querySelectorAll('figure > [class*="_stage_"]')]
+            .filter((st) => st.scrollWidth > st.clientWidth + 1)
+            .map((st) => st.closest('astro-island')?.getAttribute('component-export')),
+        );
+        expect(outgrown, 'demos wider than their stage').toEqual([]);
       });
     }
   }
 }
 
-// The pilot's reading column, in each frame style: the title and every block under it start on one
-// left edge, and everything but prose (which stops at its measure) runs to one right edge, whatever
-// size its type is set in.
-for (const box of ['band', 'caption', 'plate', 'toggle']) {
+// Every reading page's column: the title and every block under it start on one left edge, and
+// everything but prose (which stops at its measure) runs to one right edge, whatever size its type
+// is set in. The pilot is checked in each of its frame styles.
+const READING = [
+  ...ROUTES.filter((r) => /^(\/zh)?\/(components|principles|practice)\/[a-z-]+$/.test(r)).map((r) => ({ route: r, box: '' })),
+  ...['band', 'caption', 'plate', 'toggle'].map((box) => ({ route: '/pilot/button', box })),
+];
+for (const { route, box } of READING) {
   for (const width of [1280, 375]) {
-    test(`/pilot/button one left edge, ${box} @${width}`, async ({ page }) => {
+    test(`${route}${box && ` ${box}`} one column @${width}`, async ({ page }) => {
       await page.setViewportSize({ width, height: 800 });
-      // The edges are in the served page; demos in the closed Reference never hydrate, so don't wait for them.
-      await page.goto(`/pilot/button?box=${box}`);
-      const lefts = await page.evaluate(() => {
+      // The edges are in the served page; demos in a closed Reference never hydrate, so don't wait for them.
+      await page.goto(box ? `${route}?box=${box}` : route);
+      const edges = await page.evaluate(() => {
         const body = document.querySelector('article > div')!;
         const blocks = [document.querySelector('h1')!, ...body.children].filter((e) => e.tagName !== 'SCRIPT');
-        const edges = (side: 'left' | 'right', els: Element[]) => [
+        const edge = (side: 'left' | 'right', els: Element[]) => [
           ...new Set(els.map((e) => Math.round(e.getBoundingClientRect()[side]))),
         ];
         const wide = blocks.filter((e) => !['P', 'UL', 'OL'].includes(e.tagName));
-        return { lefts: edges('left', blocks), rights: edges('right', wide) };
+        return { lefts: edge('left', blocks), rights: edge('right', wide) };
       });
-      expect(lefts.lefts, 'distinct left edges').toHaveLength(1);
-      expect(lefts.rights, 'distinct right edges of demos, code and headings').toHaveLength(1);
+      expect(edges.lefts, 'distinct left edges').toHaveLength(1);
+      expect(edges.rights, 'distinct right edges of demos, code, tables and headings').toHaveLength(1);
     });
   }
 }

@@ -113,6 +113,8 @@ export function SegmentedStates() {
 export function SegmentedThumb() {
   return (
     <Compare
+      beforeLabel="Segments fill in place"
+      afterLabel="One thumb slides across"
       height={120}
       before={<Own label="View" segments={VIEWS} initial="board" className={m.noThumb} />}
       after={<Own label="View" segments={VIEWS} initial="board" />}
@@ -131,6 +133,8 @@ const UNEVEN: Segment<'all' | 'mine' | 'review'>[] = [
 export function SegmentedWidths() {
   return (
     <Compare
+      beforeLabel="As wide as their words"
+      afterLabel="Equal widths"
       height={120}
       before={<Own label="Filter" segments={UNEVEN} initial="all" className={m.contentWidths} />}
       after={<Own label="Filter" segments={UNEVEN} initial="all" />}
@@ -147,10 +151,12 @@ export function SegmentedWidths() {
 export function SegmentedRaised() {
   return (
     <Compare
+      beforeLabel="Thumb in the accent"
+      afterLabel="Raised thumb in greys"
       height={120}
       before={<Own label="Theme" segments={THEMES} initial="dark" className={m.accentThumb} />}
       after={<Own label="Theme" segments={THEMES} initial="dark" />}
-      beforeNote="In accent blue, the chosen segment looks like a button to press."
+      beforeNote="Filled with the accent, the chosen segment looks like a button to press."
       afterNote={
         <>
           A raised thumb says “this one” in the control’s own greys. <a href="/principles/colour-means-one-thing">Colour means one thing</a>.
@@ -177,6 +183,8 @@ export function SegmentedAnatomy() {
 export function SegmentedContent() {
   return (
     <Compare
+      beforeLabel="Two icons and one word"
+      afterLabel="All icons, with tooltips"
       height={120}
       before={
         <Own

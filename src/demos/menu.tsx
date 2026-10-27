@@ -119,6 +119,8 @@ const STILL_HEIGHT = 360;
 export function MenuHighlight() {
   return (
     <Compare
+      beforeLabel="Highlight at 5%"
+      afterLabel="Highlight at 9%"
       height={STILL_HEIGHT}
       before={<StillMenu itemClass={m.faintHighlight} />}
       after={<StillMenu />}
@@ -131,6 +133,8 @@ export function MenuHighlight() {
 export function MenuDanger() {
   return (
     <Compare
+      beforeLabel="Grey highlight, red text"
+      afterLabel="Red highlight, red text"
       height={STILL_HEIGHT}
       before={<StillMenu initial="delete" itemClass={m.greyDanger} />}
       after={<StillMenu initial="delete" />}
@@ -143,6 +147,8 @@ export function MenuDanger() {
 export function MenuCheck() {
   return (
     <Compare
+      beforeLabel="Check after the label"
+      afterLabel="Check in a leading column"
       height={STILL_HEIGHT}
       before={<StillMenu itemClass={m.trailingCheck} />}
       after={<StillMenu />}
@@ -155,6 +161,8 @@ export function MenuCheck() {
 export function MenuShortcuts() {
   return (
     <Compare
+      beforeLabel="A box per key"
+      afterLabel="Bare symbols in a column"
       height={STILL_HEIGHT}
       before={<StillMenu capShortcuts />}
       after={<StillMenu />}
@@ -167,6 +175,8 @@ export function MenuShortcuts() {
 export function MenuMotion() {
   return (
     <Compare
+      beforeLabel="Grows from its centre"
+      afterLabel="Grows from the trigger"
       motion
       height={STILL_HEIGHT}
       before={
@@ -338,6 +348,8 @@ const withoutIcons = (groups: Group[], keep: string[]): Group[] =>
 export function MenuIconsAllOrNone() {
   return (
     <Compare
+      beforeLabel="Icons on two rows"
+      afterLabel="Icons on every row"
       height={STILL_HEIGHT}
       before={<StillMenu groups={withoutIcons(GROUPS, ['copy', 'delete'])} />}
       after={<StillMenu />}
@@ -364,6 +376,8 @@ export function MenuContextShortcuts() {
   });
   return (
     <Compare
+      beforeLabel="Six shortcuts"
+      afterLabel="No shortcuts"
       height={STILL_HEIGHT}
       before={<StillMenu groups={invented} initial="share" />}
       after={<StillMenu groups={CONTEXT} initial="share" />}
@@ -387,6 +401,8 @@ export function MenuUnavailable() {
   ];
   return (
     <Compare
+      beforeLabel="Two items dimmed"
+      afterLabel="Unavailable items left out"
       height={STILL_HEIGHT}
       before={<StillMenu groups={dimmed} initial="open" />}
       after={<StillMenu groups={CONTEXT} initial="open" />}

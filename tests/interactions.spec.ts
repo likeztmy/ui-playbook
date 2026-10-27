@@ -1,6 +1,10 @@
 import { expect, test, type Page } from '@playwright/test';
 import { hydrateAll, layoutProblems, ZH_PUBLISHED } from './helpers';
 
+// A pair's two frames, by the verdict on their label rather than its words.
+const BEFORE = 'figure:has(> [data-tone="bad"])';
+const AFTER = 'figure:has(> [data-tone="good"])';
+
 // Each test pins one behaviour a playbook page claims. If a page says it,
 // the component has to do it.
 
@@ -58,7 +62,7 @@ test('badge: the states are words, so the list filters by them', async ({ page }
 test('loading waits delay-loading, keeps its width, ignores presses', async ({ page }) => {
   await page.goto('/components/button');
   await hydrateAll(page);
-  const after = page.locator('figure').filter({ hasText: 'Requests sent' }).filter({ hasText: 'Waits 300 ms' });
+  const after = page.locator(AFTER).filter({ hasText: 'Requests sent' });
   const publish = after.getByRole('button', { name: /^Publish/ });
   await publish.scrollIntoViewIfNeeded();
   const meter = after.getByText(/^Requests sent:/);
@@ -271,7 +275,7 @@ test('task dialog: field focused, Enter submits, scrim cancels only when untouch
 test('input: checked on blur, not per keystroke; clears as you fix it', async ({ page }) => {
   await page.goto('/components/input');
   await hydrateAll(page);
-  const after = page.locator('figure').filter({ hasText: 'After' }).filter({ hasText: 'For delivery updates only.' }).first();
+  const after = page.locator(AFTER).filter({ hasText: 'For delivery updates only.' }).first();
   const email = after.getByRole('textbox', { name: 'Email' });
   await email.scrollIntoViewIfNeeded();
   await email.fill('zoe@laurent');
@@ -380,7 +384,11 @@ test('nothing shifts: earlier messages push the Before thread, the After keeps i
     const pane = threads.nth(n);
     await pane.scrollIntoViewIfNeeded();
     await pane.hover();
-    await page.mouse.wheel(0, -260);
+    // Scroll up as a reader does, a wheel at a time, to the screen before the top where loading starts.
+    for (let i = 0; i < 10 && (await pane.evaluate((p) => p.scrollTop > p.clientHeight)); i++) {
+      await page.mouse.wheel(0, -120);
+      await page.waitForTimeout(50);
+    }
     await expect(pane.getByText('Kickoff notes are in the doc.')).toHaveCount(1, { timeout: 2000 });
     await page.waitForTimeout(200);
   }
@@ -392,10 +400,10 @@ test('hover forgives: a diagonal to the submenu closes it in Before, holds in Af
   await page.goto('/principles/hover-forgives');
   await hydrateAll(page);
   for (const [side, holds] of [
-    ['Before', false],
-    ['After', true],
+    [BEFORE, false],
+    [AFTER, true],
   ] as const) {
-    const f = page.locator('figure').filter({ hasText: side }).filter({ hasText: 'Move to' }).first();
+    const f = page.locator(side).filter({ hasText: 'Move to' }).first();
     await f.scrollIntoViewIfNeeded();
     const move = (await f.getByText('Move to', { exact: true }).boundingBox())!;
     await page.mouse.move(move.x + 60, move.y + move.height / 2, { steps: 4 });
@@ -509,7 +517,7 @@ test('radio: one Tab stop on the chosen one, arrows move and choose, a choice re
   await expect(live.getByRole('textbox', { name: 'Width' }), 'the follow-up appears').toBeVisible();
 
   // The mistake: every circle is its own Tab stop.
-  const keys = page.locator('figure').filter({ hasText: 'Before' }).filter({ hasText: 'Overnight' }).nth(1);
+  const keys = page.locator(BEFORE).filter({ hasText: 'Overnight' }).nth(1);
   await keys.scrollIntoViewIfNeeded();
   await keys.getByRole('button').first().focus();
   await page.keyboard.press('Tab');
@@ -519,7 +527,7 @@ test('radio: one Tab stop on the chosen one, arrows move and choose, a choice re
 test('popover origin: slow motion marks where each panel grows from, without scrolling the page', async ({ page }) => {
   await page.goto('/components/popover');
   await hydrateAll(page);
-  const pair = page.locator('figure').filter({ hasText: 'Before' }).first().locator('..').locator('..');
+  const pair = page.locator(BEFORE).first().locator('..').locator('..');
   const [before, after] = [pair.locator('figure').nth(0), pair.locator('figure').nth(1)];
   await before.scrollIntoViewIfNeeded();
   await before.getByRole('button', { name: '0.1×' }).click();
@@ -750,7 +758,7 @@ test('card: opens as one target, More opens its own menu, only live cards lift',
 test('card: a refreshed number swaps in digit by digit', async ({ page }) => {
   await page.goto('/components/card');
   await hydrateAll(page);
-  const after = page.locator('figure').filter({ hasText: 'After' }).filter({ hasText: 'Conversion' });
+  const after = page.locator(AFTER).filter({ hasText: 'Conversion' });
   await after.scrollIntoViewIfNeeded();
   await after.getByRole('button', { name: 'Conversion' }).click();
   const digits = after.locator('[aria-hidden] > span');
@@ -785,7 +793,7 @@ test('table: header sorts and announces it, select-all goes mixed then all, name
   await all.click();
   await expect(live.getByText('5 files')).toBeVisible();
 
-  const wide = page.locator('figure').filter({ hasText: 'After' }).filter({ hasText: 'Comments' }).getByRole('table');
+  const wide = page.locator(AFTER).filter({ hasText: 'Comments' }).getByRole('table');
   await wide.scrollIntoViewIfNeeded();
   const name = wide.locator('tbody td').first();
   const before = (await name.boundingBox())!.x;
@@ -822,7 +830,7 @@ test('toast: Undo restores, plain ones leave after 4s, errors stay and are alert
   await error.locator('button[aria-label="Dismiss"]').click();
   await expect(error).toHaveCount(0);
 
-  const limit = page.locator('figure').filter({ hasText: 'After' }).filter({ hasText: 'Upload 6 photos' });
+  const limit = page.locator(AFTER).filter({ hasText: 'Upload 6 photos' });
   await limit.scrollIntoViewIfNeeded();
   await limit.getByRole('button', { name: 'Upload 6 photos' }).click();
   await expect(limit.locator('[data-type="success"]:has(button):not([data-limited])')).toHaveCount(3);

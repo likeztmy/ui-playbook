@@ -200,6 +200,8 @@ function EmailField({ mode = 'onBlur' }: { mode?: 'onBlur' | 'onChange' }) {
 export function InputValidation() {
   return (
     <Compare
+      beforeLabel="Checks on every keystroke"
+      afterLabel="Checks when focus leaves"
       height={160}
       before={
         <div className={s.formColumn}>
@@ -266,6 +268,8 @@ function ErrorAtField() {
 export function InputErrorPlace() {
   return (
     <Compare
+      beforeLabel="One faint line at the top"
+      afterLabel="Message under each field"
       height={240}
       before={<ErrorAtTop />}
       after={<ErrorAtField />}
@@ -297,6 +301,8 @@ function PlaceholderOnly() {
 export function InputLabel() {
   return (
     <Compare
+      beforeLabel="Placeholder as label"
+      afterLabel="Label above, example inside"
       height={160}
       before={<PlaceholderOnly />}
       after={
@@ -332,6 +338,8 @@ function CardFields({ sized }: { sized?: boolean }) {
 export function InputWidth() {
   return (
     <Compare
+      beforeLabel="Every field full width"
+      afterLabel="Sized to 16, 4 and 3 digits"
       height={240}
       before={<CardFields />}
       after={<CardFields sized />}

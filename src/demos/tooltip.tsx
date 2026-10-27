@@ -54,6 +54,8 @@ export function TooltipLive() {
 export function TooltipGrouping() {
   return (
     <Compare
+      beforeLabel="Each waits 500 ms"
+      afterLabel="One shared 500 ms delay"
       height={140}
       before={<Row grouped={false} />}
       after={<Row />}
@@ -79,6 +81,8 @@ function Still({ popupClass }: { popupClass?: string }) {
 export function TooltipInverse() {
   return (
     <Compare
+      beforeLabel="Raised surface, shadow"
+      afterLabel="Inverse ink, no shadow"
       height={160}
       before={<Still popupClass={m.raisedTip} />}
       after={<Still />}

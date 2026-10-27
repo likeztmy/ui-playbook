@@ -148,6 +148,9 @@ function SubmenuDemo({ aim }: { aim?: boolean }) {
 export function HoverSubmenu() {
   return (
     <Compare
+      stacked
+      beforeLabel="Closes on any row crossed"
+      afterLabel="Holds while heading to it"
       height={0}
       before={<SubmenuDemo />}
       after={<SubmenuDemo aim />}
@@ -217,6 +220,9 @@ function Tiles({ owner }: { owner: 'content' | 'card' }) {
 export function HoverReveal() {
   return (
     <Compare
+      stacked
+      beforeLabel="Content owns the hover"
+      afterLabel="Whole card owns the hover"
       height={0}
       before={<Tiles owner="content" />}
       after={<Tiles owner="card" />}

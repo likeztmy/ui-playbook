@@ -57,10 +57,12 @@ export function ToolbarAnatomy() {
 export function ToolbarPressed() {
   return (
     <Compare
+      beforeLabel="Current tool filled solid"
+      afterLabel="Current tool tinted"
       before={<DrawToolbar toolClass={m.solidPressed} />}
       after={<DrawToolbar />}
       beforeNote="The current tool is filled with the accent, the same weight as Create. Two things now shout for attention."
-      afterNote="A tint and a blue icon mark the mode; the one solid fill is left for Create. The tint is mixed a little toward the accent, so it is also a shade and still reads in greyscale and in dark mode."
+      afterNote="A tint and an accent icon mark the mode; the one solid fill is left for Create. The tint is mixed a little toward the accent, so it is also a shade and still reads in greyscale and in dark mode."
     />
   );
 }
@@ -87,6 +89,8 @@ export function ToolbarStates() {
 export function ToolbarTips() {
   return (
     <Compare
+      beforeLabel="Native title tooltip"
+      afterLabel="Tip with its shortcut"
       height={160}
       before={<DrawToolbar nativeTitle />}
       after={<DrawToolbar />}

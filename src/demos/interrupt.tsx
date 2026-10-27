@@ -71,6 +71,8 @@ function Carousel({ locked }: { locked?: boolean }) {
 export const InterruptQueue = localized(function InterruptQueue() {
   return (
     <Compare
+      beforeLabel="Drops clicks mid-slide"
+      afterLabel="Each click moves the target"
       height={0}
       motion
       before={<Carousel locked />}
@@ -133,6 +135,8 @@ function Sheet({ keyframes }: { keyframes?: boolean }) {
 export const InterruptKeyframes = localized(function InterruptKeyframes() {
   return (
     <Compare
+      beforeLabel="Two keyframe animations"
+      afterLabel="One reversible transition"
       height={0}
       motion
       before={<Sheet keyframes />}
@@ -278,6 +282,8 @@ function Swiper({ curve }: { curve?: boolean }) {
 export const InterruptVelocity = localized(function InterruptVelocity() {
   return (
     <Compare
+      beforeLabel="Timed ease from rest"
+      afterLabel="Spring carries the velocity"
       height={0}
       before={<Swiper curve />}
       after={<Swiper />}

@@ -384,8 +384,20 @@ type TweakProps = {
 
 /** A live stage beside a panel of dials. */
 export function Tweak({ stage, controls, readout, height = 280 }: TweakProps) {
+  // The dials start on the stage's top edge, below the label's row however many lines it takes.
+  const root = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => {
+    const el = root.current;
+    const caption = el?.querySelector(':scope > figure > figcaption');
+    if (!el || !caption) return;
+    const place = () => el.style.setProperty('--caption', `${caption.getBoundingClientRect().height}px`);
+    place();
+    const ro = new ResizeObserver(place);
+    ro.observe(caption);
+    return () => ro.disconnect();
+  }, []);
   return (
-    <div className={s.tweak}>
+    <div ref={root} className={s.tweak}>
       <Frame label={readout} height={height}>
         {stage}
       </Frame>

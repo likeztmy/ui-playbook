@@ -174,10 +174,12 @@ const AFTER_TEXT = {
 export function DialogWording() {
   return (
     <Compare
+      beforeLabel="Generic title, OK button"
+      afterLabel="Names project, Delete button"
       height={220}
       before={<Still title="Are you sure?" description="This action cannot be undone." actions={[['Cancel', 'secondary'], ['OK', 'primary']]} />}
       after={<Still {...AFTER_TEXT} actions={[['Cancel', 'secondary'], ['Delete project', 'danger-fill']]} />}
-      beforeNote="Sure of what? OK could mean “do it” or “understood”, and blue says go."
+      beforeNote="Sure of what? OK could mean “do it” or “understood”, and the accent says go."
       afterNote="The title is the decision with its object; the button repeats the verb, so the answer reads without the question."
     />
   );
@@ -186,6 +188,8 @@ export function DialogWording() {
 export function DialogFocus() {
   return (
     <Compare
+      beforeLabel="Focus on Delete"
+      afterLabel="Focus on Cancel"
       height={140}
       before={<DeleteFlow focus="delete" />}
       after={<DeleteFlow />}
@@ -203,6 +207,8 @@ export function DialogFocus() {
 export function DialogMotion() {
   return (
     <Compare
+      beforeLabel="Drops in from 50 px above"
+      afterLabel="Grows in place"
       height={140}
       before={<DeleteFlow popupClass={m.dropIn} />}
       after={<DeleteFlow />}

@@ -132,6 +132,8 @@ function ConfirmFirst() {
 export function ToastUndo() {
   return (
     <Compare
+      beforeLabel="Asks before deleting"
+      afterLabel="Deletes, offers Undo"
       height={260}
       before={<ConfirmFirst />}
       after={
@@ -153,6 +155,8 @@ export function ToastUndo() {
 export function ToastTone() {
   return (
     <Compare
+      beforeLabel="Filled with colour"
+      afterLabel="Neutral, with an icon"
       height={240}
       before={
         <ToastStage className={m.filledToasts}>
@@ -193,6 +197,8 @@ export function ToastLimit() {
   };
   return (
     <Compare
+      beforeLabel="All six stack up"
+      afterLabel="Three at most, oldest out"
       height={340}
       before={
         <ToastStage limit={10}>

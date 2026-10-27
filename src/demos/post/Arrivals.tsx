@@ -56,6 +56,8 @@ function Arrivals({ push }: { push?: boolean }) {
 export function MailArrivals() {
   return (
     <Compare
+      beforeLabel="New mail pushes rows down"
+      afterLabel="New mail waits behind a pill"
       height={0}
       before={<Arrivals push />}
       after={<Arrivals />}

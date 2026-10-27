@@ -1,6 +1,7 @@
+@use '../styles/reading';
+
 .page {
-  max-width: 880px;
-  margin: 0 auto;
+  @include reading.page;
 }
 
 .back {
@@ -12,6 +13,8 @@
   padding: 0 var(--space-2);
   border-radius: var(--radius-sm);
   color: var(--ink-muted);
+  font-size: 14px;
+  line-height: 20px;
   font-weight: 500;
   transition:
     color var(--duration-fast) var(--ease-out),
@@ -34,109 +37,23 @@
 }
 
 .head {
-  margin: var(--space-6) 0 var(--space-12);
+  margin: var(--space-8) 0 var(--space-12);
 }
 
 .kind {
-  margin: 0 0 var(--space-1);
-  font-size: 12px;
-  line-height: 16px;
-  font-weight: 500;
-  letter-spacing: 0.01em;
-  color: var(--ink-muted);
+  @include reading.kind;
 }
 
 .title {
-  margin: 0;
-  font-size: 32px;
-  line-height: 40px;
-  font-weight: 600;
-  letter-spacing: -0.025em;
+  @include reading.title;
 }
 
 .summary {
-  max-width: var(--prose-max);
-  margin: var(--space-2) 0 0;
-  font-size: 15px;
-  line-height: 22px;
-  color: var(--ink-muted);
+  @include reading.lede;
 }
 
-// MDX prose. Sections are h2; each detail is an h3 with its demo below.
-// Element rules reach only the prose's own children (`> p`), never the
-// demos' insides, so a demo's own p or ul keeps its own styles.
 .body {
-  font-size: 15px;
-  line-height: 24px;
-
-  // Chinese sets denser than Latin at the same size; give it more lead.
-  &:lang(zh) {
-    line-height: 26px;
-  }
-
-  > :global(h2) {
-    margin: var(--space-12) 0 var(--space-4);
-    padding-bottom: var(--space-2);
-    border-bottom: 1px solid var(--line);
-    font-size: 18px;
-    line-height: 26px;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-  }
-
-  > :global(h2:first-child) {
-    margin-top: 0;
-  }
-
-  > :global(h3) {
-    margin: var(--space-8) 0 var(--space-2);
-    font-size: 15px;
-    line-height: 22px;
-    font-weight: 600;
-  }
-
-  // About 73 characters a line, measured in em: a character of Geist averages 0.449em.
-  > :global(p),
-  > :global(ul) {
-    max-width: var(--prose-max);
-    margin: 0 0 var(--space-4);
-  }
-
-  > :global(ul) {
-    padding-left: var(--space-6);
-  }
-
-  > :global(ul > li + li) {
-    margin-top: var(--space-1);
-  }
-
-  // Demos are islands; give each one the same gap a paragraph gets.
-  > :global(astro-island) {
-    display: block;
-    margin: 0 0 var(--space-4);
-  }
-
-  :global {
-    :not(pre) > code {
-      padding: 1px var(--space-1);
-      border-radius: var(--radius-xs);
-      background: var(--surface-sunken);
-      font-size: 13px;
-    }
-
-    strong {
-      font-weight: 600;
-    }
-
-    // The Anatomy table ends in a value column (Part · Token · Value): align
-    // it right, in one column. Tables that compare text stay left.
-    h2#anatomy + table th:last-child,
-    h2#anatomy + table td:last-child {
-      padding-right: 0;
-      text-align: right;
-      font-variant-numeric: tabular-nums;
-    }
-  }
+  @include reading.body;
 }
 
 // Previous on the left, Next on the right, as documentation sites do.
@@ -144,7 +61,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--space-4);
-  margin-top: var(--space-12);
+  margin-top: 72px;
 
   @media (max-width: 640px) {
     grid-template-columns: 1fr;
@@ -192,33 +109,4 @@
   font-size: 15px;
   line-height: 22px;
   font-weight: 600;
-}
-
-// Only the prose's own tables: component tables inside demos keep theirs.
-.body > :global(table) {
-  width: 100%;
-  margin: 0 0 var(--space-6);
-  border-collapse: collapse;
-  font-size: 14px;
-  line-height: 20px;
-
-  :global(th) {
-    font-size: 12px;
-    line-height: 16px;
-    font-weight: 500;
-    color: var(--ink-muted);
-    text-align: left;
-  }
-
-  // A token is one word: it moves to the next line whole rather than breaking at its hyphen.
-  :global(code) {
-    white-space: nowrap;
-  }
-
-  :global(th),
-  :global(td) {
-    padding: var(--space-2) var(--space-3) var(--space-2) 0;
-    border-bottom: 1px solid var(--line);
-    vertical-align: top;
-  }
 }

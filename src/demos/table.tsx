@@ -129,6 +129,8 @@ export function TableNumbers() {
   return (
     <Compare
       stacked
+      beforeLabel="Sizes left-aligned"
+      afterLabel="Sizes right-aligned, tabular"
       height={260}
       before={<Files columns={leftAligned} sortable={false} className={m.proportionalTable} />}
       after={<Files sortable={false} />}
@@ -142,6 +144,8 @@ export function TableLines() {
   return (
     <Compare
       stacked
+      beforeLabel="Zebra stripes"
+      afterLabel="One line between rows"
       height={260}
       before={<Files sortable={false} className={m.zebraTable} />}
       after={<Files sortable={false} />}
@@ -155,6 +159,8 @@ export function TableArrows() {
   return (
     <Compare
       stacked
+      beforeLabel="Arrows on every header"
+      afterLabel="Arrow on the sorted column"
       height={260}
       before={<Files className={m.allArrows} />}
       after={<Files />}
@@ -169,6 +175,8 @@ export function TableMuted() {
   return (
     <Compare
       stacked
+      beforeLabel="Every column in ink"
+      afterLabel="Secondary columns muted"
       height={260}
       before={<Files columns={allInk} sortable={false} />}
       after={<Files sortable={false} />}
@@ -182,6 +190,8 @@ export function TableScroll() {
   return (
     <Compare
       stacked
+      beforeLabel="Names scroll away"
+      afterLabel="Name column pinned"
       height={280}
       before={<Files columns={WIDE} sortable={false} className={cx(s.narrowTable, m.nothingPinned)} />}
       after={<Files columns={WIDE} sortable={false} stickyFirst className={s.narrowTable} />}

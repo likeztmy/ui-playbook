@@ -108,6 +108,9 @@ export function TabsStates() {
 export function TabsWeight() {
   return (
     <Compare
+      stacked
+      beforeLabel="Current tab goes bold"
+      afterLabel="Weight 500, colour only"
       height={120}
       before={<ProjectTabs panels={false} tabClass={m.boldActiveTab} />}
       after={<ProjectTabs panels={false} />}
@@ -120,6 +123,9 @@ export function TabsWeight() {
 export function TabsIndicator() {
   return (
     <Compare
+      stacked
+      beforeLabel="Current tab in the accent"
+      afterLabel="Current tab in ink"
       height={120}
       before={<ProjectTabs panels={false} listClass={m.accentTabs} />}
       after={<ProjectTabs panels={false} />}
@@ -140,6 +146,9 @@ export function TabsIndicator() {
 export function TabsOverflow() {
   return (
     <Compare
+      stacked
+      beforeLabel="Wraps onto more rows"
+      afterLabel="One row that scrolls"
       height={140}
       before={<ProjectTabs tabs={MANY} panels={false} listClass={cx(s.narrowTabs, m.wrapTabs)} />}
       after={<ProjectTabs tabs={MANY} panels={false} listClass={s.narrowTabs} />}
@@ -152,6 +161,9 @@ export function TabsOverflow() {
 export function TabsCounts() {
   return (
     <Compare
+      stacked
+      beforeLabel="Count in parentheses"
+      afterLabel="Count in a quiet chip"
       height={120}
       before={<ProjectTabs panels={false} parenCounts />}
       after={<ProjectTabs panels={false} />}

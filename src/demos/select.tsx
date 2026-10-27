@@ -160,6 +160,8 @@ function Still({ itemClass, hot = 'commenter' }: { itemClass?: string; hot?: str
 export function SelectCurrent() {
   return (
     <Compare
+      beforeLabel="Two fills"
+      afterLabel="One fill, plus a check"
       height={260}
       before={<Still itemClass={m.filledSelected} />}
       after={<Still />}
@@ -176,6 +178,8 @@ export function SelectCurrent() {
 export function SelectAlign() {
   return (
     <Compare
+      beforeLabel="Drops below like a menu"
+      afterLabel="Opens over the trigger"
       height={220}
       before={<Select label="Role" options={ROLES} defaultValue="commenter" alignItemWithTrigger={false} />}
       after={<Select label="Role" options={ROLES} defaultValue="commenter" />}
@@ -188,6 +192,8 @@ export function SelectAlign() {
 export function SelectDefault() {
   return (
     <Compare
+      beforeLabel="“Select…” placeholder"
+      afterLabel="Editor already chosen"
       height={160}
       before={<Select label="Role" options={ROLES} placeholder="Select…" />}
       after={<Select label="Role" options={ROLES} defaultValue="editor" />}
@@ -206,6 +212,8 @@ export function SelectDefault() {
 export function SelectChevron() {
   return (
     <Compare
+      beforeLabel="One down chevron"
+      afterLabel="Up and down chevrons"
       height={160}
       before={<Select label="Role" options={ROLES} defaultValue="editor" chevron="down" />}
       after={<Select label="Role" options={ROLES} defaultValue="editor" />}

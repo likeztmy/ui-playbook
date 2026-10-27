@@ -100,17 +100,19 @@ export function ColourOneBlue() {
   return (
     <Compare
       stacked
+      beforeLabel="Accent on every current state"
+      afterLabel="Accent only on Publish"
       height={0}
       before={<Editor loud />}
       after={<Editor />}
       beforeNote={
         <>
-          Every “current” is blue, so the one blue that means “do this now” has to be read for, not seen. A single colour pops out of a
+          Every “current” wears the accent, so the one fill that means “do this now” has to be read for, not seen. A single colour pops out of a
           scene only while it’s the only one; mixed in with others, finding it becomes a search item by item (
           <a href="https://doi.org/10.1109/TVCG.2011.127">Healey and Enns 2012</a>).
         </>
       }
-      afterNote="Current states speak in shape and shade: an ink bar, a raised segment, a pale tint. The one solid blue is Publish."
+      afterNote="Current states speak in shape and shade: an ink bar, a raised segment, a pale tint. Publish is the only solid accent."
     />
   );
 }
@@ -151,6 +153,8 @@ function HoverList({ hoverTint }: { hoverTint?: boolean }) {
 export function ColourHover() {
   return (
     <Compare
+      beforeLabel="Hover in the selection tint"
+      afterLabel="Hover in neutral grey"
       height={200}
       before={<HoverList hoverTint />}
       after={<HoverList />}
@@ -187,6 +191,8 @@ function Sidebar({ redCounts }: { redCounts?: boolean }) {
 export function ColourRed() {
   return (
     <Compare
+      beforeLabel="Counts in red too"
+      afterLabel="Red only for Payment failed"
       height={200}
       before={<Sidebar redCounts />}
       after={<Sidebar />}
@@ -196,7 +202,7 @@ export function ColourRed() {
   );
 }
 
-/** A plan summary where blue may mean more than “goes somewhere”. */
+/** A plan summary where the accent may mean more than “goes somewhere”. */
 function Plan({ blueText }: { blueText?: boolean }) {
   const em = cx(blueText && m.blueText);
   return (
@@ -220,11 +226,13 @@ function Plan({ blueText }: { blueText?: boolean }) {
 export function ColourLinks() {
   return (
     <Compare
+      beforeLabel="Accent on plan details"
+      afterLabel="Accent only on Manage billing"
       height={160}
       before={<Plan blueText />}
       after={<Plan />}
-      beforeNote="Blue text reads as a link, so the plan name and the numbers get clicked and do nothing."
-      afterNote="Only Manage billing is blue, and it’s the only thing here that goes somewhere."
+      beforeNote="Accent text reads as a link, so the plan name and the numbers get clicked and do nothing."
+      afterNote="Only Manage billing wears the accent, and it’s the only thing here that goes somewhere."
     />
   );
 }

@@ -5,6 +5,8 @@ import { Tasks } from './Tasks';
 export function NoveltyCelebrate() {
   return (
     <Compare
+      beforeLabel="Confetti on every tick"
+      afterLabel="Confetti on the last tick"
       height={380}
       before={<Tasks every />}
       after={<Tasks />}

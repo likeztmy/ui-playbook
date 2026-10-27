@@ -128,6 +128,8 @@ const LIST_HEIGHT = 380;
 export function ComboboxForgiving() {
   return (
     <Compare
+      beforeLabel="Exact match, cities only"
+      afterLabel="Loose match, countries too"
       height={LIST_HEIGHT}
       before={<Combobox label="Time zone" items={CITIES} placeholder="Search cities" strict empty={cityEmpty} />}
       after={<Combobox label="Time zone" items={CITIES} placeholder="Search cities or countries" empty={cityEmpty} />}
@@ -140,6 +142,8 @@ export function ComboboxForgiving() {
 export function ComboboxEnter() {
   return (
     <Compare
+      beforeLabel="Nothing highlighted"
+      afterLabel="First match highlighted"
       height={LIST_HEIGHT}
       before={<Combobox label="Time zone" items={CITIES} placeholder="Search cities" autoHighlight={false} empty={cityEmpty} />}
       after={<Combobox label="Time zone" items={CITIES} placeholder="Search cities" empty={cityEmpty} />}
@@ -152,6 +156,8 @@ export function ComboboxEnter() {
 export function ComboboxMatch() {
   return (
     <Compare
+      beforeLabel="Plain rows"
+      afterLabel="Matched letters bolder"
       height={LIST_HEIGHT}
       before={<Combobox label="Time zone" items={CITIES} placeholder="Search cities" showMatch={false} empty={cityEmpty} />}
       after={<Combobox label="Time zone" items={CITIES} placeholder="Search cities" empty={cityEmpty} />}
@@ -164,6 +170,8 @@ export function ComboboxMatch() {
 export function ComboboxEmpty() {
   return (
     <Compare
+      beforeLabel="“No results”"
+      afterLabel="Repeats query, names next step"
       height={240}
       before={<Combobox label="Time zone" items={CITIES} placeholder="Search cities" empty={() => 'No results'} />}
       after={<Combobox label="Time zone" items={CITIES} placeholder="Search cities" empty={cityEmpty} />}

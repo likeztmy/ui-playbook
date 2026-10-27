@@ -47,6 +47,8 @@ function Files({ everywhere }: { everywhere?: boolean }) {
 export function ShadowOverlap() {
   return (
     <Compare
+      beforeLabel="Shadows on everything"
+      afterLabel="Shadow on the menu only"
       height={0}
       before={<Files everywhere />}
       after={<Files />}

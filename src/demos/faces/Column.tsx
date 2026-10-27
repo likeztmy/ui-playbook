@@ -46,6 +46,8 @@ export function FacesColumn() {
   return (
     <Compare
       stacked
+      beforeLabel="Checkbox replaces the face"
+      afterLabel="Checkbox in its own column"
       height={0}
       before={<Ticking before />}
       after={<Ticking />}

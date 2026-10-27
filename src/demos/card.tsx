@@ -159,6 +159,8 @@ export function CardAnatomy() {
 export function CardHonest() {
   return (
     <Compare
+      beforeLabel="Static card lifts on hover"
+      afterLabel="Static card stays still"
       height={240}
       before={<Card className={cx(s.cardOne, m.fakeLift)} stage={<Thumb art="type" />} title="Type scale" subtitle="A specimen" />}
       after={<Card className={s.cardOne} stage={<Thumb art="type" />} title="Type scale" subtitle="A specimen" />}
@@ -171,6 +173,8 @@ export function CardHonest() {
 export function CardLift() {
   return (
     <Compare
+      beforeLabel="Up to 1.05, heavy shadow"
+      afterLabel="Up to 1.01, small shadow"
       height={240}
       before={<Card className={cx(s.cardOne, m.bigLift)} stage={<Thumb art="phone" />} title="Onboarding" subtitle="Edited 3 days ago" onOpen={() => {}} />}
       after={<Card className={s.cardOne} stage={<Thumb art="phone" />} title="Onboarding" subtitle="Edited 3 days ago" onOpen={() => {}} />}
@@ -190,6 +194,8 @@ export function CardStagger() {
   );
   return (
     <Compare
+      beforeLabel="120 ms apart, uncapped"
+      afterLabel="30 ms apart, capped at 8"
       height={300}
       before={<Replayable>{(n) => grid(n, m.slowStagger)}</Replayable>}
       after={<Replayable>{(n) => grid(n)}</Replayable>}
@@ -217,6 +223,8 @@ function NumberCard({ animated }: { animated: boolean }) {
 export function CardNumber() {
   return (
     <Compare
+      beforeLabel="Swaps in one frame"
+      afterLabel="Digits rise, 30 ms apart"
       height={240}
       before={<NumberCard animated={false} />}
       after={<NumberCard animated />}

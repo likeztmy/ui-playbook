@@ -162,6 +162,8 @@ export function PopoverVariants() {
 export function PopoverOrigin() {
   return (
     <Compare
+      beforeLabel="Grows from its centre"
+      afterLabel="Grows from the trigger"
       motion
       height={300}
       before={
@@ -183,6 +185,8 @@ export function PopoverOrigin() {
 export function PopoverFocus() {
   return (
     <Compare
+      beforeLabel="Focus stays on the page"
+      afterLabel="Focus to field and back"
       height={300}
       before={
         <div className={s.top}>
@@ -235,6 +239,8 @@ function ViewBar({ buttonClass }: { buttonClass?: string }) {
 export function PopoverTrigger() {
   return (
     <Compare
+      beforeLabel="Trigger unchanged when open"
+      afterLabel="Trigger stays filled"
       height={240}
       before={
         <div className={s.top}>
@@ -255,6 +261,8 @@ export function PopoverTrigger() {
 export function PopoverDraft() {
   return (
     <Compare
+      beforeLabel="Closing clears the draft"
+      afterLabel="Closing keeps the draft"
       height={300}
       before={
         <div className={s.top}>

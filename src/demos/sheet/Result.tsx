@@ -5,6 +5,8 @@ import { Walk } from './Walk';
 export function SheetResult() {
   return (
     <Compare
+      beforeLabel="Sheet stays over the map"
+      afterLabel="Sheet lowers to half"
       height={0}
       before={<Walk tall stop />}
       after={<Walk tall stop reveal />}

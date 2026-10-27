@@ -119,6 +119,8 @@ function BoxOnly({ label, defaultChecked }: { label: string; defaultChecked?: bo
 export function CheckboxTarget() {
   return (
     <Compare
+      beforeLabel="Only the 16 px box clicks"
+      afterLabel="The whole row clicks"
       height={140}
       before={
         <div className={s.leftStack}>
@@ -172,6 +174,8 @@ function NaiveParent() {
 export function CheckboxMixed() {
   return (
     <Compare
+      beforeLabel="Parent ticked if any is"
+      afterLabel="Parent dashed if some are"
       height={220}
       before={<NaiveParent />}
       after={<Notifications />}

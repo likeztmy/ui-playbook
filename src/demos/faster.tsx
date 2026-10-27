@@ -146,6 +146,8 @@ function Triage({ expose }: { expose?: boolean }) {
 export const FasterExpose = localized(function FasterExpose() {
   return (
     <Compare
+      beforeLabel="Keys one tooltip at a time"
+      afterLabel="Modifier shows every key"
       height={0}
       before={<Triage />}
       after={<Triage expose />}

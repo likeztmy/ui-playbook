@@ -86,6 +86,8 @@ export function ConcentricPreview() {
 export function SameRadius() {
   return (
     <Compare
+      beforeLabel="Both corners 20 px"
+      afterLabel="Inner 20 − 10 = 10 px"
       before={<Nest outer={20} inner={20} pad={10} border={0} />}
       after={<Nest outer={20} inner={10} pad={10} border={0} />}
       beforeNote="Both corners 20px. The gap is 10px along the edges but swells at every corner: the inner shape looks bloated."
@@ -97,6 +99,9 @@ export function SameRadius() {
 export function BorderCounts() {
   return (
     <Compare
+      stacked
+      beforeLabel="Key corner 10 px"
+      afterLabel="Key corner 10 − 3 − 1 = 6 px"
       before={
         <div className={s.magnify}>
           <div className={s.field}>

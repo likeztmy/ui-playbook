@@ -117,6 +117,8 @@ function ClassicSlider({ spec }: { spec: Spec }) {
 export function SliderRow() {
   return (
     <Compare
+      beforeLabel="4 px track, 16 px knob"
+      afterLabel="The whole 32 px row drags"
       height={150}
       before={
         <div className={s.sliderStack}>
@@ -139,6 +141,8 @@ export function SliderRow() {
 export function SliderFollow() {
   return (
     <Compare
+      beforeLabel="Eases 400 ms behind the drag"
+      afterLabel="Follows the pointer exactly"
       height={120}
       before={<Own spec={OPACITY} className={cx(s.sliderRow, m.laggySlider)} />}
       after={<Own spec={OPACITY} className={s.sliderRow} />}
@@ -151,6 +155,8 @@ export function SliderFollow() {
 export function SliderEdge() {
   return (
     <Compare
+      beforeLabel="Stops dead at the end"
+      afterLabel="Stretches up to 10 px"
       height={120}
       before={<Own spec={OPACITY} className={cx(s.sliderRow, m.rigidSlider)} />}
       after={<Own spec={OPACITY} className={s.sliderRow} />}
@@ -163,6 +169,8 @@ export function SliderEdge() {
 export function SliderDodge() {
   return (
     <Compare
+      beforeLabel="Handle over the value"
+      afterLabel="Handle fades to 10%"
       height={120}
       before={<Own spec={OPACITY} value={96} pin="drag" className={cx(s.sliderRow, m.noDodge)} />}
       after={<Own spec={OPACITY} value={96} pin="drag" className={s.sliderRow} />}
@@ -175,6 +183,8 @@ export function SliderDodge() {
 export function SliderDigits() {
   return (
     <Compare
+      beforeLabel="Proportional digits"
+      afterLabel="Tabular digits"
       height={120}
       before={<Own spec={BOUNCE} className={cx(s.sliderRow, m.proportionalValue)} />}
       after={<Own spec={BOUNCE} className={s.sliderRow} />}

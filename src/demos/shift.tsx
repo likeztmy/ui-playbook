@@ -246,6 +246,8 @@ export const ShiftSearch = localized(function ShiftSearch() {
   const zh = useLang() === 'zh';
   return (
     <Compare
+      beforeLabel="Pages land above Recent"
+      afterLabel="Pages land below Recent"
       height={0}
       before={<DocSearch />}
       after={<DocSearch keep />}
@@ -301,6 +303,8 @@ export const ShiftBold = localized(function ShiftBold() {
   const zh = useLang() === 'zh';
   return (
     <Compare
+      beforeLabel="Bold widens the link"
+      afterLabel="Width reserved for bold"
       height={0}
       before={<BoldNav />}
       after={<BoldNav reserve />}
@@ -376,6 +380,8 @@ export const ShiftScrollbar = localized(function ShiftScrollbar() {
   const zh = useLang() === 'zh';
   return (
     <Compare
+      beforeLabel="Gutter comes and goes"
+      afterLabel="Gutter always kept"
       height={0}
       before={<Members />}
       after={<Members stable />}
@@ -478,6 +484,8 @@ export const ShiftAnchor = localized(function ShiftAnchor() {
   const zh = useLang() === 'zh';
   return (
     <Compare
+      beforeLabel="Scroll anchoring off"
+      afterLabel="Scroll anchoring on"
       height={0}
       before={<Thread />}
       after={<Thread anchored />}
@@ -533,6 +541,8 @@ export const ShiftFont = localized(function ShiftFont() {
   const zh = useLang() === 'zh';
   return (
     <Compare
+      beforeLabel="Plain Arial fallback"
+      afterLabel="Arial sized to Geist"
       height={0}
       before={<FontSwap />}
       after={<FontSwap matched />}

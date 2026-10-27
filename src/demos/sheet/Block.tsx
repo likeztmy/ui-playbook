@@ -5,6 +5,8 @@ import { Walk } from './Walk';
 export function SheetBlock() {
   return (
     <Compare
+      beforeLabel="Modal at every height"
+      afterLabel="Standard up to half height"
       height={0}
       before={<Walk kind="modal" />}
       after={<Walk />}

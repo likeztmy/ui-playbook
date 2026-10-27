@@ -376,15 +376,17 @@
   align-items: center;
   gap: var(--space-1);
   min-width: 0;
+  min-height: var(--control-sm);
 }
 
 .caption {
   display: flex;
-  align-items: center;
+  // Two lines of label keep the tools on the first.
+  align-items: flex-start;
   gap: var(--space-1);
   justify-content: space-between;
-  // One height whatever it holds, a verdict, a code readout or the tools, so what sits beside it can match.
-  height: var(--control-sm);
+  // A pair's labels are short and keep to one row; a scene's name or a readout may run to two.
+  min-height: var(--control-sm);
   margin: 0 0 var(--space-2);
   font-size: 13px;
   line-height: 18px;
@@ -470,5 +472,5 @@
 
 // A label above the stage pushes it down a line; the dials beside it start on the stage's top edge.
 .tweak:has(> .frame > .caption) > .panel {
-  margin-top: calc(var(--control-sm) + var(--space-2));
+  margin-top: calc(var(--caption, var(--control-sm)) + var(--space-2));
 }

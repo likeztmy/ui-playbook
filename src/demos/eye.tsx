@@ -69,6 +69,8 @@ export function EyeChange() {
   return (
     <Compare
       stacked
+      beforeLabel="Count changes in the corner"
+      afterLabel="Button says “Added”"
       height={0}
       before={<Shop />}
       after={<Shop near />}
@@ -132,6 +134,8 @@ function Pricing({ cut }: { cut?: boolean }) {
 export function EyeFloor() {
   return (
     <Compare
+      beforeLabel="First screen ends at the band"
+      afterLabel="Fold cuts through the plans"
       height={0}
       before={<Pricing />}
       after={<Pricing cut />}
@@ -198,6 +202,8 @@ function Billing({ inline }: { inline?: boolean }) {
 export function EyeBanner() {
   return (
     <Compare
+      beforeLabel="Promo-style band on top"
+      afterLabel="Note beside the card"
       height={0}
       before={<Billing />}
       after={<Billing inline />}
@@ -235,6 +241,8 @@ function Contact({ tight }: { tight?: boolean }) {
 export function EyeProximity() {
   return (
     <Compare
+      beforeLabel="12 between everything"
+      afterLabel="4 within, 20 between"
       height={0}
       before={<Contact />}
       after={<Contact tight />}
@@ -270,6 +278,8 @@ function HelpNav({ labels }: { labels: string[] }) {
 export function EyeScent() {
   return (
     <Compare
+      beforeLabel="Resources, Solutions, More"
+      afterLabel="Invoices and refunds, API"
       height={0}
       before={<HelpNav labels={VAGUE} />}
       after={<HelpNav labels={SPECIFIC} />}

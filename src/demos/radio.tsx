@@ -115,6 +115,8 @@ const SHIPPING = [
 export function RadioDefault() {
   return (
     <Compare
+      beforeLabel="Nothing chosen"
+      afterLabel="Standard already chosen"
       height={200}
       before={
         <RadioGroup label="Shipping">
@@ -165,6 +167,8 @@ function ButtonRadios() {
 export function RadioKeys() {
   return (
     <Compare
+      beforeLabel="Three buttons, three Tab stops"
+      afterLabel="One group, one Tab stop"
       height={160}
       before={<ButtonRadios />}
       after={
@@ -189,6 +193,8 @@ const FIT = ['Fit to width', 'Fill the frame', 'Actual size', 'Tile'];
 export function RadioColumn() {
   return (
     <Compare
+      beforeLabel="Inline, 16px apart"
+      afterLabel="One column"
       height={160}
       before={
         <RadioGroup label="Image" defaultValue={FIT[0]} inline className={cx(s.narrowRow, m.tightRadios)}>
@@ -232,6 +238,8 @@ function SquareChoice() {
 export function RadioShape() {
   return (
     <Compare
+      beforeLabel="Square checkboxes"
+      afterLabel="Round radios"
       height={160}
       before={<SquareChoice />}
       after={

@@ -5,6 +5,8 @@ import { BRIEF, FLOURISH, Inbox } from './Inbox';
 export function NoveltyArchive() {
   return (
     <Compare
+      beforeLabel="450 ms flight, press waits"
+      afterLabel="120 ms close-up, no wait"
       height={380}
       before={<Inbox flourish />}
       after={<Inbox />}

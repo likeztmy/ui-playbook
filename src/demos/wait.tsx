@@ -85,6 +85,8 @@ function Refresh({ patient }: { patient?: boolean }) {
 export const WaitFlash = localized(function WaitFlash() {
   return (
     <Compare
+      beforeLabel="Spinner at once"
+      afterLabel="Waits 300 ms, stays 500 ms"
       height={0}
       before={<Refresh />}
       after={<Refresh patient />}
@@ -180,6 +182,8 @@ function Stall({ early }: { early?: boolean }) {
 export const WaitStall = localized(function WaitStall() {
   return (
     <Compare
+      beforeLabel="Stalls 1 s at 90%"
+      afterLabel="Stalls 1 s at the start"
       height={0}
       before={<Stall />}
       after={<Stall early />}
@@ -222,6 +226,8 @@ function Ribbed({ ribbed }: { ribbed?: boolean }) {
 export const WaitRibbing = localized(function WaitRibbing() {
   return (
     <Compare
+      beforeLabel="Solid fill"
+      afterLabel="Stripes drifting backwards"
       height={0}
       before={<Ribbed />}
       after={<Ribbed ribbed />}
@@ -301,6 +307,8 @@ function FlightSearch({ open }: { open?: boolean }) {
 export const WaitLabor = localized(function WaitLabor() {
   return (
     <Compare
+      beforeLabel="“Searching…” for 3.6 s"
+      afterLabel="Names each airline as asked"
       height={0}
       before={<FlightSearch />}
       after={<FlightSearch open />}
@@ -424,6 +432,8 @@ function ProfilePage({ right }: { right?: boolean }) {
 export const WaitSkeleton = localized(function WaitSkeleton() {
   return (
     <Compare
+      beforeLabel="Page spinner, list bones"
+      afterLabel="Page skeleton, list spinner"
       height={0}
       before={<ProfilePage />}
       after={<ProfilePage right />}
@@ -494,6 +504,8 @@ function Stars({ optimistic }: { optimistic?: boolean }) {
 export const WaitOptimistic = localized(function WaitOptimistic() {
   return (
     <Compare
+      beforeLabel="Waits 0.9 s for the server"
+      afterLabel="Stars at once, rolls back"
       height={0}
       before={<Stars />}
       after={<Stars optimistic />}

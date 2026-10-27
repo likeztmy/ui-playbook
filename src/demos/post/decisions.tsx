@@ -38,7 +38,7 @@ export const DECISIONS: Decision[] = [
     spot: 'colour',
     text: (
       <>
-        Unread is a blue dot on the row and a heavier line; blue means nothing else in the list.{' '}
+        Unread is an accent dot on the row and a heavier line; the accent means nothing else in the list.{' '}
         <a href="/principles/colour-means-one-thing">Colour means one thing</a>
       </>
     ),

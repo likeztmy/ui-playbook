@@ -57,6 +57,8 @@ function Sections({ above, scale = 1, show, count }: { above: number; scale?: nu
 export const RatioScene = localized(function RatioScene() {
   return (
     <Compare
+      beforeLabel="Half above, half below"
+      afterLabel="85% above, 15% below"
       height={0}
       measure
       before={<Sections above={0.5} />}
@@ -135,6 +137,8 @@ function Ledger({ by }: { by: 'line' | 'record' }) {
 export const RatioRegion = localized(function RatioRegion() {
   return (
     <Compare
+      beforeLabel="Stripe per line"
+      afterLabel="Stripe per transaction"
       height={0}
       before={<Ledger by="line" />}
       after={<Ledger by="record" />}
@@ -179,6 +183,8 @@ function Stream({ ragged }: { ragged?: boolean }) {
 export const RatioEdge = localized(function RatioEdge() {
   return (
     <Compare
+      beforeLabel="Subjects start after sender"
+      afterLabel="Subjects share one edge"
       height={0}
       before={<Stream ragged />}
       after={<Stream />}

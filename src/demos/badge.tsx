@@ -166,6 +166,8 @@ export function BadgeAll() {
 export function BadgeWords() {
   return (
     <Compare
+      beforeLabel="Dot only"
+      afterLabel="Dot and word"
       height={220}
       before={<TaskList badge={dotsOnly} />}
       after={<TaskList badge={withWords} />}
@@ -198,6 +200,8 @@ export function BadgeGreyscale() {
 export function BadgeSoft() {
   return (
     <Compare
+      beforeLabel="Solid fills"
+      afterLabel="Soft tints"
       height={220}
       before={<TaskList badge={(t) => <Badge tone={t.tone} status className={m.solidBadge}>{t.state}</Badge>} />}
       after={<TaskList badge={withWords} />}
@@ -226,6 +230,8 @@ export function BadgeDot() {
   );
   return (
     <Compare
+      beforeLabel="Dot on every badge"
+      afterLabel="Dot only on Online"
       height={120}
       before={attrs(true)}
       after={attrs(false)}

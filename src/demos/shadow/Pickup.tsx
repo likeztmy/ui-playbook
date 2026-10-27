@@ -53,6 +53,8 @@ function Draggable({ lifts }: { lifts?: boolean }) {
 export function ShadowPickup() {
   return (
     <Compare
+      beforeLabel="Same shadow while held"
+      afterLabel="Longer drop while held"
       height={0}
       before={<Draggable />}
       after={<Draggable lifts />}

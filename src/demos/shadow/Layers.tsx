@@ -27,6 +27,8 @@ function Layered() {
 export function ShadowLayers() {
   return (
     <Compare
+      beforeLabel="One dark 24 px drop"
+      afterLabel="Hairline, contact and drop"
       height={0}
       before={
         <div className={s.layered}>

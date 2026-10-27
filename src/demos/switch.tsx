@@ -121,6 +121,8 @@ function ImmediateOrForm() {
 export function SwitchImmediate() {
   return (
     <Compare
+      beforeLabel="Waits for Save"
+      afterLabel="Applies at once"
       height={200}
       before={<DeferredSwitch />}
       after={<ImmediateOrForm />}
@@ -146,6 +148,8 @@ function StateLabel() {
 export function SwitchLabel() {
   return (
     <Compare
+      beforeLabel="Label shows the state"
+      afterLabel="Label names the setting"
       height={140}
       before={<StateLabel />}
       after={
@@ -185,6 +189,8 @@ export function SwitchAnatomy() {
 export function SwitchPress() {
   return (
     <Compare
+      beforeLabel="Knob holds its shape"
+      afterLabel="Knob stretches 4 px"
       height={120}
       before={<Switch aria-label="Show grid, before" pin="active" thumbClassName={m.rigidThumb} />}
       after={<Switch aria-label="Show grid, after" pin="active" />}

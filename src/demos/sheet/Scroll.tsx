@@ -5,6 +5,8 @@ import { Walk } from './Walk';
 export function SheetScroll() {
   return (
     <Compare
+      beforeLabel="Scrolling raises the sheet"
+      afterLabel="Scrolling scrolls the list"
       height={0}
       before={<Walk long scrollGrows />}
       after={<Walk long />}
