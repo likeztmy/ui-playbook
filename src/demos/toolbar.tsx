@@ -57,7 +57,6 @@ export function ToolbarAnatomy() {
 export function ToolbarPressed() {
   return (
     <Compare
-      stacked
       beforeLabel="Current tool filled solid"
       afterLabel="Current tool tinted"
       before={<DrawToolbar toolClass={m.solidPressed} />}
@@ -90,7 +89,6 @@ export function ToolbarStates() {
 export function ToolbarTips() {
   return (
     <Compare
-      stacked
       beforeLabel="Native title tooltip"
       afterLabel="Tip with its shortcut"
       height={160}

@@ -1073,8 +1073,8 @@
       },
       {
         "name": "prose-max",
-        "value": "36em",
-        "usage": "文档页正文列宽：Geist 16px 下换行后约 80 个英文字符（WCAG 1.4.8 的上限）。用 em 而不是 `ch`：Geist 的“0”很宽，68ch 约 101 个字符。"
+        "value": "45em",
+        "usage": "文档页正文列宽，示例与正文共用：Geist 16px 下换行后约 100 个英文字符。用 em 而不是 `ch`：Geist 的“0”很宽，68ch 约 101 个字符。"
       },
       {
         "name": "reading-max",

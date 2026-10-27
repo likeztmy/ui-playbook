@@ -27,7 +27,6 @@ function Layered() {
 export function ShadowLayers() {
   return (
     <Compare
-      stacked
       beforeLabel="One dark 24 px drop"
       afterLabel="Hairline, contact and drop"
       height={0}

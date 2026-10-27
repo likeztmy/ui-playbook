@@ -1,10 +1,10 @@
-// Reading type, the playbook's own `reading` style: 16 / 26, in a `prose-max` (36em) column, about
-// 80 characters of Geist to a line. Prose, demos, code and tables share the column, so every block
+// Reading type, the playbook's own `reading` style: 16 / 26, in a `prose-max` (45em) column, about
+// 100 characters of Geist to a line. Prose, demos, code and tables share the column, so every block
 // starts on one left edge and ends on one right edge. The width is in px: an em width follows each
 // block's own size, and every size gets its own edge.
 
 @mixin page {
-  --column: 576px;
+  --column: 720px;
   max-width: var(--column);
   margin: 0 auto;
   font-size: 16px;
