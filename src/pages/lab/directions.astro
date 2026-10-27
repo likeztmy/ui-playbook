@@ -82,7 +82,7 @@ const schemes = [
                 {d.id === 'field' && (
                   <span slot="note" class={s.hand} style="right: 48px; top: -14px" aria-hidden="true">
                     flip one a few times
-                    <svg viewBox="0 0 60 40" width="48" height="32" aria-hidden="true">
+                    <svg viewBox="0 0 60 40" width="48" height="32" aria-hidden="true" data-arrow="56,4 40,4 20,12 12,34" data-head="6,26 12,35 20,28">
                       <path d="M56 4 C 40 4, 20 12, 12 34" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
                       <path d="M6 26 L 12 35 L 20 28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
                     </svg>
@@ -98,5 +98,6 @@ const schemes = [
   <script>
     import '../../components/directions/lab';
     import '../../components/directions/ticks';
+    import '../../components/directions/notes';
   </script>
 </Base>

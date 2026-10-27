@@ -40,7 +40,9 @@
     "lucide-react": "^1.61.0",
     "motion": "13.5.1",
     "react": "^19.3.1",
-    "react-dom": "^19.3.1"
+    "react-dom": "^19.3.1",
+    "rough-notation": "0.5.1",
+    "roughjs": "4.6.6"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
