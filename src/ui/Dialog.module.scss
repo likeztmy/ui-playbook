@@ -24,8 +24,15 @@
   inset: 0;
   z-index: var(--z-dialog);
   display: grid;
-  place-items: center;
+  // Above the middle, where the eye takes the centre to be: two parts of the free height above it,
+  // three below. A tall one takes all of it.
+  grid-template-rows: minmax(0, 2fr) auto minmax(0, 3fr);
+  justify-items: center;
   padding: var(--space-4);
+
+  > * {
+    grid-row: 2;
+  }
 }
 
 .popup {
