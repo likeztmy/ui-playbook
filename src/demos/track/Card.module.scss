@@ -86,3 +86,8 @@
   align-items: center;
   gap: var(--space-1) var(--space-2);
 }
+
+// As in a row: no priority, no one draws nothing until the pointer or the keys are on the card.
+.card:not(:hover, :focus-within) :is([data-priority='none'], [data-face='none']) {
+  opacity: 0;
+}

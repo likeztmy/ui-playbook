@@ -1,6 +1,18 @@
-// Columns of one width side by side, scrolling sideways when they don't fit. Each column is a sunken
-// tray; its cards sit raised in it, radius inside radius.
+// Scrollbars as macOS draws them by default, even where it's set to always show them: thin, and
+// there only while the pointer is over what scrolls.
+@mixin quiet-scroll {
+  scrollbar-color: transparent transparent;
+  scrollbar-width: thin;
+
+  &:hover {
+    scrollbar-color: var(--line-strong) transparent;
+  }
+}
+
+// Columns side by side, sharing the width, scrolling sideways only once they'd go under their least.
+// Each column is a sunken tray; its cards sit raised in it, radius inside radius.
 .board {
+  @include quiet-scroll;
   position: relative;
   z-index: 0;
   display: flex;
@@ -18,9 +30,9 @@
 
 .column {
   display: flex;
-  flex: none;
+  flex: 1 0 240px;
   flex-direction: column;
-  width: 272px;
+  max-width: 360px;
   min-height: 0;
   border-radius: calc(var(--radius-md) + var(--space-2));
   background: var(--surface-sunken);
@@ -64,6 +76,7 @@
   min-height: 0;
   padding: 0 var(--space-2) var(--space-2);
   overflow-y: auto;
+  @include quiet-scroll;
 }
 
 // Where the card will land: its own size, opening as the others make room.
