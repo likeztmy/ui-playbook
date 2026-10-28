@@ -119,19 +119,21 @@ verdicts: **Prefer** is what to build, **Avoid** is the mistake it replaces.
 
 One floor every screen meets, whichever pages you read:
 
-- **Text holds 4.5:1** against what it sits on: muted and secondary text too, ids, dates, counts
-  and hints included. This is WCAG 2.2 AA ([Lightness first](references/principle-lightness-first.md)).
+- **Text holds 4.5:1** against what it sits on: muted and secondary text too, ids, dates, counts,
+  badges and hints included. On white, no grey lighter than \`#767676\`. This is WCAG 2.2 AA
+  ([Lightness first](references/principle-lightness-first.md)).
 
 Three defaults for the working screens of a tool, each with where it gives way:
 
-- **Interface text is 13–14px**, a short label 12px. Smaller only when the brief asks for a dense
-  view ([Set reading text for the reader](references/principle-reading-text.md)).
+- **Interface text is 13–14px**, a short label 12px: table rows, badges, ids and timestamps
+  included. Smaller only when the brief asks for a dense view
+  ([Set reading text for the reader](references/principle-reading-text.md)).
 - **The page and its panels are white or a plain grey**, and hue goes on the primary action, the
   selection and status. A welcome screen, an empty state or a marketing page may carry colour
   ([Grey until it matters](references/principle-grey-until-it-matters.md)).
 - **Every line of copy names a thing, an action or a state.** A line that could be swapped for any
-  other and do the same job, such as an eyebrow or a slogan, belongs on a marketing page, not in
-  the tool ([Grey until it matters](references/principle-grey-until-it-matters.md)).
+  other and do the same job, such as an eyebrow, a tagline under a page title or a section's
+  subtitle, belongs on a marketing page, not in the tool ([Grey until it matters](references/principle-grey-until-it-matters.md)).
 
 ## Steps
 
@@ -139,8 +141,9 @@ Three defaults for the working screens of a tool, each with where it gives way:
    uses, and the principles its interactions touch.
 2. Read those references in full before writing the UI.
 3. Build to them: the kinds, states, focus and copy each one names.
-4. Before you finish, check the result against the floor and the defaults, then against each page's Common mistakes
-   and When it doesn't apply.
+4. Before you finish, write out each text colour with the surface under it and its contrast ratio,
+   and each font size under 13px with where it's used; fix what falls short of the floor and the
+   defaults. Then check the result against each page's Common mistakes and When it doesn't apply.
 
 ## Components
 
