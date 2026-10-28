@@ -10,7 +10,7 @@
     "predev": "node scripts/build-tokens.mjs",
     "dev": "astro dev",
     "prebuild": "node scripts/build-tokens.mjs",
-    "build": "astro build",
+    "build": "astro build && node scripts/export-skill.mjs",
     "preview": "astro preview",
     "check": "node scripts/build-tokens.mjs && astro check && pnpm -s lint",
     "test:e2e": "playwright test",

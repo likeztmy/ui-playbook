@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { entries, href } from '../src/entries';
 import { hydrateAll, ROUTES, watchErrors } from './helpers';
 
 // Every page: loads, hydrates every island, logs no errors, never scrolls sideways and
@@ -55,3 +56,16 @@ for (const { route, box } of READING) {
     });
   }
 }
+
+// The Skill agents read is made from the built pages: it lists every entry, and each reference is served.
+test('the Skill covers every page', async ({ request }) => {
+  const index = await (await request.get('/skill/ui-playbook/SKILL.md')).text();
+  expect(index).toMatch(/^---\nname: ui-playbook\n/);
+  for (const e of entries.filter((e) => e.kind !== 'practice')) {
+    const name = `references/${e.kind}-${e.slug}.md`;
+    expect(index, `SKILL.md lists ${name}`).toContain(`(${name})`);
+    const ref = await request.get(`/skill/ui-playbook/${name}`);
+    expect(ref.ok(), name).toBe(true);
+    expect(await ref.text()).toContain(`From https://ui-playbook.suspense.site${href(e)}`);
+  }
+});
