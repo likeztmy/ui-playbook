@@ -115,13 +115,28 @@ Each reference is one page of ${SITE}: a component's kinds, anatomy, states, com
 or a principle's rule, details and where it doesn't apply. Demos on the site are given here as their
 verdicts: **Prefer** is what to build, **Avoid** is the mistake it replaces.
 
+## Floors
+
+Every screen meets these, whichever pages you read. Each is a number or a test you can check.
+
+- **Text holds 4.5:1** against what it sits on: muted and secondary text too, ids, dates, counts
+  and hints included ([Lightness first](references/principle-lightness-first.md)).
+- **Interface text is 13px or more**; a short label may be 12px, and nothing is smaller
+  ([Set reading text for the reader](references/principle-reading-text.md)).
+- **The page and its panels are white or a plain grey.** Hue goes on the primary action, the
+  selection and status ([Grey until it matters](references/principle-grey-until-it-matters.md)).
+- **Every line of copy names a thing, an action or a state.** A line that could be swapped for any
+  other and do the same job, such as an eyebrow or a slogan, is left out
+  ([Grey until it matters](references/principle-grey-until-it-matters.md)).
+
 ## Steps
 
 1. From the lists below, pick every page that bears on what you're building: the components it
    uses, and the principles its interactions touch.
 2. Read those references in full before writing the UI.
 3. Build to them: the kinds, states, focus and copy each one names.
-4. Before you finish, check the result against each page's Common mistakes and When it doesn't apply.
+4. Before you finish, check the result against the Floors, then against each page's Common mistakes
+   and When it doesn't apply.
 
 ## Components
 
