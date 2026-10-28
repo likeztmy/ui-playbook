@@ -45,7 +45,7 @@ export function Card({ issue, track, onOpen, onPointerDown, lifted }: CardProps)
         <span className={s.id}>{issueId(issue)}</span>
         <Face id={issue.assignee} />
       </div>
-      <span className={s.title} data-title={n}>
+      <span className={s.title}>
         {issue.title}
       </span>
       <div className={s.meta}>

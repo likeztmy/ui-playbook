@@ -36,7 +36,7 @@ export function InboxRow({ entry: { issue, event, unread }, tabStop, current, on
       <span className={s.what}>
         <span className={s.line}>
           <span className={s.id}>{issueId(issue)}</span>
-          <span className={s.title} data-title={n}>
+          <span className={s.title}>
             {issue.title}
           </span>
         </span>

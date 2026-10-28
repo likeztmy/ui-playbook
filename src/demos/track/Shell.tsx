@@ -30,8 +30,6 @@ type ShellProps = {
 
 const SIDEBAR = 'track:sidebar';
 
-const reduced = () => typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
-
 /**
  * Track: the sidebar on the desk, then the page you're on, flat beside it as a tool's is, headed by
  * its name and tabs; under them, how the issues are filtered, or what's ticked and what to do with it.
@@ -60,38 +58,15 @@ export function Shell({ onToasts, back, embedded }: ShellProps) {
 
   const focusOn = (n: number) => root.current?.querySelector<HTMLElement>(`[role="listitem"][data-n="${n}"]`)?.focus({ preventScroll: false });
 
-  /**
-   * Opens an issue, or closes it with null. Between closed and open the title flies from its row to
-   * the panel's heading and back, so you see where it came from and where it goes back to.
-   */
+  /** Opens an issue beside the list, or closes it with null: at once, as something done many times a day. */
   const openIssue = (n: number | null) => {
     const was = track.open;
-    const apply = () => {
-      flushSync(() => {
-        track.setOpen(n);
-        if (n != null) track.setFocus(n);
-      });
-      // On a phone, opening puts focus on Back, once it's there: in a transition that's after this frame.
-      if (n != null && narrow) closeRef.current?.focus();
-    };
-    const row = (m: number | null) => (m == null ? null : root.current?.querySelector<HTMLElement>(`[data-title="${m}"]`));
-    // Moving between open issues, or with nothing to fly between, it just changes.
-    const from = n != null && was == null ? row(n) : null;
-    const to = n == null && was != null ? row(was) : null;
-    if (!document.startViewTransition || reduced() || (!from && !to)) {
-      apply();
-    } else {
-      if (from) from.style.viewTransitionName = 'track-title';
-      const t = document.startViewTransition(() => {
-        if (from) from.style.viewTransitionName = '';
-        apply();
-        if (to) to.style.viewTransitionName = 'track-title';
-      });
-      t.finished.finally(() => {
-        if (to) to.style.viewTransitionName = '';
-      });
-    }
-    // Closing puts focus back on the issue's row.
+    flushSync(() => {
+      track.setOpen(n);
+      if (n != null) track.setFocus(n);
+    });
+    // On a phone, opening puts focus on Back; closing puts it back on the issue's row.
+    if (n != null && narrow) closeRef.current?.focus();
     if (n == null && was != null) requestAnimationFrame(() => focusOn(was));
   };
 

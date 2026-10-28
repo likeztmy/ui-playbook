@@ -86,7 +86,7 @@ export function Row({ issue, track, onOpen }: RowProps) {
       />
       {/* Its labels follow the title, so what it is reads as one phrase and the right edge stays a column. */}
       <span className={s.what}>
-        <span className={s.title} data-title={n}>
+        <span className={s.title}>
           {issue.title}
         </span>
         {issue.labels.map((l) => (
