@@ -21,7 +21,7 @@ type Props = {
 };
 
 /**
- * The sidebar, as trackers lay one out: the workspace, New issue on its own, your places, then the
+ * The sidebar, as trackers lay one out: the workspace, New issue then your places, then the
  * workspace's and each team's. Track builds the Shop app's issues and yours; the rest are there to
  * be seen where a tracker keeps them, and go nowhere. It lies on Post's desk, where you are lifted
  * onto the page's white.
@@ -69,13 +69,11 @@ export function Sidebar({ track, onSearch, onNewIssue, onGo, onHide, hideRef, ba
       </div>
 
       <div className={s.scroll}>
-        {/* The one action that isn't a place: on its own, above them, and the sidebar's one filled button. */}
-        <Button variant="primary" className={s.compose} onClick={onNewIssue}>
-          <SquarePen {...ic} />
-          New issue
-        </Button>
-
         <ul className={s.list}>
+          {/* The one action among the places: first, and drawn like them, as in a chat app's New chat. */}
+          <Item icon={SquarePen} onClick={onNewIssue}>
+            New issue
+          </Item>
           <Item icon={Inbox}>Inbox</Item>
           <Item icon={CircleUserRound} current={at('mine')} onClick={() => go('mine')}>
             My issues

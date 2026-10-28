@@ -1,5 +1,5 @@
 // The list's columns, shared by group headers and rows so every part keeps one edge.
-// tick · priority · id · status · title · labels · face · updated
+// tick · priority · id · status · title and labels · steps and code · face · updated
 $margin: var(--space-2);
 // Less on the left: the tick's own column is the room there.
 $pad: var(--space-3);

@@ -29,8 +29,6 @@ export function Group({ status, name, issues, hidden, open, onToggle, track, onO
       <h2 className={s.heading}>
         <button type="button" className={s.header} aria-expanded={open} aria-controls={list} onClick={onToggle}>
           <ChevronRight className={s.chevron} size={14} strokeWidth={2} aria-hidden />
-          <span className={s.spacer} />
-          <span className={s.spacer} />
           <StatusIcon status={status} />
           <span className={s.name}>
             {name}

@@ -1,6 +1,5 @@
 import { ListTree } from 'lucide-react';
 import type { MouseEvent } from 'react';
-import { Badge } from '../../ui/Badge';
 import { Checkbox } from '../../ui/Checkbox';
 import { AssigneePicker } from './AssigneePicker';
 import { Face } from './Face';
@@ -28,8 +27,9 @@ type RowProps = {
 };
 
 /**
- * One issue on one line: tick, how pressing, which, how far, what, its labels, whose, when last
- * touched. Focus, ticked and open are three marks that can all be on one row at once.
+ * One issue on one line: tick, how pressing, which, how far, what and its labels, how far its steps
+ * and code have got, whose, when last touched. Focus, ticked and open are three marks that can all
+ * be on one row at once.
  */
 export function Row({ issue, track, onOpen }: RowProps) {
   const steps = track.issues.filter((i) => i.parent === issue.n);
@@ -84,11 +84,18 @@ export function Row({ issue, track, onOpen }: RowProps) {
           </button>
         }
       />
-      <span className={s.title} data-title={n}>
-        {issue.title}
+      {/* Its labels follow the title, so what it is reads as one phrase and the right edge stays a column. */}
+      <span className={s.what}>
+        <span className={s.title} data-title={n}>
+          {issue.title}
+        </span>
+        {issue.labels.map((l) => (
+          <span key={l} className={s.label}>
+            {l}
+          </span>
+        ))}
       </span>
-      <span className={s.labels}>
-        {/* How far its steps and its code have got, before what kind of work it is. */}
+      <span className={s.progress}>
         {steps.length > 0 && (
           <span className={s.steps} title={`${done} of ${steps.length} sub-issues done`}>
             <ListTree size={14} strokeWidth={1.5} aria-hidden />
@@ -96,9 +103,6 @@ export function Row({ issue, track, onOpen }: RowProps) {
           </span>
         )}
         {pr && <PrMark pr={pr} />}
-        {issue.labels.map((l) => (
-          <Badge key={l}>{l}</Badge>
-        ))}
       </span>
       <AssigneePicker
         value={issue.assignee ?? NOBODY}

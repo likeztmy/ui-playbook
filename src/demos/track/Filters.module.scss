@@ -9,7 +9,7 @@
   scrollbar-width: none;
 }
 
-// A filter is a quiet pill until it narrows something; then it says what, in ink on a fill.
+// A set filter: what it narrows to, in ink on a fill.
 .filter {
   display: inline-flex;
   flex: none;
@@ -17,26 +17,18 @@
   gap: var(--space-1);
   height: 28px;
   padding: 0 var(--space-2) 0 var(--space-3);
-  border: 1px dashed var(--line-strong);
+  border: 0;
   border-radius: var(--radius-full);
-  background: none;
-  color: var(--ink-muted);
+  background: var(--fill-control);
+  color: var(--ink);
   font: inherit;
   font-size: 13px;
+  font-weight: 500;
   white-space: nowrap;
   cursor: pointer;
 
   @include hover {
-    background: var(--fill-hover);
-    color: var(--ink);
-  }
-
-  &[data-on] {
-    border-style: solid;
-    border-color: transparent;
-    background: var(--fill-control);
-    color: var(--ink);
-    font-weight: 500;
+    background: var(--fill-control-hover);
   }
 
   &[data-popup-open] {

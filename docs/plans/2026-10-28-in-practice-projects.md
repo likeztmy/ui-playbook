@@ -152,3 +152,13 @@ Built:
 - Lives at `/lab/track` until the owner signs off; the In practice page and its entry are held back (copy kept in the scratchpad, to restore with the Decisions list).
 
 Open: Inbox fed by teammates' changes; a right-click menu on rows mirroring ⌘K; the page's Decisions list rewritten for this pass; research on app-shell and guidance topics (`docs/research/2026-10-28-app-shell-and-guidance.md`) to fold in.
+
+## Third pass (2026-10-28): the list read as cluttered
+
+The owner found the list "乱糟糟". The causes, measured at 1720px:
+
+- Labels sat right-aligned at the far end, each row's pills starting at a different x, about 1000px from the title they describe. They now follow the title, outlined rather than filled; the right edge holds only steps and code, face, time, each a fixed column.
+- Five dashed or dotted marks competed: filter pills, the empty face, no priority, the backlog ring. Only the backlog ring means something; no priority and no one now draw nothing until the pointer or keys are on the row, and the filter pills are gone.
+- Four bands stacked above the first row: header, filter row, group bar, rows. Filter is now one button in the header with a submenu per property; the filter row appears only while a filter is set, as chips plus Clear. Ticking swaps the header's tabs and tools for the selection's actions in the same line, so the list never moves.
+- The group bar's fold sat alone in the tick column, about 100px from the status it folds. Fold, status and name now sit together on the rows' first columns, one step out from the titles.
+- Rows went from 40px to 36px.

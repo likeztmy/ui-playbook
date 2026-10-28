@@ -13,7 +13,6 @@ import { onIssueKeys } from './keys';
 import { issueId, NO_FILTER, type Status } from './model';
 import { NewIssue } from './NewIssue';
 import { Panel } from './Panel';
-import { SelectionBar } from './SelectionBar';
 import { Sidebar } from './Sidebar';
 import { useTrack, type View } from './useTrack';
 import s from './Shell.module.scss';
@@ -196,7 +195,12 @@ export function Shell({ onToasts, back, embedded }: ShellProps) {
       <Main className={s.page} inert={narrow && nav ? true : undefined}>
         <Header track={track} view={view} embedded={embedded} onShowSidebar={narrow ? openNav : folded ? () => fold(false) : undefined} showRef={menuRef} />
 
-        <div className={s.tools}>{track.checked.size ? <SelectionBar track={track} /> : <Filters filter={track.filter} onChange={track.setFilter} />}</div>
+        {/* What the filters narrow to, only while they do. */}
+        {track.filtering && (
+          <div className={s.tools}>
+            <Filters filter={track.filter} onChange={track.setFilter} />
+          </div>
+        )}
 
         <div className={s.main} data-open={open && !narrow ? '' : undefined}>
           <div className={s.issues}>

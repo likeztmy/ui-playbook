@@ -18,14 +18,9 @@ type Common = {
 type PickMenuProps = Common &
   ({ multiple?: false; value: string | null; onPick: (v: string) => void } | { multiple: true; value: string[]; onPick: (v: string[]) => void });
 
-/**
- * A menu of values with their marks, the current one checked at the row's end: status, priority,
- * labels. One closes on a pick; several (labels) stay open to flip more.
- */
-export function PickMenu(props: PickMenuProps) {
-  const { trigger, options, side = 'bottom', align = 'start' } = props;
-  const container = usePortalContainer();
-  const row = (o: Option, on: boolean) => (
+/** A value's row: its mark, its name, and the check at the end when it's on. */
+function PickRow({ option: o, on }: { option: Option; on: boolean }) {
+  return (
     <>
       {o.lead && <span className={s.lead}>{o.lead}</span>}
       <span className={m.text}>{o.label}</span>
@@ -34,6 +29,36 @@ export function PickMenu(props: PickMenuProps) {
       </span>
     </>
   );
+}
+
+type ChecksProps = { options: Option[]; value: string[]; onPick: (v: string[]) => void };
+
+/** Several values, each flipped on its own, the menu staying open: labels, or a filter's values. */
+export function PickChecks({ options, value, onPick }: ChecksProps) {
+  return options.map((o) => {
+    const on = value.includes(o.value);
+    return (
+      <BaseMenu.CheckboxItem
+        key={o.value}
+        label={o.label}
+        className={m.item}
+        checked={on}
+        closeOnClick={false}
+        onCheckedChange={(v) => onPick(v ? [...value, o.value] : value.filter((x) => x !== o.value))}
+      >
+        <PickRow option={o} on={on} />
+      </BaseMenu.CheckboxItem>
+    );
+  });
+}
+
+/**
+ * A menu of values with their marks, the current one checked at the row's end: status, priority,
+ * labels. One closes on a pick; several (labels) stay open to flip more.
+ */
+export function PickMenu(props: PickMenuProps) {
+  const { trigger, options, side = 'bottom', align = 'start' } = props;
+  const container = usePortalContainer();
   return (
     <BaseMenu.Root>
       <BaseMenu.Trigger render={trigger} />
@@ -41,26 +66,12 @@ export function PickMenu(props: PickMenuProps) {
         <BaseMenu.Positioner className={m.positioner} side={side} align={align} sideOffset={6}>
           <BaseMenu.Popup className={`${m.popup} ${s.popup}`}>
             {props.multiple ? (
-              options.map((o) => {
-                const on = props.value.includes(o.value);
-                return (
-                  <BaseMenu.CheckboxItem
-                    key={o.value}
-                    label={o.label}
-                    className={m.item}
-                    checked={on}
-                    closeOnClick={false}
-                    onCheckedChange={(v) => props.onPick(v ? [...props.value, o.value] : props.value.filter((x) => x !== o.value))}
-                  >
-                    {row(o, on)}
-                  </BaseMenu.CheckboxItem>
-                );
-              })
+              <PickChecks options={options} value={props.value} onPick={props.onPick} />
             ) : (
               <BaseMenu.RadioGroup value={props.value} onValueChange={(v) => props.onPick(v as string)}>
                 {options.map((o) => (
                   <BaseMenu.RadioItem key={o.value} value={o.value} label={o.label} className={m.item} closeOnClick>
-                    {row(o, props.value === o.value)}
+                    <PickRow option={o} on={props.value === o.value} />
                   </BaseMenu.RadioItem>
                 ))}
               </BaseMenu.RadioGroup>

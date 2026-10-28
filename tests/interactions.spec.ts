@@ -2023,10 +2023,18 @@ test('track: a new issue needs a title only once you try; it lands focused in it
 
 test('track: a filter counts what it shows and says what it hides', async ({ page }) => {
   await page.goto('/lab/track');
-  await page.getByRole('button', { name: /^Assignee/ }).first().click();
+  await expect(page.getByRole('group', { name: 'Filters' }), 'no filter, no row for them').toHaveCount(0);
+  await page.getByRole('button', { name: 'Filter', exact: true }).click();
+  await page.getByRole('menuitem', { name: 'Assignee' }).click();
   await page.getByRole('menuitemcheckbox', { name: /Ana Ruiz/ }).click();
+  // Esc steps out a level at a time: the submenu, then Filter's own.
   await page.keyboard.press('Escape');
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('menu')).toHaveCount(0);
   await expect(page.getByRole('heading', { name: /^Todo/ })).toHaveText(/^Todo\s*2\s*7 hidden by filter$/);
+  await expect(page.getByRole('group', { name: 'Filters' }).getByRole('button', { name: 'Assignee: Ana' })).toBeVisible();
+  await page.getByRole('button', { name: 'Clear' }).click();
+  await expect(page.getByRole('group', { name: 'Filters' })).toHaveCount(0);
 });
 
 test('track: drag a card to another column on the board', async ({ page }) => {

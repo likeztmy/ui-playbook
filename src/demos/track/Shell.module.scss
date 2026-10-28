@@ -44,15 +44,14 @@
 
 .page {
   position: relative;
-  display: grid;
-  grid-template-rows: auto auto minmax(0, 1fr);
+  display: flex;
+  flex-direction: column;
   min-width: 0;
   min-height: 0;
   overflow: hidden;
 }
 
-// How the issues are narrowed, or, once some are ticked, what to do with them: one row, one
-// height, so nothing below moves when it changes.
+// The filters that are set, on their own line under the header.
 .tools {
   display: flex;
   align-items: center;
@@ -64,6 +63,7 @@
 
 .main {
   display: grid;
+  flex: 1;
   grid-template-columns: minmax(0, 1fr);
   min-height: 0;
 

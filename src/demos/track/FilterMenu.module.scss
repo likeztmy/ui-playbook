@@ -1,0 +1,11 @@
+// On a phone the tabs need the width: the mark alone, square, says Filter.
+@container (max-width: 760px) {
+  .button {
+    width: 28px;
+    padding: 0;
+  }
+
+  .word {
+    display: none;
+  }
+}

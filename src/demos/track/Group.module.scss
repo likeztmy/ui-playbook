@@ -25,11 +25,12 @@
   padding-bottom: var(--space-1);
 }
 
-// On the rows' columns: the fold where the tick is, the status over the statuses, the name on the titles' edge.
+// On the rows' first columns, held together: the fold where the tick is, the status where the
+// priority is, the name on the ids' edge. One step out from the titles, as a heading over them.
 .header {
   display: grid;
   flex: 1;
-  grid-template-columns: 20px 14px 56px 14px minmax(0, 1fr);
+  grid-template-columns: 20px 14px minmax(0, 1fr);
   align-items: center;
   column-gap: $gap;
   min-width: 0;
@@ -113,9 +114,5 @@
 @container (max-width: 760px) {
   .header {
     grid-template-columns: 14px 14px minmax(0, 1fr);
-  }
-
-  .spacer {
-    display: none;
   }
 }
