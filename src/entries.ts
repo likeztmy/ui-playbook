@@ -220,6 +220,14 @@ export const entries: Entry[] = [
     keywords: ['colour', 'color', 'accent', 'selected', 'current', 'pop-out', 'preattentive', 'greyscale', 'wcag'],
   },
   {
+    slug: 'grey-until-it-matters',
+    kind: 'principle',
+    title: 'Grey until it matters',
+    summary: 'Every hue in the chrome is one more to check before the one that matters is found. Decoration is what could say anything else.',
+    details: 5,
+    keywords: ['colour', 'color', 'decoration', 'illustration', 'brand', 'neutral', 'grey', 'gray', 'labels', 'tags', 'visual search', 'clutter', 'slogan'],
+  },
+  {
     slug: 'where-the-eye-goes',
     kind: 'principle',
     title: 'Where the eye goes',

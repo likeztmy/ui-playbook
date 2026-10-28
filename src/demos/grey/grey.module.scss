@@ -1,0 +1,260 @@
+// Grey until it matters: an issue list with one overdue, a sign-up page, the home card.
+
+// ── Issues ───────────────────────────────────────────────
+
+.issues {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  container-type: inline-size;
+  list-style: none;
+}
+
+// Id, then what it is and its labels, then the date: the right edge stays one column.
+.issue {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3);
+  height: 36px;
+  padding: 0 var(--space-3);
+  border-bottom: 1px solid var(--line);
+  font-size: 13px;
+
+  &:last-child {
+    border-bottom: 0;
+  }
+}
+
+.id {
+  color: var(--ink-muted);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.what {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.title {
+  overflow: hidden;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// Grey and outlined, as Track's are; the team's colour for the label is the dot.
+.label {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  height: 20px;
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-full);
+  box-shadow: inset 0 0 0 1px var(--line);
+  color: var(--ink-muted);
+  font-size: 12px;
+  white-space: nowrap;
+
+  // The mistake: each label filled in its own hue, as the eval's tracker had them.
+  &[data-filled] {
+    box-shadow: none;
+    background: light-dark(oklch(0.93 0.06 var(--hue)), oklch(0.34 0.07 var(--hue)));
+    color: light-dark(oklch(0.45 0.12 var(--hue)), oklch(0.86 0.08 var(--hue)));
+  }
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: oklch(0.62 0.14 var(--hue));
+}
+
+.due {
+  color: var(--ink-muted);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+
+  &[data-overdue] {
+    color: var(--danger);
+    font-weight: 500;
+  }
+}
+
+// On a phone the labels give way first: the title and the date are the row.
+@container (max-width: 480px) {
+  .issue {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .id {
+    display: none;
+  }
+
+  .label + .label {
+    display: none;
+  }
+}
+
+// ── Sign-up ──────────────────────────────────────────────
+
+.signupBox {
+  width: 100%;
+  container-type: inline-size;
+}
+
+.signup {
+  display: grid;
+
+  &[data-decorated] {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  width: min(100%, 340px);
+  padding: var(--space-6);
+}
+
+.signupHead {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+
+  h3 {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.25;
+    text-wrap: balance;
+  }
+
+  p {
+    margin: 0;
+    color: var(--ink-muted);
+    font-size: 13px;
+  }
+}
+
+.eyebrow {
+  margin-bottom: var(--space-1);
+  color: var(--ink-muted);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+
+  > button {
+    align-self: stretch;
+  }
+}
+
+// The mistake's other half: a tinted panel of shapes and a second slogan.
+.art {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin: var(--space-3);
+  padding: var(--space-5);
+  border-radius: var(--radius-lg);
+  background: light-dark(oklch(0.95 0.025 300), oklch(0.28 0.035 300));
+}
+
+.shapes {
+  position: relative;
+  flex: 1;
+  min-height: 160px;
+
+  span {
+    position: absolute;
+    display: block;
+  }
+
+  span:nth-child(1) {
+    top: 12%;
+    left: 14%;
+    width: 46%;
+    aspect-ratio: 4 / 5;
+    border-radius: var(--radius-md);
+    background: oklch(0.55 0.14 295);
+    transform: rotate(6deg);
+  }
+
+  span:nth-child(2) {
+    top: 26%;
+    left: 4%;
+    width: 34%;
+    aspect-ratio: 3 / 4;
+    border-radius: var(--radius-md);
+    background: oklch(0.82 0.11 70);
+    transform: rotate(-10deg);
+  }
+
+  span:nth-child(3) {
+    top: 48%;
+    left: 50%;
+    width: 22%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: oklch(0.74 0.14 55);
+  }
+}
+
+.slogan {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.25;
+  text-align: center;
+  text-wrap: balance;
+}
+
+// Too narrow for two columns, the panel goes under the form, as the builds' did.
+@container (max-width: 560px) {
+  .signup[data-decorated] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+// ── Home card ────────────────────────────────────────────
+
+.preview {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: min(100%, 240px);
+}
+
+.previewRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 28px;
+  align-items: center;
+  gap: var(--space-3);
+
+  > span {
+    height: 6px;
+    border-radius: 3px;
+    background: var(--ink-disabled);
+  }
+
+  > span[data-late] {
+    background: var(--danger);
+  }
+}

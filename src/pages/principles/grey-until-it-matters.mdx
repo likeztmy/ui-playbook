@@ -1,0 +1,56 @@
+---
+layout: ../../layouts/Entry.astro
+slug: grey-until-it-matters
+---
+import { GreyOverdue, GreyDecoration } from '../../demos/grey';
+
+## The rule
+
+**Grey carries the screen; colour is kept for what someone has to notice.** A tool's surfaces, panels and labels are grey. Hue is spent on the action at hand, what's chosen and what's wrong, and each one the chrome adds is one more the eye checks before it finds the one that matters.
+
+<GreyOverdue client:visible />
+
+The design systems agree, in their own words. Neutrals "ground an interface", and brand colour on large surfaces can "dilute a hierarchy" ([Fluent 2](https://fluent2.microsoft.design/color)). "The neutral gray family is dominant"; other colours "are used sparingly and purposefully" ([Carbon](https://carbondesignsystem.com/elements/color/overview/)). Brand colour used "too broadly can overwhelm your interface and dilute its impact" ([Apple](https://developer.apple.com/design/human-interface-guidelines/branding)). None of them gives a ratio. Linear's 2026 refresh made the change in a shipping product: a sidebar "a few notches dimmer", coloured team icon backgrounds removed, under the heading "Don't compete for attention you haven't earned" ([Linear](https://linear.app/now/behind-the-latest-design-refresh)).
+
+## Details
+
+### A colour you were told to find survives; a surprise doesn't
+
+Search gets harder as the things around a target look more like it, and also as they look less like each other ([Duncan and Humphreys 1989](https://doi.org/10.1037/0033-295X.96.3.433), restated in [Guided Search 6.0](https://doi.org/10.3758/s13423-020-01859-9)). The cost falls on one kind of looking. In grids of up to seven colours, people told which colour to find stayed over 95% accurate however many colours there were. Asked to find whichever one was different, they "had a marked decline as variation increased" ([Haroz and Whitney 2012](https://doi.org/10.1109/TVCG.2012.233)). In another test, finding the odd one out held until seven colours and then broke, and time grew with each colour added ([Giovannangeli et al. 2021](https://arxiv.org/abs/2103.06084)).
+
+A tool's colours are mostly for the second kind of looking. Nobody tells you to look for the overdue issue, the failed payment or the button to press; they have to be noticed.
+
+### Group it, or say it in words
+
+Two things take the cost away. Sorted into groups by colour, variety "did not affect RT or accuracy" (Haroz and Whitney). When the target also differs in shape or in words, the number of colours stops mattering: errors stayed at 0% (Giovannangeli et al.). So a status colour comes with its word ([Colour means one thing](/principles/colour-means-one-thing)), and a list that has to show many label colours reads better grouped by label.
+
+### What counts as decoration
+
+<GreyDecoration client:visible />
+
+WCAG has a definition. Pure decoration is "serving only an aesthetic purpose, providing no information, and having no functionality", and words are decoration "if the words can be rearranged or substituted without changing their purpose" ([WCAG 2.2](https://www.w3.org/TR/WCAG22/#dfn-pure-decoration)). A decorative image gets an empty `alt`, so a screen reader skips it ([WAI, Decorative images](https://www.w3.org/WAI/tutorials/images/decorative/)). Someone listening to the page loses nothing; someone looking at it gives it room and a glance.
+
+### Looking past it isn't free
+
+People learn where the graphics are and stop looking at them ([Where the eye goes](/principles/where-the-eye-goes)), but the search beside them still slows. Beside banners people had learned to avoid, finding a headline took 2,169 ms; beside grey boxes of the same size and place, 2,040 ms, about 6% faster. The grey boxes were looked at just as often: the cost was in what the graphic showed, not in where it sat ([Burke et al. 2005](https://doi.org/10.1145/1121112.1121116)).
+
+Words cost more than pictures. Decorative pictures get "only a bit initial attention" and are then ignored ([Lenzner et al. 2013](https://doi.org/10.1007/s11251-012-9256-z)), but interesting words that aren't the point get read: people "regarded seductive details as more relevant and consequently spent more time processing them" ([Kienitz et al. 2023](https://doi.org/10.1007/s11251-023-09632-w)). Across 39 experiments the harm is "small to medium" ([Rey 2012](https://doi.org/10.1016/j.edurev.2012.05.003)), and paid on every visit. A slogan above a form is read before the form.
+
+### At a glance, it's regions that cost
+
+Colour isn't what makes a screen look bad in the first half-second. In first impressions of websites, visual complexity outweighed colourfulness: a page past the best complexity lost with an effect of d = 2.0, while a fairly colourful page was liked best, and too little or too much colour cost only d = 0.3 to 0.8 ([Reinecke and Gajos 2014](https://doi.org/10.1145/2556288.2557052), from 2.4 million ratings). Decoration costs here through what it adds: one more panel, band or block for the eye to sort. A tinted sidebar, a hero panel and a coloured header split the same content into more pieces.
+
+Beauty making a product easier to use has been "overplayed" ([Hassenzahl and Monk 2010](https://doi.org/10.1080/07370024.2010.500139)). In a test with 331 people, a more beautiful site changed neither accuracy nor speed ([Thielsch et al. 2019](https://doi.org/10.7717/peerj.6516)). The case for grey is the search above, made on every visit.
+
+## When it doesn't apply
+
+- **Content.** A chart's categories, a label colour a team picked, a photo, a face: there the colour is the information. It gets a small mark of its own, a dot or the image, and the chrome stays grey around it.
+- **A moment whose job is the impression.** A welcome screen, an empty state, a marketing page. Pictures there lift mood and make a task feel easier, at no cost to learning ([Lenzner et al. 2013](https://doi.org/10.1007/s11251-012-9256-z)). One such moment in a flow, away from the form.
+- **The one thing to do.** Emphasis spent on a single target pays: a larger, more prominent Send button was found "up to four times faster" ([Material 3 Expressive research](https://design.google/library/expressive-material-design-google-research)). That's the accent, used once.
+
+## Where the playbook applies it
+
+- [Badge](/components/badge): the words carry it; colour only helps.
+- [Toast](/components/toast): colour on the icon only.
+- [Button](/components/button): one filled button per view.
+- [Colour means one thing](/principles/colour-means-one-thing): one accent, one meaning per status colour.
