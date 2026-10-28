@@ -8,6 +8,7 @@ import { spawn } from 'node:child_process';
 import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { basename, dirname, join } from 'node:path';
 import { createServer } from 'node:net';
+import { look } from './walks/look.mjs';
 
 const dir = process.argv[2]?.replace(/\/$/, '');
 if (!dir) throw new Error('usage: node eval/walk.mjs <build dir>');
@@ -50,11 +51,15 @@ page.on('pageerror', (e) => errors.push(e.message));
 
 const checks = [];
 let step = 0;
+let firstScreen = null;
 const api = {
   page,
   url,
-  /** A screenshot for the judges, numbered in walk order. */
-  shot: (name) => page.screenshot({ path: join(shots, `${String(++step).padStart(2, '0')}-${name}.png`) }),
+  /** A screenshot for the judges, numbered in walk order. The first is also measured for colour and decoration. */
+  shot: async (name) => {
+    firstScreen ??= await look(page);
+    await page.screenshot({ path: join(shots, `${String(++step).padStart(2, '0')}-${name}.png`) });
+  },
   /** A measured check: its id names the page that states the rule (see the plan's Scoring table). */
   check: (id, pass, detail = '') => checks.push({ id, pass: Boolean(pass), detail: String(detail) }),
   /** What has focus, as role and name, or "body". */
@@ -89,5 +94,5 @@ await context.close();
 await browser.close();
 server.kill();
 
-writeFileSync(join(meta, 'walk.json'), JSON.stringify({ task, failed, checks }, null, 2) + '\n');
-console.log(`${dir}: ${failed ? `stopped: ${failed}` : 'walked'}; ${checks.filter((c) => c.pass).length}/${checks.length} checks pass`);
+writeFileSync(join(meta, 'walk.json'), JSON.stringify({ task, failed, look: firstScreen, checks }, null, 2) + '\n');
+console.log(`${dir}: ${failed ? `stopped: ${failed}` : 'walked'}; ${checks.filter((c) => c.pass).length}/${checks.length} checks pass; look ${JSON.stringify({ ...firstScreen, hues: undefined })}`);

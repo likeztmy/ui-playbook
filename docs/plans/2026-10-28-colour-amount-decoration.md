@@ -91,7 +91,7 @@ set against the owner's blind picks.
 
 - Hue families among chrome elements (DOM computed colours, OKLCH C ≥ 0.03, outside content and
   photos). Flag more than 2: the accent and danger.
-- Area of the first screen under tinted surfaces (C > 0.008).
+- Area of the first screen under tinted surfaces (C > 0.004 in light mode; the playbook's own greys stay under 0.003).
 - Area of the first screen under decoration: `alt=""`, `aria-hidden`, `role="presentation"`, CSS
   background images.
 
