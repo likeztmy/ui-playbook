@@ -9,3 +9,8 @@
   place-items: center;
   width: 16px;
 }
+
+// Opened from the new-issue dialog too: on the dialog's layer, and later in the page, so above it.
+.positioner {
+  z-index: var(--z-dialog);
+}

@@ -63,7 +63,7 @@ export function PickMenu(props: PickMenuProps) {
     <BaseMenu.Root>
       <BaseMenu.Trigger render={trigger} />
       <BaseMenu.Portal container={container}>
-        <BaseMenu.Positioner className={m.positioner} side={side} align={align} sideOffset={6}>
+        <BaseMenu.Positioner className={`${m.positioner} ${s.positioner}`} side={side} align={align} sideOffset={6}>
           <BaseMenu.Popup className={`${m.popup} ${s.popup}`}>
             {props.multiple ? (
               <PickChecks options={options} value={props.value} onPick={props.onPick} />

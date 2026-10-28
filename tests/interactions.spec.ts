@@ -2098,6 +2098,22 @@ test('track: closing a new issue keeps what you wrote, with Discard in the toast
   await expect(page.getByRole('textbox', { name: 'Title' })).toHaveValue('Gift wrap option');
 });
 
+test('track: the new issue pickers open above the dialog and check only the current value', async ({ page }) => {
+  await page.goto('/lab/track');
+  await page.getByRole('button', { name: 'New issue' }).click();
+  const props = page.getByRole('group', { name: 'Properties' });
+  await props.getByRole('combobox').click();
+  const rows = page.getByRole('option');
+  await expect(rows.locator('[class*="_check_"]:visible'), 'one check, on No one').toHaveCount(1);
+  await expect(rows.filter({ hasText: 'No one' }).locator('[class*="_check_"]')).toBeVisible();
+  // A click lands only on what's on top: under the dialog, the dialog would take it.
+  await rows.filter({ hasText: 'Ana Ruiz' }).click();
+  await expect(props.getByRole('combobox')).toHaveText('Ana Ruiz');
+  await props.getByRole('button', { name: 'Todo' }).click();
+  await page.getByRole('menuitemradio', { name: 'In progress' }).click();
+  await expect(props.getByRole('button', { name: 'In progress' })).toBeVisible();
+});
+
 test('track: folding the team that holds where you are moves the mark onto the team', async ({ page }) => {
   await page.goto('/lab/track');
   const team = page.getByRole('button', { name: 'Shop app' });

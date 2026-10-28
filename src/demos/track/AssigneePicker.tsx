@@ -42,7 +42,7 @@ export function AssigneePicker({ trigger, value, onPick, side = 'bottom', align 
     >
       <Combobox.Trigger render={trigger} />
       <Combobox.Portal container={container}>
-        <Combobox.Positioner className={m.positioner} side={side} align={align} sideOffset={6}>
+        <Combobox.Positioner className={`${m.positioner} ${s.positioner}`} side={side} align={align} sideOffset={6}>
           <Combobox.Popup className={`${m.popup} ${s.popup}`} aria-label="Assignee">
             <Combobox.Input className={s.input} placeholder="Assign to…" aria-label="Assign to" />
             <Combobox.Empty className={s.empty}>No one called “{query.trim()}”</Combobox.Empty>
@@ -51,7 +51,7 @@ export function AssigneePicker({ trigger, value, onPick, side = 'bottom', align 
                 <Combobox.Item key={o.value} value={o} className={m.item}>
                   <span className={s.lead}>{o.lead}</span>
                   <span className={m.text}>{o.label}</span>
-                  <Combobox.ItemIndicator keepMounted className={m.check}>
+                  <Combobox.ItemIndicator keepMounted className={m.check} data-off={o.value === value ? undefined : ''}>
                     <Check size={16} strokeWidth={1.75} nonScalingStroke aria-hidden />
                   </Combobox.ItemIndicator>
                 </Combobox.Item>
