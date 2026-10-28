@@ -46,9 +46,19 @@ export function Header({ track, view, onShowSidebar, showRef, embedded }: Props)
             <ShoppingBag size={12} strokeWidth={2} />
           </span>
         )}
-        <span className={s.name}>{track.place === 'issues' ? 'Shop app' : 'My issues'}</span>
+        <span className={s.name}>{{ issues: 'Shop app', mine: 'My issues', inbox: 'Inbox' }[track.place]}</span>
       </Title>
-      {track.checked.size ? (
+      {track.place === 'inbox' ? (
+        track.inbox.unread > 0 && (
+          <span className={s.end}>
+            <Tip keys={['⌥', 'U']}>
+              <Button variant="ghost" size="sm" onClick={track.inbox.readAll}>
+                Mark all as read
+              </Button>
+            </Tip>
+          </span>
+        )
+      ) : track.checked.size ? (
         <SelectionBar track={track} />
       ) : (
         <>

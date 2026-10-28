@@ -102,7 +102,7 @@ export function Panel({ issue, track, onClose, narrow, closeRef }: PanelProps) {
         {narrow && (
           <Button ref={closeRef} variant="ghost" size="sm" onClick={onClose}>
             <ArrowLeft {...ic} />
-            Issues
+            {{ issues: 'Issues', mine: 'My issues', inbox: 'Inbox' }[track.place]}
           </Button>
         )}
         <span className={s.id}>{issueId(issue)}</span>

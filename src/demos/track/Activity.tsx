@@ -1,5 +1,5 @@
 import { GitPullRequest, Rocket } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Button } from '../../ui/Button';
 import { Tip } from '../../ui/Tooltip';
 import { Face } from './Face';
@@ -25,6 +25,8 @@ const nameOf = (who: string) => BOTS[who]?.name ?? (PEOPLE[who]?.me ? 'You' : (P
 export function Activity({ issue, track }: { issue: Issue; track: Track }) {
   const [draft, setDraft] = useState('');
   const box = useRef<HTMLTextAreaElement>(null);
+  // Closed while you were in the box: no blur comes, so let go here.
+  useEffect(() => () => track.hold('comment', false), []);
   const send = () => {
     const body = draft.trim();
     if (!body) return box.current?.focus();
@@ -82,6 +84,9 @@ export function Activity({ issue, track }: { issue: Issue; track: Track }) {
           rows={1}
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
+          // Writing here is a task under way: teammates' changes wait until you leave it.
+          onFocus={() => track.hold('comment', true)}
+          onBlur={() => track.hold('comment', false)}
           onKeyDown={(e) => {
             if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
               e.preventDefault();

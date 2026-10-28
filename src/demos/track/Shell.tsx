@@ -8,6 +8,7 @@ import { CommandMenu } from './CommandMenu';
 import { commands, targetOf } from './commands';
 import { Filters } from './Filters';
 import { Header } from './Header';
+import { Inbox } from './Inbox';
 import { IssueList } from './IssueList';
 import { onIssueKeys } from './keys';
 import { issueId, NO_FILTER, type Status } from './model';
@@ -55,7 +56,7 @@ export function Shell({ onToasts, back, embedded }: ShellProps) {
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
-  const view: View = narrow ? 'list' : track.view;
+  const view: View = narrow || track.place === 'inbox' ? 'list' : track.view;
 
   const focusOn = (n: number) => root.current?.querySelector<HTMLElement>(`[role="listitem"][data-n="${n}"]`)?.focus({ preventScroll: false });
 
@@ -65,11 +66,14 @@ export function Shell({ onToasts, back, embedded }: ShellProps) {
    */
   const openIssue = (n: number | null) => {
     const was = track.open;
-    const apply = () =>
+    const apply = () => {
       flushSync(() => {
         track.setOpen(n);
         if (n != null) track.setFocus(n);
       });
+      // On a phone, opening puts focus on Back, once it's there: in a transition that's after this frame.
+      if (n != null && narrow) closeRef.current?.focus();
+    };
     const row = (m: number | null) => (m == null ? null : root.current?.querySelector<HTMLElement>(`[data-title="${m}"]`));
     // Moving between open issues, or with nothing to fly between, it just changes.
     const from = n != null && was == null ? row(n) : null;
@@ -87,18 +91,17 @@ export function Shell({ onToasts, back, embedded }: ShellProps) {
         if (to) to.style.viewTransitionName = '';
       });
     }
-    // Closing puts focus back on the issue's row; on a phone, opening puts it on Back.
+    // Closing puts focus back on the issue's row.
     if (n == null && was != null) requestAnimationFrame(() => focusOn(was));
-    if (n != null && narrow) requestAnimationFrame(() => closeRef.current?.focus());
   };
 
   // The tab's title says where you are, as the header does, for the tab strip and history.
   useEffect(() => {
     if (embedded) return;
-    const where = track.place === 'mine' ? 'My issues' : 'Shop app';
-    const which = { all: 'All issues', active: 'Active', backlog: 'Backlog' }[track.scope];
+    const where = { issues: 'Shop app', mine: 'My issues', inbox: 'Inbox' }[track.place];
+    const which = track.place === 'inbox' ? '' : ` · ${{ all: 'All issues', active: 'Active', backlog: 'Backlog' }[track.scope]}`;
     const it = track.get(track.open);
-    document.title = `${it ? `${issueId(it)} ${it.title} · ` : ''}${where} · ${which} · Track`;
+    document.title = `${it ? `${issueId(it)} ${it.title} · ` : ''}${where}${which} · Track`;
   }, [track.place, track.scope, track.open, embedded]);
 
   const onKeys = (e: KeyboardEvent) => onIssueKeys(e, track, openIssue, focusOn);
@@ -139,6 +142,9 @@ export function Shell({ onToasts, back, embedded }: ShellProps) {
     setNav(false);
     setCmd(true);
   };
+
+  // Writing a new issue is a task under way: teammates' changes wait until it's done.
+  useEffect(() => track.hold('new issue', making), [making]);
 
   // The phone's sidebar: focus goes into it, and back to Menu when it goes.
   const [nav, setNav] = useState(false);
@@ -196,7 +202,7 @@ export function Shell({ onToasts, back, embedded }: ShellProps) {
         <Header track={track} view={view} embedded={embedded} onShowSidebar={narrow ? openNav : folded ? () => fold(false) : undefined} showRef={menuRef} />
 
         {/* What the filters narrow to, only while they do. */}
-        {track.filtering && (
+        {track.filtering && track.place !== 'inbox' && (
           <div className={s.tools}>
             <Filters filter={track.filter} onChange={track.setFilter} />
           </div>
@@ -205,12 +211,14 @@ export function Shell({ onToasts, back, embedded }: ShellProps) {
         <div className={s.main} data-open={open && !narrow ? '' : undefined}>
           <div className={s.issues}>
             {/* A teammate's changes wait here instead of moving the row you were about to click. */}
-            {track.incoming > 0 && (
-              <button type="button" className={s.pill} onClick={track.letIn}>
+            {track.place !== 'inbox' && track.incoming > 0 && (
+              <button type="button" className={s.pill} onClick={() => track.letIn()}>
                 {track.incoming === 1 ? '1 update' : `${track.incoming} updates`}
               </button>
             )}
-            {track.shown.length === 0 ? (
+            {track.place === 'inbox' ? (
+              <Inbox track={track} onOpen={openIssue} />
+            ) : track.shown.length === 0 ? (
               <div className={s.empty}>
                 {track.filtering ? (
                   <>

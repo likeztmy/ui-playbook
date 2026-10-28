@@ -2114,6 +2114,65 @@ test('track: the new issue pickers open above the dialog and check only the curr
   await expect(props.getByRole('button', { name: 'In progress' })).toBeVisible();
 });
 
+test('track: Inbox gets what is yours, counts it unread, reads it on open; U and Backspace with Undo', async ({ page }) => {
+  await page.clock.install();
+  await page.goto('/lab/track');
+  const entry = page.getByRole('navigation', { name: 'Track' }).getByRole('button', { name: /^Inbox/ });
+  await expect(entry).toHaveAccessibleName('Inbox 2 unread');
+  await entry.click();
+  const list = page.getByRole('list', { name: 'Inbox' });
+  const rows = list.getByRole('listitem');
+  await expect(rows).toHaveCount(3);
+
+  // Ana comments on yours: it lands on top, unread. Kofi then moves his own: not yours, not here.
+  await page.clock.fastForward(16000);
+  await expect(rows.first()).toHaveAccessibleName(/^Unread, SHOP-53 .*Ana commented/);
+  await expect(entry).toHaveAccessibleName('Inbox 3 unread');
+  await page.clock.fastForward(30000);
+  await expect(rows).toHaveCount(4);
+  await expect(list.getByRole('listitem', { name: /SHOP-51/ })).toHaveCount(0);
+
+  await rows.first().click();
+  await expect(page.getByText('Should the default follow the last address used?').last()).toBeVisible();
+  await expect(entry).toHaveAccessibleName('Inbox 2 unread');
+  await page.keyboard.press('Escape');
+  await expect(rows.first()).toBeFocused();
+  await page.keyboard.press('u');
+  await expect(entry).toHaveAccessibleName('Inbox 3 unread');
+  await page.keyboard.press('Backspace');
+  await expect(rows).toHaveCount(3);
+  await expect(rows.first(), 'focus goes to the next').toBeFocused();
+  await page.getByRole('button', { name: 'Undo' }).click();
+  await expect(rows.first()).toHaveAccessibleName(/^Unread, SHOP-53/);
+});
+
+test('track: a teammate change waits while you write a new issue, and arrives when you close it', async ({ page }) => {
+  await page.clock.install();
+  await page.goto('/lab/track');
+  // Under the dialog the sidebar is out of the accessibility tree, so the count is read as text.
+  const unread = page.locator('nav[aria-label="Track"] [aria-label$=" unread"]');
+  await expect(unread).toHaveText('2');
+  await page.getByRole('button', { name: 'New issue' }).click();
+  await page.clock.fastForward(16000);
+  await expect(unread).toHaveText('2');
+  await page.keyboard.press('Escape');
+  await expect(unread).toHaveText('3');
+});
+
+test('track: on a phone, opening an issue puts focus on Back, which names where it goes', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.goto('/lab/track');
+  // Track has measured itself as a phone once its sidebar has become a button.
+  await expect(page.getByRole('button', { name: 'Show sidebar' })).toBeVisible();
+  await page.locator('[role="listitem"][data-n]').first().click();
+  await expect(page.getByRole('button', { name: 'Issues', exact: true })).toBeFocused();
+  await page.keyboard.press('Enter');
+  await page.getByRole('button', { name: 'Show sidebar' }).click();
+  await page.getByRole('button', { name: /^Inbox/ }).click();
+  await page.getByRole('list', { name: 'Inbox' }).getByRole('listitem').first().click();
+  await expect(page.getByRole('button', { name: 'Inbox', exact: true })).toBeFocused();
+});
+
 test('track: folding the team that holds where you are moves the mark onto the team', async ({ page }) => {
   await page.goto('/lab/track');
   const team = page.getByRole('button', { name: 'Shop app' });

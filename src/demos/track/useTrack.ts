@@ -3,12 +3,14 @@ import { useToast } from '../../ui/Toast';
 import { ISSUES } from './issues';
 import { byRank, filtering, issueId, matches, NO_FILTER, statusName, STATUSES, type Filter, type Issue, type Status } from './model';
 import { clear, load, save } from './store';
+import type { Arrival } from './notifications';
 import { CHANGES, EVERY, FIRST, type Change } from './teammates';
+import { useInbox } from './useInbox';
 import { NOW } from './when';
 
 export type View = 'list' | 'board';
-/** Where in the sidebar you are: the team's issues, or yours across it. */
-export type Place = 'issues' | 'mine';
+/** Where in the sidebar you are: the team's issues, yours across it, or what's happened to them. */
+export type Place = 'issues' | 'mine' | 'inbox';
 /** Which of them, by the header's tabs: all, the ones in play, or the ones waiting. */
 export type Scope = 'all' | 'active' | 'backlog';
 const SCOPES: Record<Scope, Status[]> = {
@@ -20,7 +22,11 @@ const VIEW = 'track:view';
 
 // Track's clock runs from its fixed NOW (when.ts), so what you change reads "1m" beside the sample's "3h".
 const started = Date.now();
-const clock = () => new Date(NOW.getTime() + (Date.now() - started)).toISOString().slice(0, 16);
+// The sample's times are local, without a zone, so this is too.
+const clock = () => {
+  const t = new Date(NOW.getTime() + (Date.now() - started));
+  return new Date(t.getTime() - t.getTimezoneOffset() * 60000).toISOString().slice(0, 19);
+};
 
 /** How a change reads in an issue's history. */
 function describe(patch: Partial<Issue>) {
@@ -34,7 +40,7 @@ function describe(patch: Partial<Issue>) {
 }
 
 /** A teammate's change still to come: its issue is here and its history doesn't have it yet, from an earlier visit. */
-const due = (c: Change, issue?: Issue) => !!issue && !issue.activity.some((a) => a.who === c.who && a.text === c.text);
+const due = (c: Change, issue?: Issue) => !!issue && !issue.activity.some((a) => a.who === c.who && a.text === c.text && a.body === c.body);
 
 const top = (issues: Issue[], status: Status) => Math.min(1000, ...issues.filter((i) => i.status === status).map((i) => i.rank)) - 1000;
 
@@ -55,7 +61,7 @@ export function useTrack({ embedded }: { embedded?: boolean } = {}) {
   const [focus, setFocus] = useState<number | null>(null);
   const [checked, setChecked] = useState<Set<number>>(new Set());
   const anchor = useRef<number | null>(null);
-  const [incoming, setIncoming] = useState<Change[]>([]);
+  const [incoming, setIncoming] = useState<Arrival[]>([]);
   const [fresh, setFresh] = useState<Set<number>>(new Set());
 
   // What this browser kept, after the first render so the page and the app agree on it.
@@ -95,16 +101,15 @@ export function useTrack({ embedded }: { embedded?: boolean } = {}) {
       })),
     [here, shown, scope],
   );
-  /** Issues in the order they're on screen: what ↑ ↓, a shift-click range and "the next one" follow. */
-  const order = useMemo(
+  /** The list's issues in the order they're on screen. */
+  const listed = useMemo(
     () => groups.flatMap((g) => (view === 'list' && folded.has(g.id) ? [] : g.issues)).map((i) => i.n),
     [groups, folded, view],
   );
   const byN = useMemo(() => new Map(issues.map((i) => [i.n, i])), [issues]);
   const get = (n: number | null) => (n == null ? undefined : byN.get(n));
 
-  const patchAll = (list: Issue[], ns: number[], patch: Partial<Issue>, who = 'me', text = describe(patch)) => {
-    const at = clock();
+  const patchAll = (list: Issue[], ns: number[], patch: Partial<Issue>, who = 'me', text = describe(patch), at = clock(), body?: string) => {
     return list.map((i) => {
       if (!ns.includes(i.n)) return i;
       const moved = patch.status && patch.status !== i.status;
@@ -114,7 +119,7 @@ export function useTrack({ embedded }: { embedded?: boolean } = {}) {
         // A moved issue goes to the top of where it went, so it's found there.
         rank: moved ? top(list, patch.status!) : i.rank,
         updated: at,
-        activity: [...i.activity, { who, text, at }],
+        activity: [...i.activity, body ? { who, text, at, body } : { who, text, at }],
       };
     });
   };
@@ -216,7 +221,18 @@ export function useTrack({ embedded }: { embedded?: boolean } = {}) {
     setTimeout(() => setFresh(new Set()), 2000);
   };
 
-  // Teammates at work: each change waits behind the pill until you let it in.
+  // Teammates at work: each change waits behind the pill until you let it in. While you're writing
+  // (a new issue, a comment) they're held, and arrive once you stop: a break in the task.
+  const holds = useRef(new Set<string>());
+  const held = useRef<Change[]>([]);
+  const arrive = (c: Change) => setIncoming((q) => (q.some((x) => x.n === c.n && x.text === c.text && x.body === c.body) ? q : [...q, { ...c, at: clock() }]));
+  const hold = (why: string, on: boolean) => {
+    if (on) return void holds.current.add(why);
+    holds.current.delete(why);
+    if (holds.current.size) return;
+    held.current.forEach(arrive);
+    held.current = [];
+  };
   useEffect(() => {
     let k = 0;
     let timer: ReturnType<typeof setTimeout>;
@@ -224,7 +240,8 @@ export function useTrack({ embedded }: { embedded?: boolean } = {}) {
       timer = setTimeout(() => {
         const c = CHANGES[k++];
         if (!c) return;
-        setIncoming((q) => (q.includes(c) ? q : [...q, c]));
+        if (holds.current.size) held.current.push(c);
+        else arrive(c);
         next(EVERY);
       }, wait);
     };
@@ -232,12 +249,26 @@ export function useTrack({ embedded }: { embedded?: boolean } = {}) {
     return () => clearTimeout(timer);
   }, []);
 
-  const letIn = () => {
-    const live = incoming.filter((c) => due(c, byN.get(c.n)));
-    setIssues((list) => live.reduce((l, c) => (due(c, l.find((i) => i.n === c.n)) ? patchAll(l, [c.n], c.patch, c.who, c.text) : l), list));
-    setIncoming([]);
+  const waiting = useMemo(() => incoming.filter((c) => due(c, byN.get(c.n))), [incoming, byN]);
+  const inbox = useInbox(issues, waiting, toast);
+  /** Issues in the order they're on screen, the list's or Inbox's: what ↑ ↓, a shift-click range and "the next one" follow. */
+  const order = useMemo(() => (place === 'inbox' ? inbox.entries.map((e) => e.issue.n) : listed), [place, inbox.entries, listed]);
+
+  /** Lets in what's waiting: all of it from the pill, or one issue's as Inbox opens it. */
+  const letIn = (only?: number) => {
+    const live = waiting.filter((c) => only == null || c.n === only);
+    if (!live.length) return;
+    setIssues((list) => live.reduce((l, c) => (due(c, l.find((i) => i.n === c.n)) ? patchAll(l, [c.n], c.patch, c.who, c.text, c.at, c.body) : l), list));
+    setIncoming((q) => (only == null ? [] : q.filter((c) => c.n !== only)));
     mark(live.map((c) => c.n));
   };
+
+  // Open from Inbox, by a click, a key or the panel's arrows: its waiting changes come in, and it's read.
+  useEffect(() => {
+    if (place !== 'inbox' || open == null) return;
+    letIn(open);
+    inbox.read(open);
+  }, [place, open]);
 
   const toggle = (st: Status) =>
     setFolded((f) => {
@@ -267,6 +298,7 @@ export function useTrack({ embedded }: { embedded?: boolean } = {}) {
     setOpen(null);
     setFilter(NO_FILTER);
     setIncoming([]);
+    inbox.reset();
     toast({ title: 'Sample issues restored' });
   };
 
@@ -299,8 +331,10 @@ export function useTrack({ embedded }: { embedded?: boolean } = {}) {
     create,
     comment,
     move,
-    incoming: incoming.filter((c) => due(c, byN.get(c.n))).length,
+    incoming: waiting.length,
     letIn,
+    hold,
+    inbox,
     fresh,
     reset,
   };

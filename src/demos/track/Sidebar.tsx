@@ -74,7 +74,9 @@ export function Sidebar({ track, onSearch, onNewIssue, onGo, onHide, hideRef, ba
           <Item icon={SquarePen} onClick={onNewIssue}>
             New issue
           </Item>
-          <Item icon={Inbox}>Inbox</Item>
+          <Item icon={Inbox} current={at('inbox')} onClick={() => go('inbox')} meta={track.inbox.unread || undefined}>
+            Inbox
+          </Item>
           <Item icon={CircleUserRound} current={at('mine')} onClick={() => go('mine')}>
             My issues
           </Item>
@@ -134,9 +136,11 @@ type ItemProps = {
   current?: boolean;
   /** None: a place Track doesn't build, shown where it would be. */
   onClick?: () => void;
+  /** At the row's end: how many are unread there. */
+  meta?: number;
 };
 
-function Item({ icon: Icon, children, sub, current, onClick }: ItemProps) {
+function Item({ icon: Icon, children, sub, current, onClick, meta }: ItemProps) {
   return (
     <li>
       <button
@@ -149,6 +153,11 @@ function Item({ icon: Icon, children, sub, current, onClick }: ItemProps) {
       >
         <Icon {...ic} />
         <span className={s.label}>{children}</span>
+        {meta != null && (
+          <span className={s.meta} aria-label={`${meta} unread`}>
+            {meta}
+          </span>
+        )}
       </button>
     </li>
   );

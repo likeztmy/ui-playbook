@@ -28,7 +28,13 @@ export const DETAILS: Record<number, Detail> = {
   43: { parent: 48, cycle: CYCLE, estimate: 3, prs: [{ repo: 'shop-web', number: 1284, title: 'Delivery estimate on product and cart', state: 'open', checks: { passed: 14, total: 14 }, review: 'approved' }], history: [{ who: 'github', text: 'linked shop-web #1284', at: '2026-10-27T11:00' }, { who: 'tom', text: 'approved shop-web #1284', at: '2026-10-28T07:30' }] },
   40: { parent: 48, cycle: CYCLE, estimate: 2, prs: [{ repo: 'shop-ios', number: 476, title: 'Say what to try when a payment is declined', state: 'open', checks: { passed: 9, total: 9 }, review: 'waiting' }], history: [{ who: 'github', text: 'linked shop-ios #476', at: '2026-10-27T12:45' }] },
   64: { parent: 48, cycle: CYCLE, estimate: 1 },
-  54: { parent: 48, cycle: CYCLE, estimate: 3, due: '2026-11-04' },
+  54: {
+    parent: 48,
+    cycle: CYCLE,
+    estimate: 3,
+    due: '2026-11-04',
+    history: [{ who: 'tom', text: 'commented', at: '2026-10-27T17:45', body: 'Does this cover the app too? The iOS cart lives on the phone until checkout.' }],
+  },
   51: {
     cycle: CYCLE,
     due: '2026-10-29',
