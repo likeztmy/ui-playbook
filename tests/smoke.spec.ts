@@ -66,6 +66,8 @@ test('the Skill covers every page', async ({ request }) => {
     expect(index, `SKILL.md lists ${name}`).toContain(`(${name})`);
     const ref = await request.get(`/skill/ui-playbook/${name}`);
     expect(ref.ok(), name).toBe(true);
-    expect(await ref.text()).toContain(`From https://ui-playbook.suspense.site${href(e)}`);
+    const text = await ref.text();
+    expect(text).toContain(`From https://ui-playbook.suspense.site${href(e)}`);
+    expect(text.split('\n')[2], `${name} leads with its summary`).toBe(e.summary);
   }
 });

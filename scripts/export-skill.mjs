@@ -89,7 +89,8 @@ const index = [];
 for (const p of pages) {
   await page.setContent(readFileSync(p.file, 'utf8'));
   const title = (await page.textContent('h1'))?.trim();
-  const summary = (await page.textContent('[data-body]').then(() => page.locator('header p').last().textContent()))?.trim();
+  // The page's own header, not one inside a demo.
+  const summary = (await page.locator('header:has(~ [data-body]) > p').last().textContent())?.trim();
   const body = await page.evaluate(toMarkdown, SITE);
   // A principle leads with its rule in bold: that sentence is what the index promises.
   const rule = p.kind === 'principle' ? body.match(/^\*\*(.+?)\*\*/m)?.[1] : null;
