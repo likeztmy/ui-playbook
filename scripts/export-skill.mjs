@@ -115,19 +115,23 @@ Each reference is one page of ${SITE}: a component's kinds, anatomy, states, com
 or a principle's rule, details and where it doesn't apply. Demos on the site are given here as their
 verdicts: **Prefer** is what to build, **Avoid** is the mistake it replaces.
 
-## Floors
+## Floor and defaults
 
-Every screen meets these, whichever pages you read. Each is a number or a test you can check.
+One floor every screen meets, whichever pages you read:
 
 - **Text holds 4.5:1** against what it sits on: muted and secondary text too, ids, dates, counts
-  and hints included ([Lightness first](references/principle-lightness-first.md)).
-- **Interface text is 13px or more**; a short label may be 12px, and nothing is smaller
-  ([Set reading text for the reader](references/principle-reading-text.md)).
-- **The page and its panels are white or a plain grey.** Hue goes on the primary action, the
-  selection and status ([Grey until it matters](references/principle-grey-until-it-matters.md)).
-- **Every line of copy names a thing, an action or a state.** A line that could be swapped for any
-  other and do the same job, such as an eyebrow or a slogan, is left out
+  and hints included. This is WCAG 2.2 AA ([Lightness first](references/principle-lightness-first.md)).
+
+Three defaults for the working screens of a tool, each with where it gives way:
+
+- **Interface text is 13–14px**, a short label 12px. Smaller only when the brief asks for a dense
+  view ([Set reading text for the reader](references/principle-reading-text.md)).
+- **The page and its panels are white or a plain grey**, and hue goes on the primary action, the
+  selection and status. A welcome screen, an empty state or a marketing page may carry colour
   ([Grey until it matters](references/principle-grey-until-it-matters.md)).
+- **Every line of copy names a thing, an action or a state.** A line that could be swapped for any
+  other and do the same job, such as an eyebrow or a slogan, belongs on a marketing page, not in
+  the tool ([Grey until it matters](references/principle-grey-until-it-matters.md)).
 
 ## Steps
 
@@ -135,7 +139,7 @@ Every screen meets these, whichever pages you read. Each is a number or a test y
    uses, and the principles its interactions touch.
 2. Read those references in full before writing the UI.
 3. Build to them: the kinds, states, focus and copy each one names.
-4. Before you finish, check the result against the Floors, then against each page's Common mistakes
+4. Before you finish, check the result against the floor and the defaults, then against each page's Common mistakes
    and When it doesn't apply.
 
 ## Components
