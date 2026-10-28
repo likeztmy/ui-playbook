@@ -1,114 +1,67 @@
-// The owner's blind picks: a local page showing one pair of builds at a time, the same task walked
-// by both arms, screenshots step by step and side by side. Which side is which arm is decided once
-// per pair and kept server-side; nothing on the page or in its URLs names an arm.
+// The owner's blind picks, as an Artifact page: one pair at a time, the same task walked by both
+// arms, screenshots step by step and side by side. Which side is which arm is decided once per
+// pair and kept in $EVAL_RUNS/picks.json; the page and its file names only say p3/L.
 //
-//   node eval/review.mjs          then open http://localhost:4400
+//   node eval/review.mjs <out dir>     writes index.html and img/ there, to publish as an Artifact
 //
-// Picks are written to $EVAL_RUNS/picks.json as they're made.
-import { createServer } from 'node:http';
-import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+// Picks are saved in the Artifact's db (picks/<pair id>: {pick: left|right|tie|both-bad, note}).
+import { execFileSync } from 'node:child_process';
+import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { join } from 'node:path';
 
 const RUNS = process.env.EVAL_RUNS ?? join(homedir(), 'code/ui-playbook-eval-runs');
-const PICKS = join(RUNS, 'picks.json');
+const MAP = join(RUNS, 'picks.json');
 const TASKS = new URL('./tasks/', import.meta.url).pathname;
-const saved = existsSync(PICKS) ? JSON.parse(readFileSync(PICKS, 'utf8')) : { sides: {}, picks: {} };
+const out = process.argv[2];
+if (!out) throw new Error('usage: node eval/review.mjs <out dir>');
 
-// A pair: run n of a task in each arm, both walked.
-const pairs = readdirSync(RUNS, { withFileTypes: true })
+// Pair ids stay put as pairs are added, so a pick never moves to another pair.
+const map = existsSync(MAP) ? JSON.parse(readFileSync(MAP, 'utf8')) : {};
+map.sides ??= {};
+map.ids ??= {};
+const walked = readdirSync(RUNS, { withFileTypes: true })
   .filter((d) => d.isDirectory() && !d.name.startsWith('_'))
-  .flatMap((d) => {
-    const ns = readdirSync(join(RUNS, d.name)).filter((f) => /^a-\d+$/.test(f)).map((f) => f.slice(2));
-    return ns.filter((n) => existsSync(join(RUNS, d.name, `b-${n}.run/walk.json`)) && existsSync(join(RUNS, d.name, `a-${n}.run/walk.json`))).map((n) => ({ task: d.name, n }));
-  })
-  .map((p) => {
-    const id = `${p.task}/${p.n}`;
-    saved.sides[id] ??= Math.random() < 0.5 ? ['a', 'b'] : ['b', 'a'];
-    return { ...p, id, sides: saved.sides[id] };
-  });
-writeFileSync(PICKS, JSON.stringify(saved, null, 2));
-
-const shots = (p, side) => {
-  const dir = join(RUNS, p.task, `${p.sides[side]}-${p.n}.run/shots`);
-  return existsSync(dir) ? readdirSync(dir).filter((f) => f.endsWith('.png')).sort() : [];
-};
-const step = (f) => f.replace(/^\d+-/, '').replace(/\.png$/, '').replace(/-/g, ' ');
-
-function view(i) {
-  const p = pairs[i];
-  const brief = readFileSync(join(TASKS, `${p.task}.md`), 'utf8').replace(/^---[\s\S]*?---\n/, '');
-  const [L, R] = [shots(p, 0), shots(p, 1)];
-  const names = [...new Set([...L, ...R].map(step))];
-  const cell = (list, side, name) => {
-    const f = list.find((x) => step(x) === name);
-    return f ? `<a href="/img/${i}/${side}/${f}" target="_blank"><img src="/img/${i}/${side}/${f}" alt="${side ? 'Right' : 'Left'}: ${name}" loading="lazy"></a>` : '<div class="none">Not reached</div>';
-  };
-  const pick = saved.picks[p.id];
-  const choice = (v, label) => `<button type="submit" name="pick" value="${v}"${pick?.pick === v ? ' aria-pressed="true"' : ''}>${label}</button>`;
-  return `<!doctype html><html lang="en"><meta charset="utf-8"><title>Pair ${i + 1} of ${pairs.length}</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-  :root { color-scheme: light dark; --line: color-mix(in oklch, currentColor 14%, transparent); font: 14px/1.5 system-ui, sans-serif; }
-  body { margin: 0; background: Canvas; color: CanvasText; }
-  header, form { position: sticky; z-index: 1; background: Canvas; display: flex; gap: 12px; align-items: center; padding: 10px 16px; }
-  header { top: 0; border-bottom: 1px solid var(--line); }
-  form { bottom: 0; border-top: 1px solid var(--line); flex-wrap: wrap; }
-  h1 { font-size: 15px; margin: 0; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  header span { white-space: nowrap; color: GrayText; }
-  details { padding: 8px 16px; border-bottom: 1px solid var(--line); }
-  details pre { white-space: pre-wrap; font: inherit; max-width: 720px; }
-  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; padding: 16px; }
-  .side { font-weight: 600; position: sticky; top: 49px; background: Canvas; padding: 4px 0; }
-  .step { grid-column: 1 / -1; color: GrayText; margin-top: 8px; border-top: 1px solid var(--line); padding-top: 8px; }
-  img { width: 100%; display: block; border-radius: 6px; outline: 1px solid var(--line); }
-  .none { aspect-ratio: 16 / 10; display: grid; place-items: center; border: 1px dashed var(--line); border-radius: 6px; color: GrayText; }
-  button, a.nav { font: inherit; padding: 6px 12px; border-radius: 6px; border: 1px solid var(--line); background: Canvas; color: CanvasText; text-decoration: none; cursor: pointer; }
-  button[aria-pressed="true"] { background: CanvasText; color: Canvas; }
-  input { flex: 1; min-width: 200px; font: inherit; padding: 6px 10px; border-radius: 6px; border: 1px solid var(--line); background: Canvas; color: CanvasText; }
-  a.nav[aria-disabled="true"] { pointer-events: none; opacity: 0.4; }
-</style>
-<header>
-  <h1>Pair ${i + 1} of ${pairs.length} · ${brief.match(/^# (.+)/m)?.[1] ?? p.task}</h1>
-  <span>${Object.keys(saved.picks).length} picked</span>
-  <a class="nav" href="/${i - 1}" aria-disabled="${i === 0}">Previous</a>
-  <a class="nav" href="/${i + 1}" aria-disabled="${i === pairs.length - 1}">Next</a>
-</header>
-<details><summary>Brief</summary><pre>${brief.replace(/</g, '&lt;')}</pre></details>
-<div class="grid">
-  <div class="side">Left</div><div class="side">Right</div>
-  ${names.map((n) => `<div class="step">${n}</div>${cell(L, 0, n)}${cell(R, 1, n)}`).join('')}
-</div>
-<form method="post" action="/${i}">
-  ${choice('left', 'Left is better')}${choice('right', 'Right is better')}${choice('tie', 'Tie')}${choice('both-bad', 'Both bad')}
-  <input name="note" placeholder="Note (optional)" value="${(pick?.note ?? '').replace(/"/g, '&quot;')}" aria-label="Note">
-</form>
-</html>`;
+  .flatMap((d) =>
+    readdirSync(join(RUNS, d.name))
+      .filter((f) => /^a-\d+$/.test(f))
+      .map((f) => f.slice(2))
+      .filter((n) => ['a', 'b'].every((arm) => existsSync(join(RUNS, d.name, `${arm}-${n}.run/walk.json`))))
+      .map((n) => `${d.name}/${n}`),
+  )
+  .sort();
+for (const key of walked) {
+  map.sides[key] ??= Math.random() < 0.5 ? ['a', 'b'] : ['b', 'a'];
+  map.ids[key] ??= `p${Object.keys(map.ids).length + 1}`;
 }
+writeFileSync(MAP, JSON.stringify(map, null, 2) + '\n');
 
-createServer((req, res) => {
-  const [, a, b, c] = req.url.split('/');
-  if (a === 'img') {
-    const p = pairs[Number(b)];
-    const file = join(RUNS, p.task, `${p.sides[Number(c)]}-${p.n}.run/shots`, decodeURIComponent(req.url.split('/')[4]));
-    if (!existsSync(file)) return res.writeHead(404).end();
-    return res.writeHead(200, { 'content-type': 'image/png' }).end(readFileSync(file));
-  }
-  const i = Math.min(Math.max(Number(a) || 0, 0), pairs.length - 1);
-  if (!pairs.length) return res.end('No walked pairs yet.');
-  if (req.method === 'POST') {
-    let body = '';
-    req.on('data', (d) => (body += d));
-    req.on('end', () => {
-      const f = new URLSearchParams(body);
-      const p = pairs[i];
-      const side = { left: 0, right: 1 }[f.get('pick')];
-      // Stored as the arm that won, so the report needs no mapping.
-      saved.picks[p.id] = { pick: f.get('pick'), winner: side == null ? f.get('pick') : p.sides[side], note: f.get('note') ?? '', at: new Date().toISOString() };
-      writeFileSync(PICKS, JSON.stringify(saved, null, 2));
-      res.writeHead(303, { location: `/${Math.min(i + 1, pairs.length - 1)}` }).end();
+rmSync(out, { recursive: true, force: true });
+const step = (f) => f.replace(/^\d+-/, '').replace(/\.png$/, '').replace(/-/g, ' ');
+const pairs = walked.map((key) => {
+  const [task, n] = key.split('/');
+  const id = map.ids[key];
+  const brief = readFileSync(join(TASKS, `${task}.md`), 'utf8').replace(/^---[\s\S]*?---\n/, '').trim();
+  const sides = map.sides[key].map((arm, i) => {
+    const dir = join(RUNS, task, `${arm}-${n}.run/shots`);
+    const files = existsSync(dir) ? readdirSync(dir).filter((f) => f.endsWith('.png')).sort() : [];
+    const dest = join(out, 'img', id, 'LR'[i]);
+    mkdirSync(dest, { recursive: true });
+    return files.map((f) => {
+      const jpg = f.replace(/\.png$/, '.jpg');
+      execFileSync('sips', ['-s', 'format', 'jpeg', '-s', 'formatOptions', '72', join(dir, f), '--out', join(dest, jpg)], { stdio: 'ignore' });
+      return { name: step(f), src: `img/${id}/${'LR'[i]}/${jpg}` };
     });
-    return;
-  }
-  res.writeHead(200, { 'content-type': 'text/html; charset=utf-8' }).end(view(i));
-}).listen(4400, () => console.log(`review: ${pairs.length} pairs at http://localhost:4400`));
+  });
+  const names = [...new Set(sides.flat().map((s) => s.name))];
+  return {
+    id,
+    title: brief.match(/^# (.+)/m)?.[1] ?? task,
+    brief: brief.replace(/^# .+\n+/, ''),
+    steps: names.map((name) => ({ name, L: sides[0].find((s) => s.name === name)?.src ?? null, R: sides[1].find((s) => s.name === name)?.src ?? null })),
+  };
+});
+
+const data = JSON.stringify(pairs).replace(/</g, '\\u003c');
+writeFileSync(join(out, 'index.html'), readFileSync(new URL('./review.html', import.meta.url), 'utf8').replace('/*DATA*/[]', data));
+console.log(`review: ${pairs.length} pairs → ${out}`);
