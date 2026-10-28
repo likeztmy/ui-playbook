@@ -1,7 +1,7 @@
-// How much colour and decoration the first screen carries: the measures behind
-// /principles/grey-until-it-matters. Numbers, not pass or fail, until the owner's picks set the lines.
+// What the first screen carries: hues, tinted surfaces, decoration, small or faint text, eyebrow
+// lines and boxes. Numbers, not pass or fail, until the owner's picks set the lines.
 
-/** Hue families in the chrome, and the share of the screen under tinted surfaces and under decoration. */
+/** Hue families, the shares of the screen under tint and decoration, of the text that is small or faint, and counts of eyebrows and boxes. */
 export const look = (page) =>
   page.evaluate(() => {
     // Any computed colour to sRGB bytes, by painting it: covers rgb(), oklch(), color() and the rest.
@@ -20,7 +20,7 @@ export const look = (page) =>
       const s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b);
       const A = 1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s;
       const B = 0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s;
-      const out = { c: Math.hypot(A, B), h: ((Math.atan2(B, A) * 180) / Math.PI + 360) % 360, alpha: a8 / 255 };
+      const out = { c: Math.hypot(A, B), h: ((Math.atan2(B, A) * 180) / Math.PI + 360) % 360, alpha: a8 / 255, y: 0.2126 * r + 0.7152 * g + 0.0722 * b };
       seen.set(css, out);
       return out;
     };
@@ -74,5 +74,63 @@ export const look = (page) =>
         if (surface && !surface.matches(media) && oklch(getComputedStyle(surface).backgroundColor).c > 0.004) tinted++;
         if (stack.some((el) => el !== document.body && el !== document.documentElement && decorative(el))) decoration++;
       }
-    return { hueFamilies: families, hues: sorted, tinted: +(tinted / points).toFixed(3), decoration: +(decoration / points).toFixed(3) };
+
+    // The surface an element sits on: its nearest opaque background, white if none.
+    const under = (el) => {
+      for (let e = el; e; e = e.parentElement) {
+        const k = oklch(getComputedStyle(e).backgroundColor);
+        if (k.alpha >= 0.5) return k;
+      }
+      return oklch('#fff');
+    };
+
+    // Text, by characters: how much is under 13px, and how much is under 4.5:1 on its surface.
+    let chars = 0;
+    let small = 0;
+    let faint = 0;
+    let eyebrows = 0;
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    for (let n; (n = walker.nextNode()); ) {
+      const text = n.textContent.trim();
+      const el = n.parentElement;
+      if (!text || !el || el.closest('script, style, noscript') || !onScreen(el)) continue;
+      const cs = getComputedStyle(el);
+      const size = parseFloat(cs.fontSize);
+      const ink = oklch(cs.color);
+      const bg = under(el);
+      const y = ink.alpha * ink.y + (1 - ink.alpha) * bg.y;
+      const ratio = (Math.max(y, bg.y) + 0.05) / (Math.min(y, bg.y) + 0.05);
+      chars += text.length;
+      if (size < 13) small += text.length;
+      if (ratio < 4.5) faint += text.length;
+      // An eyebrow: a spaced-out capitals line of three words or more; one word is a section label.
+      const caps = cs.textTransform === 'uppercase' || (/[A-Z]{2}/.test(text) && text === text.toUpperCase());
+      if (caps && parseFloat(cs.letterSpacing) > 0.05 * size && text.split(/\s+/).length >= 3 && !el.closest('a, button, label, th, [role="columnheader"], [role="tab"]')) eyebrows++;
+    }
+
+    // Boxes: anything 48px or more that draws its own edge, by fill, a full border or a shadow.
+    let boxes = 0;
+    for (const el of document.body.querySelectorAll('*')) {
+      if (el.matches(`${media}, svg, svg *, input, textarea, select, button`) || !onScreen(el)) continue;
+      const r = el.getBoundingClientRect();
+      if (r.width < 48 || r.height < 48) continue;
+      const cs = getComputedStyle(el);
+      const fill = oklch(cs.backgroundColor);
+      const parent = el.parentElement ? under(el.parentElement) : oklch('#fff');
+      const filled = fill.alpha >= 0.5 && (Math.abs(fill.y - parent.y) > 0.005 || Math.abs(fill.c - parent.c) > 0.003);
+      const bordered = ['Top', 'Right', 'Bottom', 'Left'].every((side) => parseFloat(cs[`border${side}Width`]) >= 1 && oklch(cs[`border${side}Color`]).alpha > 0.3);
+      if (filled || bordered || cs.boxShadow !== 'none') boxes++;
+    }
+
+    const share = (n, of) => +(n / of || 0).toFixed(3);
+    return {
+      hueFamilies: families,
+      hues: sorted,
+      tinted: share(tinted, points),
+      decoration: share(decoration, points),
+      smallText: share(small, chars),
+      faintText: share(faint, chars),
+      eyebrows,
+      boxes,
+    };
   });
