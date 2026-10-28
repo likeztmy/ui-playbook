@@ -1,6 +1,6 @@
-import { appeared, lines } from './lib.mjs';
+import { appeared, clickWords, lines } from './lib.mjs';
 
-export default async function walk({ page, url, shot, check, focused }) {
+export default async function walk({ page, url, shot, check, focused, attempt }) {
   await page.goto(url);
   await shot('empty');
   const email = page.getByLabel(/email/i).first();
@@ -31,9 +31,9 @@ export default async function walk({ page, url, shot, check, focused }) {
   await password.fill('ceramics2026');
   // The checkbox's words are part of it: clicking them ticks it.
   const terms = page.getByRole('checkbox').first();
-  await page.getByText(/i agree/i).first().click();
+  await clickWords(page, /i agree/);
   check('label-is-target', await terms.isChecked());
-  if (!(await terms.isChecked())) await terms.check();
+  if (!(await terms.isChecked())) await terms.click({ force: true });
 
   before = await lines(page);
   await page.getByRole('button', { name: /create account/i }).click();
@@ -45,9 +45,19 @@ export default async function walk({ page, url, shot, check, focused }) {
   check('taken-shown', /taken|already|in use|exists|registered/i.test(taken), taken);
   check('focus-not-body', (await focused()) !== 'body', await focused());
 
-  await email.fill('ana.silva@example.com');
-  await page.getByRole('button', { name: /create account/i }).click();
-  await page.getByText(/ana/i).filter({ hasText: /welcome|hi|hello/i }).first().waitFor({ timeout: 4000 });
-  await shot('welcome');
-  check('welcome', true);
+  await attempt('welcome', async () => {
+    await email.fill('ana.silva@example.com');
+    await page.getByRole('button', { name: /create account/i }).click();
+    // The person's name on a screen that greets them, however the build splits the words.
+    await page.waitForFunction(
+      () =>
+        /ana/i.test(document.body.innerText) &&
+        /welcome|hello|hi,|you're in|you’re in|ready/i.test(document.body.innerText) &&
+        !document.querySelector('input[type="password"]'),
+      null,
+      { timeout: 4000 },
+    );
+    await shot('welcome');
+    check('welcome', true);
+  });
 }

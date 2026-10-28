@@ -68,7 +68,7 @@ or the playbook. Named controls let one script walk every build.
 | App | A shop's product grid, product page and cart |
 
 Each task has a Playwright script that walks it through its states (open, type, fail, load, undo…)
-and captures screenshots and a short video for the judges.
+and captures screenshots for the judges.
 
 ## 3. Arms and runs
 
@@ -106,10 +106,10 @@ and captures screenshots and a short video for the judges.
 | Destructive actions offer Undo or confirm the decision by name | script + DOM text | Toast, Dialog |
 
 **Model judge:** blind pairs (A/B order swapped per pair to cancel position bias), the task's
-screenshots and video, a 10-item checklist per task, a preference with "tie" and "both bad". Two
+screenshots, a 10-item checklist per task, a preference with "tie" and "both bad". Two
 judges: Claude, plus GPT through Codex.
 
-**Owner's blind picks:** a local review page shows one pair at a time, live and side by side,
+**Owner's blind picks:** a local review page shows one pair's screenshots at a time, step by step and side by side,
 without arms named; pick, tie or both bad, with an optional note. About 40 pairs, chosen across
 tasks. The judge's agreement with these picks, per dimension, says where it can be trusted.
 

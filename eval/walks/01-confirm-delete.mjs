@@ -33,7 +33,7 @@ export default async function walk({ page, url, shot, check, focused }) {
   if (await field.count()) await field.first().fill('Q4 roadmap');
   await shot('about-to-delete');
   await d.getByRole('button', { name: /delete|remove/i }).last().click();
-  await page.getByText(/^projects$/i).first().waitFor();
+  await page.getByText(/^projects$/i).filter({ visible: true }).first().waitFor();
   await page.waitForTimeout(400);
   await shot('projects');
   check('deleted', !(await page.getByText(/q4 roadmap/i).filter({ visible: true }).count()) || /deleted|removed/i.test(await page.innerText('body')));
