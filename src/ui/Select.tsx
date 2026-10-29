@@ -58,9 +58,9 @@ export function Select({
           <BaseSelect.Value className={s.value} placeholder={placeholder} />
           <BaseSelect.Icon className={s.chevron}>
             {chevron === 'updown' ? (
-              <ChevronsUpDown size={16} strokeWidth={1.5} nonScalingStroke aria-hidden />
+              <ChevronsUpDown size={16} aria-hidden />
             ) : (
-              <ChevronDown size={16} strokeWidth={1.5} nonScalingStroke aria-hidden />
+              <ChevronDown size={16} aria-hidden />
             )}
           </BaseSelect.Icon>
         </BaseSelect.Trigger>
@@ -68,7 +68,7 @@ export function Select({
           <BaseSelect.Positioner className={s.positioner} sideOffset={6} alignItemWithTrigger={alignItemWithTrigger}>
             <BaseSelect.Popup className={cx(m.popup, s.popup)}>
               <BaseSelect.ScrollUpArrow className={s.scrollArrow}>
-                <ChevronUp size={14} strokeWidth={1.5} nonScalingStroke aria-hidden />
+                <ChevronUp size={14} aria-hidden />
               </BaseSelect.ScrollUpArrow>
               <BaseSelect.List className={s.list}>
                 {groups.map((g, i) => (
@@ -89,7 +89,7 @@ export function Select({
                 ))}
               </BaseSelect.List>
               <BaseSelect.ScrollDownArrow className={s.scrollArrow}>
-                <ChevronDown size={14} strokeWidth={1.5} nonScalingStroke aria-hidden />
+                <ChevronDown size={14} aria-hidden />
               </BaseSelect.ScrollDownArrow>
             </BaseSelect.Popup>
           </BaseSelect.Positioner>

@@ -63,13 +63,13 @@ function List() {
     const Icon = t.type ? ICON[t.type as ToastType] : undefined;
     return (
       <Toast.Root key={t.id} toast={t} className={s.toast} swipeDirection="down">
-        {Icon && <Icon className={s.icon} size={16} strokeWidth={1.5} nonScalingStroke aria-hidden />}
+        {Icon && <Icon className={s.icon} size={16} aria-hidden />}
         <Toast.Title className={s.title} />
         <span className={s.actions}>
           {t.actionProps && <Toast.Action className={buttonClass({})} />}
           <Tip label="Dismiss">
             <Toast.Close render={<Button variant="ghost" icon aria-label="Dismiss" />}>
-              <X size={16} strokeWidth={1.5} nonScalingStroke aria-hidden />
+              <X size={16} aria-hidden />
             </Toast.Close>
           </Tip>
         </span>

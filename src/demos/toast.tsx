@@ -219,7 +219,7 @@ export function ToastLimit() {
 export function ToastPreview() {
   return (
     <div className={s.toastStill}>
-      <CircleCheck className={s.toastStillIcon} size={16} strokeWidth={1.5} nonScalingStroke aria-hidden />
+      <CircleCheck className={s.toastStillIcon} size={16} aria-hidden />
       <span>Deleted “Q4 roadmap”</span>
       <Button>Undo</Button>
     </div>

@@ -72,7 +72,7 @@ export function Line({ c, post, rowRef, pin }: Props) {
             </span>
           </span>
           <span className={s.time}>
-            {c.starred && <Star size={12} strokeWidth={1.5} nonScalingStroke className={s.starred} aria-label="Starred" />}
+            {c.starred && <Star size={12} className={s.starred} aria-label="Starred" />}
             {c.time}
           </span>
         </button>

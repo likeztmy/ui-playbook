@@ -46,14 +46,14 @@ function Item({ row, place }: { row: Row; place: Placement }) {
       {tick}
     </span>
   );
-  const chevron = row.submenu && <ChevronRight className={ms.chevron} size={16} strokeWidth={1.5} nonScalingStroke aria-hidden />;
+  const chevron = row.submenu && <ChevronRight className={ms.chevron} size={16} aria-hidden />;
   // B: a checked row shows the check where its icon would be.
   const showIcon = Icon && !(place === 'replace' && row.checked);
   return (
     <div className={cx(ms.item, row.danger && ms.danger)}>
       {place === 'leading' && (checkable ? slot : <span className={c.gutter} />)}
       {place === 'replace' && row.checked && <span className={ms.check}>{tick}</span>}
-      {showIcon && <Icon className={ms.icon} size={16} strokeWidth={1.5} nonScalingStroke aria-hidden />}
+      {showIcon && <Icon className={ms.icon} size={16} aria-hidden />}
       <span className={ms.text}>{row.label}</span>
       {/* C, as live: the check right after the label's space, before the shortcut. */}
       {place === 'afterLabel' && row.checked && <span className={ms.check}>{tick}</span>}

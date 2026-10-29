@@ -78,9 +78,9 @@ export function RowContent({ icon: Icon, keys, checked, submenu, children }: Row
   return (
     <>
       {checked !== undefined && <CheckSlot on={checked} />}
-      {Icon && <Icon className={s.icon} size={16} strokeWidth={1.5} nonScalingStroke aria-hidden />}
+      {Icon && <Icon className={s.icon} size={16} aria-hidden />}
       <span className={s.text}>{children}</span>
-      {submenu && <ChevronRight className={s.chevron} size={16} strokeWidth={1.5} nonScalingStroke aria-hidden />}
+      {submenu && <ChevronRight className={s.chevron} size={16} aria-hidden />}
       {keys && <Keys keys={keys} />}
     </>
   );

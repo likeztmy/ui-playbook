@@ -84,7 +84,7 @@ export function PostExample() {
       <div className={s.wide}>
         <div className={s.head}>
           <a className={buttonClass({ variant: 'ghost', size: 'sm' })} href="/practice/mail/app">
-            <Maximize2 size={14} strokeWidth={1.5} nonScalingStroke aria-hidden />
+            <Maximize2 size={14} aria-hidden />
             Open full screen
           </a>
         </div>

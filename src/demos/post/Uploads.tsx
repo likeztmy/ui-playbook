@@ -33,7 +33,7 @@ export function Uploads({ files, onRemove }: { files: DraftFile[]; onRemove: (id
                 aria-label={`${up ? 'Cancel upload of' : 'Remove'} ${f.name}`}
                 onClick={() => onRemove(f.id)}
               >
-                <X size={14} strokeWidth={1.5} nonScalingStroke aria-hidden />
+                <X size={14} aria-hidden />
               </button>
             </Tip>
             {up && (

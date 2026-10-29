@@ -8,7 +8,7 @@ import { Compare, Frame, Gallery } from './shell';
 import m from './mistakes.module.scss';
 import s from './demos.module.scss';
 
-const searchIcon = <Search size={16} strokeWidth={1.5} nonScalingStroke aria-hidden />;
+const searchIcon = <Search size={16} aria-hidden />;
 
 const validateEmail = (value: unknown) => {
   const v = String(value ?? '').trim();

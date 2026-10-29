@@ -34,7 +34,7 @@ function MoreMenu({ title }: { title: string }) {
     <Menu.Root>
       <Tip label="More">
         <Menu.Trigger render={<Button variant="ghost" size="sm" icon aria-label={`More for ${title}`} />}>
-          <Ellipsis size={16} strokeWidth={1.5} nonScalingStroke aria-hidden />
+          <Ellipsis size={16} aria-hidden />
         </Menu.Trigger>
       </Tip>
       <Menu.Popup align="end">
@@ -57,7 +57,7 @@ function Replayable({ children }: { children: (key: number) => ReactNode }) {
     <div className={cx(s.stack, s.cardArea)}>
       {children(n)}
       <Button size="sm" variant="ghost" onClick={() => setN((x) => x + 1)}>
-        <RotateCcw size={14} strokeWidth={1.5} nonScalingStroke aria-hidden />
+        <RotateCcw size={14} aria-hidden />
         Replay
       </Button>
     </div>

@@ -14,5 +14,5 @@ const ICON: Record<Status, LucideIcon> = {
 
 export function StatusIcon({ status }: { status: Status }) {
   const Icon = ICON[status];
-  return <Icon className={s.status} data-status={status} size={14} strokeWidth={1.5} nonScalingStroke aria-hidden />;
+  return <Icon className={s.status} data-status={status} size={14} aria-hidden />;
 }

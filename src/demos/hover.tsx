@@ -106,7 +106,7 @@ function SubmenuDemo({ aim }: { aim?: boolean }) {
               onMouseMove={(e) => onRowMove(r, e)}
             >
               <span className={ms.text}>{r}</span>
-              {r === 'Move to' && <ChevronRight className={ms.chevron} size={16} strokeWidth={1.5} nonScalingStroke aria-hidden />}
+              {r === 'Move to' && <ChevronRight className={ms.chevron} size={16} aria-hidden />}
             </div>
           ))}
         </div>
@@ -178,7 +178,7 @@ function FileTile({ name, owner }: { name: string; owner: 'content' | 'card' }) 
     <div className={s.tile} {...(owner === 'card' ? watch : {})}>
       <div className={s.tileContent} {...(owner === 'content' ? watch : {})}>
         <span className={s.tileThumb} aria-hidden>
-          <FileText size={20} strokeWidth={1.5} nonScalingStroke />
+          <FileText size={20} />
         </span>
         <span className={s.tileName}>{name}</span>
       </div>
@@ -240,7 +240,7 @@ export function HoverPreview() {
         {ROWS.slice(0, 4).map((r) => (
           <div key={r} className={ms.item} data-highlighted={r === 'Move to' ? '' : undefined}>
             <span className={ms.text}>{r}</span>
-            {r === 'Move to' && <ChevronRight className={ms.chevron} size={16} strokeWidth={1.5} nonScalingStroke />}
+            {r === 'Move to' && <ChevronRight className={ms.chevron} size={16} />}
           </div>
         ))}
       </div>

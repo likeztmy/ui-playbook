@@ -25,6 +25,7 @@ import { SheetPreview } from '../demos/sheet';
 import { RatioPreview } from '../demos/ratio';
 import { FasterPreview } from '../demos/faster';
 import { TooltipPreview } from '../demos/tooltip';
+import { IconPreview } from '../demos/icon';
 import { DialogPreview } from '../demos/dialog';
 import { PopoverPreview } from '../demos/popover';
 import { InputPreview } from '../demos/input';
@@ -85,6 +86,7 @@ const groups = [
                   {e.slug === 'menu' && <MenuPreview client:visible />}
                   {e.slug === 'toolbar' && <ToolbarPreview client:visible />}
                   {e.slug === 'tooltip' && <TooltipPreview client:visible />}
+                  {e.slug === 'icon' && <IconPreview />}
                   {e.slug === 'dialog' && <DialogPreview />}
                   {e.slug === 'popover' && <PopoverPreview />}
                   {e.slug === 'input' && <InputPreview client:visible />}

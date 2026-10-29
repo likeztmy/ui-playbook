@@ -1,0 +1,78 @@
+---
+layout: ../../layouts/Entry.astro
+slug: icon
+---
+import { IconLive, IconSymbols, IconLabels, IconWeight, IconDrawn } from '../../demos/icon';
+
+<IconLive client:visible />
+
+## When to use
+
+An icon sits beside a word to make a row, a menu item or a place quicker to find once it's familiar. It stands alone only on the few controls convention has already fixed (close, search, more, a toolbar's tools), and then names itself in a tooltip and an `aria-label`. Navigation keeps its words.
+
+## Details
+
+### A symbol isn't an icon
+
+<IconSymbols client:visible />
+
+### An emoji is someone else's picture
+
+Unicode encodes which emoji a character is, not what it looks like; every vendor draws its own, and the standard says its shape "can vary significantly" ([UTS #51](https://www.unicode.org/reports/tr51/)). The drawing isn't the main problem, though. Shown the same rendering on the same platform, a quarter of pairs of people disagreed on whether a face emoji was positive, neutral or negative; switching vendors added little ([Miller et al., 2016](https://doi.org/10.1609/icwsm.v10i1.14757)), and putting it in a sentence didn't help ([2017](https://doi.org/10.1609/icwsm.v11i1.14901)). As an icon, it means something a little different to each reader, in colours from outside the product.
+
+### Most icons need their word
+
+<IconLabels client:visible />
+
+What makes an icon readable is mostly how well it matches the function and how familiar it is; how realistic the drawing is matters less ([Isherwood et al., 2007](https://doi.org/10.1518/001872007X200102)). A clever new glyph starts with no familiarity at all, so the library's standard one wins even when it's plainer. And when the icon stands in for navigation, words matter more still: navigation hidden behind an icon was used 27% of the time on desktop against 48% when shown, and tasks took at least 39% longer ([NN/g, 2016](https://www.nngroup.com/articles/hamburger-menus/)).
+
+### Sized to the text, it's as heavy as the text
+
+<IconWeight client:visible />
+
+Lucide's line scales with the icon, so the size is the weight. Set an icon to the text's size and it matches Regular; Lucide's `absoluteStrokeWidth`, which keeps the line at 2px, turns a 16px icon as heavy as SemiBold. Apple and Material reach the same match another way, with symbol weights paired to their fonts' ([SF Symbols](https://developer.apple.com/design/human-interface-guidelines/sf-symbols), [Material](https://m3.material.io/styles/icons/applying-icons)).
+
+### Drawn for the occasion
+
+<IconDrawn client:visible />
+
+No study has measured what mixing drawings costs. The systems ask for one set anyway, and for a second reason: once every icon shares a grid and a line, a filled one is free to mean *selected*. Mixed in from elsewhere, a solid shape looks selected when it isn't. A logo is the one drawing a product brings of its own: supplied by its owner, or set in type.
+
+## Kinds
+
+- **Beside a word.** Rows, menu items, sidebar places, buttons that need a hint. The word does the explaining; the icon is the quicker cue for next time.
+- **Alone, in an icon button.** The conventional few, named in a tooltip with the same words as the `aria-label`. See [Tooltip](/components/tooltip) and [Toolbar](/components/toolbar).
+- **Status.** A shape per state, read without colour, as the rings in the issue list above: dashed, empty, dotted, ticked.
+- **Decorative.** Next to words that already say it all. Hidden from assistive tech: Lucide sets `aria-hidden` itself unless the icon is given a label.
+
+## Anatomy
+
+| Part | Token | Value |
+| --- | --- | --- |
+| Size beside 14px text | | 16 |
+| Size in dense rows (13px) | | 14 |
+| Size beside 17px text, [Consumer app](/systems/consumer-app) | | 20 |
+| Line | Lucide's own, 2 on its 24 grid | 1.33 at 16 |
+| Gap to the word | `space-2` | 8 |
+| Colour | `currentColor`: `ink-muted`, `ink` when current | |
+| Button around it | `control-sm` / `control-md`, or 44 on touch | 24 / 32 / 44 |
+
+The glyph follows the text; the target follows the system. Padding grows the button, never the icon. Centre it on the line of text, not on the baseline ([Carbon](https://carbondesignsystem.com/elements/icons/usage/)).
+
+## States
+
+At rest, an icon takes its row's muted ink; on hover and when current, the row's full ink, with no colour of its own. A selected place or tab may switch to the filled drawing of the same icon, as Apple, Material and Fluent do. Disabled, it takes `ink-disabled` with its word.
+
+## Common mistakes
+
+- **A typed symbol or an emoji as the icon.** ✓, ↗, ★, ✨: each is read out by its Unicode name and drawn by a font the page didn't choose.
+- **Two libraries on one screen**, or filled and outline mixed at rest. Fill stops meaning selected.
+- **Navigation as icons alone.** A tooltip names it; it doesn't make it findable.
+- **An icon button with no name**, or a decorative icon a screen reader announces.
+- **A 24px icon beside 14px text.** Nearly twice as heavy as the words, it reads before them.
+- **A bigger icon to make a bigger target.** Pad the button instead.
+
+## Copy
+
+- The tooltip and the `aria-label` are the same words, naming the action: **Search**, **New issue**, not *Magnifying glass*.
+- A decorative icon says nothing; its word already said it.

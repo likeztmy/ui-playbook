@@ -79,7 +79,7 @@ function Measured({ children, status, onReplay }: { children: ReactNode; status?
               onReplay();
             }}
           >
-            <RotateCcw size={14} strokeWidth={1.5} nonScalingStroke aria-hidden />
+            <RotateCcw size={14} aria-hidden />
             Replay
           </Button>
         )}

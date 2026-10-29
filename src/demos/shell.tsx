@@ -244,7 +244,7 @@ export function Frame({ label, children, height = 200, className, defaultTheme, 
             className={s.slow}
             onClick={() => onGapsChange(!gaps)}
           >
-            <Ruler size={14} strokeWidth={1.5} nonScalingStroke aria-hidden />
+            <Ruler size={14} aria-hidden />
           </Button>
         </Tip>
       )}

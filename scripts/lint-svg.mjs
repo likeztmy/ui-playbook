@@ -1,6 +1,6 @@
 // Icons come from Lucide (src/ui/icons.tsx), not hand-drawn paths. This
 // fails on any inline <svg> in src/ outside the files listed below, which
-// draw diagrams rather than icons.
+// draw diagrams, or show a drawn icon as the mistake, rather than icons.
 import { readdirSync, readFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
 
@@ -14,10 +14,8 @@ const DIAGRAMS = new Set([
   'src/demos/lightness/Vision.tsx',
   // A street map behind the sheet demos: content, not an icon.
   'src/demos/sheet/Map.tsx',
-  // Track's status and priority marks draw a value (how far along, how pressing), as a chart does:
-  // a circle filled a share of the way round, bars filled to a level. Lucide has no partial fills.
-  'src/demos/track/PriorityIcon.tsx',
-  'src/demos/track/StatusIcon.tsx',
+  // The Icon page's mistake on show: marks an agent drew for its sign-up form, copied as drawn.
+  'src/demos/icon/Drawn.tsx',
 ]);
 
 function* files(dir) {

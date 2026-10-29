@@ -82,7 +82,7 @@ export function TextField({
         {trailing}
       </div>
       <Field.Error className={s.error} match={error ? true : undefined}>
-        <CircleAlert size={14} strokeWidth={1.5} nonScalingStroke aria-hidden />
+        <CircleAlert size={14} aria-hidden />
         {error ?? <Field.Validity>{(v) => v.error}</Field.Validity>}
       </Field.Error>
       {description && <Field.Description className={s.hint}>{description}</Field.Description>}
@@ -95,7 +95,7 @@ export function FieldKey({ keys, className }: { keys: string[]; className?: stri
   return (
     <kbd className={cx(s.key, className)}>
       {keys.map((k, i) =>
-        k === '⌘' ? <Command key={i} size={11} strokeWidth={1.5} nonScalingStroke aria-label="⌘" /> : <span key={i}>{k}</span>,
+        k === '⌘' ? <Command key={i} size={11} aria-label="⌘" /> : <span key={i}>{k}</span>,
       )}
     </kbd>
   );

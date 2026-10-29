@@ -14,7 +14,7 @@ export function QuotedFold({ blocks, quotes }: { blocks: Block[]; quotes?: { fro
   return (
     <>
       <button type="button" className={s.fold} aria-expanded={open} onClick={() => setOpen((o) => !o)}>
-        <ChevronRight size={14} strokeWidth={1.5} nonScalingStroke aria-hidden className={s.chevron} />
+        <ChevronRight size={14} aria-hidden className={s.chevron} />
         {capital(`${open ? 'hide' : 'show'} ${what}`)}
         {quotes && <span className={s.at}>{quotes.at}</span>}
       </button>

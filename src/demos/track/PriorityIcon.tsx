@@ -13,5 +13,5 @@ const ICON: Record<Priority, LucideIcon> = {
 
 export function PriorityIcon({ priority }: { priority: Priority }) {
   const Icon = ICON[priority];
-  return <Icon className={s.priority} data-priority={priority} size={14} strokeWidth={1.5} nonScalingStroke aria-hidden />;
+  return <Icon className={s.priority} data-priority={priority} size={14} aria-hidden />;
 }

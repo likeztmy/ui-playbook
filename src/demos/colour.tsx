@@ -181,7 +181,7 @@ function Sidebar({ redCounts }: { redCounts?: boolean }) {
         </div>
       ))}
       <div className={s.sideAlert} role="status">
-        <CircleAlert size={14} strokeWidth={1.5} nonScalingStroke aria-hidden />
+        <CircleAlert size={14} aria-hidden />
         Payment failed
       </div>
     </div>

@@ -26,7 +26,7 @@ function DraftLine({ d, compose }: { d: Draft; compose: Compose }) {
       <button type="button" className={s.main} onClick={() => compose.open(d)}>
         <span className={s.from} data-from="">
           <span className={s.draft}>
-            <PencilLine size={14} strokeWidth={1.5} nonScalingStroke aria-hidden />
+            <PencilLine size={14} aria-hidden />
             Draft
           </span>
           {to.length > 0 && <span className={s.names}>To {participants(to)}</span>}

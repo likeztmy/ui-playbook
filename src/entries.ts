@@ -44,6 +44,14 @@ export const entries: Entry[] = [
     keywords: ['hint', 'label', 'hover', 'shortcut', 'icon button', 'title'],
   },
   {
+    slug: 'icon',
+    kind: 'component',
+    title: 'Icon',
+    summary: 'From the one library the product uses, sized and weighted like the text beside it. Never a symbol or an emoji, never drawn for the occasion.',
+    details: 5,
+    keywords: ['icons', 'lucide', 'symbol', 'emoji', 'glyph', 'svg', 'stroke', 'icon button', 'aria-label', 'navigation', 'filled', 'outline'],
+  },
+  {
     slug: 'popover',
     kind: 'component',
     title: 'Popover',

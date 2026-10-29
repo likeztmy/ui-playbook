@@ -21,10 +21,10 @@ import {
   type LucideProps,
 } from 'lucide-react';
 
-// Lucide at Precision's icon spec: 16px, a true 1.5px stroke at that size,
-// inheriting the text colour. Decorative unless given a label.
+// Lucide at Precision's icon spec: 16px, Lucide's own stroke (2 on its 24 grid, so 1.33px here,
+// as heavy as 14px Geist), inheriting the text colour. Decorative unless given a label.
 function precision(Icon: LucideIcon) {
-  return (props: LucideProps) => <Icon size={16} strokeWidth={1.5} nonScalingStroke aria-hidden {...props} />;
+  return (props: LucideProps) => <Icon size={16} aria-hidden {...props} />;
 }
 
 export const PointerIcon = precision(MousePointer2);

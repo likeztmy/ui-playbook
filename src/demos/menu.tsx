@@ -233,7 +233,7 @@ const edited = (m: number) =>
 function FileCard({ name, meta }: { name: string; meta: string }) {
   return (
     <span className={s.fileCard}>
-      <FileText size={16} strokeWidth={1.5} nonScalingStroke aria-hidden />
+      <FileText size={16} aria-hidden />
       <span>
         <span className={s.fileName}>{name}</span>
         <span className={s.fileMeta}>{meta}</span>

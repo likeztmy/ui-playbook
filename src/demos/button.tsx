@@ -45,7 +45,7 @@ function DocHeader() {
         <div className={s.docActions}>
           <Tip label="More">
             <Button variant="ghost" icon aria-label="More">
-              <Ellipsis size={16} strokeWidth={1.5} nonScalingStroke aria-hidden />
+              <Ellipsis size={16} aria-hidden />
             </Button>
           </Tip>
           <Button>Preview</Button>

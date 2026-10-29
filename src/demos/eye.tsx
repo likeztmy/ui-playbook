@@ -33,7 +33,7 @@ function Shop({ near }: { near?: boolean }) {
           <span>Journals</span>
         </span>
         <Button variant="ghost" size="sm" aria-label={`Cart, ${count} ${count === 1 ? 'item' : 'items'}`} className={s.shopCart}>
-          <ShoppingBag size={16} strokeWidth={1.5} nonScalingStroke aria-hidden />
+          <ShoppingBag size={16} aria-hidden />
           {count > 0 && (
             <span key={near ? count : undefined} className={cx(s.shopCount, near && s.shopBump)}>
               {count}
@@ -160,10 +160,10 @@ function Billing({ inline }: { inline?: boolean }) {
     <div className={s.billing}>
       {!inline && (
         <div className={m.promoBand}>
-          <Sparkles size={16} strokeWidth={1.5} nonScalingStroke aria-hidden />
+          <Sparkles size={16} aria-hidden />
           <span>{NOTICE}</span>
           <Button size="sm">Update card</Button>
-          <X size={16} strokeWidth={1.5} nonScalingStroke aria-label="Dismiss" />
+          <X size={16} aria-label="Dismiss" />
         </div>
       )}
       <span className={s.settingsTitle}>Billing</span>
@@ -178,7 +178,7 @@ function Billing({ inline }: { inline?: boolean }) {
         <span className={s.settingsHeading}>Payment method</span>
         <div className={s.memberRow}>
           <span className={s.billingCard}>
-            <CreditCard size={16} strokeWidth={1.5} nonScalingStroke aria-hidden />
+            <CreditCard size={16} aria-hidden />
             Visa •••• 4242
             <span className={inline ? s.billingExpiring : s.memberRole}>Expires 10/26</span>
           </span>

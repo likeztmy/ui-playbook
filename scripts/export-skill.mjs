@@ -127,7 +127,7 @@ Two floors every screen meets, in every system, whichever pages you read:
   project has none, add one, such as Lucide or Phosphor. A text symbol or emoji (↗ ✓ ★ ✳ ×) never
   stands in for an icon, and no SVG is drawn by hand: status, priority and arrows are in the
   library too (Lucide's \`CircleDashed\`, \`SignalHigh\`, \`ArrowUpRight\`). For a logo, use the one
-  the brief gives, or set the product's name in type ([Toolbar](references/component-toolbar.md)).
+  the brief gives, or set the product's name in type ([Icon](references/component-icon.md)).
 
 ## Systems
 
