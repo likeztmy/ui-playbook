@@ -3,7 +3,7 @@
 
 export type Entry = {
   slug: string;
-  kind: 'component' | 'principle' | 'practice';
+  kind: 'component' | 'principle' | 'system' | 'practice';
   title: string;
   summary: string;
   details: number;
@@ -300,6 +300,22 @@ export const entries: Entry[] = [
     keywords: ['validation', 'inline validation', 'error', 'form', 'blur', 'feedback', 'password rules'],
   },
   {
+    slug: 'work-tool',
+    kind: 'system',
+    title: 'Work tool',
+    summary: 'For screens people work in all day: trackers, admin, editors, settings. 14px text, 32px controls, grey surfaces, one accent.',
+    details: 4,
+    keywords: ['system', 'design system', 'desktop', 'b2b', 'saas', 'admin', 'dashboard', 'density', 'type scale', 'control height', 'fluent', 'carbon', 'primer', 'macos'],
+  },
+  {
+    slug: 'consumer-app',
+    kind: 'system',
+    title: 'Consumer app',
+    summary: 'For apps people pick up in their own time, mostly on a phone: social, shopping, personal. 17px text, 44px targets, colour in the content.',
+    details: 4,
+    keywords: ['system', 'design system', 'mobile', 'phone', 'ios', 'android', 'material', 'hig', 'touch target', 'dynamic type', 'b2c', 'consumer'],
+  },
+  {
     slug: 'mail',
     kind: 'practice',
     title: 'Mail',
@@ -309,7 +325,7 @@ export const entries: Entry[] = [
   },
 ];
 
-const SECTION = { component: 'components', principle: 'principles', practice: 'practice' } as const;
+const SECTION = { component: 'components', principle: 'principles', system: 'systems', practice: 'practice' } as const;
 export const href = (e: Entry) => `/${SECTION[e.kind]}/${e.slug}`;
 
 // Chinese titles and summaries. Component names stay in English, as the

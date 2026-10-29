@@ -1,0 +1,62 @@
+---
+layout: ../../layouts/Entry.astro
+slug: work-tool
+---
+
+## When to use
+
+Screens someone works in for hours, mostly with a mouse and a keyboard: trackers, admin, editors, inboxes, settings. A sign-up, onboarding or empty screen of such a product takes this system too. The brand colour and the typeface are the product's own; this page sets how big things are and how much colour they get.
+
+## The numbers
+
+| | Value | From |
+| --- | --- | --- |
+| Body text | 14px on a 20px line; 13px in table rows, sidebars and dense lists | Body is 14px in [Fluent 2](https://fluent2.microsoft.design/typography), [Carbon](https://www.carbondesignsystem.com/building-blocks/foundations/typography/type-sets) and [Primer](https://primer.style/product/primitives/typography/); 13pt on [macOS](https://developer.apple.com/design/human-interface-guidelines/typography) |
+| Labels and meta | 12px; nothing smaller in a row someone reads | Carbon's and Primer's smallest styles are 12px |
+| Text contrast | 4.5:1, muted text included | [Lightness first](/principles/lightness-first) |
+| Controls | 32px by default; 24px in toolbars and table rows; 40px for a dialog's main action | Fluent, Primer and Carbon's fields share 24, 32 and 40px |
+| Targets | at least 24 × 24px | [WCAG 2.2, 2.5.8](https://www.w3.org/TR/WCAG22/#target-size-minimum) |
+| Spacing | a 4px grid: 4 and 8 inside a control, 8 and 12 between controls, 24 and 32 between sections | [Fluent 2](https://fluent2.microsoft.design/layout), Primer, Polaris |
+| Radius | 4–10px on fields, menus and panels; a button may be a pill | Fluent 4px, Primer 6px, Polaris 8px |
+| Surfaces | white or a plain grey; each layer one step from the one under it | [Carbon](https://www.carbondesignsystem.com/building-blocks/foundations/color/overview/) |
+| Colour | one accent, on the primary action, the selection, focus and status | [Grey until it matters](/principles/grey-until-it-matters) |
+| Icons | one library, 16px, the text's colour | [Toolbar](/components/toolbar) |
+
+## Details
+
+### Five systems land on 14 and 32
+
+Microsoft, IBM, GitHub and Shopify built their systems apart, for different products, and arrived within a pixel of each other. Body text is 14px in Fluent 2, Carbon's productive set and Primer, and 13px in Polaris and on macOS. Fluent, Primer and Carbon's text fields share the same three heights, 24, 32 and 40px, and Fluent and Primer make 32 the default ([Fluent's input](https://github.com/microsoft/fluentui/blob/master/packages/react-components/react-input/library/src/components/Input/useInputStyles.styles.ts), [Primer's sizes](https://primer.style/product/primitives/size/)). Carbon is the large one: its most used button is 48px, which it pairs with the same 14px body ([Carbon, buttons](https://www.carbondesignsystem.com/building-blocks/core/components/button/guidelines)).
+
+### 12px is for labels, not for reading
+
+The systems go small only for words that are glanced at: a column header, a badge, a count. Carbon's and Primer's smallest styles are 12px, and Primer's own token for a 12px caption carries a note that it fails accessibility requirements ([Primer primitives](https://github.com/primer/primitives/blob/main/src/tokens/functional/typography/typography.json5)). macOS and Fluent's web ramp go down to 10, for captions; neither sets a row in it.
+
+The usual failure runs the other way. In the playbook's agent eval, builds of an issue tracker set their issue rows at 10 and 11px in a mid grey: dense, and about half of it under 4.5:1. The row is what people read all day; it gets body size.
+
+### A mouse needs less than a finger
+
+WCAG's floor is 24 × 24px. macOS makes 28pt its default control and 20pt its smallest ([Apple, accessibility](https://developer.apple.com/design/human-interface-guidelines/accessibility)); Primer gives a fine pointer 16px and a coarse one 44 ([Primer sizes](https://github.com/primer/primitives/blob/main/src/tokens/functional/size/size.json5)). A 24px button in a toolbar is right for a mouse. The same tool on a tablet needs 44, Fluent's touch target on the web ([Fluent 2, layout](https://fluent2.microsoft.design/layout)).
+
+Apple's own pages disagree: its Buttons page asks for a 44pt hit region whatever the input, which its macOS default doesn't meet ([Apple, buttons](https://developer.apple.com/design/human-interface-guidelines/buttons)). Size the target for the input the product is used with, and never below 24.
+
+### Layers, not tints
+
+A tool's surfaces separate by lightness. Carbon's light themes alternate white and its lightest grey with each layer added ([Carbon, colour](https://www.carbondesignsystem.com/building-blocks/foundations/color/overview/)), and Fluent asks that brand colour stay off large surfaces ([Fluent 2, colour](https://fluent2.microsoft.design/color)).
+
+On a Mac the accent isn't even the designer's to keep: the app's accent tints buttons, the selection and sidebar icons, and the person's choice in System Settings replaces it ([Apple, colour](https://developer.apple.com/design/human-interface-guidelines/color)). A screen that only reads in its own brand hue breaks for everyone who picked graphite. Grey carries the layout; the accent marks the few things that act or are chosen.
+
+## When it gives way
+
+- **A view the brief calls dense**, such as a log: rows at 13px and 24px controls. Labels stay at 12, and contrast doesn't move.
+- **Touch.** On a tablet or a touch screen, targets grow to 44px and the spacing grows with them.
+- **A welcome screen or an empty state** may carry the brand colour and an image the brief supplies. Its words still name the next step.
+- **The product's marketing site** isn't a working screen, and this system doesn't cover it.
+
+## Common mistakes
+
+- **Rows in 10–11px grey.** Dense isn't readable. Rows are 13–14px and hold 4.5:1.
+- **The brand colour as a panel.** A tinted sidebar or page background spends the accent everywhere, so the primary action no longer stands out.
+- **A tagline under the page title.** "A little more progress, one issue at a time" names nothing. Put the count, the filter or nothing there.
+- **Large radii on dense parts.** 16px corners on table cells and pill-shaped fields round off the grid the rows depend on.
+- **Controls of two heights in one row.** A 36px button beside a 32px field breaks the line; use the system's three heights.

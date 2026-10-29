@@ -40,6 +40,7 @@ import { CardPreview } from '../demos/card';
 import { BadgePreview } from '../demos/badge';
 import { TablePreview } from '../demos/table';
 import { ToastPreview } from '../demos/toast';
+import { SystemPreview } from '../demos/systems';
 import Hero from './Hero.astro';
 import s from '../pages/index.module.scss';
 
@@ -48,6 +49,7 @@ const t = ui[lang];
 const groups = [
   { kind: 'component', title: t.components },
   { kind: 'principle', title: t.principles },
+  { kind: 'system', title: t.systems },
   { kind: 'practice', title: t.practice },
 ] as const;
 ---
@@ -98,6 +100,7 @@ const groups = [
                   {e.slug === 'badge' && <BadgePreview />}
                   {e.slug === 'table' && <TablePreview />}
                   {e.slug === 'toast' && <ToastPreview />}
+                  {e.kind === 'system' && <SystemPreview system={e.slug as 'work-tool' | 'consumer-app'} />}
                   {e.slug === 'concentric-radius' && <ConcentricPreview />}
                   {e.slug === 'a-shadow-says-how-high' && <ShadowPreview />}
                   {e.slug === 'lightness-first' && <LightnessPreview />}

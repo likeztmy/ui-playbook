@@ -1,0 +1,61 @@
+---
+layout: ../../layouts/Entry.astro
+slug: consumer-app
+---
+
+## When to use
+
+Apps people pick up in their own time, mostly on a phone: social, shopping, food, travel, personal finance. Their sign-up, onboarding and settings take this system too. A tool inside such a product, such as a seller's dashboard, takes the [Work tool](/systems/work-tool). The brand colour and the typeface are the product's own; this page sets how big things are and how much colour they get.
+
+## The numbers
+
+| | Value | From |
+| --- | --- | --- |
+| Body text | 17px on a 22px line (16px on Android) | [iOS](https://developer.apple.com/design/human-interface-guidelines/typography) default 17pt; [Material 3](https://m3.material.io/styles/typography/type-scale-tokens) Body Large 16 |
+| Text size | follows the person's setting, up to at least 200% | [Apple, accessibility](https://developer.apple.com/design/human-interface-guidelines/accessibility) |
+| Labels and meta | 12–13px; 11px is the smallest anything gets | iOS and Material both stop at 11 |
+| Text contrast | 4.5:1, muted text included | [Lightness first](/principles/lightness-first) |
+| Targets | 44 × 44px (48dp on Android), at least 8px apart | iOS default control; [Material 3](https://m3.material.io/foundations/designing/structure) |
+| Controls | buttons 40–44px tall, inside a 44–48px target; fields 44–56px | iOS controls 44pt; Material button 40dp, text field 56dp |
+| Spacing | a 4px grid, in steps of 8 | The playbook's: neither iOS nor Material publishes a unit |
+| Radius | buttons a pill; cards and sheets 12–28px | [Material 3](https://m3.material.io/styles/shape/corner-radius-scale) |
+| Colour | neutral surfaces; one or two prominent buttons per view; colour comes from the content | [Apple, buttons](https://developer.apple.com/design/human-interface-guidelines/buttons) |
+| Images | photos and art the brief or the content supplies; none drawn for the occasion | The playbook's |
+
+## Details
+
+### Size follows the device, not the brand
+
+Microsoft's Fluent 2 sets body text at 14px on the web and on Windows, 17pt on iOS and 16sp on Android ([Fluent 2, typography](https://fluent2.microsoft.design/typography)). One company, one brand, three sizes: each matches the platform it runs on, and the two phone platforms set 16 and 17.
+
+So a desktop design shrunk to a phone is the wrong size twice: its 13–14px text becomes harder to read, and its 32px controls become harder to hit.
+
+### The reader picks the size
+
+On iOS, 17pt is only the default. Dynamic Type lets people choose, and body text runs from 14pt at the smallest setting to 23pt at the largest standard one, and 53pt at the largest accessibility size ([Apple, typography](https://developer.apple.com/design/human-interface-guidelines/typography)). Apple asks apps to let text grow to at least twice its size.
+
+A layout that holds only at 17 isn't finished. Set text in the platform's text styles or in `rem`, let rows grow taller, and check the screen at the largest size: labels wrap instead of truncating, and buttons stay buttons.
+
+### A finger needs 44
+
+iOS draws its controls at 44pt and allows 28pt as the least ([Apple, accessibility](https://developer.apple.com/design/human-interface-guidelines/accessibility)). Material asks 48dp for touch, 44 for a pointer, with 8dp between targets ([Material 3, structure](https://m3.material.io/foundations/designing/structure)), and WCAG's enhanced level asks 44 × 44px ([WCAG 2.2, 2.5.5](https://www.w3.org/TR/WCAG22/#target-size-enhanced)). The visible button can be smaller than its target; the area that answers the tap can't.
+
+### Colour lives in the content
+
+In a shopping or social app the photos, avatars and products bring the colour. Apple suggests the brand colour as the app's accent where the content is mostly monochrome ([Apple, colour](https://developer.apple.com/design/human-interface-guidelines/color)), and limits a view to one or two prominent buttons. Material keeps its primary colour for the most prominent components and active states, and puts everything else on surface ([Material 3, colour roles](https://m3.material.io/styles/color/roles)).
+
+Defaults carry colour too. Material's baseline surface is `#fef7ff`, a faint lavender ([Material tokens](https://github.com/material-components/material-web/blob/main/tokens/versions/v0_192/_md-sys-color.scss)): an app that keeps the default theme carries Material's purple whatever its brand. In the playbook's agent eval, builds nobody gave a colour came out moss green, one model's default. Choose the brand colour, or keep the surfaces neutral; don't ship a default as if it were a choice.
+
+## When it gives way
+
+- **The same app on a desktop browser.** Body text can drop to 16px and mouse targets to 24px, but keep 44 wherever the screen might be touched.
+- **Onboarding, an empty state, a finished order.** The brand colour and an image the brief supplies may lead. The words still say what happens next.
+- **A dense screen inside the app**, such as order history or a seller's tools: rows can tighten to the Work tool's sizes, targets can't.
+
+## Common mistakes
+
+- **Desktop sizes on a phone.** 13px text and 32px buttons, laid out at 375px wide.
+- **Several coloured buttons in one view.** When three things are filled, none is the next step.
+- **The default theme as the brand.** Material's lavender, or whatever colour the generator reached for.
+- **Art drawn for the occasion.** A hand-made illustration on an empty state looks unfinished beside the product's photos. Use what the brief supplies, or let the words and one icon do it.
+- **Truncating at large text sizes.** A label cut to "Continue to pa…" at the largest Dynamic Type setting fails the people who set it.

@@ -1,0 +1,82 @@
+// Systems: the home page's cards, drawn at each system's proportions. Grey, with the accent on the one action.
+
+.work {
+  display: flex;
+  flex-direction: column;
+  width: min(100%, 240px);
+}
+
+.workHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-block-end: var(--space-2);
+
+  > span {
+    height: 8px;
+    width: 40%;
+    border-radius: 4px;
+    background: var(--ink-muted);
+  }
+
+  > .accent {
+    width: 36px;
+    height: 14px;
+    border-radius: var(--radius-full);
+    background: var(--accent);
+  }
+}
+
+.workRow {
+  display: flex;
+  align-items: center;
+  height: 18px;
+  border-block-start: 1px solid var(--line);
+
+  > span {
+    height: 5px;
+    border-radius: 3px;
+    background: var(--ink-disabled);
+  }
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: min(100%, 150px);
+  padding: var(--space-2);
+  border-radius: var(--radius-xl);
+  background: var(--surface);
+  box-shadow: var(--shadow-xs);
+}
+
+.appImage {
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-lg);
+  background: var(--surface-sunken);
+}
+
+.appTitle,
+.appLine {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--ink-muted);
+}
+
+.appTitle {
+  width: 70%;
+}
+
+.appLine {
+  width: 50%;
+  height: 6px;
+  background: var(--ink-disabled);
+}
+
+.appButton {
+  height: 22px;
+  margin-block-start: var(--space-1);
+  border-radius: var(--radius-full);
+  background: var(--accent);
+}

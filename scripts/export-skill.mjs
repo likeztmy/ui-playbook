@@ -9,7 +9,7 @@ import { join } from 'node:path';
 const SITE = 'https://ui-playbook.suspense.site';
 const DIST = 'dist';
 const OUT = join(DIST, 'skill/ui-playbook');
-const KINDS = { components: 'component', principles: 'principle' };
+const KINDS = { components: 'component', principles: 'principle', systems: 'system' };
 
 /** Runs in the page: the body of an entry as Markdown. */
 function toMarkdown(site) {
@@ -112,12 +112,13 @@ description: Rules for product UI, each with the reason and the mistake it preve
 # UI Playbook
 
 Each reference is one page of ${SITE}: a component's kinds, anatomy, states, common mistakes and copy,
-or a principle's rule, details and where it doesn't apply. Demos on the site are given here as their
-verdicts: **Prefer** is what to build, **Avoid** is the mistake it replaces.
+a principle's rule, details and where it doesn't apply, or a system's numbers for one kind of
+product. Demos on the site are given here as their verdicts: **Prefer** is what to build, **Avoid**
+is the mistake it replaces.
 
-## Floor and defaults
+## Floors
 
-Two floors every screen meets, whichever pages you read:
+Two floors every screen meets, in every system, whichever pages you read:
 
 - **Text holds 4.5:1** against what it sits on: muted and secondary text too, ids, dates, counts,
   badges and hints included. On white, no grey lighter than \`#767676\`. This is WCAG 2.2 AA
@@ -128,27 +129,29 @@ Two floors every screen meets, whichever pages you read:
   library too (Lucide's \`CircleDashed\`, \`SignalHigh\`, \`ArrowUpRight\`). For a logo, use the one
   the brief gives, or set the product's name in type ([Toolbar](references/component-toolbar.md)).
 
-Three defaults for the working screens of a tool, each with where it gives way:
+## Systems
 
-- **Interface text is 13–14px**, a short label 12px: table rows, badges, ids and timestamps
-  included. Smaller only when the brief asks for a dense view
-  ([Set reading text for the reader](references/principle-reading-text.md)).
-- **The page and its panels are white or a plain grey**, and hue goes on the primary action, the
-  selection and status. A welcome screen, an empty state or a marketing page may carry colour
-  ([Grey until it matters](references/principle-grey-until-it-matters.md)).
-- **Every line of copy names a thing, an action or a state.** A line that could be swapped for any
-  other and do the same job, such as an eyebrow, a tagline under a page title or a section's
-  subtitle, belongs on a marketing page, not in the tool ([Grey until it matters](references/principle-grey-until-it-matters.md)).
+How big the text and controls are, and how much colour a screen carries, depend on the kind of
+product. Each system gives those numbers; the brand colour and typeface stay the product's own.
+
+${index.filter((e) => e.kind === 'system').map(line).join('\n')}
+
+A sign-up, settings or empty screen takes the system of the product it belongs to. In either
+system, every line of copy names a thing, an action or a state: a line that could be swapped for
+any other and do the same job, such as an eyebrow, a tagline under a title or a section's subtitle,
+belongs on a marketing page ([Grey until it matters](references/principle-grey-until-it-matters.md)).
 
 ## Steps
 
-1. From the lists below, pick every page that bears on what you're building: the components it
+1. Pick the system the product calls for and read it in full.
+2. From the lists below, pick every page that bears on what you're building: the components it
    uses, and the principles its interactions touch.
-2. Read those references in full before writing the UI.
-3. Build to them: the kinds, states, focus and copy each one names.
-4. Before you finish, write out each text colour with the surface under it and its contrast ratio,
-   each font size under 13px with where it's used, and each icon with where it comes from; fix what
-   falls short of the floors and the defaults. Then check the result against each page's Common mistakes and When it doesn't apply.
+3. Read those references in full before writing the UI.
+4. Build to them: the system's numbers, and the kinds, states, focus and copy each page names.
+5. Before you finish, write out each text colour with the surface under it and its contrast ratio,
+   each font size with where it's used, and each icon with where it comes from; fix what falls
+   short of the floors and the system. Then check the result against each page's Common mistakes
+   and When it doesn't apply.
 
 ## Components
 

@@ -15,9 +15,9 @@ const i = entries.findIndex((e) => e.slug === frontmatter.slug);
 const entry = entries[i];
 const prev = entries[i - 1];
 const next = entries[i + 1];
-const back = { component: t.allComponents, principle: t.allPrinciples, practice: t.allPractice }[entry.kind];
+const back = { component: t.allComponents, principle: t.allPrinciples, system: t.allSystems, practice: t.allPractice }[entry.kind];
 // The pager says when the next page is in another section, so crossing over isn't a surprise.
-const kindName = { component: t.component, principle: t.principle, practice: t.practice };
+const kindName = { component: t.component, principle: t.principle, system: t.system, practice: t.practice };
 const kind = kindName[entry.kind];
 ---
 
