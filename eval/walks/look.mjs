@@ -1,7 +1,8 @@
 // What the first screen carries: hues, tinted surfaces, decoration, small or faint text, eyebrow
-// lines and boxes. Numbers, not pass or fail, until the owner's picks set the lines.
+// lines, boxes, and icons made of symbols or drawn by hand. Numbers, not pass or fail, until the
+// owner's picks set the lines.
 
-/** Hue families, the shares of the screen under tint and decoration, of the text that is small or faint, and counts of eyebrows and boxes. */
+/** Hue families, the shares of the screen under tint and decoration, of the text that is small or faint, and counts of eyebrows, boxes, symbol glyphs and hand-drawn svgs. */
 export const look = (page) =>
   page.evaluate(() => {
     // Any computed colour to sRGB bytes, by painting it: covers rgb(), oklch(), color() and the rest.
@@ -89,6 +90,9 @@ export const look = (page) =>
     let small = 0;
     let faint = 0;
     let eyebrows = 0;
+    // Symbols doing an icon's job: arrows, ticks, stars, crosses, keyboard signs and emoji. Not • or ·.
+    const glyph = /[×←-⇿⌀-⏿■-➿⬀-⯿\u{1F300}-\u{1FAFF}]/gu;
+    let glyphs = 0;
     const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
     for (let n; (n = walker.nextNode()); ) {
       const text = n.textContent.trim();
@@ -103,6 +107,7 @@ export const look = (page) =>
       chars += text.length;
       if (size < 13) small += text.length;
       if (ratio < 4.5) faint += text.length;
+      glyphs += text.match(glyph)?.length ?? 0;
       // An eyebrow: a spaced-out capitals line of three words or more; one word is a section label.
       const caps = cs.textTransform === 'uppercase' || (/[A-Z]{2}/.test(text) && text === text.toUpperCase());
       if (caps && parseFloat(cs.letterSpacing) > 0.05 * size && text.split(/\s+/).length >= 3 && !el.closest('a, button, label, th, [role="columnheader"], [role="tab"]')) eyebrows++;
@@ -122,6 +127,17 @@ export const look = (page) =>
       if (filled || bordered || cs.boxShadow !== 'none') boxes++;
     }
 
+    // Drawings made by hand: distinct outermost svgs that no icon library marked with its class.
+    // The floor allows none; a logo the brief supplies would count, and none of the briefs supply one.
+    const library = /\b(lucide|ph|phosphor|tabler-icon|icon-tabler|heroicon|bi|svg-inline--fa)\b/;
+    const drawn = new Set();
+    for (const svg of document.body.querySelectorAll('svg')) {
+      if (svg.parentElement.closest('svg') || !onScreen(svg) || library.test(svg.getAttribute('class') ?? '')) continue;
+      const r = svg.getBoundingClientRect();
+      if (r.width >= 8 && r.height >= 8) drawn.add(svg.innerHTML.replace(/\s+/g, ' '));
+    }
+    const drawnSvgs = drawn.size;
+
     const share = (n, of) => +(n / of || 0).toFixed(3);
     return {
       hueFamilies: families,
@@ -132,5 +148,7 @@ export const look = (page) =>
       faintText: share(faint, chars),
       eyebrows,
       boxes,
+      glyphs,
+      drawnSvgs,
     };
   });

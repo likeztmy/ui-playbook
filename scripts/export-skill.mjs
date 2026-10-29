@@ -117,11 +117,16 @@ verdicts: **Prefer** is what to build, **Avoid** is the mistake it replaces.
 
 ## Floor and defaults
 
-One floor every screen meets, whichever pages you read:
+Two floors every screen meets, whichever pages you read:
 
 - **Text holds 4.5:1** against what it sits on: muted and secondary text too, ids, dates, counts,
   badges and hints included. On white, no grey lighter than \`#767676\`. This is WCAG 2.2 AA
   ([Lightness first](references/principle-lightness-first.md)).
+- **Icons come from one icon library**, at one stroke, sized to the text beside them. If the
+  project has none, add one, such as Lucide or Phosphor. A text symbol or emoji (↗ ✓ ★ ✳ ×) never
+  stands in for an icon, and no SVG is drawn by hand: status, priority and arrows are in the
+  library too (Lucide's \`CircleDashed\`, \`SignalHigh\`, \`ArrowUpRight\`). For a logo, use the one
+  the brief gives, or set the product's name in type ([Toolbar](references/component-toolbar.md)).
 
 Three defaults for the working screens of a tool, each with where it gives way:
 
@@ -142,8 +147,8 @@ Three defaults for the working screens of a tool, each with where it gives way:
 2. Read those references in full before writing the UI.
 3. Build to them: the kinds, states, focus and copy each one names.
 4. Before you finish, write out each text colour with the surface under it and its contrast ratio,
-   and each font size under 13px with where it's used; fix what falls short of the floor and the
-   defaults. Then check the result against each page's Common mistakes and When it doesn't apply.
+   each font size under 13px with where it's used, and each icon with where it comes from; fix what
+   falls short of the floors and the defaults. Then check the result against each page's Common mistakes and When it doesn't apply.
 
 ## Components
 
