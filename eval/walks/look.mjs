@@ -114,7 +114,7 @@ export const look = (page) =>
     }
 
     // Boxes: anything 48px or more that draws its own edge, by fill, a full border or a shadow.
-    let boxes = 0;
+    const boxed = [];
     for (const el of document.body.querySelectorAll('*')) {
       if (el.matches(`${media}, svg, svg *, input, textarea, select, button`) || !onScreen(el)) continue;
       const r = el.getBoundingClientRect();
@@ -124,8 +124,41 @@ export const look = (page) =>
       const parent = el.parentElement ? under(el.parentElement) : oklch('#fff');
       const filled = fill.alpha >= 0.5 && (Math.abs(fill.y - parent.y) > 0.005 || Math.abs(fill.c - parent.c) > 0.003);
       const bordered = ['Top', 'Right', 'Bottom', 'Left'].every((side) => parseFloat(cs[`border${side}Width`]) >= 1 && oklch(cs[`border${side}Color`]).alpha > 0.3);
-      if (filled || bordered || cs.boxShadow !== 'none') boxes++;
+      if (filled || bordered || cs.boxShadow !== 'none') boxed.push(el);
     }
+    const boxes = boxed.length;
+
+    // Box depth: the longest chain of boxes one inside another. A wrapper the same size as the box
+    // inside it is one box drawn twice, not two.
+    const isBox = new Set(boxed);
+    const same = (a, b) => ['top', 'right', 'bottom', 'left'].every((k) => Math.abs(a[k] - b[k]) <= 2);
+    let boxDepth = 0;
+    for (const el of boxed) {
+      let depth = 1;
+      let inner = el.getBoundingClientRect();
+      for (let p = el.parentElement; p; p = p.parentElement) {
+        if (!isBox.has(p)) continue;
+        const r = p.getBoundingClientRect();
+        if (!same(r, inner)) depth++;
+        inner = r;
+      }
+      boxDepth = Math.max(boxDepth, depth);
+    }
+
+    // Equal tiles: rows of three or more sibling boxes of one size, the stat-tile grid.
+    let equalTiles = 0;
+    const siblings = new Map();
+    for (const el of boxed) siblings.set(el.parentElement, [...(siblings.get(el.parentElement) ?? []), el.getBoundingClientRect()]);
+    for (const rects of siblings.values()) {
+      const rows = new Map();
+      for (const r of rects) rows.set(Math.round(r.top / 4), [...(rows.get(Math.round(r.top / 4)) ?? []), r]);
+      for (const row of rows.values())
+        if (row.length >= 3 && row.every((r) => Math.abs(r.width - row[0].width) <= 4 && Math.abs(r.height - row[0].height) <= 4)) equalTiles++;
+    }
+
+    // Solo boxes: a box whose only content is one list or table, which carries its own edge.
+    const list = 'ul, ol, table, [role="list"], [role="table"], [role="grid"]';
+    const soloBox = boxed.filter((el) => el.children.length === 1 && el.children[0].matches(list)).length;
 
     // Drawings made by hand: distinct outermost svgs that no icon library marked with its class.
     // The floor allows none; a logo the brief supplies would count, and none of the briefs supply one.
@@ -148,6 +181,9 @@ export const look = (page) =>
       faintText: share(faint, chars),
       eyebrows,
       boxes,
+      boxDepth,
+      equalTiles,
+      soloBox,
       glyphs,
       drawnSvgs,
     };
