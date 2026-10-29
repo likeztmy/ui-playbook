@@ -16,6 +16,7 @@
     "test:e2e": "playwright test",
     "verify": "pnpm check && pnpm build && pnpm test:e2e",
     "shoot": "node scripts/shoot.mjs",
+    "eval:plugin": "node eval/plugin.mjs",
     "deploy": "pnpm verify && wrangler deploy",
     "astro": "astro",
     "prepare": "git config core.hooksPath .githooks",

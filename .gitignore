@@ -36,3 +36,7 @@ shots/
 
 # Agent worktrees and their run state (codex-delegate)
 .claude/worktrees/
+
+# Claude-side Skill eval: generated plugin wrapper and results
+eval/plugin/.build/
+eval/plugin/results/
