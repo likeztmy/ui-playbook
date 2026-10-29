@@ -292,6 +292,14 @@ export const entries: Entry[] = [
     keywords: ['spacing', 'whitespace', 'proximity', 'grouping', 'gestalt', 'common region', 'zebra', 'stripes', 'alignment', 'layout', 'section header'],
   },
   {
+    slug: 'the-lightest-boundary-that-holds',
+    kind: 'principle',
+    title: 'The lightest boundary that holds',
+    summary: 'A heading and space hold a section as fast as a box does. Lines split repeated rows; a box holds one unit, never a section, never another box.',
+    details: 6,
+    keywords: ['card', 'box', 'border', 'divider', 'separator', 'section', 'settings', 'dashboard', 'tiles', 'nesting', 'common region', 'grouping', 'indent', 'whitespace'],
+  },
+  {
     slug: 'the-faster-way',
     kind: 'principle',
     title: 'The faster way lives on the slow way',

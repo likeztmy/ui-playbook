@@ -1,0 +1,68 @@
+---
+layout: ../../layouts/Entry.astro
+slug: the-lightest-boundary-that-holds
+---
+import { BoundaryLead, BoundaryStats, BoundaryEdge, BoundaryLines } from '../../demos/boundary';
+
+## The rule
+
+**Give each group the lightest boundary that holds it.** A section of a page is held by its heading and the space around it. Repeated rows inside one group are split by lines. A box is for one unit of a set, or the one region that differs from the rest of the screen: never a box per section, and never a box inside a box.
+
+<BoundaryLead client:visible />
+
+## Details
+
+### Space is a boundary, not a weaker one
+
+A shared box is the stronger grouping cue: it overrides proximity and similarity ([Palmer 1992](https://doi.org/10.1016/0010-0285(92)90014-s)). It isn't the faster one. Letters made of circles grouped by nearness were seen as quickly as letters whose circles were joined: proximity "can be as fast and efficient" as connection ([Han, Humphreys and Chen 1999](https://doi.org/10.3758/BF03205537)). A box earns its place only where spacing can't settle what belongs together. The systems separate settings the same way: Android groups them with "containment and headings between groups instead of individual items" ([Android](https://developer.android.com/design/ui/mobile/guides/patterns/settings)), and GOV.UK asks for headings over cards when there's little to show ([GOV.UK](https://design-system.service.gov.uk/components/summary-list/)).
+
+### A box around the wrong things costs
+
+<BoundaryStats client:visible />
+
+In a test of menus grouped by lines, the boxes helped only when they held a real group, and a large one: groups of six were searched in 3.04 s against 3.62 s for groups of three. Around items that didn't belong together, boxes made search 14% slower than no boxes at all, 4.51 s against 3.95 s ([Brumby and Zhuang 2015](https://doi.org/10.1145/2702123.2702177)). A box says *these belong together*; when they don't, the eye pays for believing it.
+
+### The innermost box wins, and walls its contents off
+
+<BoundaryEdge client:visible />
+
+When regions nest, the smallest one decides what groups ([Palmer 1992](https://doi.org/10.1016/0010-0285(92)90014-s)), and a region's edge stops grouping from reaching across it ([Vickery 2008](https://doi.org/10.1111/j.1467-9280.2008.02144.x)). So a card inside a card regroups what's in it, and a box around one section cuts it off from the sections beside it: their shared left edge, the cue that said they were the same kind ([Space groups by ratio](/principles/space-groups-by-ratio)), is gone. Apple says it of macOS boxes: nested, they make an interface "feel busy and constrained", and one near the size of its window "becomes less effective" ([Apple](https://developer.apple.com/design/human-interface-guidelines/boxes)).
+
+### Lines are for rows, and lighter than the edge
+
+<BoundaryLines client:visible />
+
+Polaris goes furthest: "Divider lines are reserved for data and index tables", and the parts of a card are split by nested surfaces instead ([Polaris](https://github.com/Shopify/polaris/blob/main/polaris.shopify.com/content/design/layout/spacial-organization.mdx)). iOS and Primer draw lines between a group's rows, starting at the text. Where they agree: a line splits repeated things, never a heading from what it heads ([Fluent](https://fluent2.microsoft.design/components/web/react/core/divider/usage)), and each of Primer, Polaris and Material draws it a step lighter than a container's border, so the edge of the group stays the boundary.
+
+### Every box is one more region to sort
+
+What people see first in a layout is its regions. Among a page's measures, the number of regions its white space divides it into tracked how complex it looked, r = .5, and the number of text groups was the strongest term in the model that predicted it ([Reinecke et al. 2013](https://doi.org/10.1145/2470654.2481281)). Each box adds one region and its edge; a header band and a footer band inside it add two more. The same count is why [Grey until it matters](/principles/grey-until-it-matters) keeps tinted panels out of the chrome.
+
+### An indent claims a parent
+
+Indentation reads as *belongs to the line above*, and readers lean on it hard: people took 179% longer on code without it ([Morzeck et al. 2023](https://doi.org/10.5220/0012087500003538)). How deep matters far less; a replication found no effect of depth at all ([Bauer et al. 2019](https://doi.org/10.1109/ICPC.2019.00033)). A wrong indent is believed just as readily: Apple's `goto fail` bug was a second line indented as if it were guarded by the condition above it. So indent only what belongs to the item above, and keep everything else on the group's left edge.
+
+## Which boundary
+
+| Boundary | Holds | Example |
+| --- | --- | --- |
+| A heading and space | A section of a page | *General*, *Access* on a settings screen |
+| A line between rows | Repeated rows in one group | Members of a project; a table's rows |
+| One group, inset or outlined | A list set apart on a page | The access list; an iOS settings group |
+| A card | One unit in a set browsed by sight | A project, a file, a template ([Card](/components/card)) |
+| A separate surface | A task of its own | A [Dialog](/components/dialog) or a [Sheet](/components/sheet) |
+
+Start at the top of the table and go down only when the lighter one doesn't hold. A section's actions go on its heading row; a row's actions on the row.
+
+## When it doesn't apply
+
+- **A data table.** Its lines carry rows and columns; that's what they're for.
+- **A set of cards.** A grid of projects or files is units browsed by sight, each one its own box.
+- **A canvas.** Objects people move and resize need edges of their own.
+
+## Where the playbook applies it
+
+- [Space groups by ratio](/principles/space-groups-by-ratio): the gaps that do the work before any edge.
+- [Card](/components/card): when a unit is a card, and why cards don't go in cards.
+- [Table](/components/table): lines between rows, no zebra stripes.
+- [Grey until it matters](/principles/grey-until-it-matters): regions cost at a glance.

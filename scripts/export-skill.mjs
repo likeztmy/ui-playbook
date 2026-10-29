@@ -143,6 +143,11 @@ belongs on a marketing page. The line above a heading, if any, names its parent 
 status and ID). An error names what failed and sits where it failed; no *please*, *sorry* or *we*
 ([Every line does a job](references/principle-every-line-does-a-job.md)).
 
+A section is held by its heading and the space around it. A line splits repeated rows, one step
+lighter than the group's edge. A box holds one unit of a set, or the one region that differs from
+the rest: never a box per section, never a box inside a box
+([The lightest boundary that holds](references/principle-the-lightest-boundary-that-holds.md)).
+
 ## Steps
 
 1. Pick the system the product calls for and read it in full.

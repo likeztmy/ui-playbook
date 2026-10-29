@@ -24,6 +24,7 @@ import { GreyPreview } from '../demos/grey';
 import { CopyPreview } from '../demos/copy';
 import { SheetPreview } from '../demos/sheet';
 import { RatioPreview } from '../demos/ratio';
+import { BoundaryPreview } from '../demos/boundary';
 import { FasterPreview } from '../demos/faster';
 import { TooltipPreview } from '../demos/tooltip';
 import { IconPreview } from '../demos/icon';
@@ -83,6 +84,7 @@ const groups = [
                 <div class={s.cardStage} inert>
                   {e.slug === 'button' && <ButtonPreview client:visible />}
                   {e.slug === 'space-groups-by-ratio' && <RatioPreview client:visible />}
+                  {e.slug === 'the-lightest-boundary-that-holds' && <BoundaryPreview />}
                   {e.slug === 'the-faster-way' && <FasterPreview />}
                   {e.slug === 'menu' && <MenuPreview client:visible />}
                   {e.slug === 'toolbar' && <ToolbarPreview client:visible />}

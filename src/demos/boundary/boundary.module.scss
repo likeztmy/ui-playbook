@@ -1,0 +1,314 @@
+// The lightest boundary that holds: a settings screen, an overview's figures, preferences, an access list.
+
+.heading {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.muted {
+  margin: 0;
+  color: var(--ink-muted);
+  font-size: 13px;
+}
+
+// ── Settings screen ──────────────────────────────────────
+
+.settings {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+  container-type: inline-size;
+}
+
+// Held by its heading and space.
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.sectionHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: var(--control-sm);
+}
+
+.sectionFoot {
+  display: flex;
+  justify-content: flex-end;
+}
+
+// The one region set apart: what it does differs from everything else on the screen.
+.danger {
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  box-shadow: inset 0 0 0 1px var(--danger);
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+// The mistake: a card per section, a header band and a footer band in each.
+.card {
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  // An outer ring: the header and footer bands would paint over an inset one.
+  box-shadow:
+    0 0 0 1px var(--line-strong),
+    var(--shadow-sm);
+}
+
+.dangerCard {
+  box-shadow:
+    0 0 0 1px var(--danger),
+    var(--shadow-sm);
+}
+
+.cardHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--line-strong);
+  background: var(--surface-sunken);
+}
+
+.cardBody {
+  padding: var(--space-4);
+}
+
+.cardFoot {
+  display: flex;
+  justify-content: flex-end;
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid var(--line-strong);
+  background: var(--surface-sunken);
+}
+
+// ── Access list ──────────────────────────────────────────
+
+// One group: its edge one step darker than the lines inside it.
+.group {
+  margin: 0;
+  padding: 0;
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px var(--line-strong);
+  list-style: none;
+}
+
+.member {
+  display: grid;
+  position: relative;
+  grid-template-columns: 28px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 52px;
+  padding: 0 var(--space-4);
+  font-size: 14px;
+
+  // The line starts at the text, as iOS aligns it, and stops short of the group's edge.
+  & + &::before {
+    position: absolute;
+    top: 0;
+    right: 1px;
+    left: calc(var(--space-4) + 28px + var(--space-3));
+    border-top: 1px solid var(--line);
+    content: '';
+  }
+}
+
+.avatar {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--fill-control);
+  color: var(--ink-muted);
+  font-size: 12px;
+  font-weight: 600;
+  place-items: center;
+}
+
+.who {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+
+  > span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+// ── Figures ──────────────────────────────────────────────
+
+.figures {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  width: 100%;
+  max-width: 420px;
+  margin: 0;
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px var(--line-strong);
+}
+
+.figure {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  position: relative;
+  padding: var(--space-3) var(--space-4);
+
+  // The divider stops short of the edge, top and bottom, so the edge stays whole.
+  & + &::before {
+    position: absolute;
+    top: var(--space-3);
+    bottom: var(--space-3);
+    left: 0;
+    border-left: 1px solid var(--line);
+    content: '';
+  }
+
+  dd {
+    margin: 0;
+  }
+}
+
+.value {
+  font-size: 22px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+// The mistake: a tile for each figure.
+.tiles {
+  gap: var(--space-3);
+  background: none;
+  box-shadow: none;
+
+  .figure {
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow:
+      inset 0 0 0 1px var(--line-strong),
+      var(--shadow-sm);
+
+    &::before {
+      display: none;
+    }
+  }
+}
+
+// ── Preferences ──────────────────────────────────────────
+
+.prefs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  width: 100%;
+  max-width: 320px;
+}
+
+.pref {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.prefRow {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  font-size: 14px;
+}
+
+.prefBoxed {
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow:
+    inset 0 0 0 1px var(--line-strong),
+    var(--shadow-sm);
+}
+
+// ── Access section, for the lines demo ───────────────────
+
+.access {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: 100%;
+  max-width: 360px;
+}
+
+// The mistake: a rule under every part, edge to edge, as dark as the box.
+.ruled {
+  gap: 0;
+
+  > .heading,
+  > .muted {
+    padding-bottom: var(--space-3);
+    margin-bottom: var(--space-3);
+    border-bottom: 1px solid var(--line-strong);
+  }
+
+  .member + .member::before {
+    left: 0;
+    border-top-color: var(--line-strong);
+  }
+}
+
+// ── Home card ────────────────────────────────────────────
+
+.preview {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 160px;
+}
+
+.previewHead {
+  margin-top: var(--space-2);
+  font-size: 12px;
+  font-weight: 600;
+
+  &:first-child {
+    margin-top: 0;
+  }
+}
+
+.previewBar {
+  height: 8px;
+  border-radius: var(--radius-full);
+  background: var(--fill-control);
+}
+
+.previewGroup {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px var(--line-strong);
+
+  > span {
+    height: 20px;
+  }
+
+  > span + span {
+    margin-right: 1px;
+    margin-left: var(--space-3);
+    border-top: 1px solid var(--line);
+  }
+}
