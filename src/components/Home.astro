@@ -21,6 +21,7 @@ import { LightnessPreview } from '../demos/lightness';
 import { ReadingPreview } from '../demos/reading';
 import { FacesPreview } from '../demos/faces';
 import { GreyPreview } from '../demos/grey';
+import { CopyPreview } from '../demos/copy';
 import { SheetPreview } from '../demos/sheet';
 import { RatioPreview } from '../demos/ratio';
 import { FasterPreview } from '../demos/faster';
@@ -109,6 +110,7 @@ const groups = [
                   {e.slug === 'reading-text' && <ReadingPreview />}
                   {e.slug === 'who-before-what' && <FacesPreview />}
                   {e.slug === 'grey-until-it-matters' && <GreyPreview />}
+                  {e.slug === 'every-line-does-a-job' && <CopyPreview />}
                   {e.slug === 'sheet' && <SheetPreview />}
                   {e.slug === 'error-timing' && <ErrorTimingPreview />}
                   {e.slug === 'colour-means-one-thing' && <ColourPreview client:visible />}

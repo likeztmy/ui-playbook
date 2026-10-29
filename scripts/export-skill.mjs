@@ -139,7 +139,9 @@ ${index.filter((e) => e.kind === 'system').map(line).join('\n')}
 A sign-up, settings or empty screen takes the system of the product it belongs to. In either
 system, every line of copy names a thing, an action or a state: a line that could be swapped for
 any other and do the same job, such as an eyebrow, a tagline under a title or a section's subtitle,
-belongs on a marketing page ([Grey until it matters](references/principle-grey-until-it-matters.md)).
+belongs on a marketing page. The line above a heading, if any, names its parent (a section, a
+status and ID). An error names what failed and sits where it failed; no *please*, *sorry* or *we*
+([Every line does a job](references/principle-every-line-does-a-job.md)).
 
 ## Steps
 

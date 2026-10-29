@@ -1,0 +1,183 @@
+// Every line does a job: a new-issue panel, a settings list, an issue's heading, a failed sign-up.
+
+// ── New issue ────────────────────────────────────────────
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  width: 300px;
+  max-width: 100%;
+}
+
+.head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+// The mistake as agents set it: small, spaced capitals, set by CSS over a sentence-case string.
+.eyebrow {
+  color: var(--accent-text);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.title {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.sub {
+  margin: 0;
+  color: var(--ink-muted);
+  font-size: 14px;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+
+// ── Settings list ────────────────────────────────────────
+
+.list {
+  display: flex;
+  flex-direction: column;
+  width: 280px;
+  max-width: 100%;
+}
+
+.listHead {
+  margin: 0 0 var(--space-1);
+  padding: 0 var(--space-2);
+  color: var(--ink-muted);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.listRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  height: var(--control-md);
+  padding: 0 var(--space-2);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+  text-align: start;
+  cursor: default;
+
+  &:hover {
+    background: var(--fill-hover);
+  }
+}
+
+.meta {
+  color: var(--ink-muted);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+// ── Issue heading ────────────────────────────────────────
+
+.issueHead {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  width: 300px;
+  max-width: 100%;
+}
+
+.caption {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--ink-muted);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.issueTitle {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.issueBody {
+  margin: var(--space-1) 0 0;
+  color: var(--ink-muted);
+  font-size: 14px;
+}
+
+// ── Failed sign-up ───────────────────────────────────────
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  width: 280px;
+  max-width: 100%;
+}
+
+// The field error's own look: danger ink and its icon, no fill.
+.error {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-1);
+  margin: var(--space-1) 0 0;
+  color: var(--danger);
+  font-size: 13px;
+  line-height: 18px;
+
+  > svg {
+    flex: none;
+    margin-top: 2px;
+  }
+}
+
+// ── Home card ────────────────────────────────────────────
+
+.preview {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  width: 160px;
+}
+
+.previewTitle {
+  margin-bottom: var(--space-2);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.previewLabel {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.previewBox {
+  height: var(--control-sm);
+  border-radius: var(--radius-sm);
+  box-shadow: inset 0 0 0 1px var(--line-strong);
+  background: var(--surface);
+}
+
+.previewButton {
+  align-self: flex-end;
+  margin-top: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 12px;
+  font-weight: 500;
+}

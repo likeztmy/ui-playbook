@@ -1,0 +1,83 @@
+---
+layout: ../../layouts/Entry.astro
+slug: every-line-does-a-job
+---
+import { CopyLead, CopyFirstWords, CopyCaption, CopyErrorPlace } from '../../demos/copy';
+
+## The rule
+
+**In a product, every line names a thing, an action or a state.** A heading names what's on screen or the task, a button what it does, a status what's true. A line that could be swapped for any other and do the same job is a slogan, and a slogan belongs on the marketing site.
+
+<CopyLead client:visible />
+
+## Details
+
+### The first two words carry the line
+
+<CopyFirstWords client:visible />
+
+People don't read a screen, they scan it for the next thing to act on: down the left edge, the first words of each line, and on when those don't match ([Pernice 2017](https://www.nngroup.com/articles/f-shaped-pattern-reading-web-content/)). Shown only the first 11 characters of a link, people couldn't tell where 35% of links went ([Nielsen 2009](https://www.nngroup.com/articles/first-2-words-a-signal-for-scanning/)). So the word that tells this line from the next goes first: *Delete project*, *Export as CSV*, *Members*.
+
+### A slogan costs the task
+
+In a test of five versions of one site, cutting the promotional language alone made it 27% more usable; halving the words, 58%; both, with a layout made for scanning, 124% ([Morkes and Nielsen 1997](https://www.nngroup.com/articles/concise-scannable-and-objective-how-to-write-for-the-web/)). The writer doesn't come out ahead either: text made needlessly complex leads readers to judge its writer *less* intelligent ([Oppenheimer 2006](https://doi.org/10.1002/acp.1178)). The systems put it in a tool's terms. Too much content "makes a tool feel cheap" and asks "Could this header, subcopy, and button just be a button?" ([Polaris](https://github.com/Shopify/polaris/blob/main/polaris.shopify.com/content/content/fundamentals.mdx)). What makes a line decoration is the swap test from [Grey until it matters](/principles/grey-until-it-matters).
+
+### The line above a heading names its parent
+
+<CopyCaption client:visible />
+
+A product's design system has no eyebrow. Searching their source for the word turns up about a hundred uses in IBM's kit for its marketing sites and none in Carbon, IBM's kit for its products, nor in Primer, Polaris, Material or GOV.UK's. Material 2 had a small uppercase *overline* style; Material 3's fifteen type styles dropped it. GOV.UK keeps one line there, for when "a page is part of a larger section" ([GOV.UK](https://design-system.service.gov.uk/styles/headings/)): a section, a project, a record's status and ID.
+
+### An error says what failed, where it failed
+
+<CopyErrorPlace client:visible />
+
+Name the field in its label's words, say what to do, and leave out *please*, which "implies a choice", *sorry*, which "does not help fix the problem", and *invalid*, which adds nothing ([GOV.UK](https://design-system.service.gov.uk/components/error-message/)). Politeness doesn't buy compliance either: in a field test with 80,000 people, polite wording and buttons that sounded voluntary made people *less* likely to agree ([Böhme and Köpsell 2010](https://doi.org/10.1145/1753326.1753689)). When to show the message is [Error timing](/principles/error-timing).
+
+### A specific verb lets people skip the question
+
+A button that names its result reads on its own, in a screen reader's list of controls or out of context: *Create issue*, *Export 3 files*, and *OK* only to acknowledge something ([Apple](https://developer.apple.com/design/human-interface-guidelines/alerts)). The same quality works against a confirmation. Right after choosing *Uninstall*, a button that says *Uninstall* is pressed "without giving it a second thought"; Microsoft's fix is *Uninstall anyway* ([Windows guidelines](https://learn.microsoft.com/en-us/windows/win32/uxguide/mess-confirm)). When the risk isn't obvious, the title carries it: *Delete "Q4 roadmap" and its 42 issues?*
+
+### A confirmation stops being read the second time
+
+In brain scans, the response to a warning dropped sharply "after only the second exposure" ([Anderson et al. 2015](https://doi.org/10.1145/2702123.2702322)); across three weeks in the field, people followed permission warnings less and less ([Vance et al. 2018](https://doi.org/10.25300/MISQ/2018/14124)); Chrome's certificate warning was clicked through 70.2% of the time ([Akhawe and Felt 2013](https://www.usenix.org/conference/usenixsecurity13/technical-sessions/presentation/akhawe)). Better wording doesn't survive that; making people retype the decisive fact does, with informed decisions two to three times as likely after habituation ([Bravo-Lillo et al. 2013](https://doi.org/10.1145/2501604.2501610)). So confirm only what can't be undone, and offer **Undo** for the rest ([Toast](/components/toast)). Where it's truly dangerous, ask for the name.
+
+### Sentence case, but not because capitals are hard to read
+
+Short capitals aren't hard to read: at small sizes they're the more legible case, especially with low vision ([Arditi and Cho 2007](https://doi.org/10.1016/j.visres.2007.06.010)). Lowercase's 5 to 10% lead in running text "is entirely a practice effect" ([Larson](https://learn.microsoft.com/en-us/typography/develop/word-recognition)). The reasons that hold are others. One case across a product means nobody decides which words are important; translators get one rule ([Fluent](https://fluent2.microsoft.design/content-design)); and capitals read as shouting ([GOV.UK](https://www.gov.uk/guidance/style-guide/a-to-z)). A label that must be in capitals keeps its string in sentence case and gets `text-transform`, so what's copied and what's read aloud stay words.
+
+## Words by place
+
+| Place | Says | Example |
+| --- | --- | --- |
+| Heading | The thing, or the task | *Issues*, *New issue* |
+| Line above a heading | Its parent | *In progress · ORB-142* |
+| [Button](/components/button) | A verb and its object | *Create issue* |
+| [Menu item](/components/menu) | A verb, or a value | *Duplicate*, *Modified* |
+| [Field label](/components/input) | A noun | *Email* |
+| [Hint](/components/input) | The constraint, in one sentence | *At least 10 characters, with a number.* |
+| [Placeholder](/components/input) | An example, only when the format isn't obvious | *{'ana@studio.com'}* |
+| [Error](/components/input) | What's wrong and the fix, in the label's words | *Enter a password with at least 10 characters* |
+| [Empty state](/components/combobox) | What goes here, and the action that adds it | *No projects yet* · **Create project** |
+| [Toast](/components/toast) | What happened, past tense, with the object | *Deleted "Q4 roadmap"* |
+| [Confirmation](/components/dialog) | The decision, by name; the button repeats its verb | *Delete "Q4 roadmap"?* · **Delete** |
+
+Across all of them:
+
+- **No *we*, *please*, *sorry*, *oops* or exclamation marks.** *Unable to load content*, not *We're having trouble loading this content* ([Apple](https://developer.apple.com/design/human-interface-guidelines/writing)).
+- **No *Your*.** *Projects* says what *Your projects* says, a word sooner.
+- **One word for one thing.** If it's a *project* in the sidebar, it's a project in the dialog, the toast and the empty state.
+- **Contractions are fine.** *Don't* and *can't* read as speech.
+
+## When it doesn't apply
+
+- **The marketing site.** Before sign-in, a page's job is to persuade, and a tagline is the work. The rule starts where the product does.
+- **A first run or an empty state.** One warmer line is allowed where nothing is happening yet, as long as the next line names the action.
+- **What people wrote.** Issue titles, messages, names: the product shows them as written.
+
+## Where the playbook applies it
+
+- Every component page's Copy section, for its own words.
+- [Grey until it matters](/principles/grey-until-it-matters): decoration, and the swap test.
+- [Where the eye goes](/principles/where-the-eye-goes): it follows the words' promise.
+- [Error timing](/principles/error-timing): when the error appears.

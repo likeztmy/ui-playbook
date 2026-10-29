@@ -236,6 +236,14 @@ export const entries: Entry[] = [
     keywords: ['colour', 'color', 'decoration', 'illustration', 'brand', 'neutral', 'grey', 'gray', 'labels', 'tags', 'visual search', 'clutter', 'slogan'],
   },
   {
+    slug: 'every-line-does-a-job',
+    kind: 'principle',
+    title: 'Every line does a job',
+    summary: 'In a product, each line names a thing, an action or a state, with the word that differs first. A line that could say anything else is a slogan.',
+    details: 7,
+    keywords: ['copy', 'writing', 'microcopy', 'ux writing', 'labels', 'buttons', 'error message', 'eyebrow', 'slogan', 'tagline', 'sentence case', 'confirmation', 'empty state', 'tone'],
+  },
+  {
     slug: 'where-the-eye-goes',
     kind: 'principle',
     title: 'Where the eye goes',
