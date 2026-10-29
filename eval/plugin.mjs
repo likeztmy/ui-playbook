@@ -46,7 +46,9 @@ while (loadavg()[0] >= 6) {
 }
 
 const now = new Date();
-const stamp = [now.getFullYear(), now.getMonth() + 1, now.getDate(), now.getHours(), now.getMinutes()].map((n) => String(n).padStart(2, '0')).join('');
+const stamp = [now.getFullYear(), now.getMonth() + 1, now.getDate(), now.getHours(), now.getMinutes()]
+  .map((n) => String(n).padStart(2, '0'))
+  .join('');
 const out = join(ROOT, 'eval/plugin/results', stamp);
 const { status } = spawnSync(
   'claude',

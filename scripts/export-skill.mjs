@@ -5,6 +5,7 @@
 import { chromium } from '@playwright/test';
 import { mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { MOMENTS } from './skill-moments.mjs';
 
 const SITE = 'https://ui-playbook.suspense.site';
 const DIST = 'dist';
@@ -102,6 +103,15 @@ for (const p of pages) {
 await browser.close();
 
 const line = (e) => `- [${e.title}](references/${e.name}): ${e.rule ?? e.summary}`;
+const byName = new Map(index.map((e) => [e.name, e]));
+const moment = ({ when, rule, pages }) => {
+  const links = pages.map((slug) => {
+    const e = byName.get(`${slug}.md`);
+    if (!e) throw new Error(`export-skill: moment "${when}" names a missing page ${slug}`);
+    return `[${e.title}](references/${e.name})`;
+  });
+  return `- **When you're ${when}:** ${rule} (${links.join(', ')})`;
+};
 writeFileSync(
   join(OUT, 'SKILL.md'),
   `---
@@ -136,26 +146,22 @@ product. Each system gives those numbers; the brand colour and typeface stay the
 
 ${index.filter((e) => e.kind === 'system').map(line).join('\n')}
 
-A sign-up, settings or empty screen takes the system of the product it belongs to. In either
-system, every line of copy names a thing, an action or a state: a line that could be swapped for
-any other and do the same job, such as an eyebrow, a tagline under a title or a section's subtitle,
-belongs on a marketing page. The line above a heading, if any, names its parent (a section, a
-status and ID). An error names what failed and sits where it failed; no *please*, *sorry* or *we*
-([Every line does a job](references/principle-every-line-does-a-job.md)).
+A sign-up, settings or empty screen takes the system of the product it belongs to.
 
-A section is held by its heading and the space around it. A line splits repeated rows, one step
-lighter than the group's edge. A box holds one unit of a set, or the one region that differs from
-the rest: never a box per section, never a box inside a box
-([The lightest boundary that holds](references/principle-the-lightest-boundary-that-holds.md)).
+## While you build
+
+Each line is the rule for that moment, stated in full: follow it as written. Its pages hold the
+kinds, states, numbers and reasons.
+
+${MOMENTS.map(moment).join('\n')}
 
 ## Steps
 
 1. Pick the system the product calls for and read it in full.
-2. From the lists below, pick every page that bears on what you're building: the components it
-   uses, and the principles its interactions touch.
-3. Read those references in full before writing the UI.
-4. Build to them: the system's numbers, and the kinds, states, focus and copy each page names.
-5. Before you finish, write out each text colour with the surface under it and its contrast ratio,
+2. As you reach each moment above, build to its rule.
+3. Before writing a component, read its page from the list below: its kinds, states, focus and copy.
+4. Before you finish, go back through each moment you reached and check the screen against its
+   line. Then write out each text colour with the surface under it and its contrast ratio,
    each font size with where it's used, and each icon with where it comes from; fix what falls
    short of the floors and the system. Then check the result against each page's Common mistakes
    and When it doesn't apply.

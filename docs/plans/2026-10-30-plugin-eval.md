@@ -128,3 +128,27 @@ Only a change that moves these numbers goes on to a Codex round.
    sparkline, so the "bare numbers → one row" case is what's tested. Inside a plugin the Skill is
    named `ui-playbook:ui-playbook`, so its `tool_used` grader matches
    `"skill"\s*:\s*"(?:[\w-]+:)?ui-playbook"`.
+
+## Rounds
+
+Passes out of 3, with the Skill vs without. `read-*` and `skill-fired` are with-only indicators.
+
+| Grader | Baseline (202610300333) | Moments in SKILL.md (202610300456) |
+| --- | --- | --- |
+| settings · sections-not-boxed | 3 vs 0 | 3 vs 0 |
+| settings · no-box-in-box | 3 vs 2 | 3 vs 0 |
+| settings · read-boundary | 3 | 0 |
+| overview · figures-one-row | 3 vs 1 | 3 vs 1 |
+| confirm-delete · focus-on-cancel | 3 vs 2 | 3 vs 1 |
+| confirm-delete · no-outside-dismiss | 3 vs 1 | 3 vs 1 |
+| sign-up · empty-leave-no-error | 0 vs 0 | 3 vs 0 |
+| sign-up · read-error-timing | 3 | 3 |
+| details-panel · actions-on-heading-row | 3 vs 3 | 2 vs 3 |
+| Mean Δ | +0.22 | +0.36 |
+
+- **The body carries the rule.** In the baseline every sign-up build read the error-timing page and
+  still showed "required" on leaving an empty field. With the rule stated as a moment line, all
+  three held it. On settings no build opened the boundary page, and all three still held the rule.
+- **details-panel's one fail was the grader's.** That build edits each property in place on its
+  row, so Properties has no section action; the grader now passes that.
+- details-panel doesn't tell the arms apart (both pass without the Skill); it needs a harder check.
