@@ -152,3 +152,24 @@ Passes out of 3, with the Skill vs without. `read-*` and `skill-fired` are with-
 - **details-panel's one fail was the grader's.** That build edits each property in place on its
   row, so Properties has no section action; the grader now passes that.
 - details-panel doesn't tell the arms apart (both pass without the Skill); it needs a harder check.
+
+### Round 3: the design stated before code (202610301554)
+
+Two moments added (sign-up screens; opening a dialog or sheet) and step 2: state the design, with
+a source for each part, before code. Claude side: mean Δ +0.37 (was +0.36), every grader as
+before; details-panel's one fail is a 2–1 judge split.
+
+The Codex round (`eval/run.mjs`, b-9..11 against b-6..8):
+
+| | b-6..8 | b-9..11 |
+| --- | --- | --- |
+| Hex colours outside variables, per build | 30–142 | 0 in all 9 |
+| Web font loaded | DM Sans in all 9 | DM Sans in 2 (one had stated a system font) |
+| Sign-up with drawn art and a tinted half | 3 of 3 | 0 of 3 |
+| Design stated before code | — | 8 of 9 |
+
+Asked before building, Codex had named a blue accent, system font and grey surfaces; building, it
+shipped forest green and DM Sans. With the statement as a step, what it builds follows what it
+says. New-issue focus still fails 3 of 3, and not for want of the rule: each build puts
+`autoFocus` on the title, and the `<dialog>`'s `showModal()`, run after it in an effect, moves focus
+to the first focusable element, the close button.
