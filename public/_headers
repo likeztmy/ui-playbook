@@ -1,0 +1,3 @@
+# The exported Skill is Markdown: without a charset, browsers guess one and mangle → ✓ ×.
+/skill/*
+  Content-Type: text/markdown; charset=utf-8
