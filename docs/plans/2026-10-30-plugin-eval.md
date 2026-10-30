@@ -173,3 +173,21 @@ shipped forest green and DM Sans. With the statement as a step, what it builds f
 says. New-issue focus still fails 3 of 3, and not for want of the rule: each build puts
 `autoFocus` on the title, and the `<dialog>`'s `showModal()`, run after it in an effect, moves focus
 to the first focusable element, the close button.
+
+### Round 4: the app-window floor, on a docs app
+
+A third floor in SKILL.md (an app's window holds still; each pane scrolls on its own) and a new
+task, `eval/tasks/11-docs.md`, whose walk scrolls with the wheel and types a document past the
+window. The walk was checked first on three pages: a good shell, a page that scrolls whole, and a
+fixed shell whose content pane grows past it.
+
+| Check | Codex, no Skill (a-1, a-2) | Codex, Skill (b-1..3) |
+| --- | --- | --- |
+| Content scrolls on its own; the window and sidebar hold still | 2 of 2 | 3 of 3 |
+| Sidebar scrolls on its own | 1 of 2 | 3 of 3 |
+| A document typed past the window shows its end and scrolls back | 2 of 2 | 3 of 3 |
+
+Claude (`docs` case, the judge reading the stylesheet's shell): 3 of 3 with the Skill, 2 of 3
+without. The first walk typed at machine speed with `\n` in one burst: every build lost the caret
+and some threw React's update-depth error (#185), which a person's typing never triggered. It
+now types at a fast typist's pace, a line and then Enter.

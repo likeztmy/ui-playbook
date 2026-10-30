@@ -21,10 +21,11 @@ const sidebarMark = (page) =>
     return `${(el?.textContent ?? '').trim().slice(0, 30)} @${Math.round(el?.getBoundingClientRect().top ?? -1)}`;
   });
 
-/** Whether some text is on screen: inside the window and not clipped by a pane around it. */
-const onScreen = (page, text) =>
-  page.evaluate((text) => {
-    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+/** Whether some text in an element is on screen: inside the window and not clipped by a pane
+ * around it. Scoped to the editor, since the sidebar's preview of the document repeats it. */
+const onScreen = (scope, text) =>
+  scope.evaluate((root, text) => {
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
     for (let n; (n = walker.nextNode());) {
       const i = n.textContent.indexOf(text);
       if (i < 0) continue;
@@ -109,13 +110,19 @@ export default async function walk({ page, url, shot, check, attempt }) {
     await page.waitForTimeout(500);
     const body = page.locator('[contenteditable="true"], textarea').filter({ visible: true }).last();
     await body.click();
-    for (let i = 1; i <= 70; i++) await page.keyboard.type(`Typed line ${i}.\n`, { delay: 0 });
+    // At a fast typist's pace, a line and then Enter as its own key. Machine-speed typing broke
+    // editors that a person's typing doesn't (React's update-depth error, lost keys), which
+    // isn't what this check is for.
+    for (let i = 1; i <= 70; i++) {
+      await page.keyboard.type(`Typed line ${i}.`, { delay: 25 });
+      await page.keyboard.press('Enter');
+    }
     await page.waitForTimeout(400);
     await shot('typed');
-    const lastSeen = await onScreen(page, 'Typed line 70.');
+    const lastSeen = await onScreen(body, 'Typed line 70.');
     await wheel(page, ...CONTENT, -9000);
     const up = await scrollerAt(page, ...CONTENT);
-    const firstSeen = await onScreen(page, 'Typed line 1.');
+    const firstSeen = await onScreen(body, 'Typed line 1.');
     await shot('typed-back-up');
     check(
       'typed-doc-scrolls-back',
