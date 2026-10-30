@@ -47,7 +47,7 @@ export const MOMENTS = [
   },
   {
     when: 'choosing colour',
-    rule: 'Grey carries the screen; colour is kept for what someone has to notice, and each colour says one thing. Choose a colour’s lightness for its job first, then its hue.',
+    rule: 'Grey carries the screen; colour is kept for what someone has to notice, and each colour says one thing. Choose a colour’s lightness for its job first, then its hue. When the brief gives no brand colour, don’t invent a brand: keep the surfaces neutral, take one accent from a common palette (a platform’s system colours), and define it once as a variable so the real one drops in.',
     pages: ['principle-grey-until-it-matters', 'principle-colour-means-one-thing', 'principle-lightness-first'],
   },
   {
