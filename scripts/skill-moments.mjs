@@ -36,6 +36,16 @@ export const MOMENTS = [
     pages: ['principle-error-timing', 'component-input'],
   },
   {
+    when: 'building a sign-up, welcome or empty screen',
+    rule: 'It takes the system of the product it belongs to. The brand colour and an image the brief supplies may lead; with none supplied, draw no art for the occasion and no mock of the product: the words name the next step, with one icon at most.',
+    pages: ['system-work-tool', 'system-consumer-app'],
+  },
+  {
+    when: 'opening a dialog or sheet',
+    rule: 'Focus moves in: to the first field of a task (its text selected when editing), to Cancel in a confirmation, never to the close button. Enter submits a task; Esc cancels; a click outside cancels only an untouched task. What’s behind is inert.',
+    pages: ['component-dialog', 'component-sheet'],
+  },
+  {
     when: 'something takes time',
     rule: 'Show nothing for the first 300 ms, then keep any spinner at least 500 ms. Show the work (a skeleton, progress) for a slow wait, and the result before the server answers for an action that rarely fails and is cheap to undo (a payment still waits).',
     pages: ['principle-how-waiting-feels'],

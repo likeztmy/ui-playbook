@@ -158,13 +158,17 @@ ${MOMENTS.map(moment).join('\n')}
 ## Steps
 
 1. Pick the system the product calls for and read it in full.
-2. As you reach each moment above, build to its rule.
-3. Before writing a component, read its page from the list below: its kinds, states, focus and copy.
-4. Before you finish, go back through each moment you reached and check the screen against its
-   line. Then write out each text colour with the surface under it and its contrast ratio,
-   each font size with where it's used, and each icon with where it comes from; fix what falls
-   short of the floors and the system. Then check the result against each page's Common mistakes
-   and When it doesn't apply.
+2. Before any code, state the design you'll build to, each part with where it comes from (the
+   brief, a line of this playbook, or your own choice): the system, the accent, each surface
+   layer, and the typeface with its sizes. Define each as a variable; every colour and font in the
+   code is one of them.
+3. As you reach each moment above, build to its rule.
+4. Before writing a component, read its page from the list below: its kinds, states, focus and copy.
+5. Before you finish, go back through each moment you reached and check the screen against its
+   line, and the code against the design you stated. Then write out each text colour with the
+   surface under it and its contrast ratio, each font size with where it's used, and each icon
+   with where it comes from; fix what falls short of the floors and the system. Then check the
+   result against each page's Common mistakes and When it doesn't apply.
 
 ## Components
 
