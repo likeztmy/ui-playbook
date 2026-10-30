@@ -128,7 +128,7 @@ is the mistake it replaces.
 
 ## Floors
 
-Two floors every screen meets, in every system, whichever pages you read:
+Three floors every screen meets, in every system, whichever pages you read:
 
 - **Text holds 4.5:1** against what it sits on: muted and secondary text too, ids, dates, counts,
   badges and hints included. On white, no grey lighter than \`#767676\`. This is WCAG 2.2 AA
@@ -138,6 +138,14 @@ Two floors every screen meets, in every system, whichever pages you read:
   stands in for an icon, and no SVG is drawn by hand: status, priority and arrows are in the
   library too (Lucide's \`CircleDashed\`, \`SignalHigh\`, \`ArrowUpRight\`). For a logo, use the one
   the brief gives, or set the product's name in type ([Icon](references/component-icon.md)).
+- **An app's window holds still; each pane scrolls on its own.** The shell is the window's
+  height, and the sidebar and the content each scroll inside it: scrolling a long document never
+  moves the sidebar, and what sits at the sidebar's foot stays there. A flex or grid item's
+  minimum height is its content's unless the item itself scrolls, so every layer between the
+  shell and a scrolling pane takes \`min-height: 0\`, or the pane grows past the window and
+  nothing scrolls ([CSS Flexbox, §4.5](https://www.w3.org/TR/css-flexbox-1/#min-size-auto)). A
+  page that reads like a document, such as an article or a repository's front page, scrolls as
+  one.
 
 ## Systems
 
@@ -165,10 +173,11 @@ ${MOMENTS.map(moment).join('\n')}
 3. As you reach each moment above, build to its rule.
 4. Before writing a component, read its page from the list below: its kinds, states, focus and copy.
 5. Before you finish, go back through each moment you reached and check the screen against its
-   line, and the code against the design you stated. Then write out each text colour with the
-   surface under it and its contrast ratio, each font size with where it's used, and each icon
-   with where it comes from; fix what falls short of the floors and the system. Then check the
-   result against each page's Common mistakes and When it doesn't apply.
+   line, and the code against the design you stated. Fill each pane past the window's height and
+   scroll it with the wheel, down and back up: only that pane moves. Then write out each text
+   colour with the surface under it and its contrast ratio, each font size with where it's used,
+   and each icon with where it comes from; fix what falls short of the floors and the system.
+   Then check the result against each page's Common mistakes and When it doesn't apply.
 
 ## Components
 
