@@ -43,6 +43,13 @@ for (let i = 0; ; i++) {
 
 const browser = await chromium.launch({ channel: 'chrome' });
 const errors = [];
+/** Loads a URL the way a person waits for it: until the page is there, not until every font has
+ * arrived. A build that pulls web fonts (Noto Sans SC is megabytes) shouldn't fail on the network. */
+async function arrive(p, at) {
+  await p.goto(at, { waitUntil: 'domcontentloaded', timeout: 30000 });
+  await p.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {});
+  await p.waitForTimeout(500);
+}
 /** A page in a fresh context, measuring layout shift (summed as CLS does, without session windows:
  * what moved that the person didn't move) and collecting errors. */
 async function open(options = {}, at = url) {
@@ -55,11 +62,7 @@ async function open(options = {}, at = url) {
   // A build that doesn't have what the brief names should stop the walk quickly, not hang it.
   p.setDefaultTimeout(5000);
   p.on('pageerror', (e) => errors.push(e.message));
-  if (at) {
-    await p.goto(at);
-    await p.waitForLoadState('networkidle');
-    await p.waitForTimeout(500);
-  }
+  if (at) await arrive(p, at);
   return p;
 }
 const phone = caseMeta?.device === 'phone';
@@ -74,7 +77,7 @@ const api = {
   /** A screenshot for the judges, numbered in walk order. The first is also measured for colour and decoration. */
   shot: async (name) => {
     firstScreen ??= await look(page);
-    await page.screenshot({ path: join(shots, `${String(++step).padStart(2, '0')}-${name}.png`) });
+    await page.screenshot({ path: join(shots, `${String(++step).padStart(2, '0')}-${name}.png`), timeout: 30000 });
   },
   /** A measured check: its id names the page that states the rule (see the plan's Scoring table). */
   check: (id, pass, detail = '') => checks.push({ id, pass: Boolean(pass), detail: String(detail) }),
@@ -101,9 +104,7 @@ let failed = null;
 try {
   if (flow.default) await flow.default(api);
   else {
-    await page.goto(url);
-    await page.waitForLoadState('networkidle');
-    await page.waitForTimeout(500);
+    await arrive(page, url);
     await api.shot('first');
   }
 } catch (e) {
@@ -112,7 +113,7 @@ try {
   await api.shot('stopped').catch(() => {});
 }
 if (isCase) {
-  const snap = async (p, name) => p.screenshot({ path: join(shots, `${String(++step).padStart(2, '0')}-${name}.png`) });
+  const snap = async (p, name) => p.screenshot({ path: join(shots, `${String(++step).padStart(2, '0')}-${name}.png`), timeout: 30000 });
   await extremes({ open, meta: caseMeta, snap, check: api.check, attempt: api.attempt, prepare: flow });
 }
 api.check('no-errors', !errors.length, errors.join(' | '));
