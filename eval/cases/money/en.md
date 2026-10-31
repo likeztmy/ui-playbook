@@ -1,0 +1,1 @@
+Make a little expense tracker for the phone. A web app is fine; I'll mostly open it on my iPhone. Adding an expense has to be quick: amount, category, note, with the date defaulting to today. The home screen shows how much I've spent this month and the share for each category, with the list of expenses below, which I can edit and delete. Make up two months of data.

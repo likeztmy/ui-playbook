@@ -1,0 +1,1 @@
+The sign-up flow for a fitness app: first sign up (name, email, password), then two or three steps asking about goals and how many days a week they want to train, then into the home screen. Say so if the email is already registered; passwords need at least 10 characters including a digit. Use a fake API with network delay.

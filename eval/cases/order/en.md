@@ -1,0 +1,1 @@
+Make the phone ordering page for a bubble tea shop: the menu by category, choosing options (size, sweetness, ice), a cart, and placing the order. Use a fake API; placing the order takes a second or two.

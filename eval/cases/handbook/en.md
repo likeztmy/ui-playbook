@@ -1,0 +1,1 @@
+Make a docs site for an open-source command-line tool: chapter navigation on the left, the page in the middle, the page's table of contents on the right, and search. Put in about 15 sample pages, a few of them very long.

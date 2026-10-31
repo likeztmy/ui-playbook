@@ -1,0 +1,1 @@
+Build the settings for a team workspace in our SaaS: profile, notification preferences, appearance (light, dark, follow the system), members (invite, change role, remove), and last, deleting the workspace.

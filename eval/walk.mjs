@@ -1,13 +1,15 @@
-// Walks one build through its task: serves the build, runs eval/walks/<task>.mjs, which follows the
-// brief's named controls, and records what the judges see (screenshots) and the measured
-// checks, into the build's .run folder.
+// Walks one build: serves it, runs its case's own flow, then (for a case in eval/cases) the
+// extremes every case gets, and records what the judges see (screenshots) and the measured checks
+// into the build's .run folder. A case's flow is eval/cases/<case>/walk.mjs, optional; an old
+// task's is eval/walks/<task>.mjs.
 //
-//   node eval/walk.mjs <build dir>     e.g. node eval/walk.mjs ~/code/ui-playbook-eval-runs/01-confirm-delete/b-1
+//   node eval/walk.mjs <build dir>     e.g. node eval/walk.mjs /Users/Shared/ui-playbook-eval-runs/docs/claude-b-cn-1
 import { chromium } from '@playwright/test';
 import { spawn } from 'node:child_process';
-import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { basename, dirname, join } from 'node:path';
 import { createServer } from 'node:net';
+import extremes from './walks/extremes/index.mjs';
 import { look } from './walks/look.mjs';
 
 const dir = process.argv[2]?.replace(/\/$/, '');
@@ -17,7 +19,10 @@ const meta = `${dir}.run`;
 const shots = join(meta, 'shots');
 rmSync(shots, { recursive: true, force: true });
 mkdirSync(shots, { recursive: true });
-const { default: walk } = await import(`./walks/${task}.mjs`);
+const caseDir = new URL(`./cases/${task}/`, import.meta.url).pathname;
+const isCase = existsSync(join(caseDir, 'case.json'));
+const caseMeta = isCase ? JSON.parse(readFileSync(join(caseDir, 'case.json'), 'utf8')) : null;
+const flow = isCase ? (existsSync(join(caseDir, 'walk.mjs')) ? await import(join(caseDir, 'walk.mjs')) : {}) : await import(`./walks/${task}.mjs`);
 
 const port = await new Promise((r) => {
   const s = createServer().listen(0, '127.0.0.1', () => {
@@ -37,17 +42,28 @@ for (let i = 0; ; i++) {
 }
 
 const browser = await chromium.launch({ channel: 'chrome' });
-const context = await browser.newContext({ viewport: { width: 1280, height: 800 } });
-// Layout shift, summed as CLS does without session windows: what moved that the person didn't move.
-await context.addInitScript(() => {
-  window.__shift = 0;
-  new PerformanceObserver((l) => l.getEntries().forEach((e) => !e.hadRecentInput && (window.__shift += e.value))).observe({ type: 'layout-shift', buffered: true });
-});
-const page = await context.newPage();
-// A build that doesn't have what the brief names should stop the walk quickly, not hang it.
-page.setDefaultTimeout(5000);
 const errors = [];
-page.on('pageerror', (e) => errors.push(e.message));
+/** A page in a fresh context, measuring layout shift (summed as CLS does, without session windows:
+ * what moved that the person didn't move) and collecting errors. */
+async function open(options = {}, at = url) {
+  const context = await browser.newContext({ viewport: { width: 1280, height: 800 }, ...options });
+  await context.addInitScript(() => {
+    window.__shift = 0;
+    new PerformanceObserver((l) => l.getEntries().forEach((e) => !e.hadRecentInput && (window.__shift += e.value))).observe({ type: 'layout-shift', buffered: true });
+  });
+  const p = await context.newPage();
+  // A build that doesn't have what the brief names should stop the walk quickly, not hang it.
+  p.setDefaultTimeout(5000);
+  p.on('pageerror', (e) => errors.push(e.message));
+  if (at) {
+    await p.goto(at);
+    await p.waitForLoadState('networkidle');
+    await p.waitForTimeout(500);
+  }
+  return p;
+}
+const phone = caseMeta?.device === 'phone';
+const page = await open(phone ? { viewport: { width: 390, height: 844 }, hasTouch: true } : {}, null);
 
 const checks = [];
 let step = 0;
@@ -83,14 +99,24 @@ const api = {
 
 let failed = null;
 try {
-  await walk(api);
+  if (flow.default) await flow.default(api);
+  else {
+    await page.goto(url);
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(500);
+    await api.shot('first');
+  }
 } catch (e) {
   // A build the script can't walk is a result too: the step it stopped at.
   failed = e.message.split('\n')[0];
   await api.shot('stopped').catch(() => {});
 }
+if (isCase) {
+  const snap = async (p, name) => p.screenshot({ path: join(shots, `${String(++step).padStart(2, '0')}-${name}.png`) });
+  await extremes({ open, meta: caseMeta, snap, check: api.check, attempt: api.attempt, prepare: flow });
+}
 api.check('no-errors', !errors.length, errors.join(' | '));
-await context.close();
+await page.context().close();
 await browser.close();
 server.kill();
 
