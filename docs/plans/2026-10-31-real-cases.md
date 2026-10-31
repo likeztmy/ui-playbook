@@ -116,10 +116,12 @@ Each change is measured on practice first; the exam runs after every second chan
 
 ## Decision points
 
-1. **Claude in the same runner.** Recommended; the plugin eval stays for wording. To be confirmed by
-   a smoke run that the isolated config still logs in.
-2. **Runs per round.** Practice: 2 per arm per agent (48 builds, about 4 hours at 2 at a time when
-   the machine is free). Exam: 3 each (36 builds), every second change.
+1. **Claude in the same runner.** Done; the plugin eval stays for wording. The smoke run logged in
+   and saw only what it should.
+2. **Runs per round.** Practice: 2 per arm per agent, over 8 briefs with the one-liners: 64 builds.
+   The smoke builds took 14½ minutes on Claude (70 turns, $1.55 at API prices) and 8 on Codex, so
+   a practice round is about 12 hours one at a time and about $50 of Claude. Exam: 3 each (36
+   builds, about 7 hours), every second change.
 3. **Prompts in both languages** (decided 2026-10-31). Each case is written in Chinese and in
    English, saying the same things; a round's runs alternate between them (practice: one of each
    per arm; exam: cn, en, cn), so the build count doesn't grow and a Skill tuned to one language
