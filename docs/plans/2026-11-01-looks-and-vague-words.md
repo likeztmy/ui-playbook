@@ -27,6 +27,30 @@ and control heights. The Skill ships two kinds:
 Fonts follow their licences: SF Pro, for one, is licensed for Apple platforms, so an Apple look on
 the web uses the system font stack.
 
+**Decided 2026-11-01:** a product that publishes part of its system still gets a look. What it
+publishes is used as published; what it doesn't is filled from the playbook, and the look marks
+each token's source (the product's page, or Playbook). The research is
+[product design systems](../research/2026-11-01-product-design-systems.md), audited: 22 values
+checked against their sources, all found.
+
+| Look | From the product | Filled from the playbook |
+| --- | --- | --- |
+| Primer, Fluent 2, TDesign, Arco, Atlassian | colour, type, radius, shadow, motion | fonts whose web licence is unverified fall back to the system stack |
+| Material 3 | the same | success, warning and info |
+| Ant Design | the same; dark from its published dark algorithm | |
+| Apple | system colours light and dark, text styles (system font stack) | radius, spacing, shadow, motion, status mapping |
+| Linear | brand neutrals, Inter and Inter Display, its LCH theme approach | the rest |
+| Claude | the brand palette, Poppins and Lora | the rest |
+| Vercel | Geist fonts, radii by material | colours, motion |
+| Stripe | spacing | the rest (its radii appear only in example CSS) |
+
+Notion and Raycast get none: they publish too little that's visual, so the look would be almost
+all ours under their name. Ours are the site's own palettes, made whole the same way.
+
+Each look is one reference page: its tokens in a table with a Source column, a `:root` block for
+light and dark ready to paste, and its font licence. It is named "after" the product, and a look
+never carries the product's logo or wordmark.
+
 ## 2. Component libraries
 
 The project's own library wins. With none, the agent asks which to use, offering Base UI and
