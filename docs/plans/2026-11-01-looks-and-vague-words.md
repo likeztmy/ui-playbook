@@ -120,8 +120,9 @@ ideas fit the Skill:
   in 3.
 
 Some of it the playbook already argues from other sources (undo over confirming, feedback without
-a dialog). Nothing from the book goes into the Skill or the site until it's checked against the
-book itself: page numbers for each idea, no quotation beyond a line.
+a dialog). Decided 2026-11-02: with no copy at hand, the Skill may use these ideas from memory,
+marked as the book's, each located by chapter and page from the publisher's table of contents
+([notes](../research/2026-11-02-about-face.md)). Site pages wait until the text is checked.
 
 ## 5. The eval goes multi-turn
 
