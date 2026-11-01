@@ -836,6 +836,18 @@ Typeface not confirmed; consequently its web licence is also unverified.
 
 - `type.font_licences.PingFang SC.web_licence`, `type.font_licences.Hiragino Sans GB.web_licence`, `type.font_licences.Helvetica Neue.web_licence`, `type.font_licences.Helvetica.web_licence`, `type.font_licences.Menlo.web_licence`: Exact font-file web redistribution licence not verified. This face is only named as a local fallback; no font file should be bundled on this evidence.
 
+## Audit
+
+Checked 2026-11-01 by a separate reviewer, who opened the cited source for 22 values across
+Linear, Anthropic, Geist, Apple, Stripe, Primer, TDesign, Arco, Ant Design and Material 3, font
+licences included. All 22 were found as stated; values reached through an alias (Primer, TDesign,
+Arco) match through the second source given. Two things to read with that:
+
+- **Status** (full, partial, brand only) is this file's judgement, not a word any source uses.
+- **Stripe's radii and font stack** are null here, but the Stripe Apps style page's embedded
+  example CSS sets radii of 4, 4, 8 and 10 px and a system font stack. They appear only in that
+  example, not in the page's text.
+
 ## Not verified
 
 - **Apple:** no numeric macOS neutral ramp, radius/spacing scale, push-button height scale or general motion curves/durations confirmed. iOS greys are specifically UIKit `systemGray*`; no claim of matching SwiftUI gray is made. Increased-contrast variants exist but are outside the default-light/default-dark table. SF Symbols general web redistribution rights were not established. [HIG colour](https://developer.apple.com/design/human-interface-guidelines/color), [SF Symbols](https://developer.apple.com/design/human-interface-guidelines/sf-symbols).
