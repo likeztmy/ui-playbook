@@ -114,6 +114,29 @@ Each change is measured on practice first; the exam runs after every second chan
 - **Case flows** beyond the long state (create, delete and undo, form errors) come after the
   baseline; the judges read the screenshots meanwhile.
 
+## Round 1 (baseline), stopped at 46 of 64
+
+Stopped by the owner on 2026-11-01 with every cn build done and the en half partly done
+(`join`, `article` and both one-liners have no en builds). Checks passed, over the walked builds;
+a check the walk couldn't do is left out:
+
+| Group    | Passed       | Builds | Minutes per build | Claude cost |
+| -------- | ------------ | ------ | ----------------- | ----------- |
+| claude-a | 96/110, 87%  | 12     | 7.4               | $9.93       |
+| claude-b | 107/111, 96% | 12     | 5.5               | $9.38       |
+| codex-a  | 61/112, 54%  | 12     | 6.6               |             |
+| codex-b  | 93/104, 89%  | 11     | 6.8               |             |
+
+- **Contrast** is where the Skill shows most: Codex without it fails every build in light and dark
+  (greys like `#747b70` at 4.2:1); with it, 11/11. Claude goes from 7/12 to 12/12 in light.
+- **Targets:** Codex without the Skill misses 24 px in 11/11; with it, 4/11 still do.
+- **Panes scrolling on their own** stays the weakest with the Skill too: Claude 6/8, Codex 4/6.
+  The shell recipe (`min-height: 0`) is the next change.
+- **Narrow overflow** gets worse for Codex with the Skill (11/11 to 9/11); not yet looked into.
+- **Walker fixes:** waiting for web fonts timed out a build (fixed in 75491e7). The docs `long` hook
+  types into the editor after New; two Codex one-liner builds open a create dialog first, so the hook
+  couldn't run there.
+
 ## Decision points
 
 1. **Claude in the same runner.** Done; the plugin eval stays for wording. The smoke run logged in
