@@ -1,0 +1,225 @@
+@use '../../styles/states' as *;
+
+// A work tool's window inside a demo frame: it holds a fixed height, as a browser window does.
+
+// Drawn as a window, the way the sheet's demos draw a phone: its own edge and corners.
+.window {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  container-type: inline-size;
+}
+
+.titlebar {
+  display: flex;
+  flex: none;
+  align-items: center;
+  height: 36px;
+  padding: 0 var(--space-4);
+  border-bottom: 1px solid var(--line);
+  color: var(--ink-muted);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+// The layer every guide forgets: a flex item whose minimum height is its content's, unless told.
+.layout {
+  display: grid;
+  flex: 1;
+  grid-template-rows: minmax(0, 1fr);
+  grid-template-columns: minmax(0, var(--sidebar)) minmax(0, 1fr);
+  min-height: 0;
+
+  @container (width < 480px) {
+    grid-template-columns: minmax(0, 1fr);
+
+    > .sidebar {
+      display: none;
+    }
+  }
+}
+
+.loose > .layout {
+  min-height: auto;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  padding-top: var(--space-2);
+  border-right: 1px solid var(--line);
+  background: var(--surface-sunken);
+
+  > .item {
+    margin: 0 var(--space-2) var(--space-2);
+  }
+}
+
+.list {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-0-5);
+  padding: 0 var(--space-2) var(--space-2);
+  overflow-y: auto;
+}
+
+.section {
+  margin: var(--space-2) 0 var(--space-1);
+  padding: 0 var(--space-2);
+  color: var(--ink-muted);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.item {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-2);
+  height: var(--control-md);
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-sm);
+  color: var(--ink-muted);
+  font-size: 13px;
+  text-decoration: none;
+  white-space: nowrap;
+
+  > svg {
+    flex: none;
+  }
+
+  &:hover {
+    background: var(--fill-hover);
+    color: var(--ink);
+  }
+
+  &[aria-current='page'] {
+    background: var(--fill-active);
+    color: var(--ink);
+  }
+}
+
+.foot {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-2);
+  height: 48px;
+  padding: 0 var(--space-2) 0 var(--space-4);
+  border-top: 1px solid var(--line);
+  font-size: 13px;
+}
+
+.avatar {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--fill-active);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.bar {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  height: 48px;
+  padding: 0 var(--space-2) 0 var(--space-6);
+  border-bottom: 1px solid var(--line);
+}
+
+.title {
+  margin: 0;
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.body {
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+
+  // Inside the pane: the window clips anything drawn outside it.
+  @include focus {
+    box-shadow: inset 0 0 0 2px var(--accent);
+  }
+}
+
+.doc {
+  max-width: 60ch;
+  padding: var(--space-4) var(--space-6) var(--space-8);
+  font-size: 14px;
+  line-height: 20px;
+
+  h4 {
+    margin: var(--space-6) 0 var(--space-2);
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  p {
+    margin: 0 0 var(--space-3);
+  }
+}
+
+// One page: the window grows to its content and scrolls as a whole, so the sidebar goes with it.
+.whole {
+  overflow-y: auto;
+
+  > .layout {
+    flex: none;
+  }
+
+  .list,
+  .body {
+    overflow: visible;
+  }
+}
+
+// The home page's card: a still sidebar beside a page whose lines run past the bottom.
+.preview {
+  display: grid;
+  grid-template-columns: 34% 1fr;
+  width: 120px;
+  height: 120px;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--surface-raised);
+  box-shadow: var(--shadow-sm);
+
+  > span {
+    background: var(--surface-sunken);
+    border-right: 1px solid var(--line);
+  }
+
+  > i {
+    margin: 14px 12px 0;
+    background: repeating-linear-gradient(var(--line-strong) 0 4px, transparent 4px 12px);
+  }
+}

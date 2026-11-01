@@ -2182,3 +2182,54 @@ test('track: folding the team that holds where you are moves the mark onto the t
   await team.click();
   await expect(page.getByRole('button', { name: 'Issues', exact: true })).toHaveAttribute('aria-current', 'page');
 });
+
+test('app shell: each pane scrolls on its own, the window holds, and the sidebar foot stays', async ({ page }) => {
+  await page.goto('/components/app-shell');
+  await hydrateAll(page);
+  const live = page.locator('figure').first();
+  const doc = live.locator('[data-pane="content"]');
+  const pages = live.locator('[data-pane="sidebar"]');
+  await doc.scrollIntoViewIfNeeded();
+  const window = live.locator('[data-layer="layout"]').locator('..');
+  const foot = live.getByText('Mira Chen');
+  const footTop = (await foot.boundingBox())!.y;
+
+  await doc.hover();
+  await page.mouse.wheel(0, 600);
+  await expect.poll(() => doc.evaluate((el) => el.scrollTop), 'the document scrolls').toBeGreaterThan(0);
+  expect(await pages.evaluate((el) => el.scrollTop), 'the pages stay').toBe(0);
+  expect(await window.evaluate((el) => el.scrollTop), 'the window holds').toBe(0);
+  expect((await foot.boundingBox())!.y, 'the account stays at the foot').toBe(footTop);
+
+  const docTop = await doc.evaluate((el) => el.scrollTop);
+  await pages.hover();
+  await page.mouse.wheel(0, 600);
+  await expect.poll(() => pages.evaluate((el) => el.scrollTop), 'the pages scroll').toBeGreaterThan(0);
+  expect(await doc.evaluate((el) => el.scrollTop), 'the document stays').toBe(docTop);
+  expect((await foot.boundingBox())!.y, 'the account still at the foot').toBe(footTop);
+});
+
+test('app shell: the document pane takes Tab and the arrow keys, under its title', async ({ page }) => {
+  await page.goto('/components/app-shell');
+  await hydrateAll(page);
+  const live = page.locator('figure').first();
+  await live.getByRole('button', { name: 'Share' }).focus();
+  await page.keyboard.press('Tab');
+  const doc = live.getByRole('region', { name: 'Release process' });
+  await expect(doc).toBeFocused();
+  await page.keyboard.press('PageDown');
+  await expect.poll(() => doc.evaluate((el) => el.scrollTop)).toBeGreaterThan(0);
+});
+
+test('app shell: without min-height 0 on the layout the pane grows past the window and nothing scrolls', async ({ page }) => {
+  await page.goto('/components/app-shell');
+  await hydrateAll(page);
+  const tweak = page.locator('figure').filter({ has: page.getByText(/The document pane is/) });
+  const doc = tweak.locator('[data-pane="content"]');
+  const room = (el: Element) => el.scrollHeight - el.clientHeight;
+  await expect(tweak.getByText(/nothing scrolls/)).toBeVisible();
+  expect(await doc.evaluate(room), 'as tall as its content').toBe(0);
+  await page.getByRole('switch', { name: 'min-height: 0 on the layout' }).click();
+  await expect(tweak.getByText(/and scrolls/)).toBeVisible();
+  expect(await doc.evaluate(room), 'now it scrolls').toBeGreaterThan(0);
+});

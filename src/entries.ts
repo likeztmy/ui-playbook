@@ -76,6 +76,14 @@ export const entries: Entry[] = [
     keywords: ['bottom sheet', 'drawer', 'side sheet', 'detent', 'snap point', 'modal', 'non-modal', 'map', 'swipe'],
   },
   {
+    slug: 'app-shell',
+    kind: 'component',
+    title: 'App shell',
+    summary: 'The window holds still and each pane scrolls on its own, so the sidebar never leaves.',
+    details: 3,
+    keywords: ['layout', 'sidebar', 'split view', 'pane', 'scroll', 'min-height', 'sticky', 'viewport', 'dvh', 'overflow'],
+  },
+  {
     slug: 'input',
     kind: 'component',
     title: 'Input',

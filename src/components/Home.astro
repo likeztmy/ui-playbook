@@ -23,6 +23,7 @@ import { FacesPreview } from '../demos/faces';
 import { GreyPreview } from '../demos/grey';
 import { CopyPreview } from '../demos/copy';
 import { SheetPreview } from '../demos/sheet';
+import { AppShellPreview } from '../demos/app-shell';
 import { RatioPreview } from '../demos/ratio';
 import { BoundaryPreview } from '../demos/boundary';
 import { FasterPreview } from '../demos/faster';
@@ -114,6 +115,7 @@ const groups = [
                   {e.slug === 'grey-until-it-matters' && <GreyPreview />}
                   {e.slug === 'every-line-does-a-job' && <CopyPreview />}
                   {e.slug === 'sheet' && <SheetPreview />}
+                  {e.slug === 'app-shell' && <AppShellPreview />}
                   {e.slug === 'error-timing' && <ErrorTimingPreview />}
                   {e.slug === 'colour-means-one-thing' && <ColourPreview client:visible />}
                   {e.slug === 'where-the-eye-goes' && <EyePreview client:visible />}

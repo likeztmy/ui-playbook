@@ -1,0 +1,68 @@
+---
+layout: ../../layouts/Entry.astro
+slug: app-shell
+---
+import { AppShellLive, AppShellWhole, AppShellMinHeight } from '../../demos/app-shell';
+
+<AppShellLive client:visible />
+
+## When to use
+
+Any app people stay in: a sidebar of places beside the thing that's open, in a mail client, an issue tracker, a notes app, a chat. The window holds still at the height of the screen, and each pane scrolls inside it. A page that reads like a document (an article, a docs page, a repository's front page) scrolls as one instead, and so does a phone screen, which shows one pane at a time.
+
+## Details
+
+### The sidebar stays where you left it
+
+<AppShellWhole client:visible />
+
+Apple describes a split view as "multiple adjacent panes of content" and asks apps to "persistently highlight the current selection in each pane that leads to the detail view" ([Apple HIG, Split views](https://developer.apple.com/design/human-interface-guidelines/split-views)). The highlight only says where you are while the sidebar is on screen. Scroll it away with the document and going anywhere else starts with scrolling back. When looking costs a move, people lean on memory instead ([Draschkow, Kallmayer & Nobre, 2021](https://doi.org/10.1016/j.cub.2020.11.013)).
+
+### Every layer between gives up its minimum height
+
+<AppShellMinHeight client:visible />
+
+`overflow-y: auto` on the pane isn't enough, and the pane isn't the problem. A flex item's minimum height is its content's: "for scroll containers the automatic minimum size is zero", but for anything else it's the content-based minimum ([CSS Flexbox, §4.5](https://www.w3.org/TR/css-flexbox-1/#min-size-auto)). So the layer that holds the panes grows to the height of the longest document, the window clips it, and the pane, now as tall as its content, has nothing to scroll. Grid does the same: `1fr` on its own "implies an automatic minimum (i.e. `minmax(auto, <flex>)`)" ([CSS Grid, §7.2.4](https://www.w3.org/TR/css-grid-2/#fr-unit)).
+
+Every layer between the window and a scrolling pane takes `min-height: 0`, and a grid's rows are `minmax(0, 1fr)`:
+
+```css
+.window  { display: flex; flex-direction: column; height: 100dvh; }
+.layout  { flex: 1; min-height: 0; display: grid;
+           grid-template-columns: var(--sidebar) minmax(0, 1fr);
+           grid-template-rows: minmax(0, 1fr); }
+.pane    { overflow-y: auto; }
+```
+
+### Full height is the height you can see
+
+On a phone, `100vh` is the large viewport: the height "assuming any UA interfaces that are dynamically expanded and retracted to be retracted", so content sized to it "might be hidden behind such interfaces" ([CSS Values 4, §6.1.2.1](https://www.w3.org/TR/css-values-4/#viewport-variants)). While the browser's toolbar shows, a `100vh` window's foot (the account, a message box) sits under it. `100dvh` follows the toolbar as it comes and goes.
+
+## Anatomy
+
+| Part | Token | Value |
+| --- | --- | --- |
+| Window | | `100dvh` |
+| Title bar or toolbar | `toolbar-height` | 48 |
+| Sidebar | `sidebar`, `surface-sunken` | 240 |
+| Sidebar rows | `control-md` | 32 |
+| Sidebar foot | `toolbar-height` | 48 |
+| Panes | `overflow-y: auto` | |
+
+Hairlines (`line`) mark the sidebar's edge and the line above its foot; the foot stays put while the list above it scrolls.
+
+## States
+
+A pane is a stop for Tab. A document with no links or fields gives Tab nowhere to land, so arrow keys and Page Down can't reach it: until Chrome 132, browsers made a scroller focusable only with a `tabindex` or "focusable children" ([Chrome, Keyboard focusable scrollers](https://developer.chrome.com/blog/keyboard-focusable-scrollers)). Give the pane `tabindex="0"` and a name (`role="region"` with `aria-label`), and draw its focus ring inside, where the window doesn't clip it.
+
+## Common mistakes
+
+- **`overflow: auto` on the pane, and nothing above it told.** The layer between keeps its content's height and nothing scrolls; see above.
+- **`height: 100vh` on phones.** The foot slides under the browser's toolbar. Use `100dvh`.
+- **A sticky sidebar on a page that scrolls.** It holds for a sidebar beside one document, but the document's own toolbar scrolls away, and a list beside its detail has no scroll of its own.
+- **Content that jumps when it gets long.** Where scrollbars take space (Windows, or a Mac set to always show them), the pane narrows by the scrollbar's width the moment it can scroll. `scrollbar-gutter: stable` keeps that space from the start ([CSS Overflow 3](https://www.w3.org/TR/css-overflow-3/#scrollbar-gutter-property)).
+- **The account in a sidebar that scrolls.** What sits at the sidebar's foot stays at its foot; only the list between scrolls.
+
+## Copy
+
+- Name each pane by what's in it: **Pages**, or the open document's title. That's what a screen reader says when Tab lands there.

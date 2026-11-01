@@ -141,14 +141,15 @@ Three floors every screen meets, in every system, whichever pages you read:
   stands in for an icon, and no SVG is drawn by hand: status, priority and arrows are in the
   library too (Lucide's \`CircleDashed\`, \`SignalHigh\`, \`ArrowUpRight\`). For a logo, use the one
   the brief gives, or set the product's name in type ([Icon](references/component-icon.md)).
-- **An app's window holds still; each pane scrolls on its own.** The shell is the window's
-  height, and the sidebar and the content each scroll inside it: scrolling a long document never
-  moves the sidebar, and what sits at the sidebar's foot stays there. A flex or grid item's
-  minimum height is its content's unless the item itself scrolls, so every layer between the
-  shell and a scrolling pane takes \`min-height: 0\`, or the pane grows past the window and
-  nothing scrolls ([CSS Flexbox, §4.5](https://www.w3.org/TR/css-flexbox-1/#min-size-auto)). A
-  page that reads like a document, such as an article or a repository's front page, scrolls as
-  one.
+- **An app's window holds still; each pane scrolls on its own.** The shell is \`100dvh\` tall
+  (\`100vh\` hides its foot under a phone's toolbar), and the sidebar and the content each scroll
+  inside it: scrolling a long document never moves the sidebar, and what sits at the sidebar's
+  foot stays there. A flex or grid item's minimum height is its content's unless the item itself
+  scrolls, so every layer between the shell and a scrolling pane takes \`min-height: 0\` and grid
+  rows are \`minmax(0, 1fr)\`, or the pane grows past the window and nothing scrolls. A pane with
+  no links or fields gets \`tabindex="0"\` and a name, so the keyboard can scroll it. A page that
+  reads like a document, such as an article or a repository's front page, scrolls as one
+  ([App shell](references/component-app-shell.md)).
 
 ## What you're building
 
