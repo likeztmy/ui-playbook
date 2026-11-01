@@ -46,7 +46,7 @@ export const MOMENTS = [
     pages: ['component-dialog', 'component-sheet'],
   },
   {
-    when: 'something takes time',
+    when: 'making someone wait',
     rule: 'Show nothing for the first 300 ms, then keep any spinner at least 500 ms. Show the work (a skeleton, progress) for a slow wait, and the result before the server answers for an action that rarely fails and is cheap to undo (a payment still waits).',
     pages: ['principle-how-waiting-feels'],
   },
