@@ -11,8 +11,14 @@ export default async function narrow({ page, meta, snap, check }) {
       ),
     ]
       .filter((el) => el.checkVisibility({ visibilityProperty: true, opacityProperty: true }) && !el.closest('p, li p'))
-      .map((el) => ({ el, r: el.getBoundingClientRect() }))
-      .filter(({ r }) => r.width > 0 && r.bottom > 0 && r.top < innerHeight)
+      // An input's target includes its label, since a click there works it; a visually hidden
+      // input (1 px, the sr-only pattern) is pressed through that label, not itself.
+      .map((el) => {
+        const own = el.getBoundingClientRect();
+        const label = [...(el.labels ?? [])].map((l) => l.getBoundingClientRect()).sort((a, b) => b.width * b.height - a.width * a.height)[0];
+        return { el, r: label && label.width * label.height > own.width * own.height ? label : own };
+      })
+      .filter(({ r }) => r.width > 2 && r.height > 2 && r.bottom > 0 && r.top < innerHeight)
       .map(({ el, r }) => ({
         name: (el.getAttribute('aria-label') ?? el.textContent ?? el.tagName).trim().slice(0, 20),
         w: Math.round(r.width),
