@@ -6,6 +6,7 @@ import { chromium } from '@playwright/test';
 import { mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { MOMENTS } from './skill-moments.mjs';
+import { WORDS } from './skill-words.mjs';
 
 const SITE = 'https://ui-playbook.suspense.site';
 const DIST = 'dist';
@@ -104,19 +105,21 @@ await browser.close();
 
 const line = (e) => `- [${e.title}](references/${e.name}): ${e.rule ?? e.summary}`;
 const byName = new Map(index.map((e) => [e.name, e]));
-const moment = ({ when, rule, pages }) => {
-  const links = pages.map((slug) => {
-    const e = byName.get(`${slug}.md`);
-    if (!e) throw new Error(`export-skill: moment "${when}" names a missing page ${slug}`);
-    return `[${e.title}](references/${e.name})`;
-  });
-  return `- **When you're ${when}:** ${rule} (${links.join(', ')})`;
-};
+const links = (pages, owner) =>
+  pages
+    .map((slug) => {
+      const e = byName.get(`${slug}.md`);
+      if (!e) throw new Error(`export-skill: "${owner}" names a missing page ${slug}`);
+      return `[${e.title}](references/${e.name})`;
+    })
+    .join(', ');
+const moment = ({ when, rule, pages }) => `- **When you're ${when}:** ${rule} (${links(pages, when)})`;
+const word = ({ asked, means, pages }) => `- **${asked}:** ${means} (${links(pages, asked)})`;
 writeFileSync(
   join(OUT, 'SKILL.md'),
   `---
 name: ui-playbook
-description: Rules for product UI, each with the reason and the mistake it prevents, from UI Playbook. Use when building or reviewing any interface: choosing and wiring a component (button, menu, dialog, toast, input, select, combobox, tabs, table, sheet…); a form and when its errors show; loading, waiting and empty states; confirmations and undo; lists, selection and bulk actions; motion; colour, spacing, radius and shadow; focus, keyboard and pointer behaviour.
+description: Rules for product UI, each with the reason and the mistake it prevents, from UI Playbook. Use when building or reviewing any interface: choosing and wiring a component (button, menu, dialog, toast, input, select, combobox, tabs, table, sheet…); a form and when its errors show; loading, waiting and empty states; confirmations and undo; lists, selection and bulk actions; motion; colour, spacing, radius and shadow; focus, keyboard and pointer behaviour; a request to make it nicer, cleaner, more premium or smoother.
 ---
 
 # UI Playbook
@@ -147,14 +150,41 @@ Three floors every screen meets, in every system, whichever pages you read:
   page that reads like a document, such as an article or a repository's front page, scrolls as
   one.
 
-## Systems
+## What you're building
 
-How big the text and controls are, and how much colour a screen carries, depend on the kind of
-product. Each system gives those numbers; the brand colour and typeface stay the product's own.
+The kind of thing decides which rules lead. When the brief doesn't say, ask how long and how
+attentively someone stays with it: a product used all day can be dense and quiet, one used for a
+moment has to explain itself at a glance. (About Face, 4th ed., ch. 9, calls this posture.)
+
+- **A work tool** is used all day, in a window: trackers, editors, admin, chat. It leads with
+  familiarity: start from the product people already use for this, grey surfaces, one accent, no
+  entrance motion. People judge a tool by how little it asks of them, not by how new it looks.
+- **A consumer app** is picked up in short visits, often on a phone: larger text and targets,
+  colour in the content, motion that answers touch.
+- **A reading page** is read through, or returned to: an article, docs, a repository's front page.
+  It leads with type (measure, size, rhythm) and scrolls as one
+  ([Reading text](references/principle-reading-text.md)).
+- **A marketing page** is seen once and has to be remembered. Here, and only here, distinctiveness
+  leads: open with the most characteristic thing in the subject's world, spend boldness on one
+  idea and keep the rest quiet, and avoid the tells of generated pages that Anthropic lists in its
+  [frontend-design](https://github.com/anthropics/skills/tree/main/skills/frontend-design) skill
+  (one word accented in a headline, an uppercase label above every heading, identical rounded cards
+  with one soft shadow, gradient washes, a “→” after every link). The floors still hold.
+
+A sign-up, checkout, settings or empty screen takes the kind of the product it belongs to.
+
+The text sizes, targets and colour for tools and consumer apps are in their systems; the brand
+colour and typeface stay the product's own.
 
 ${index.filter((e) => e.kind === 'system').map(line).join('\n')}
 
-A sign-up, settings or empty screen takes the system of the product it belongs to.
+## When they ask for a look
+
+People ask for a look in words an agent can't act on. Each means changes you can make and check:
+
+${WORDS.map(word).join('\n')}
+
+Say which of these you changed, so the next request can point at one.
 
 ## While you build
 
@@ -165,19 +195,29 @@ ${MOMENTS.map(moment).join('\n')}
 
 ## Steps
 
-1. Pick the system the product calls for and read it in full.
-2. Before any code, state the design you'll build to, each part with where it comes from (the
-   brief, a line of this playbook, or your own choice): the system, the accent, each surface
-   layer, and the typeface with its sizes. Define each as a variable; every colour and font in the
-   code is one of them.
-3. As you reach each moment above, build to its rule.
-4. Before writing a component, read its page from the list below: its kinds, states, focus and copy.
-5. Before you finish, go back through each moment you reached and check the screen against its
+1. Decide the kind of thing you're building; for a tool or a consumer app, read its system in full.
+2. Before any code, write a short brief: what the person is trying to get done (the goal, not the
+   steps), who uses it and on what device, the product it should feel like, and the component
+   library: the project's own, or, with none, ask whether to use Base UI or shadcn/ui. Ask only
+   what would change the whole design and has no sound default, three questions at most; what
+   this playbook answers is decided, not asked. When you can't ask, write your assumptions and
+   build on them; with no library chosen, use shadcn/ui and say so.
+3. Then state the design you'll build to, each part with where it comes from (the brief, a line of
+   this playbook, or your own choice): the system, the accent, each surface layer, and the
+   typeface with its sizes. Define each as a variable; every colour and font in the code is one of
+   them.
+4. As you reach each moment above, build to its rule.
+5. Before writing a component, read its page from the list below: its kinds, states, focus and copy.
+6. Before you finish, go back through each moment you reached and check the screen against its
    line, and the code against the design you stated. Fill each pane past the window's height and
    scroll it with the wheel, down and back up: only that pane moves. Then write out each text
    colour with the surface under it and its contrast ratio, each font size with where it's used,
    and each icon with where it comes from; fix what falls short of the floors and the system.
-   Then check the result against each page's Common mistakes and When it doesn't apply.
+   Walk the main task and count the steps that don't move it forward (excise, in About Face's
+   word, ch. 12): a question the product could answer itself, a choice it could remember from last
+   time, a confirmation for something that can be undone, a trip to another screen for what the
+   task needs. Remove each one you can. Then check the result against each page's Common mistakes
+   and When it doesn't apply.
 
 ## Components
 
