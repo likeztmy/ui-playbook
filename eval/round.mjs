@@ -1,7 +1,10 @@
 // A round's results, for the cases in eval/cases: each measured check's pass count by agent and
 // arm, over every walked build, and the builds that didn't build or walk.
 //
-//   node eval/round.mjs [--set practice|exam]
+//   node eval/round.mjs [--set practice|exam] [--then <follow-up>]
+//
+// With --then, only the builds made after that follow-up (eval/run.mjs --then); without, only first
+// turns.
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -9,6 +12,8 @@ const ROOT = new URL('..', import.meta.url).pathname;
 const RUNS = process.env.EVAL_RUNS ?? '/Users/Shared/ui-playbook-eval-runs';
 const i = process.argv.indexOf('--set');
 const set = i < 0 ? null : process.argv[i + 1];
+const t = process.argv.indexOf('--then');
+const then = t < 0 ? null : process.argv[t + 1];
 
 const cases = readdirSync(join(ROOT, 'eval/cases')).filter((c) => {
   const meta = JSON.parse(readFileSync(join(ROOT, 'eval/cases', c, 'case.json'), 'utf8'));
@@ -23,6 +28,7 @@ for (const c of cases) {
   if (!existsSync(join(RUNS, c))) continue;
   for (const f of readdirSync(join(RUNS, c)).filter((f) => f.endsWith('.run'))) {
     const build = f.replace(/\.run$/, '');
+    if (then ? !build.endsWith(`-then-${then}`) : build.includes('-then-')) continue;
     const [agent, arm] = build.split('-');
     if (!groups.includes(`${agent}-${arm}`)) continue;
     const run = existsSync(join(RUNS, c, f, 'run.json')) ? JSON.parse(readFileSync(join(RUNS, c, f, 'run.json'), 'utf8')) : null;

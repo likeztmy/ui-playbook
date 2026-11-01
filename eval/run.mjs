@@ -4,7 +4,7 @@
 // so no AGENTS.md, CLAUDE.md or node_modules above it does: Claude Code reads .claude/CLAUDE.md in
 // every folder above the one it runs in, the home folder's included.
 //
-//   node eval/run.mjs <case> <a|b> <n> [--agent codex|claude] [--lang cn|en]
+//   node eval/run.mjs <case> <a|b> <n> [--agent codex|claude] [--lang cn|en] [--then <follow-up>]
 //   node eval/run.mjs --smoke <a|b> [--agent codex|claude]   ask an arm what it sees
 //
 // A case is eval/cases/<case>/ (cn.md and en.md, the same request in each language; plan:
@@ -12,6 +12,11 @@
 // English, on Codex. Builds land in $EVAL_RUNS (default /Users/Shared/ui-playbook-eval-runs)/<case>/
 // <agent>-<arm>-<lang>-<n> (old tasks: <arm>-<n>); the agent's events, last message and run.json
 // (time, tokens, whether it builds) beside it in the same name plus .run.
+//
+// With --then, the conversation goes on: after the first build, the follow-up in eval/then/<name>/
+// (cn.md, en.md; what people say next, such as "make it more premium") is sent in the same session
+// and folder. The first build stays as <build>, the second lands as <build>-then-<name>. Both turns
+// run in <build>, so the folder the agent sees never names the follow-up.
 import { execFileSync } from 'node:child_process';
 import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -50,6 +55,7 @@ const flag = (name, fallback) => {
 };
 const agentName = flag('agent', 'codex');
 const langArg = flag('lang', null);
+const then = flag('then', null);
 const smoke = argv[0] === '--smoke';
 const [caseArg, arm, n] = smoke ? [null, argv[1], 1] : argv;
 const agent = AGENTS[agentName];
@@ -58,6 +64,7 @@ if (!agent || !['a', 'b'].includes(arm) || (!smoke && !(caseArg && n)) || (langA
   process.exit(2);
 }
 if (arm === 'b' && !existsSync(join(SKILL, 'SKILL.md'))) throw new Error('No Skill: run `pnpm build` first.');
+if (then && (smoke || !existsSync(join(ROOT, 'eval/then', then)))) throw new Error(`No follow-up ${then} in eval/then`);
 
 // A case in either language, or an old task by its number.
 let name;
@@ -81,7 +88,8 @@ if (smoke) {
 }
 const dir = join(RUNS, name, build);
 const meta = `${dir}.run`;
-if (existsSync(dir) && !smoke) throw new Error(`${dir} exists; pick another n`);
+const second = then && `${dir}-then-${then}`;
+if ((existsSync(dir) || (second && existsSync(second))) && !smoke) throw new Error(`${dir} exists; pick another n`);
 rmSync(dir, { recursive: true, force: true });
 rmSync(meta, { recursive: true, force: true });
 mkdirSync(meta, { recursive: true });
@@ -94,21 +102,40 @@ sh('git', ['init', '-q']);
 sh('git', ['add', '-A']);
 sh('git', ['-c', 'user.name=eval', '-c', 'user.email=eval@localhost', 'commit', '-qm', 'starter']);
 
-writeFileSync(join(meta, 'prompt.md'), request);
-const started = Date.now();
-const result = await agent({ dir, meta, skill: arm === 'b' ? SKILL : null, brief: request, smoke, store: STORE });
-const seconds = Math.round((Date.now() - started) / 1000);
-
-let builds = null;
-if (!smoke) {
-  try {
-    sh('pnpm', ['build']);
-    builds = true;
-  } catch {
-    builds = false;
+// One turn: the agent's work, then whether the folder builds.
+const session = then ? {} : undefined;
+async function turn(meta, brief, extra) {
+  writeFileSync(join(meta, 'prompt.md'), brief);
+  const started = Date.now();
+  const result = await agent({ dir, meta, skill: arm === 'b' ? SKILL : null, brief, smoke, store: STORE, session });
+  const seconds = Math.round((Date.now() - started) / 1000);
+  let builds = null;
+  if (!smoke) {
+    try {
+      sh('pnpm', ['build']);
+      builds = true;
+    } catch {
+      builds = false;
+    }
   }
+  const run = { case: name, agent: agentName, arm, lang, n: Number(n), ...extra, ...result, seconds, builds };
+  writeFileSync(join(meta, 'run.json'), JSON.stringify(run, null, 2) + '\n');
+  console.log(JSON.stringify(run));
 }
-const run = { case: name, agent: agentName, arm, lang, n: Number(n), ...result, seconds, builds };
-writeFileSync(join(meta, 'run.json'), JSON.stringify(run, null, 2) + '\n');
-console.log(JSON.stringify(run));
+
+await turn(meta, request, then ? { then, turn: 1 } : {});
 if (smoke) console.log(readFileSync(join(meta, 'last.md'), 'utf8'));
+if (then) {
+  // Keep the first build aside (an APFS clone, so it costs nothing), carry on in the same folder,
+  // then swap the names so each build sits under its own.
+  const first = `${dir}.first`;
+  execFileSync('cp', ['-cR', dir, first]);
+  mkdirSync(`${second}.run`, { recursive: true });
+  try {
+    await turn(`${second}.run`, readFileSync(join(ROOT, 'eval/then', then, `${lang}.md`), 'utf8').trim(), { then, turn: 2 });
+  } finally {
+    session.close?.();
+  }
+  execFileSync('mv', [dir, second]);
+  execFileSync('mv', [first, dir]);
+}
