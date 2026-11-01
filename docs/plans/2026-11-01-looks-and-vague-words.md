@@ -86,6 +86,43 @@ The words are matched in English and Chinese; the rule is written once, in Engli
 No page argues these yet, so they stay out until one does: a time limit for "at once" (the
 100 ms usually quoted), and animating only `transform` and `opacity`.
 
+## 4b. What kind of thing is it
+
+The first branch of the Skill, before the brief: what is being built decides which rules lead.
+Anthropic's published frontend-design prompts aim at distinctiveness; the tools the owner picked
+(ChatGPT, Claude, Craft) aim at familiarity ([references](../research/2026-11-01-owner-references.md)).
+Both are right, for different kinds of thing.
+
+| Kind | Used | Leads with | Looks |
+| --- | --- | --- | --- |
+| Work tool | all day, full attention, in a window | familiarity: copy the product people know; density; grey surfaces; no entrance motion | a product look or ours |
+| Consumer app | in short visits, often on a phone | large targets and text, colour in the content, motion that answers touch | a product look or ours |
+| Reading | read through once or returned to | type: measure, size, rhythm; the page scrolls as one | ours, type-led |
+| Marketing | seen once, has to be remembered | distinctiveness: one bold idea, the subject's own material, Anthropic's tells list | made for the brief |
+
+A sign-up, checkout, settings or empty screen takes the kind of the product it belongs to. The
+"used" column is the test when a brief is unclear: how long and how attentively someone stays.
+That is About Face's posture (below); its sovereign and transient apps are close to the first two.
+
+## 4c. Interaction design from About Face
+
+Cooper, Reimann, Cronin and Noessel, _About Face: The Essentials of Interaction Design_ (4th ed.,
+Wiley, 2014). The playbook is mostly about details; the book is about behaviour, and several of its
+ideas fit the Skill:
+
+- **Posture:** sovereign, transient and daemonic apps, by how long and how attentively they're
+  used; the test for 4b.
+- **Excise:** work the tool demands that doesn't serve the person's goal (navigating, confirming,
+  re-entering what it knows). A Skill check: count the steps that aren't the task.
+- **Perpetual intermediates:** most people stop learning once they can work; design for them, with
+  a path to speed (the playbook's "The faster way lives on the slow way").
+- **Goal-directed design:** ask what the person is trying to get done before the screen; the brief
+  in 3.
+
+Some of it the playbook already argues from other sources (undo over confirming, feedback without
+a dialog). Nothing from the book goes into the Skill or the site until it's checked against the
+book itself: page numbers for each idea, no quotation beyond a line.
+
 ## 5. The eval goes multi-turn
 
 A case runs as a conversation: the brief, then a follow-up such as "make it more premium". The
