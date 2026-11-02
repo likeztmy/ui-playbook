@@ -11,11 +11,31 @@ interaction and close-up shots named in the evidence column. Measurements were t
 text under 12px, Lucide sizes and strokes, unnamed buttons, horizontal overflow) ran on every route at
 1280 light and 375 dark, and its numbers are quoted as "probe".
 
-Status: written route by route; the summary table is filled in at the end.
+Status: complete for all eleven routes.
 
 ## Findings
 
-(Collected at the end from the per-route sections below.)
+1 must, 3 should, 13 nit. Dialog, menu and popover have none.
+
+| severity | where | rule | evidence | fix |
+| --- | --- | --- | --- | --- |
+| must | badge: “Dot and word”, “Without colour” and “Soft tints” frames (`src/demos/badge.tsx`, `taskList` rows) | component-badge mistake: “A badge in every row, with no header … give it a header” (C12) | each list has a badge on all 5 rows and no header; shots `badge-1280-light.png` | Give the badge column a header (“State”) as the scene's table does, or set these lists as the Table; keep the Avoid frames as they are |
+| should | badge: scene filter field, placeholder `Title, state or ID` (`src/demos/badge.tsx:91`) | component-input Copy: “Placeholder: an example, not an instruction” (C17) | `placeholder="Title, state or ID"` lists what to type, not an example | Placeholder an example such as `PB-142`; if the searchable fields need saying, say it in a hint |
+| should | checkbox: scene “Notifications” and the “The words are part of the target” pair (`src/demos/checkbox.tsx`) | component-checkbox mistake: “A checkbox that saves on the spot … it's a Switch” (C31) | scene: no `form`, no Save or Submit (`buttons: ['Switch theme']`); same for “Keep me signed in / Show hidden files” | Put the group in a form with its submit (e.g. a sign-in form for “Keep me signed in”, Save for the notification group), or make the settings that apply at once Switches |
+| should | input: Variants “Search” (`placeholder="Search files"`) and the 2× figure (`placeholder="Search"`) (`src/demos/input.tsx:162,195`) | component-input Copy: “Placeholder: an example, not an instruction” (C17) | both placeholders tell the reader what to do, and repeat the label `Search` | Placeholder an example of a query (`Q4 roadmap`), or none: the magnifier and the label already say it |
+| nit | app-shell: first demo, sidebar foot: `Mira Chen` (`src/demos/app-shell/app-shell.module.scss:141-163`) | owner: “Labels start on one vertical line”; “Icons sit in one column” | name text at x 353; every row label above at 345 (24px avatar vs 16px icons, both 8 gap) | Avatar 16px (or 20 with gap 4) so the name starts at 345, or accept and say why |
+| nit | app-shell: first demo, Share button (`src/demos/app-shell/App.tsx` `Share size={14}`) | component-icon Anatomy: “Size in dense rows (13px): 14” | sm button label 13px, icon renders 16 × 16 (the Button CSS overrides the 14) | Let sm buttons take a 14px icon, or drop the `size={14}` that has no effect |
+| nit | badge: every `taskList` frame on the page (`src/demos/demos.module.scss:472-479`) | lightest-boundary: “Lines only between the repeated rows” | probe: last `li` has `border-bottom: 1px solid` in all 6 lists | `> li:last-child { border-bottom: 0 }` (shared class, so other pages change too) |
+| nit | button: Variants, Sizes row: `Small` (`src/ui/Button.module.scss`, `.sm`) | component-button Anatomy: “Label · body, weight 500 · 14 / 20” | sm label 13px; md and lg 14px | Either state on the Anatomy row that sm takes 13 (work-tool: 13 in dense rows), or set sm to 14 |
+| nit | card: Variants “Static” and the “Only a card that opens lifts” pair: subtitle `A specimen` (`src/demos/card.tsx`) | component-card Copy: “Subtitle: the one fact that helps choose between cards” | `A specimen` is the same kind of line on any static card | A fact, e.g. `Geist, 9 sizes`, or no subtitle |
+| nit | card: “Arrive together, almost” frames | component-card: “A frame around a grey stage, words beneath” | the twelve cards are stages only, no title row | Give each mini card its one-line title, or caption the figure as thumbnails |
+| nit | checkbox: Variants, “Without a label” row | owner: “Labels start on one vertical line” | its boxes at x 594.4, every other row's at 582.4; labels 622 vs 606 | Drop the row's own 12px inset so its boxes share the gallery's column, or note why a selection list is inset |
+| nit | combobox: every combobox's chevron, `aria-label` (`src/ui/Combobox.tsx:151`) | every-line-does-a-job: the words name the action; component-tooltip Copy: names match | `Show all ${label.toLowerCase()}` reads “Show all time zone”, “Show all office” | Take a plural noun as its own prop (`allLabel="Show all time zones"`), or name it “Show list” |
+| nit | combobox: scene note `Meetings shown in Lisbon time` (`src/demos/combobox.tsx:69`) | component-input Anatomy: “Label, field, hint · `space-1` apart · 4” | it reads as the field's hint (13px muted, directly under) but sits 12 below the field and isn't `aria-describedby` | Pass it as the field's `description` so it sits 4 below and is tied, or set it apart as the page's own text |
+| nit | icon: Compare captions with inline code, e.g. “From the library” caption's `aria-hidden` (probe: `div.compare>div.side>p.note>code`) | work-tool: “Labels and meta 12px; nothing smaller” | 11.05px (0.85em of the 13px note) in both themes and at 375 | `font-size: max(12px, 0.85em)` for code inside `.note` |
+| nit | icon: scene sidebar places | work-tool: “13px in table rows, sidebars and dense lists” | sidebar labels 14px here; the App shell demo's sidebar is 13px | 13px, with 16px icons (the Icon page's own dense size is 14 at 13px: pick one and say it) |
+| nit | input: ⌘ in every `FieldKey` (`src/ui/Field.tsx:128`) | component-icon: a symbol “is read out by whatever name the screen reader's dictionary has” | `<Command aria-label="⌘">` hands the icon the same symbol as its name | `aria-label="Command"` (or hide the `kbd` and name the shortcut on the field) |
+| nit | input: scene Email while invalid | component-input Anatomy note: “the hint or the error below, never both” | `aria-describedby` keeps the hint's id with the error's (`…4ki_ …3ki_`), so a screen reader reads both | Drop the hint's id from `aria-describedby` while the error shows |
 
 ## Per route
 
@@ -438,3 +458,182 @@ Ledger, `component-input` (`.mdx` unchanged since 26 Oct; reference read):
 | Copy: placeholder an example | **fail** | finding 1 |
 | Copy: error says what to do, with an example | pass | |
 | Error timing (principle): wait till they finish; required waits for submit | pass | |
+
+### /components/menu
+
+Shots: the four full pages, plus close-ups `menu-scene-open-1280-light.png` (scene, “Sort: Modified” open),
+`menu-pulldown-open-1280-light.png`, `menu-pulldown-open-1280-dark.png` (pull-down “Edit” open) and
+`menu-submenu-1280-light.png` (“Move to” opened with Right). Probe at 1280 light/dark and 375 dark: the only
+text under 4.5:1 is the dimmed *Undo*, *Paste style* and *Restore version* rows (unavailable, exempt); the
+only text under 12px is the 11px keycaps in the Common-mistakes illustration (an Avoid picture); Lucide at
+stroke 2 only (16, 14, 12); no unnamed button; no overflow.
+
+Measured, pull-down (1280 light): popup 203 wide, radius 10, inset 4, `shadow-md`, transform origin at the
+trigger's corner (`0 -6px`); items 32 tall, radius 6, label 13px; leading check column at x618, icons 16 at
+642 in `ink-muted` (`rgb(94,94,103)`; dark `rgb(180,180,189)`), labels on one line at 666; separators inset 12
+each side; every shortcut's last cell and the *Move to* chevron end at x797, 12 from the popup's edge; the
+longest label ends 32 before the shortcut column (≥24). Shortcut glyphs are Lucide 12 at stroke 2, in
+`ink-muted`, and `ink-disabled` (`rgb(168,168,176)`) only on the unavailable *Undo* row (C1). *Delete* is last,
+in `danger`. Keyboard: Down highlights the dimmed *Undo* (unavailable rows stay focusable); Space on *Snap to
+grid* toggles it and the menu stays open; Right on *Move to* opens one submenu level (73 wide, no minimum).
+Scene choice menu: 160 wide, radio items, the check leads in a 16 column, no icons and no shortcuts (a sort
+field has no mark, C37), a separator between field and order, popup 6 under the trigger. The file list
+behind it draws lines between rows only, starting at the text (C21).
+
+Findings: none.
+
+Ledger, `component-menu` (`.mdx` changed today; the `.mdx` was read):
+
+| rule | mark | why |
+| --- | --- | --- |
+| Pull-down: icons all or none per group | pass | every row of every group has one |
+| Pull-down: shortcuts only where the command has one | pass | *Move to* has none |
+| Pull-down: unavailable commands stay, dimmed | pass | *Undo* |
+| Context menu: three groups at most, destructive last, no title | pass | |
+| Context menu: no shortcuts | pass | Prefer drops them |
+| Context menu: unavailable actions hidden | pass | Prefer leaves them out |
+| Choice: radio items with a leading checkmark | pass | measured |
+| Choice: no shortcuts; icon only for the value's own mark | pass | none (C37) |
+| Choice: separator between independent choices | pass | field / order |
+| Parts by kind table | pass | submenu one level; ellipsis none needed |
+| Avoid/Prefer “Icons on every row of a group, or none” | pass | |
+| Avoid/Prefer “A context menu carries no shortcuts” | pass | |
+| Avoid/Prefer “Unavailable: hidden vs dimmed” | pass | |
+| Avoid/Prefer “A highlight you can find” (5% vs 9%) | pass | live highlight 9% (`rgba(24,24,27,.09)`) |
+| Avoid/Prefer “A destructive row stays red” | pass | |
+| Avoid/Prefer “The checkmark leads the row” | pass | |
+| Avoid/Prefer “Shortcuts are bare symbols in a column” | pass | Avoid side uses keycaps (11px, exempt as the picture of the mistake) |
+| Avoid/Prefer “The popup comes out of its trigger” | pass | origin at trigger corner |
+| Anatomy: popup radius 10 | pass | |
+| Anatomy: inset 4 | pass | |
+| Anatomy: width ≥160, submenu no minimum | pass | 203 / 160 / 73 |
+| Anatomy: separator inset 12 | pass | |
+| Anatomy: item radius 6 | pass | |
+| Anatomy: item height 32 | pass | |
+| Anatomy: padding / icon gap 8 | pass | icon 642→label 666 (16 + 8) |
+| Anatomy: label 13/18 | pass | |
+| Anatomy: shortcut bare, `ink-muted`, `ink-disabled` only when unavailable, last key fixed cell | pass | C1 |
+| Anatomy: label to shortcut ≥24 | pass | 32 |
+| Anatomy: surface raised, `shadow-md` | pass | |
+| Icons 16 `ink-muted`, `ink` when highlighted | pass at rest; highlight only checked on the dimmed row | |
+| Every row keeps the check column once any row can be checked | pass | labels all at 666 |
+| States: arrows, Right opens submenu, Space toggles without closing, disabled focusable | pass | measured |
+| Mistake: a menu for one or two items | pass | |
+| Mistake: group label repeating the trigger | pass | none |
+| Mistake: destructive mid-list | pass | last group |
+| Mistake: closing on every toggle | pass | stays open |
+| Mistake: submenus inside submenus | pass | one level |
+| Copy: verbs for commands, values for choices | pass | |
+| Copy: ellipsis only when input follows | pass | none used; *Rename* edits in place |
+| Copy: sentence case; one grammatical form | pass | |
+
+### /components/popover
+
+Shots: the four full pages, plus `popover-scene-open-1280-light.png` and `popover-scene-open-375-dark.png`
+(scene, Share clicked). Probe at 1280 light/dark and 375 dark: nothing under 4.5:1 or 12px, Lucide at stroke 2
+only (16, 14), no unnamed button, no overflow.
+
+Measured, scene (1280 light; 375 dark the same apart from colours): popup 220 wide, 6 under the trigger,
+radius 10, inset 12, `shadow-md`, no arrow; title `h2` 13/18 600, description 13px `ink-muted` 2 below it;
+*Invite* small (24) and right-aligned at the inset; the trigger keeps `fill-control-hover`
+(`rgba(24,24,27,.1)`) while open; focus lands in the Email field (`placeholder="name@acme.com"`, a format
+example, C17); title and description tied by `aria-labelledby` / `aria-describedby`. Typed `ana@`, pressed
+Escape: the popover closed, focus returned to *Share*, and reopening showed `ana@` again. Variants: the ghost
+*About storage* trigger takes `fill-control` (`.06`) while open, its popover is 320 (the maximum); the colour
+picker applies on pick with no Save.
+
+Findings: none.
+
+Ledger, `component-popover` (`.mdx` unchanged since October):
+
+| rule | mark | why |
+| --- | --- | --- |
+| When to use: small panel from a button | pass | Share, About storage, Label colour |
+| Detail: grows from its trigger | pass | Avoid/Prefer shown; origin at trigger |
+| Detail: focus goes in and comes back | pass | measured |
+| Detail: the trigger stays pressed | pass | measured both fills |
+| Detail: a stray click keeps the draft | pass | measured with Escape |
+| Motion: spring in, fast out, fade only with reduced motion | n/a | not measurable in stills; source not re-read |
+| Anatomy: surface raised, `shadow-md`, radius 10 | pass | |
+| Anatomy: inset 12 | pass | |
+| Anatomy: width to content, ≤320 | pass | 220 / 320 |
+| Anatomy: gap to trigger 6 | pass | |
+| Anatomy: title 13/18 600 | pass | |
+| Anatomy: description muted, 2 under | pass | |
+| Anatomy: blocks 12 apart | pass | |
+| Anatomy: actions right-aligned, small, 8 apart | pass | one action |
+| Anatomy: trigger fill while open | pass | |
+| No arrow | pass | |
+| Mistake: opening on hover | pass | click |
+| Mistake: popover for a decision | pass | |
+| Mistake: popovers inside popovers | pass | |
+| Mistake: a Save that isn't needed | pass | picker applies on pick |
+| Copy: title matches trigger | pass | Share “Q4 roadmap” |
+| Copy: description one sentence of consequence | pass | |
+| Copy: action a verb | pass | Invite |
+
+## Shared ledger: principles, system and neighbouring components
+
+Marked across all eleven routes from the per-route measurements above. A row that failed on a route
+points to that route's finding.
+
+| reference | rule | mark | why |
+| --- | --- | --- | --- |
+| lightest-boundary | heading and space before a line; a line before a box | pass | figures are stages (C3); no box inside a box found |
+| lightest-boundary | lines only between repeated rows, lighter than the container edge | **fail** (nit) | badge: `taskList` last row has a line |
+| lightest-boundary | list lines start at the text (C21) | pass | badge, menu scene, app-shell lists |
+| space-groups-by-ratio | inside a group tighter than between groups | pass | label/field/hint 4, blocks 12, sections 32+ |
+| every-line-does-a-job | no line that says what the reader can see | pass with nits | card `A specimen`; combobox chevron name |
+| lightness-first | hierarchy by lightness before size or weight | pass | muted meta, ink labels throughout |
+| colour-means-one-thing | accent = selection/focus/link; danger = destruction | pass | menu Delete, checks in accent; badge tones per C13 |
+| grey-until-it-matters | colour only on state that matters | pass | badge Prefer is grey-first |
+| concentric-radius | inner = outer − inset | pass | menu 10/4/6; popover 10/12 (inner parts keep their own) |
+| a-shadow-says-how-high | floating = `shadow-md`, cards flat until they open | pass | menu, popover, dialog measured |
+| nothing-shifts | no layout jump on hover, state or error | pass | input error replaces the hint in place; menu check column reserved |
+| never-too-busy-to-listen | busy button stays enabled with loading (C23) | pass | button and dialog scenes |
+| attention-wears-off | badge/colour only where it changes a decision | pass | |
+| how-waiting-feels | spinner after a delay, progress for long jobs | n/a | no long waits on these routes beyond button loading |
+| error-timing | wait till they finish; required waits for submit | pass | input, combobox |
+| hover-forgives | hover demos have a rest state (C20); submenus tolerate the pointer path | pass | |
+| the-faster-way | shortcuts shown where they exist, bare, muted (C1) | pass | menu, input ⌘K |
+| reading-text | 4.5:1, ≥12px, measure | pass with nit | icon: 11.05px inline code in captions |
+| work-tool | 13px in dense rows and sidebars; 12 for meta; nothing smaller | **fail** (nits) | button sm 13 vs anatomy 14; icon scene sidebar 14 |
+| work-tool | narrow window: sidebar behind a header button (C33) | pass | app-shell at 375 |
+| component-tooltip | icon-only buttons named and tipped; names match the action | pass with nit | combobox chevron wording |
+| component-select / segmented-control | Compare switch reads Avoid/Prefer under 768 (C5) | pass | every route at 375 |
+| component-table | a badge column needs a header (C12) | **fail** (must) | badge lists |
+| component-icon | Lucide only, one stroke (C6), 16 default, 14 in 13px rows | pass with nit | app-shell Share icon 16 in a 13px button |
+
+## Owner's rules (`~/.claude/CLAUDE.md`)
+
+| rule | mark | where |
+| --- | --- | --- |
+| One grid; icons in one column | pass with nits | app-shell foot avatar; checkbox “Without a label” row |
+| Labels start on one vertical line | pass with nits | same two |
+| Trailing meta right-aligned in one column | pass | menu shortcuts and chevron end at one x; app-shell counts |
+| Lightest boundary that holds; no box in a box | pass with nit | `taskList` last line |
+| Empty states name the next step | pass | app-shell and combobox empty states name the action (C29 live regions) |
+| Focus follows the action, never `<body>` | pass | dialog, popover (in and back), input error, menu keyboard |
+| A user action needs no Agent gate | pass | |
+
+## Gaps in the playbook
+
+1. **App shell at 375:** “The window scrolls / Each pane scrolls” renders two identical one-pane frames once the
+   sidebar folds behind a button (C33), so the pair stops showing its point on a phone. The page needs a
+   narrow version of the pair, or a note that it is a wide-window comparison.
+2. **Button vs Icon gap:** Button Anatomy puts the icon 4 from the label; Icon's “Gap to the word” says 8.
+   One page should yield (C42 says the better value wins, but neither page says which that is).
+3. **Small button size:** Button Anatomy gives every size 14/20, while work-tool says dense controls take 13
+   and the built sm is 13. The Anatomy row should state sm.
+4. **Click and typing comparisons:** Combobox's Avoid/Prefer pairs look identical at rest; nothing in the
+   playbook says a comparison that only differs on interaction must show its difference without input
+   (C20 covers hover only).
+5. **Disabled text contrast:** every route relies on the WCAG exemption for unavailable text (menu *Undo* 1.9:1,
+   disabled fields), but reading-text's floors don't state it. Say it, so reviewers stop flagging it and
+   builders don't push dimmed rows to 4.5.
+6. **Read-only vs disabled fills:** Input says read-only must not look disabled, but the tokens give both the
+   same grey fill; only the ink differs. Worth a rule on which part carries the difference.
+7. **Tone for “Breaking”:** badge examples put “Breaking” in `danger`; colour-means-one-thing reserves danger for
+   destruction. Either widen the definition or move it to `warning`.
+8. **Menu highlight icon colour:** “turning `ink` on the highlighted row” could only be checked on the dimmed
+   row here; the page doesn't say what a highlighted unavailable row's icon does.

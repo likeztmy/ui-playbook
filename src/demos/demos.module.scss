@@ -460,23 +460,29 @@
 // ── Badges ────────────────────────────────────────────────
 
 .taskList {
-  display: flex;
-  flex-direction: column;
   width: min(100%, 300px);
-  margin: 0;
-  padding: 0;
-  list-style: none;
   font-size: 13px;
   line-height: 18px;
 
-  > li {
+  > ul {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: var(--space-3);
     min-height: 36px;
     margin: 0;
-    border-bottom: 1px solid var(--line);
+
+    &:not(:last-child) {
+      border-bottom: 1px solid var(--line);
+    }
 
     > span:first-child {
       overflow: hidden;
@@ -484,6 +490,19 @@
       text-overflow: ellipsis;
     }
   }
+}
+
+// As the kit Table's header: 12px muted, a line under it.
+.taskHead {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding-block: var(--space-2);
+  border-bottom: 1px solid var(--line);
+  color: var(--ink-muted);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
 }
 
 .badgeGrid {

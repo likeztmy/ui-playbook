@@ -21,14 +21,21 @@ const TASKS: Task[] = [
 /** Tasks with their state as a badge, the way a list or table shows them. */
 function TaskList({ badge }: { badge: (t: Task) => ReactNode }) {
   return (
-    <ul className={s.taskList}>
-      {TASKS.map((t) => (
-        <li key={t.name}>
-          <span>{t.name}</span>
-          {badge(t)}
-        </li>
-      ))}
-    </ul>
+    <div className={s.taskList}>
+      {/* A badge on every row is a column, so it gets a heading. */}
+      <div className={s.taskHead} aria-hidden>
+        <span>Task</span>
+        <span>State</span>
+      </div>
+      <ul>
+        {TASKS.map((t) => (
+          <li key={t.name}>
+            <span>{t.name}</span>
+            {badge(t)}
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 
