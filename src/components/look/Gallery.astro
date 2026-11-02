@@ -1,0 +1,19 @@
+---
+// Every look for the gallery: the playbook's once per palette, then each product's.
+import { LookGallery, type GalleryLook } from '../../demos/looks';
+import { LOOKS, ours, PALETTES, playbook, rootBlock, valuesOf, type Look } from '../../looks';
+
+const item = (look: Look, page: string): GalleryLook => ({
+  id: look.id,
+  name: look.name,
+  href: `/systems/look-${page}`,
+  values: valuesOf(look),
+  root: rootBlock(look),
+});
+const looks = [
+  ...PALETTES.map((p) => item({ ...ours, id: p.id === 'blue' ? 'playbook' : `playbook-${p.id}`, name: `Playbook ${p.name}`, values: playbook(p.id) }, 'playbook')),
+  ...LOOKS.filter((l) => l !== ours).map((l) => item(l, l.id)),
+];
+---
+
+<LookGallery client:load looks={looks} />

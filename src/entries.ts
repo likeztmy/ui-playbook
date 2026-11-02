@@ -348,6 +348,14 @@ export const entries: Entry[] = [
     keywords: ['system', 'design system', 'mobile', 'phone', 'ios', 'android', 'material', 'hig', 'touch target', 'dynamic type', 'b2c', 'consumer'],
   },
   {
+    slug: 'looks',
+    kind: 'system',
+    title: 'Looks',
+    summary: 'Every look on the same screens: pick one and see its surfaces, accent, corners and type, light or dark.',
+    details: 0,
+    keywords: ['look', 'theme', 'themes', 'gallery', 'preview', 'tokens', 'variables', 'dark mode'],
+  },
+  {
     slug: 'look-playbook',
     kind: 'system',
     title: 'Playbook look',
@@ -375,7 +383,7 @@ export const entries: Entry[] = [
     slug: 'look-linear',
     kind: 'system',
     title: 'After Linear',
-    summary: 'Linear’s brand neutrals and Inter over the playbook’s work-tool values.',
+    summary: 'Linear’s greys, indigo, pill controls and Inter, read from its app.',
     details: 2,
     keywords: ['look', 'theme', 'linear', 'inter', 'work tool', 'variables', 'dark mode'],
   },

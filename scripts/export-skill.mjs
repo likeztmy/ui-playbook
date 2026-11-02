@@ -78,7 +78,8 @@ function toMarkdown(site) {
 
 const pages = Object.entries(KINDS).flatMap(([dir, kind]) =>
   readdirSync(join(DIST, dir), { withFileTypes: true })
-    .filter((d) => d.isDirectory())
+    // The looks gallery is a picker over the look pages, which export on their own.
+    .filter((d) => d.isDirectory() && !(dir === 'systems' && d.name === 'looks'))
     .map((d) => ({ kind, slug: d.name, file: join(DIST, dir, d.name, 'index.html'), url: `${SITE}/${dir}/${d.name}` })),
 );
 

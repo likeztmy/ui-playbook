@@ -1,0 +1,6 @@
+// The screens draw everything from the look's variables, so a missing one shows as the page's own.
+.panel {
+  container-type: inline-size;
+  color: var(--ink);
+  font-family: var(--font-sans);
+}

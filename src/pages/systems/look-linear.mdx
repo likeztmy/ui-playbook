@@ -8,12 +8,14 @@ import Look from '../../components/look/Look.astro';
 
 ## When to use
 
-A work tool that should feel like Linear: a cool near-white behind the work, near-black text, and Inter. Linear publishes little that's visual: two brand neutrals ([Linear brand](https://linear.app/brand)) and its typefaces ([the redesign](https://linear.app/now/how-we-redesigned-the-linear-ui)). Everything else here is the playbook's, which already holds the same habits: grey surfaces, one accent, dense rows.
+A work tool that should feel like Linear: white behind the work, near-black text, greys for everything but one indigo, controls as pills, and Inter. The values are read from Linear's own app (its CSS variables and computed styles, light theme), with its typefaces from [the redesign](https://linear.app/now/how-we-redesigned-the-linear-ui).
 
 ## Where it differs from Linear
 
-- **Its theme isn't published.** Linear generates its themes in LCH from a base colour, an accent and a contrast setting, but doesn't publish the numbers, so the surfaces, lines, accent and dark theme are the playbook's.
-- **Inter Display is for headings.** Load Inter with its display optical size, or Inter Display beside it, for titles; body text is Inter.
+- **Dark is partly the playbook's.** Linear's dark theme is generated in LCH from a base colour; its CSS names only the dark window, panel and line, so the dark text and fills are the playbook's.
+- **The focus ring is 2px.** Linear draws a 1px ring; the playbook's 2px holds 3:1 against more backgrounds.
+- **Lines are 1px.** Linear draws its edges at 0.5px; the components draw 1px, so the colour is the same and the line a little heavier on a 1x screen.
+- **Text is 14px.** Linear's is 13px at weight 450–500; the components keep the work-tool system's 14px.
 
 ## Values
 

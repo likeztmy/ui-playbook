@@ -1,0 +1,11 @@
+.empty {
+  justify-items: center;
+  padding-block: var(--space-6);
+  text-align: center;
+
+  > h3 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+  }
+}

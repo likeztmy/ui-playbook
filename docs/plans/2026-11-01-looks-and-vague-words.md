@@ -61,6 +61,13 @@ departs in three places, said on its page: one accent where GitHub's primary but
 3:1 field border where Primer's is 1.4:1, and the playbook's duration. Buttons now read
 `radius-control` (a pill by default) so a look can square them. Next: Apple and Linear.
 
+**Changed 2026-11-02:** the owner allowed values read from a product's own shipped CSS (dev tools),
+since the site is non-commercial; each is cited as that product's CSS with the read date. After
+Linear is now read from its app. One gallery page (`/systems/looks`) shows every look on the same
+wall of cards (stats, chart, form, checks, alert, table, team, notifications, tabs, empty state),
+light or dark, after tweakcn, shadcn/ui create and Astryx themes; the look pages keep the values and
+the block to paste, and link to it.
+
 ## 2. Component libraries
 
 The project's own library wins. With none, the agent asks which to use, offering Base UI and

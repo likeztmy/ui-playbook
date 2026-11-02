@@ -61,7 +61,8 @@ for (const { route, box } of READING) {
 test('the Skill covers every page', async ({ request }) => {
   const index = await (await request.get('/skill/ui-playbook/SKILL.md')).text();
   expect(index).toMatch(/^---\nname: ui-playbook\n/);
-  for (const e of entries.filter((e) => e.kind !== 'practice')) {
+  // Practice pages are apps, and the looks gallery a picker over the look pages: neither exports.
+  for (const e of entries.filter((e) => e.kind !== 'practice' && e.slug !== 'looks')) {
     const name = `references/${e.kind}-${e.slug}.md`;
     expect(index, `SKILL.md lists ${name}`).toContain(`(${name})`);
     const ref = await request.get(`/skill/ui-playbook/${name}`);
