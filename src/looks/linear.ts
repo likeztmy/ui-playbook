@@ -1,11 +1,10 @@
-// Linear, read from the app's own CSS (custom properties and computed styles) on 2026-11-02, light
-// theme; LCH values converted to sRGB hex. Its brand page publishes the neutrals and typefaces.
-import { playbook, type Look, type Source } from './look';
+// Linear, read from the app's own CSS (custom properties and computed styles) on 2026-11-02 in its
+// Pure Light and Dark themes; LCH values converted to sRGB hex. Its brand page publishes the neutrals and typefaces.
+import type { Look, Source } from './look';
 
 const app: Source = { label: 'linear.app CSS, read 2026-11-02', href: 'https://linear.app' };
 const redesign: Source = { label: 'Linear, UI redesign', href: 'https://linear.app/now/how-we-redesigned-the-linear-ui' };
 const sans = '"Inter Variable", Inter, "SF Pro Display", -apple-system, system-ui, sans-serif';
-const ours = playbook();
 const px = (v: string) => ({ light: v, dark: v, from: app });
 
 export const linear: Look = {
@@ -22,46 +21,46 @@ export const linear: Look = {
       light: '#ffffff',
       dark: '#121213',
       from: app,
-      note: 'the content panel, set apart by its edge and shadow; dark is bg-base-color-dark',
+      note: 'the content panel, set apart by its edge and shadow: color-bg-primary',
     },
-    'surface-sunken': { light: '#f4f4f4', dark: '#09090a', from: app, note: 'color-bg-secondary' },
-    line: { light: '#ededed', dark: '#212224', from: app, note: 'color-border-secondary; dark is bg-border-color-dark. Drawn 0.5px.' },
+    'surface-sunken': { light: '#f4f4f4', dark: '#161617', from: app, note: 'color-bg-secondary' },
+    line: { light: '#ededed', dark: '#232426', from: app, note: 'color-border-secondary, drawn 0.5px' },
     ink: { light: '#1c1c1c', dark: '#ffffff', from: app, note: 'color-text-primary' },
     'ink-muted': {
       light: '#616261',
-      dark: ours['ink-muted'].dark,
+      dark: '#959597',
       from: app,
-      note: 'color-text-tertiary: IDs, button labels; dark is the playbook’s',
+      note: 'color-text-tertiary: IDs, button labels',
     },
-    'ink-disabled': { light: '#a6a7a6', dark: ours['ink-disabled'].dark, from: app, note: 'color-text-quaternary; dark is the playbook’s' },
+    'ink-disabled': { light: '#a6a7a6', dark: '#565759', from: app, note: 'color-text-quaternary' },
     'fill-hover': {
       light: '#f8f8f8',
-      dark: ours['fill-hover'].dark,
+      dark: '#1a1a1b',
       from: app,
-      note: 'color-bg-quaternary, also the group header band; dark is the playbook’s',
+      note: 'color-bg-quaternary, also the group header band',
     },
-    'fill-active': { light: '#f3f3f3', dark: ours['fill-active'].dark, from: app, note: 'the selected sidebar item; dark is the playbook’s' },
-    accent: { light: '#5a68cf', dark: '#5a68cf', from: app, note: 'the send button, lch(47 59 288)' },
+    'fill-active': { light: '#f3f3f3', dark: '#232325', from: app, note: 'the selected sidebar item' },
+    accent: { light: '#5a68cf', dark: '#5e6ad2', from: app, note: 'the send button, lch(47 59 288); lch(48 59 288) in dark' },
     'accent-hover': {
       light: 'color-mix(in oklab, #5a68cf, #000 12%)',
-      dark: 'color-mix(in oklab, #5a68cf, #fff 12%)',
+      dark: 'color-mix(in oklab, #5e6ad2, #fff 12%)',
       note: 'not read; the accent a step darker, lighter in dark',
     },
     'on-accent': { light: '#fffeff', dark: '#fffeff', from: app, note: 'lch(100 5 288)' },
     'accent-soft': {
       light: 'color-mix(in srgb, #6d78d5 16%, transparent)',
-      dark: 'color-mix(in srgb, #6d78d5 24%, transparent)',
+      dark: 'color-mix(in srgb, #5e69d1 24%, transparent)',
       from: app,
       note: 'from selection-bg-active, which is the focus colour at 40%; lighter here so text stays readable',
     },
     'accent-text': {
       light: '#5a68cf',
-      dark: 'color-mix(in oklab, #5a68cf, #fff 35%)',
+      dark: 'color-mix(in oklab, #5e6ad2, #fff 35%)',
       note: 'not read; the accent, 4.9:1 on white, lightened in dark',
     },
     'focus-ring': {
       light: '0 0 0 2px #6d78d5',
-      dark: '0 0 0 2px #6d78d5',
+      dark: '0 0 0 2px #5e69d1',
       from: app,
       note: 'focus-ring-color; Linear draws it 1px, widened to the playbook’s 2px',
     },
@@ -71,9 +70,9 @@ export const linear: Look = {
     'radius-control': { ...px('9999px'), note: 'radius-rounded: buttons, tabs and chips are pills' },
     'shadow-sm': {
       light: '0 3px 6px -2px rgb(0 0 0 / 0.02), 0 1px 1px rgb(0 0 0 / 0.04)',
-      dark: '0 4px 4px -1px rgb(0 0 0 / 0.04), 0 1px 1px rgb(0 0 0 / 0.08)',
+      dark: '0 0.5px 1px 1px rgb(0 0 0 / 0.3)',
       from: app,
-      note: 'measured: the content panel’s and settings card’s shadow; dark is its loading screen’s',
+      note: 'measured: the content panel’s and settings card’s shadow',
     },
     'control-md': { ...px('32px'), note: 'measured: a settings text field; sidebar items, tabs and header buttons are 28px' },
     'font-sans': { light: sans, dark: sans, from: redesign, note: 'font-regular' },
