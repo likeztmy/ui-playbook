@@ -1,0 +1,25 @@
+---
+layout: ../../layouts/Entry.astro
+slug: look-apple
+---
+import Look from '../../components/look/Look.astro';
+
+<Look id="apple" part="specimen" />
+
+## When to use
+
+A web app that sits beside Apple's own, or a brief that says it should feel like a Mac or an iPhone: the grouped grey behind white panels, the system font, nothing tinted. The greys are the system greys Apple publishes for iOS at default contrast ([HIG, Color](https://developer.apple.com/design/human-interface-guidelines/color)).
+
+## Where it differs from Apple
+
+- **The system colours aren't text on the web.** Against white, system blue is 3.5:1, red 3.6:1 and green 2.2:1, and white on system blue is 3.5:1. Apple draws them for native controls; at 14px on the web each falls short of the 4.5:1 every text holds ([Lightness first](/principles/lightness-first)). The accent and the status colours stay the playbook's, darker ones that hold 4.5:1.
+- **The system font, never its files.** Apple licenses SF Pro for mockups of its platforms, not for embedding ([Apple Fonts](https://developer.apple.com/fonts/)). `-apple-system` shows it on Apple devices; elsewhere the platform's own font takes its place.
+- **Text greys are the playbook's.** What Apple publishes with values is the system colours and greys; its text colours aren't among them, so text and muted text are the playbook's, solid and 4.5:1 on every surface.
+
+## Values
+
+<Look id="apple" part="values" />
+
+## Paste
+
+<Look id="apple" part="code" />

@@ -364,6 +364,22 @@ export const entries: Entry[] = [
     keywords: ['look', 'theme', 'github', 'primer', 'tokens', 'developer tool', 'variables', 'dark mode'],
   },
   {
+    slug: 'look-apple',
+    kind: 'system',
+    title: 'After Apple',
+    summary: 'Apple’s system greys and system font, with the colours that hold 4.5:1 on the web.',
+    details: 3,
+    keywords: ['look', 'theme', 'apple', 'macos', 'ios', 'system gray', 'sf pro', 'variables', 'dark mode'],
+  },
+  {
+    slug: 'look-linear',
+    kind: 'system',
+    title: 'After Linear',
+    summary: 'Linear’s brand neutrals and Inter over the playbook’s work-tool values.',
+    details: 2,
+    keywords: ['look', 'theme', 'linear', 'inter', 'work tool', 'variables', 'dark mode'],
+  },
+  {
     slug: 'mail',
     kind: 'practice',
     title: 'Mail',
