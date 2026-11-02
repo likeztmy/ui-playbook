@@ -1,5 +1,7 @@
 # build output
 dist/
+# the exported Skill, as installed for Claude and Codex (scripts/export-skill.mjs)
+skill/
 # generated types
 .astro/
 

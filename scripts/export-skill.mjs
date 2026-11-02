@@ -2,8 +2,10 @@
 // source. Each page becomes references/<kind>-<slug>.md (its prose, tables, and each demo's
 // before/after verdicts and notes, without the demo); SKILL.md lists them with when to reach for
 // each. Written into dist/skill/ui-playbook, served beside the site. Fails if a page comes out empty.
+// Then copied whole into skill/ui-playbook, which builds never clear: the Skill installed for Claude
+// and Codex links there, so it is never missing while a build runs or after one fails.
 import { chromium } from '@playwright/test';
-import { mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { MOMENTS } from './skill-moments.mjs';
 import { WORDS } from './skill-words.mjs';
@@ -11,6 +13,7 @@ import { WORDS } from './skill-words.mjs';
 const SITE = 'https://ui-playbook.suspense.site';
 const DIST = 'dist';
 const OUT = join(DIST, 'skill/ui-playbook');
+const INSTALLED = 'skill/ui-playbook';
 const KINDS = { components: 'component', principles: 'principle', systems: 'system' };
 
 /** Runs in the page: the body of an entry as Markdown. */
@@ -237,4 +240,11 @@ ${index.filter((e) => e.kind === 'component').map(line).join('\n')}
 ${index.filter((e) => e.kind === 'principle').map(line).join('\n')}
 `,
 );
-console.log(`export-skill: ${index.length} pages → ${OUT}`);
+// Swapped in by two renames, so a reader sees the old Skill or the new one, never half of each.
+const [NEXT, OLD] = [`${INSTALLED}.next`, `${INSTALLED}.old`];
+for (const dir of [NEXT, OLD]) rmSync(dir, { recursive: true, force: true });
+cpSync(OUT, NEXT, { recursive: true });
+if (existsSync(INSTALLED)) renameSync(INSTALLED, OLD);
+renameSync(NEXT, INSTALLED);
+rmSync(OLD, { recursive: true, force: true });
+console.log(`export-skill: ${index.length} pages → ${OUT}, ${INSTALLED}`);
