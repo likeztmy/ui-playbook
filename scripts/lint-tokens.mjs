@@ -24,6 +24,9 @@ const define = (text) => {
 define(readFileSync('src/styles/tokens.css', 'utf8'));
 const sources = files.map((f) => [f, readFileSync(f, 'utf8')]);
 sources.forEach(([, t]) => define(t));
+// Set from a look: its Panel writes every name in look.ts's NAMES onto the screens it wraps.
+const looks = readFileSync('src/looks/look.ts', 'utf8').match(/NAMES = \[([\s\S]*?)\]/)[1];
+for (const m of looks.matchAll(/'([a-z0-9-]+)'/g)) defined.add(`--${m[1]}`);
 
 // Set at runtime: by Base UI on its parts, and by Shiki on highlighted code.
 const RUNTIME = /^--(anchor|available|transform-origin|active-tab|popup|positioner|collapsible|accordion|slider|toast|drawer|shiki)/;

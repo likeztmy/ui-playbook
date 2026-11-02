@@ -7,8 +7,8 @@
   display: flex;
   align-items: flex-start;
   gap: var(--space-3);
-  font-size: 14px;
-  line-height: 20px;
+  font-size: var(--text-md, 14px);
+  line-height: var(--leading-md, 20px);
   color: var(--ink);
   cursor: default;
   user-select: none;
@@ -36,7 +36,7 @@
 }
 
 .description {
-  font-size: 12px;
+  font-size: var(--text-sm, 12px);
   line-height: 16px;
   color: var(--ink-muted);
 

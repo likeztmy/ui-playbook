@@ -42,6 +42,18 @@ export const NAMES = [
   'duration-fast',
   'ease-out',
   'font-sans',
+  'text-sm',
+  'text-md',
+  'text-lg',
+  'text-xl',
+  'leading-md',
+  'weight-body',
+  'weight-strong',
+  'line-width',
+  'row-height',
+  'space-stack',
+  'space-card',
+  'space-gap',
 ] as const;
 export type Name = (typeof NAMES)[number];
 
@@ -59,6 +71,22 @@ export type Look = {
 type Token = { name: string; value?: unknown; light?: string; dark?: string };
 const groups = precision as unknown as Record<string, { tokens?: Token[]; palettes?: Palette[] }>;
 type Palette = { id: string; name: string; values: Record<string, { light: string; dark: string }> };
+
+// Type, edges and spacing the components read beside the colour tokens: the work-tool system's.
+const SIZES: Record<string, string> = {
+  'text-sm': '12px',
+  'text-md': '14px',
+  'text-lg': '16px',
+  'text-xl': '28px',
+  'leading-md': '20px',
+  'weight-body': '400',
+  'weight-strong': '600',
+  'line-width': '1px',
+  'row-height': '40px',
+  'space-stack': '12px',
+  'space-card': '16px',
+  'space-gap': '16px',
+};
 
 const all = new Map<string, Token>();
 for (const g of Object.values(groups)) for (const t of g.tokens ?? []) all.set(t.name, t);
@@ -80,6 +108,7 @@ export function playbook(palette = 'blue'): Record<Name, Value> {
   return Object.fromEntries(
     NAMES.map((n) => {
       if (n === 'font-sans') return [n, { light: sans, dark: sans }];
+      if (SIZES[n]) return [n, { light: SIZES[n], dark: SIZES[n] }];
       if (over[n]) return [n, over[n]];
       const t = all.get(n)!;
       return [n, { light: resolve(t, 'light'), dark: resolve(t, 'dark') }];

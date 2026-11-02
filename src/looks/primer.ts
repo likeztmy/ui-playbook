@@ -7,6 +7,9 @@ const radius: Source = { label: 'Primer radius', href: `${pkg}/functional/size/r
 const size: Source = { label: 'Primer size', href: `${pkg}/functional/size/size.css` };
 const motion: Source = { label: 'Primer motion', href: `${pkg}/base/motion/motion.css` };
 const type: Source = { label: 'Primer typography', href: `${pkg}/functional/typography/typography.css` };
+const baseType: Source = { label: 'Primer base typography', href: `${pkg}/base/typography/typography.css` };
+const border: Source = { label: 'Primer border', href: `${pkg}/functional/size/border.css` };
+const same = (v: string, from: Source, note: string) => ({ light: v, dark: v, from, note });
 
 const sans =
   '"Mona Sans VF", -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"';
@@ -83,6 +86,17 @@ export const primer: Look = {
     },
     'control-md': { light: '32px', dark: '32px', from: size, note: 'control-medium-size' },
     'ease-out': { light: 'cubic-bezier(0.3, 0.8, 0.6, 1)', dark: 'cubic-bezier(0.3, 0.8, 0.6, 1)', from: motion, note: 'base-easing-easeOut' },
-    'font-sans': { light: sans, dark: sans, from: type, note: 'fontStack-sansSerif; body text is 14px on 1.5 (text-body-size-medium)' },
+    'font-sans': { light: sans, dark: sans, from: type, note: 'fontStack-sansSerif' },
+    'text-sm': same('12px', baseType, 'text-body-size-small (base-text-size-xs)'),
+    'text-md': same('14px', baseType, 'text-body-size-medium (base-text-size-sm), the default UI text'),
+    'text-lg': same('16px', baseType, 'text-title-size-small (base-text-size-md)'),
+    'text-xl': same('32px', baseType, 'text-title-size-large (base-text-size-xl)'),
+    'leading-md': same('1.5', baseType, 'text-body-lineHeight-medium (base-text-lineHeight-normal)'),
+    'weight-body': same('400', baseType, 'text-body-weight (base-text-weight-normal)'),
+    'weight-strong': same('600', baseType, 'text-title-weight-small (base-text-weight-semibold)'),
+    'line-width': same('1px', border, 'borderWidth-default'),
+    'space-stack': same('8px', size, 'stack-gap-condensed'),
+    'space-card': same('16px', size, 'stack-padding-normal'),
+    'space-gap': same('16px', size, 'stack-gap-normal'),
   },
 };

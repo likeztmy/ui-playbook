@@ -1,0 +1,12 @@
+---
+// A tool page, not an article: the looks on the left, the wall filling the rest of the window.
+import Base from '../../layouts/Base.astro';
+import Gallery from '../../components/look/Gallery.astro';
+import { entries } from '../../entries';
+
+const entry = entries.find((e) => e.slug === 'looks')!;
+---
+
+<Base title={entry.title} description={entry.summary} wide>
+  <Gallery title={entry.title} summary={entry.summary} />
+</Base>

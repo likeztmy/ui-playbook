@@ -6,14 +6,14 @@ import { Panel, type Values } from './Panel';
 import { Wall } from './wall/Wall';
 import s from './Gallery.module.scss';
 
-export type GalleryLook = { id: string; name: string; href: string; values: Values; root: string };
+export type GalleryLook = { id: string; name: string; href: string; values: Values; root: string; source: string };
 
 type Theme = 'light' | 'dark';
 
 const value = (l: GalleryLook, name: string, theme: Theme) => l.values.find(([n]) => n === name)![1][theme];
 
 /** Every look on one page: pick one on the left, and the same wall of cards redraws in its values. */
-export function LookGallery({ looks }: { looks: GalleryLook[] }) {
+export function LookGallery({ looks, title, summary }: { looks: GalleryLook[]; title: string; summary: string }) {
   const [id, setId] = useState(looks[0].id);
   const [theme, setTheme] = useState<Theme>('light');
   const [copied, setCopied] = useState(false);
@@ -40,7 +40,9 @@ export function LookGallery({ looks }: { looks: GalleryLook[] }) {
 
   return (
     <div className={s.gallery}>
-      <div className={s.rail}>
+      <aside className={s.rail}>
+        <h1 className={s.title}>{title}</h1>
+        <p className={s.summary}>{summary}</p>
         <ul className={s.looks} aria-label="Looks">
           {looks.map((l) => (
             <li key={l.id}>
@@ -48,16 +50,12 @@ export function LookGallery({ looks }: { looks: GalleryLook[] }) {
                 <span className={s.name} style={{ fontFamily: value(l, 'font-sans', theme) }}>
                   {l.name}
                 </span>
-                <span className={s.swatches} aria-hidden>
-                  {['bg', 'surface', 'accent'].map((n) => (
-                    <span key={n} style={{ background: value(l, n, theme) }} />
-                  ))}
-                </span>
+                <span className={s.source}>{l.source}</span>
               </button>
             </li>
           ))}
         </ul>
-      </div>
+      </aside>
       <div className={s.stage}>
         <div className={s.bar}>
           <SegmentedControl
@@ -70,7 +68,7 @@ export function LookGallery({ looks }: { looks: GalleryLook[] }) {
             ]}
           />
           <span className={s.end}>
-            <a href={look.href}>Values</a>
+            <a href={look.href}>Values and sources</a>
             <Button size="sm" onClick={copy}>
               {copied ? <Check size={16} aria-hidden /> : <Copy size={16} aria-hidden />}
               {copied ? 'Copied' : 'Copy :root'}

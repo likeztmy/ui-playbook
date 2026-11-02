@@ -9,11 +9,13 @@ import s from './Base.module.scss';
 interface Props {
   title?: string;
   description?: string;
+  /** A tool page that fills the window under the header, with no column or margins. */
+  wide?: boolean;
 }
 
 const lang = langOf(Astro.url.pathname);
 const t = ui[lang];
-const { title, description = t.description } = Astro.props;
+const { title, description = t.description, wide } = Astro.props;
 const pageTitle = title ? `${title} · UI Playbook` : 'UI Playbook';
 // The same page in the other language; a page with no Chinese yet points at the Chinese home.
 const here = Astro.url.pathname;
@@ -56,7 +58,7 @@ const translated = ZH_LIVE && (lang === 'zh' || !isEntry || hasZh(bare));
           <ThemeToggle client:load sunClass={s.sun} moonClass={s.moon} lang={lang} />
         </span>
       </header>
-      <main class={s.main}>
+      <main class={wide ? s.wide : s.main}>
         <slot />
       </main>
     </div>

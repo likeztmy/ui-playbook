@@ -68,6 +68,12 @@ wall of cards (stats, chart, form, checks, alert, table, team, notifications, ta
 light or dark, after tweakcn, shadcn/ui create and Astryx themes; the look pages keep the values and
 the block to paste, and link to it.
 
+**Tightened 2026-11-02:** a look now also sets type (four sizes, body line height, two weights),
+line width, row height and three spacings, and the shared components read them with today's
+values as fallbacks. Linear's are measured in its app (issues list and a settings page); Primer's
+come from its size, border and typography tokens. The gallery is a full-window tool page and lists
+only sampled looks with their count of sourced values; After Apple waits for real values.
+
 ## 2. Component libraries
 
 The project's own library wins. With none, the agent asks which to use, offering Base UI and

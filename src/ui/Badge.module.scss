@@ -12,7 +12,7 @@
   border-radius: var(--radius-full);
   background: var(--soft, var(--fill-control));
   color: var(--tone, var(--ink-muted));
-  font-size: 12px;
+  font-size: var(--text-sm, 12px);
   line-height: 16px;
   font-weight: 500;
   white-space: nowrap;

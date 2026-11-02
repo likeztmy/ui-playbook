@@ -34,7 +34,8 @@ for (const route of ROUTES) {
 // Every reading page's column: the title and every block under it start on one left edge and end
 // on one right edge, whatever size its type is set in. The pilot is checked in each of its frame styles.
 const READING = [
-  ...ROUTES.filter((r) => /^(\/zh)?\/(components|principles|systems|practice)\/[a-z-]+$/.test(r)).map((r) => ({ route: r, box: '' })),
+  // The looks gallery is a full-window tool, not a column of reading.
+  ...ROUTES.filter((r) => /^(\/zh)?\/(components|principles|systems|practice)\/[a-z-]+$/.test(r) && !r.endsWith('/systems/looks')).map((r) => ({ route: r, box: '' })),
   ...['band', 'caption', 'plate', 'toggle'].map((box) => ({ route: '/pilot/button', box })),
 ];
 for (const { route, box } of READING) {

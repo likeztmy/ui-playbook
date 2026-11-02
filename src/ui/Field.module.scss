@@ -10,7 +10,7 @@
 }
 
 .label {
-  font-size: 12px;
+  font-size: var(--text-sm, 12px);
   line-height: 16px;
   font-weight: 500;
   letter-spacing: 0.01em;
@@ -27,7 +27,7 @@
   gap: var(--space-2);
   min-height: var(--control-md);
   padding: 0 var(--space-3);
-  border: 1px solid var(--line-strong);
+  border: var(--line-width, 1px) solid var(--line-strong);
   border-radius: var(--radius-lg);
   background: var(--surface);
   color: var(--ink);
@@ -117,7 +117,7 @@ textarea.control {
   min-height: 88px;
   padding: var(--space-2) var(--space-3);
   resize: vertical;
-  line-height: 20px;
+  line-height: var(--leading-md, 20px);
 }
 
 // Trailing glyph or unit, quiet.
@@ -151,7 +151,7 @@ textarea.control {
 
 .hint {
   margin: 0;
-  font-size: 12px;
+  font-size: var(--text-sm, 12px);
   line-height: 16px;
   color: var(--ink-muted);
 }
@@ -161,7 +161,7 @@ textarea.control {
   // The icon stays on the first line when the message wraps.
   align-items: flex-start;
   gap: var(--space-1);
-  font-size: 12px;
+  font-size: var(--text-sm, 12px);
   line-height: 16px;
   color: var(--danger);
 

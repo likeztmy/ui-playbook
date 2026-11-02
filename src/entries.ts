@@ -351,7 +351,7 @@ export const entries: Entry[] = [
     slug: 'looks',
     kind: 'system',
     title: 'Looks',
-    summary: 'Every look on the same screens: pick one and see its surfaces, accent, corners and type, light or dark.',
+    summary: 'Every look on one release tool: its colours, type, edges and spacing, light or dark, each value with where it came from.',
     details: 0,
     keywords: ['look', 'theme', 'themes', 'gallery', 'preview', 'tokens', 'variables', 'dark mode'],
   },

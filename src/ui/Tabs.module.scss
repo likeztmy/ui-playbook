@@ -41,8 +41,8 @@
   background: none;
   color: var(--ink-muted);
   font: inherit;
-  font-size: 14px;
-  line-height: 20px;
+  font-size: var(--text-md, 14px);
+  line-height: var(--leading-md, 20px);
   // One weight for every tab: a bolder current tab is wider, and its
   // neighbours would shift each time it changes.
   font-weight: 500;

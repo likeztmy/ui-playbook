@@ -1,19 +1,29 @@
 ---
-// Every look for the gallery: the playbook's once per palette, then each product's.
+// The looks the gallery shows: the playbook's once per palette, then each product's that has been
+// sampled. After Apple has only its published greys, so it stays on its own page until it is.
 import { LookGallery, type GalleryLook } from '../../demos/looks';
 import { LOOKS, ours, PALETTES, playbook, rootBlock, valuesOf, type Look } from '../../looks';
 
-const item = (look: Look, page: string): GalleryLook => ({
-  id: look.id,
-  name: look.name,
-  href: `/systems/look-${page}`,
-  values: valuesOf(look),
-  root: rootBlock(look),
-});
+const { title, summary } = Astro.props as { title: string; summary: string };
+const item = (look: Look, page: string, source: string): GalleryLook => {
+  const values = valuesOf(look);
+  const from = values.filter(([, v]) => v.from).length;
+  return {
+    id: look.id,
+    name: look.name,
+    href: `/systems/look-${page}`,
+    values,
+    root: rootBlock(look),
+    source: source.replace('{n}', `${from} of ${values.length}`),
+  };
+};
 const looks = [
-  ...PALETTES.map((p) => item({ ...ours, id: p.id === 'blue' ? 'playbook' : `playbook-${p.id}`, name: `Playbook ${p.name}`, values: playbook(p.id) }, 'playbook')),
-  ...LOOKS.filter((l) => l !== ours).map((l) => item(l, l.id)),
+  ...PALETTES.map((p) =>
+    item({ ...ours, id: p.id === 'blue' ? 'playbook' : `playbook-${p.id}`, name: `Playbook ${p.name}`, values: playbook(p.id) }, 'playbook', 'The playbook’s own'),
+  ),
+  item(LOOKS.find((l) => l.id === 'primer')!, 'primer', '{n} from Primer’s tokens'),
+  item(LOOKS.find((l) => l.id === 'linear')!, 'linear', '{n} measured in Linear'),
 ];
 ---
 
-<LookGallery client:load looks={looks} />
+<LookGallery client:load looks={looks} title={title} summary={summary} />
