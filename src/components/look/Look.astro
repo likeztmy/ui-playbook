@@ -1,0 +1,66 @@
+---
+// One part of a look's page, from its data: the specimen, the values with their sources, or the
+// block to paste. The playbook's own look shows each palette.
+import { Code } from 'astro:components';
+import { LookSpecimen } from '../../demos/looks';
+import { lookById, PALETTES, playbook, rootBlock, valuesOf, NAMES, type Name, type Value } from '../../looks';
+import s from './Look.module.scss';
+
+type Props = { id: string; part: 'specimen' | 'values' | 'code' };
+const { id, part } = Astro.props;
+const look = lookById(id);
+const values = valuesOf(look);
+const palettes =
+  id === 'playbook' ? PALETTES.map((p) => ({ id: p.id, name: p.name, values: NAMES.map((n): [Name, Value] => [n, playbook(p.id)[n]]) })) : undefined;
+const colour = (v: string) => /^#|^rgb|^oklch|^color-mix/.test(v);
+const ours = values.filter(([, v]) => !v.from).length;
+---
+
+{part === 'specimen' && <LookSpecimen client:visible values={values} palettes={palettes} />}
+
+{
+  part === 'values' && (
+    <>
+      <p>
+        Type: <strong>{look.font.name}</strong>. {look.font.licence} (<a href={look.font.from.href}>{look.font.from.label}</a>)
+        {id !== 'playbook' && (
+          <>
+            {' '}
+            {values.length - ours} of {values.length} values are the product’s own; the other {ours} are the playbook’s.
+          </>
+        )}
+      </p>
+      <table class={s.table}>
+        <thead>
+          <tr>
+            <th>Variable</th>
+            <th>Light</th>
+            <th>Dark</th>
+            <th>From</th>
+          </tr>
+        </thead>
+        <tbody>
+          {values.map(([name, v]) => (
+            <tr>
+              <td>
+                <code>--{name}</code>
+              </td>
+              {(['light', 'dark'] as const).map((t) => (
+                <td>
+                  {colour(v[t]) && <span class={s.chip} style={`background:${v[t]}`} aria-hidden="true" />}
+                  <code class={s.value}>{v[t]}</code>
+                </td>
+              ))}
+              <td>
+                {v.from ? <a href={v.from.href}>{v.from.label}</a> : 'Playbook.'}
+                {v.note && <span class={s.note}>{' '}{v.note}</span>}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </>
+  )
+}
+
+{part === 'code' && <Code code={rootBlock(look)} lang="css" themes={{ light: 'github-light', dark: 'github-dark' }} defaultColor={false} />}

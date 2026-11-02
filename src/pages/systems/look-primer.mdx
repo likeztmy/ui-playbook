@@ -1,0 +1,25 @@
+---
+layout: ../../layouts/Entry.astro
+slug: look-primer
+---
+import Look from '../../components/look/Look.astro';
+
+<Look id="primer" part="specimen" />
+
+## When to use
+
+A developer tool, or anything used beside GitHub, where people should feel at home: Primer is GitHub's design system, and these values come from its published token package ([@primer/primitives 11.10.0](https://www.npmjs.com/package/@primer/primitives)). Each row names the Primer token it took.
+
+## Where it differs from GitHub
+
+- **One accent.** GitHub's primary button is green (`button-primary-bgColor-rest`, #1f883d; #238636 in dark) while blue marks focus, selection and links. The look keeps blue for all of them, as the playbook's one accent ([Colour means one thing](/principles/colour-means-one-thing)). To match GitHub, give the primary button the green and leave the rest.
+- **Field edges at 3:1.** Primer draws a field's border in `borderColor-default`, about 1.4:1 on white. A field's edge is all that says it takes input, so this look uses `borderColor-emphasis` (WCAG 2.2, [1.4.11](https://www.w3.org/TR/WCAG22/#non-text-contrast)).
+- **Motion's length is the playbook's.** Primer publishes a scale of durations without saying which is for what, so `duration-fast` stays 120ms; the curve is Primer's `easeOut`.
+
+## Values
+
+<Look id="primer" part="values" />
+
+## Paste
+
+<Look id="primer" part="code" />

@@ -892,6 +892,11 @@
         "name": "radius-full",
         "value": "9999px",
         "usage": "所有按钮、工具条、分段控件、开关、徽标、Toast。"
+      },
+      {
+        "name": "radius-control",
+        "value": "9999px",
+        "usage": "按钮的圆角。默认全圆；外观（look）可把它换成产品自己的控件圆角。"
       }
     ]
   },

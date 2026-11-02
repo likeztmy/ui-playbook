@@ -348,6 +348,22 @@ export const entries: Entry[] = [
     keywords: ['system', 'design system', 'mobile', 'phone', 'ios', 'android', 'material', 'hig', 'touch target', 'dynamic type', 'b2c', 'consumer'],
   },
   {
+    slug: 'look-playbook',
+    kind: 'system',
+    title: 'Playbook look',
+    summary: 'The playbook’s own values in five palettes, ready to paste as variables.',
+    details: 0,
+    keywords: ['look', 'theme', 'tokens', 'palette', 'variables', 'css', 'dark mode', 'default'],
+  },
+  {
+    slug: 'look-primer',
+    kind: 'system',
+    title: 'After Primer',
+    summary: 'GitHub’s greys, blue and corners, from its published tokens, in the playbook’s variables.',
+    details: 3,
+    keywords: ['look', 'theme', 'github', 'primer', 'tokens', 'developer tool', 'variables', 'dark mode'],
+  },
+  {
     slug: 'mail',
     kind: 'practice',
     title: 'Mail',

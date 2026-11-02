@@ -177,7 +177,14 @@ A sign-up, checkout, settings or empty screen takes the kind of the product it b
 The text sizes, targets and colour for tools and consumer apps are in their systems; the brand
 colour and typeface stay the product's own.
 
-${index.filter((e) => e.kind === 'system').map(line).join('\n')}
+${index.filter((e) => e.kind === 'system' && !e.name.startsWith('system-look-')).map(line).join('\n')}
+
+A look is a whole set of values for the variables the components read, light and dark, ready to
+paste as \`:root\` blocks: take the one for the product the brief should feel like, or the
+playbook's own when it names none. Each value says whether the product published it. A look is
+named after the product; the screen never carries the product's logo or name.
+
+${index.filter((e) => e.name.startsWith('system-look-')).map(line).join('\n')}
 
 ## When they ask for a look
 
@@ -204,9 +211,9 @@ ${MOMENTS.map(moment).join('\n')}
    this playbook answers is decided, not asked. When you can't ask, write your assumptions and
    build on them; with no library chosen, use shadcn/ui and say so.
 3. Then state the design you'll build to, each part with where it comes from (the brief, a line of
-   this playbook, or your own choice): the system, the accent, each surface layer, and the
-   typeface with its sizes. Define each as a variable; every colour and font in the code is one of
-   them.
+   this playbook, or your own choice): the system, and the look that fits the brief, pasted whole;
+   with none that fits, the accent, each surface layer, and the typeface with its sizes. Define
+   each as a variable; every colour and font in the code is one of them.
 4. As you reach each moment above, build to its rule.
 5. Before writing a component, read its page from the list below: its kinds, states, focus and copy.
 6. Before you finish, go back through each moment you reached and check the screen against its

@@ -51,6 +51,16 @@ Each look is one reference page: its tokens in a table with a Source column, a `
 light and dark ready to paste, and its font licence. It is named "after" the product, and a look
 never carries the product's logo or wordmark.
 
+**Built 2026-11-02:** each look is data in `src/looks/` that sets the playbook's own variables
+(`look.ts` lists them), so swapping looks changes values, never code; a value without a source
+is the playbook's. One `Look` component renders a page's specimen (light and dark side by side),
+its values with sources, and the `:root` blocks; the pages are systems (`/systems/look-*`), so
+the Skill exports them as references. The playbook's five palettes share one page with a switch.
+Shipped: the playbook's and Primer's (from `@primer/primitives` 11.10.0's built CSS). Primer
+departs in three places, said on its page: one accent where GitHub's primary button is green, a
+3:1 field border where Primer's is 1.4:1, and the playbook's duration. Buttons now read
+`radius-control` (a pill by default) so a look can square them. Next: Apple and Linear.
+
 ## 2. Component libraries
 
 The project's own library wins. With none, the agent asks which to use, offering Base UI and
