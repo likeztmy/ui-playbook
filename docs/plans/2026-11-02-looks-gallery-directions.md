@@ -270,3 +270,7 @@ A's toolbar.**
 - **C answers a real question,** but it costs keyboard access and doubles the rendering.
   Storybook's own answer, side-by-side as one more choice in the same theme control, is the way to
   add it to A once its tab-order problem has a fix.
+
+## Decision
+
+**2026-11-03: the owner picked A.** The gallery becomes the app window at `/systems/looks`; the gallery is desk-only (hidden under 760px), so A's phone layout is dropped. Next: port Release, Settings, Overlays, States, Marketing and the Cards wall into A's Ship, replace `src/demos/looks/**` with it, fix the live gallery's info-badge colour (it reads the page's accent, not the look's), then a rule review at 1280, light and dark.

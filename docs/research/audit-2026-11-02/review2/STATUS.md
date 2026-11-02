@@ -14,5 +14,5 @@ Still to do:
 
 1. Redo the review of Components 2 and Principles 1. Give each reviewer fewer routes (four or five), so a stall loses less.
 2. Fix the shoulds and nits in the three finished reports, and the gaps they list where a page has to change.
-3. Looks gallery and Ship: the owner picks a direction from `docs/plans/2026-11-02-looks-gallery-directions.md` (lab routes `/lab/looks-a`, `-b`, `-c`; the agent recommends A). The gallery is desk-only now, so the 375 work in each direction no longer matters.
+3. Looks gallery and Ship: the owner picked direction A on 2026-11-03. Build it per the Decision section of `docs/plans/2026-11-02-looks-gallery-directions.md`.
 4. Frame time on the practice apps and the gallery (C43).
