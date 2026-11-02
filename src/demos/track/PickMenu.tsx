@@ -67,7 +67,8 @@ export function PickMenu(props: PickMenuProps) {
       <BaseMenu.Trigger render={trigger} />
       <BaseMenu.Portal container={container}>
         <BaseMenu.Positioner className={`${m.positioner} ${s.positioner}`} side={side} align={align} sideOffset={6}>
-          <BaseMenu.Popup className={`${m.popup} ${s.popup}`}>
+          {/* A pick inside a row is the row's value, not a click on the row: it opens nothing. */}
+          <BaseMenu.Popup className={`${m.popup} ${s.popup}`} onClick={(e) => e.stopPropagation()}>
             {props.multiple ? (
               <PickChecks options={options} value={props.value} onPick={props.onPick} />
             ) : (

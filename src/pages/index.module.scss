@@ -46,6 +46,13 @@
   &[hidden] {
     display: none;
   }
+
+  // Before the script counts it out: a desk-only entry isn't listed on a phone.
+  @media (width < 760px) {
+    &[data-desk] {
+      display: none;
+    }
+  }
 }
 
 .cardStage {

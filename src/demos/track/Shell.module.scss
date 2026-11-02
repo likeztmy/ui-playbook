@@ -186,6 +186,11 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
+  // Gone from the first paint, before the script measures the width and swaps in the drawer.
+  .side {
+    display: none;
+  }
+
   .main[data-open] {
     grid-template-columns: minmax(0, 1fr);
   }

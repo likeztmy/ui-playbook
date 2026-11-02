@@ -77,6 +77,7 @@ const groups = [
                 class:list={[card.card, s.card]}
                 data-interactive
                 data-card
+                data-desk={e.desk ? '' : undefined}
                 data-search={[e.title, e.summary, titleIn(e, lang), summaryIn(e, lang), ...e.keywords].join(' ').toLowerCase()}
               >
                 {/* A picture of the page, not a control: the title and summary beneath say what it shows. */}
@@ -155,6 +156,8 @@ const groups = [
   const empty = document.getElementById('empty')!;
   const emptyQuery = document.getElementById('empty-query')!;
   const groups = [...document.querySelectorAll<HTMLElement>('[data-group]')];
+  // As wide as the CSS that hides a desk-only card: the counts leave it out too.
+  const phone = matchMedia('(width < 760px)');
 
   function filter() {
     const q = input.value.trim().toLowerCase();
@@ -163,7 +166,7 @@ const groups = [
       const cards = [...g.querySelectorAll<HTMLElement>('[data-card]')];
       let n = 0;
       for (const c of cards) {
-        const hit = !q || c.dataset.search!.includes(q);
+        const hit = (!q || c.dataset.search!.includes(q)) && !(phone.matches && c.dataset.desk !== undefined);
         c.hidden = !hit;
         if (hit) n++;
       }
@@ -176,6 +179,8 @@ const groups = [
   }
 
   input.addEventListener('input', filter);
+  phone.addEventListener('change', filter);
+  if (phone.matches) filter();
   input.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && input.value) {
       input.value = '';

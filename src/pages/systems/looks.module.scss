@@ -1,0 +1,16 @@
+// The gallery is a desk tool (owner's call, 2026-11-02): a phone gets the look pages instead.
+.desk {
+  @media (width < 760px) {
+    display: none;
+  }
+}
+
+.phone {
+  max-width: 720px;
+  margin: var(--space-6) auto;
+  padding-inline: var(--space-4);
+
+  @media (width >= 760px) {
+    display: none;
+  }
+}

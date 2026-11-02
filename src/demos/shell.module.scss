@@ -488,6 +488,9 @@
 }
 
 // A label above the stage pushes it down a line; the dials beside it start on the stage's top edge.
-.tweak:has(> .frame > .caption) > .panel {
-  margin-top: calc(var(--caption, var(--control-sm)) + var(--space-2));
+// Side by side, the dials start on the stage's top edge.
+@media (min-width: 721px) {
+  .tweak:has(> .frame > .caption) > .panel {
+    margin-top: calc(var(--caption, var(--control-sm)) + var(--space-2));
+  }
 }

@@ -106,3 +106,10 @@
   color: var(--ink-muted);
   font-size: 12px;
 }
+
+// The screens need a desk-sized window; a phone gets no link to them.
+.desk {
+  @media (width < 760px) {
+    display: none;
+  }
+}

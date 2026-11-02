@@ -132,6 +132,11 @@ export function useTrack({ embedded }: { embedded?: boolean } = {}) {
   const update = (ns: number[], patch: Partial<Issue>) => {
     if (!ns.length) return;
     const before = issues;
+    // A changed status moves the row to another group, which mounts it anew: focus follows it there.
+    if (ns.length === 1) {
+      setFocus(ns[0]);
+      refocus(document.querySelector(`[data-n="${ns[0]}"]`)?.closest('[data-view]'));
+    }
     setIssues((list) => patchAll(list, ns, patch));
     if (ns.length > 1) {
       const what = patch.status ? `moved to ${statusName(patch.status)}` : 'changed';

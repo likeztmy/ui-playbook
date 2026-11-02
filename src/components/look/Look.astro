@@ -16,7 +16,7 @@ const ours = values.filter(([, v]) => !v.from).length;
 const words = (v: string) => v.split(' ');
 ---
 
-{part === 'specimen' && <p><a href={`/systems/looks?look=${id}`}>See it on the screens</a></p>}
+{part === 'specimen' && <p class={s.desk}><a href={`/systems/looks?look=${id}`}>See it on the screens</a></p>}
 
 {
   part === 'values' && (

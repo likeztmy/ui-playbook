@@ -10,7 +10,7 @@ changes it. Where a decision changes a rule, the page that states the rule chang
 | C2 | **Owner's call.** Both hold, each scoped. A table of one-line rows takes lines. A list whose records span two or more lines may take a stripe per record. Each page names the other. |
 | C3 | A demo stage is a figure on the page, not a box in the UI, and needs no concentric radius against the page. Inside a stage, the UI follows every rule, box-in-box included. The gallery's own chrome is rebuilt (step 13). |
 | C4 | **Owner's call.** Keep the kind line above each title. It names where the page sits, as the Prefer side of "Every line does a job" asks: sentence case, `ink-muted`, text size. |
-| C5 | Below 768px a comparison's switch reads **Avoid** / **Prefer**. The verdict phrase moves into the caption, where it can wrap. |
+| C5 | Below 640px a comparison's switch reads **Avoid** / **Prefer**. The verdict phrase moves into the caption, where it can wrap. |
 | C6 | One stroke for UI icons: Lucide's own, 2 on its 24 grid (1.33 at 16), as the Icon page's Anatomy says. No `strokeWidth` or `absoluteStrokeWidth` per call. An exception is listed on the Icon page with its reason before the code keeps it. |
 | C7 | **Owner's call.** Keep the home hero's hand-drawn notes, which the owner chose in lab B. They are annotation, not icons; the Icon page's floor names them as the one exemption. |
 | C8 | Choosing one value from a list is a Select, with one chevron. A Menu is for actions; a Popover is for several controls. |

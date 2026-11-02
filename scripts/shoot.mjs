@@ -44,9 +44,18 @@ try {
 
   // Hydrate every client:visible island, then return to the top.
   const hydrate = async () => {
-    const islands = page.locator('astro-island');
+    // client:media islands hydrate on their query, not on sight: nothing to scroll to.
+    const islands = page.locator('astro-island:not([client="media"])');
     for (let i = 0, n = await islands.count(); i < n; i++) await islands.nth(i).scrollIntoViewIfNeeded();
-    await page.waitForFunction(() => !document.querySelector('astro-island[ssr]'), null, { timeout: 10_000 });
+    // A client:media island whose query doesn't match this width is meant to stay unhydrated.
+    await page.waitForFunction(
+      () =>
+        ![...document.querySelectorAll('astro-island[ssr]')].some(
+          (e) => e.getAttribute('client') !== 'media' || matchMedia(JSON.parse(e.getAttribute('opts') ?? '{}').value).matches,
+        ),
+      null,
+      { timeout: 10_000 },
+    );
   };
   try {
     await hydrate();

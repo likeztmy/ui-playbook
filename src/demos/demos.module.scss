@@ -1943,7 +1943,21 @@
 
 // Space groups by ratio: an inbox in date sections, a striped ledger, one-line rows.
 .ratList {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr) max-content;
   width: min(100%, 320px);
+
+  // Senders in a column, so every subject starts on one edge.
+  > .ratHead {
+    grid-column: 1 / -1;
+  }
+
+  > .ratRow {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: subgrid;
+    column-gap: var(--space-3);
+  }
 }
 
 // A header's space is fixed; --rat-above is the share that goes above it.

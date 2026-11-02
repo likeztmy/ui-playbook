@@ -8,6 +8,8 @@ export type Entry = {
   summary: string;
   details: number;
   keywords: string[];
+  /** Needs a window wider than a phone: phones don't list it (owner's call, 2026-11-02). */
+  desk?: boolean;
 };
 
 export const entries: Entry[] = [
@@ -354,6 +356,7 @@ export const entries: Entry[] = [
     summary: 'Every look on one release tool: its colours, type, edges and spacing, light or dark, each value with where it came from.',
     details: 0,
     keywords: ['look', 'theme', 'themes', 'gallery', 'preview', 'tokens', 'variables', 'dark mode'],
+    desk: true,
   },
   {
     slug: 'look-playbook',
