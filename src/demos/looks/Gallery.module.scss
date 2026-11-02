@@ -9,14 +9,15 @@
   }
 }
 
+// Both stay put under the site's 56px header.
 .rail {
   position: sticky;
-  top: 0;
+  top: 56px;
   align-self: start;
   display: grid;
   align-content: start;
   gap: var(--space-2);
-  max-height: 100dvh;
+  max-height: calc(100dvh - 56px);
   padding: var(--space-6) var(--space-3) var(--space-4);
   border-right: 1px solid var(--line);
   overflow-y: auto;
@@ -100,13 +101,14 @@
 
 .stage {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   grid-template-rows: auto 1fr;
   min-width: 0;
 }
 
 .bar {
   position: sticky;
-  top: 0;
+  top: 56px;
   z-index: 1;
   display: flex;
   flex-wrap: wrap;
@@ -115,6 +117,11 @@
   padding: var(--space-3) var(--space-4);
   border-bottom: 1px solid var(--line);
   background: var(--bg);
+
+  // On a phone the bar wraps to three rows: it scrolls away rather than covering a third of the screen.
+  @media (max-width: 760px) {
+    position: static;
+  }
 }
 
 .end {
@@ -123,4 +130,42 @@
   gap: var(--space-3);
   margin-left: auto;
   font-size: 14px;
+}
+
+// Ship's pages, as a row of tabs that scrolls sideways on a phone rather than wrapping.
+.pages {
+  display: flex;
+  gap: 2px;
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.page {
+  flex: none;
+  height: var(--control-md);
+  padding: 0 var(--space-3);
+  border: 0;
+  border-radius: var(--radius-full);
+  background: none;
+  color: var(--ink-muted);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--fill-hover);
+    color: var(--ink);
+  }
+
+  &[aria-pressed='true'] {
+    background: var(--fill-active);
+    color: var(--ink);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
 }

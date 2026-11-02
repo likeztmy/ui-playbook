@@ -1,0 +1,162 @@
+// Ship's window, after the work tools it imitates: a sidebar on the window colour, the work on a raised panel.
+.shell {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: var(--space-gap);
+  min-height: 100%;
+  padding: var(--space-gap);
+  background: var(--bg);
+  color: var(--ink);
+  font-size: var(--text-md);
+  font-weight: var(--weight-body);
+  line-height: var(--leading-md);
+
+  @container (max-width: 720px) {
+    grid-template-columns: minmax(0, 1fr);
+
+    .sidebar {
+      display: none;
+    }
+  }
+}
+
+.sidebar {
+  display: grid;
+  align-content: start;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.team {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--control-md);
+  padding-inline: var(--space-2);
+  font-weight: var(--weight-strong);
+}
+
+.logo {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-sm);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: var(--text-sm);
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--control-md);
+  padding-inline: var(--space-2);
+  border: var(--line-width) solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--ink-muted);
+
+  > kbd {
+    margin-left: auto;
+    font: inherit;
+    font-size: var(--text-sm);
+  }
+}
+
+.nav {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--control-md);
+  padding-inline: var(--space-2);
+  border-radius: var(--radius-md);
+  color: var(--ink-muted);
+
+  &:hover {
+    background: var(--fill-hover);
+  }
+
+  &[aria-current='page'] {
+    background: var(--fill-active);
+    color: var(--ink);
+  }
+}
+
+.label {
+  flex: 1;
+}
+
+.count {
+  color: var(--ink-muted);
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  margin-inline: 4px;
+  border-radius: 50%;
+  background: var(--ink-disabled);
+}
+
+.heading {
+  margin: var(--space-3) 0 0;
+  padding-inline: var(--space-2);
+  color: var(--ink-muted);
+  font-size: var(--text-sm);
+}
+
+.main {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  min-width: 0;
+  border: var(--line-width) solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-height: 52px;
+  padding: var(--space-2) var(--space-card);
+  border-bottom: var(--line-width) solid var(--line);
+}
+
+.place {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+  font-weight: var(--weight-strong);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+// The pages lay themselves out by the room the window leaves them.
+.page {
+  min-width: 0;
+  container-type: inline-size;
+}

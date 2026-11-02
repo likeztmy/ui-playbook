@@ -16,6 +16,8 @@ const DIAGRAMS = new Set([
   'src/demos/sheet/Map.tsx',
   // The Icon page's mistake on show: marks an agent drew for its sign-up form, copied as drawn.
   'src/demos/icon/Drawn.tsx',
+  // A line chart in the looks showcase: data, not an icon.
+  'src/demos/looks/ship/Line.tsx',
 ]);
 
 function* files(dir) {

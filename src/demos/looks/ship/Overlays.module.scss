@@ -1,0 +1,83 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-gap);
+  padding: var(--space-card);
+
+  @container (max-width: 640px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+// A patch of window for one surface to float over.
+.scene {
+  position: relative;
+  display: grid;
+  place-items: start center;
+  min-height: 300px;
+  padding: var(--space-card);
+  border: var(--line-width) solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface-sunken);
+  overflow: hidden;
+}
+
+.toolbar {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding-top: 40px;
+}
+
+.tipStill,
+.menuStill,
+.popoverStill {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-1);
+}
+
+.tipStill {
+  margin-top: -32px;
+}
+
+.menuStill {
+  justify-items: start;
+
+  > :last-child {
+    min-width: 200px;
+  }
+}
+
+.popoverStill {
+  justify-items: start;
+
+  > :last-child {
+    width: min(300px, 100%);
+  }
+}
+
+.dim {
+  place-items: center;
+}
+
+.scrim {
+  position: absolute;
+  inset: 0;
+  background: var(--scrim);
+}
+
+.dialog {
+  position: relative;
+  width: min(360px, 100%);
+}
+
+.toasts {
+  place-items: end center;
+  align-content: end;
+  gap: var(--space-2);
+}
+
+.toast {
+  position: static;
+}

@@ -39,3 +39,19 @@ current cards are reused where they fit. Pages are one component per file under
 2. Dashboard and Settings.
 3. Overlays, States and Marketing.
 4. Measure: no sideways scroll at 1280 and 375, frame time on switching looks, both themes.
+
+## Built 2026-11-02
+
+All seven pages, plus the old wall kept as Cards (tweakcn has a Cards tab too), behind a row of page tabs
+in the gallery bar; the address carries `?page=`. Linear's dark theme was read the same day.
+
+Deviations:
+
+- Overlays draws each floating surface in its own scene rather than all over one Releases page: stacked
+  on one page they hid each other and fell apart at 375px.
+- The marketing page's product shot is the live Releases page, clipped and inert, not a scaled image:
+  it lays itself out by container width, so it needs no scaling.
+- Panel now provides the portal container, so live menus and selects inside a look draw in that look.
+
+Measured in dev mode at 1280: switching a look or a page renders in 7–17ms once warm, 33ms the first time.
+No sideways scroll on any page at 375.
