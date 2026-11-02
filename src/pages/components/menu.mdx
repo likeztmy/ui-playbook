@@ -49,7 +49,7 @@ Opened by right-click or long-press on a thing: a file, a row, a selection. It's
 Opened from a trigger that shows the current value (*Sort: Modified*). Each row is a value, not a command.
 
 - **Radio items with a checkmark** on the current value. The checkmark marks state; highlight stays for the keyboard.
-- **No icons, no shortcuts.** Values are words; decoration slows the scan.
+- **No shortcuts, and an icon only where the value has its own mark**: a status icon, priority bars, in the leading column after the check. The mark is how people know the value elsewhere in the product; a sort field has none, so it stays a word.
 - **A separator between independent choices**, such as the field and the order.
 - Picking a value closes the menu and updates the trigger's label.
 
@@ -57,7 +57,7 @@ Opened from a trigger that shows the current value (*Sort: Modified*). Each row 
 
 | Part | Pull-down | Context menu | Choice |
 | --- | --- | --- | --- |
-| Icon | All or none per group | Familiar actions, all or none | None |
+| Icon | All or none per group | Familiar actions, all or none | The value's own mark, if it has one |
 | Shortcut | Where the command has one | None | None |
 | Unavailable item | Dimmed | Hidden | — |
 | Checkmark | On toggles | On toggles | On the current value |
@@ -95,7 +95,7 @@ Opened from a trigger that shows the current value (*Sort: Modified*). Each row 
 
 <MenuShortcuts client:visible />
 
-Check your fonts for the symbols before setting shortcuts in them. Geist has no ⌘ ⇧ ⌥ ⌫ ↵, and a font that borrows them from another face mixes weights, so here they're Lucide icons at a 1.25px stroke, a touch lighter than the row icons' 1.33px to sit with 13px text. Boxed keycaps belong in a command palette or a shortcuts sheet, where the key itself is the subject.
+Check your fonts for the symbols before setting shortcuts in them. Geist has no ⌘ ⇧ ⌥ ⌫ ↵, and a font that borrows them from another face mixes weights, so here they're Lucide icons at 12px, whose line scales to 1px, as light as 13px text. Boxed keycaps belong in a command palette or a shortcuts sheet, where the key itself is the subject.
 
 ### The popup comes out of its trigger
 
@@ -109,13 +109,13 @@ Opening grows from `enter-scale` (0.96) and `enter-offset` (4px) toward the trig
 | --- | --- | --- |
 | Popup radius | `radius-lg` | 10 |
 | Popup inset | `space-1` | 4 |
-| Width | the widest row; at least 160 | |
+| Width | the widest row; at least 160, a submenu no minimum | |
 | Separator | inset `space-2` each side, past the popup's | 12 |
 | Item radius | `radius-sm` = 10 − 4, [concentric](/principles/concentric-radius) with the popup | 6 |
 | Item height | `control-md` | 32 |
 | Item padding, icon gap | `space-2` | 8 |
 | Label | body-sm size, 13 / 18 | 13 |
-| Shortcut | bare symbols, `ink-disabled`; last key in a fixed cell | 14 |
+| Shortcut | bare symbols, `ink-muted`; `ink-disabled` only on an unavailable row; last key in a fixed cell | 14 |
 | Label to shortcut | `space-6`, at least | 24 |
 | Surface | `surface-raised`, `shadow-md` | |
 

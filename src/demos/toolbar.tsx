@@ -48,7 +48,9 @@ export function ToolbarAnatomy() {
             </Toolbar.Tools>
           </Toolbar.Root>
         </div>
-        <figcaption className={s.anatomyCaption}>4 on every side: a pill in a pill, so the centres coincide and the height falls out of it, 32 + 4 × 2 = 40.</figcaption>
+        <figcaption className={s.anatomyCaption}>
+          4 on every side: a pill in a pill, so the centres coincide and the height falls out of it, 32 + 4 × 2 = 40.
+        </figcaption>
       </figure>
     </Frame>
   );
@@ -100,7 +102,7 @@ export function ToolbarTips() {
   );
 }
 
-const ic = { size: 16, strokeWidth: 1.5, nonScalingStroke: true, 'aria-hidden': true } as const;
+const ic = { size: 16, 'aria-hidden': true } as const;
 
 export function ToolbarVariants() {
   return (

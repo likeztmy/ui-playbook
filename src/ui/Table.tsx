@@ -143,7 +143,7 @@ export function Table<R>({
                       onClick={() => onSortChange?.({ key: c.key, dir: active && sort.dir === 'asc' ? 'desc' : 'asc' })}
                     >
                       {c.header}
-                      <Arrow size={12} strokeWidth={1.75} nonScalingStroke aria-hidden />
+                      <Arrow size={12} aria-hidden />
                     </button>
                   ) : (
                     c.header

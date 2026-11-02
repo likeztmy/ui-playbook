@@ -57,11 +57,7 @@ export function Select({
         <BaseSelect.Trigger className={s.trigger} data-pin={pin}>
           <BaseSelect.Value className={s.value} placeholder={placeholder} />
           <BaseSelect.Icon className={s.chevron}>
-            {chevron === 'updown' ? (
-              <ChevronsUpDown size={16} aria-hidden />
-            ) : (
-              <ChevronDown size={16} aria-hidden />
-            )}
+            {chevron === 'updown' ? <ChevronsUpDown size={16} aria-hidden /> : <ChevronDown size={16} aria-hidden />}
           </BaseSelect.Icon>
         </BaseSelect.Trigger>
         <BaseSelect.Portal container={container}>
@@ -79,7 +75,7 @@ export function Select({
                       {g.options.map((o) => (
                         <BaseSelect.Item key={o.value} value={o.value} disabled={o.disabled} className={cx(m.item, s.item)}>
                           <BaseSelect.ItemIndicator keepMounted className={m.check}>
-                            <Check size={16} strokeWidth={1.75} nonScalingStroke aria-hidden />
+                            <Check size={16} aria-hidden />
                           </BaseSelect.ItemIndicator>
                           <BaseSelect.ItemText className={m.text}>{o.label}</BaseSelect.ItemText>
                         </BaseSelect.Item>

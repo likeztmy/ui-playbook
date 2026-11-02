@@ -11,12 +11,12 @@
   line-height: 26px;
 }
 
+// The line above a title names where the page sits: sentence case, muted ink, text size.
 @mixin kind {
   margin: 0 0 var(--space-2);
   color: var(--ink-muted);
-  font-size: 13px;
-  line-height: 18px;
-  font-weight: 500;
+  font-size: 16px;
+  line-height: 26px;
 }
 
 @mixin title {
@@ -61,8 +61,13 @@
 
   > :global(ul),
   > :global(ol) {
-    // Markers hang in the margin, so the text keeps the edge.
+    // Markers hang in the margin, so the text keeps the edge. A phone's 16px gutter is too
+    // narrow to hang them in: there the text steps in by a marker's width.
     padding-left: 0;
+
+    @media (max-width: 640px) {
+      padding-left: 1.25em;
+    }
   }
 
   > :global(ul > li + li),
@@ -124,6 +129,17 @@
       text-align: left;
     }
 
+    :global(tr:last-child > td) {
+      border-bottom: 0;
+    }
+
+    :global(:is(th, td) code:not([class])) {
+      padding: 0;
+      background: none;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
     :global(h3) {
       margin: var(--space-6) 0 var(--space-2);
       font-size: 15px;
@@ -138,10 +154,15 @@
 
     :global(ul) {
       padding-left: 0;
+
+      @media (max-width: 640px) {
+        padding-left: 1.25em;
+      }
     }
   }
 
-  // A plain code editor: monospace, one size, colour only for syntax.
+  // A plain code editor: monospace, one size, colour only for syntax. It scrolls sideways on its
+  // own, so it is a Tab stop (Shiki's tabindex), named by its language, its ring drawn inside.
   > :global(pre) {
     box-sizing: border-box;
     width: 100%;
@@ -152,26 +173,39 @@
     background: var(--surface-sunken) !important;
     font-size: 14px;
     line-height: 22px;
+
+    &:focus-visible {
+      box-shadow: inset 0 0 0 2px var(--accent);
+    }
   }
 
-  :global(:not(pre) > code) {
+  // Code named in the prose, a token to a chip that never breaks at its hyphen. A demo's own
+  // code (a readout, set in its own size) carries a class and keeps its look.
+  :global(:not(pre) > code:not([class])) {
     padding: 1px var(--space-1);
     border-radius: var(--radius-xs);
     background: var(--surface-sunken);
     font-size: 0.85em;
+    white-space: nowrap;
   }
 
   :global(strong) {
     font-weight: 600;
   }
 
-  // The prose's own tables: component tables inside demos keep theirs.
+  // The prose's own tables: component tables inside demos keep theirs. Lines between rows, none
+  // after the last. On a phone a table too wide for the column scrolls inside it, the page doesn't.
   > :global(table) {
     width: 100%;
     margin: 0 0 var(--space-6);
     border-collapse: collapse;
     font-size: 14px;
     line-height: 20px;
+
+    @media (max-width: 640px) {
+      display: block;
+      overflow-x: auto;
+    }
 
     :global(th) {
       font-size: 12px;
@@ -181,8 +215,13 @@
       text-align: left;
     }
 
-    // A token is one word: it moves to the next line whole rather than breaking at its hyphen.
-    :global(code) {
+    // A token is one word: it moves to the next line whole rather than breaking at its hyphen. The
+    // cell already sets it apart, so it takes no chip, and every token starts on its column's edge
+    // or right after its word, never a chip's padding in. 12px, the floor for labels.
+    :global(:is(th, td) code:not([class])) {
+      padding: 0;
+      background: none;
+      font-size: 12px;
       white-space: nowrap;
     }
 
@@ -191,6 +230,10 @@
       padding: var(--space-2) var(--space-3) var(--space-2) 0;
       border-bottom: 1px solid var(--line);
       vertical-align: top;
+    }
+
+    :global(tr:last-child > td) {
+      border-bottom: 0;
     }
   }
 
@@ -201,6 +244,7 @@
     padding-right: 0;
     text-align: right;
     font-variant-numeric: tabular-nums;
+    white-space: nowrap;
   }
 
   > :global(h2:first-child) {

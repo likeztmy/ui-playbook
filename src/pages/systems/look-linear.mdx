@@ -13,10 +13,14 @@ A work tool that should feel like Linear: white behind the work, near-black text
 ## Where it differs from Linear
 
 - **The focus ring is 2px.** Linear draws a 1px ring; the playbook's 2px holds 3:1 against more backgrounds.
-- **The accent's hover and text colours are derived, not read.** Here they are the accent a step darker, and lightened for text on dark.
+- **The accent's hover and text colours are derived, not read.** The hover is the accent a step darker in both themes, so its white label holds 4.5:1. The text colour is darker than the accent on light and lighter on dark, so it holds on `accent-soft` as well as on white.
+- **No dark value read from Linear changed.** Its tertiary text fell to 4.2:1 on a selected row over a raised surface; the selection fill, which is derived, is fainter instead: 18% of the focus colour where it was 24%.
+- **Status colours are the playbook's, darker on light.** On `accent-soft` over Linear's grey, the playbook's own success and warning fell to 4.0:1.
 - **One radius is a guess.** The small radius is a variable Linear defines but no control was seen using it.
 
 ## Values
+
+Each text colour's note gives its lowest contrast in each theme, against the four surfaces and `accent-soft` laid on each (a status colour also on its own soft fill). Text holds 4.5:1; `line-strong` and the focus ring, 3:1.
 
 <Look id="linear" part="values" />
 

@@ -11,7 +11,7 @@ import { Marked } from './Marked';
 import type { Post } from './usePost';
 import s from './List.module.scss';
 
-const ic = { size: 16, strokeWidth: 1.5, nonScalingStroke: true, 'aria-hidden': true } as const;
+const ic = { size: 16, 'aria-hidden': true } as const;
 
 type Props = {
   c: Conversation;

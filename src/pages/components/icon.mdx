@@ -32,17 +32,19 @@ What makes an icon readable is mostly how well it matches the function and how f
 
 Lucide's line scales with the icon, so the size is the weight. Set an icon to the text's size and it matches Regular; Lucide's `absoluteStrokeWidth`, which keeps the line at 2px, turns a 16px icon as heavy as SemiBold. Apple and Material reach the same match another way, with symbol weights paired to their fonts' ([SF Symbols](https://developer.apple.com/design/human-interface-guidelines/sf-symbols), [Material](https://m3.material.io/styles/icons/applying-icons)).
 
+So the line is never set per icon: no `strokeWidth`, `absoluteStrokeWidth` or `nonScalingStroke`, checkmarks and shortcut glyphs included. A 12px glyph is lighter because it's smaller, as the text it sits in is. Two weights side by side read as two sets.
+
 ### Drawn for the occasion
 
 <IconDrawn client:visible />
 
-No study has measured what mixing drawings costs. The systems ask for one set anyway, and for a second reason: once every icon shares a grid and a line, a filled one is free to mean *selected*. Mixed in from elsewhere, a solid shape looks selected when it isn't. A logo is the one drawing a product brings of its own: supplied by its owner, or set in type.
+No study has measured what mixing drawings costs. The systems ask for one set anyway, and for a second reason: once every icon shares a grid and a line, a filled one is free to mean *selected*. Mixed in from elsewhere, a solid shape looks selected when it isn't. A logo is the one drawing a product brings of its own: supplied by its owner, or set in type. The playbook's home page carries the one exemption: its hand-drawn notes are annotation over the page, not icons in an interface.
 
 ## Kinds
 
 - **Beside a word.** Rows, menu items, sidebar places, buttons that need a hint. The word does the explaining; the icon is the quicker cue for next time.
 - **Alone, in an icon button.** The conventional few, named in a tooltip with the same words as the `aria-label`. See [Tooltip](/components/tooltip) and [Toolbar](/components/toolbar).
-- **Status.** A shape per state, read without colour, as the rings in the issue list above: dashed, empty, dotted, ticked.
+- **Status.** A shape per state, read without colour, as the rings in the issue list above: a dot, an empty ring, an ellipsis, a tick. Standing alone, the icon is the only thing that says the state, so it carries the word as its name: `role="img"` and an `aria-label` such as *In progress*.
 - **Decorative.** Next to words that already say it all. Hidden from assistive tech: Lucide sets `aria-hidden` itself unless the icon is given a label.
 
 ## Anatomy

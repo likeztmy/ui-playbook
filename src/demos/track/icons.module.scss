@@ -16,6 +16,7 @@
   color: var(--ink);
 }
 
+// No priority keeps its column filled, quiet but at 3:1 like any icon that says a state.
 .priority[data-priority='none'] {
-  color: var(--ink-disabled);
+  color: var(--ink-muted);
 }

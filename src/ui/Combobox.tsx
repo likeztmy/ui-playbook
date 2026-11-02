@@ -93,7 +93,7 @@ export function Combobox(props: SingleProps | MultipleProps) {
   const row = (item: ComboItem) => (
     <BaseCombobox.Item key={item.value} value={item} className={cx(m.item, s.item)}>
       <BaseCombobox.ItemIndicator keepMounted className={m.check}>
-        <Check size={16} strokeWidth={1.75} nonScalingStroke aria-hidden />
+        <Check size={16} aria-hidden />
       </BaseCombobox.ItemIndicator>
       <span className={m.text}>{showMatch ? <Match text={item.label} query={query} /> : item.label}</span>
       {item.meta && <span className={s.meta}>{showMatch ? <Match text={item.meta} query={query} /> : item.meta}</span>}
@@ -137,7 +137,7 @@ export function Combobox(props: SingleProps | MultipleProps) {
                     <BaseCombobox.Chip key={c.value} className={s.chip} aria-label={c.label}>
                       {c.label}
                       <BaseCombobox.ChipRemove className={s.chipRemove} aria-label={`Remove ${c.label}`}>
-                        <X size={12} strokeWidth={1.75} nonScalingStroke aria-hidden />
+                        <X size={12} aria-hidden />
                       </BaseCombobox.ChipRemove>
                     </BaseCombobox.Chip>
                   ))}
@@ -149,7 +149,7 @@ export function Combobox(props: SingleProps | MultipleProps) {
             input(false)
           )}
           <BaseCombobox.Trigger className={s.trigger} aria-label={`Show all ${label.toLowerCase()}`}>
-            <ChevronsUpDown size={16} strokeWidth={1.5} nonScalingStroke aria-hidden />
+            <ChevronsUpDown size={16} aria-hidden />
           </BaseCombobox.Trigger>
         </BaseCombobox.InputGroup>
         {description && <p className={f.hint}>{description}</p>}

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useToast } from '../../ui/Toast';
 import { ISSUES } from './issues';
 import { byRank, filtering, issueId, matches, NO_FILTER, statusName, STATUSES, type Filter, type Issue, type Status } from './model';
+import { refocus } from './refocus';
 import { clear, load, save } from './store';
 import type { Arrival } from './notifications';
 import { CHANGES, EVERY, FIRST, type Change } from './teammates';
@@ -85,11 +86,17 @@ export function useTrack({ embedded }: { embedded?: boolean } = {}) {
   };
 
   // What the place and tab hold; the filter narrows that, and its count of hidden issues is out of it.
-  const here = useMemo(() => issues.filter((i) => (place === 'issues' || i.assignee === 'me') && SCOPES[scope].includes(i.status)), [issues, place, scope]);
+  const here = useMemo(
+    () => issues.filter((i) => (place === 'issues' || i.assignee === 'me') && SCOPES[scope].includes(i.status)),
+    [issues, place, scope],
+  );
   /** What each tab would show here, under the filter: the tabs' counts. */
   const counts = useMemo(() => {
     const mine = issues.filter((i) => (place === 'issues' || i.assignee === 'me') && matches(i, filter));
-    return Object.fromEntries((Object.keys(SCOPES) as Scope[]).map((sc) => [sc, mine.filter((i) => SCOPES[sc].includes(i.status)).length])) as Record<Scope, number>;
+    return Object.fromEntries((Object.keys(SCOPES) as Scope[]).map((sc) => [sc, mine.filter((i) => SCOPES[sc].includes(i.status)).length])) as Record<
+      Scope,
+      number
+    >;
   }, [issues, place, filter]);
   const shown = useMemo(() => here.filter((i) => matches(i, filter)).sort(byRank), [here, filter]);
   const groups = useMemo(
@@ -102,10 +109,7 @@ export function useTrack({ embedded }: { embedded?: boolean } = {}) {
     [here, shown, scope],
   );
   /** The list's issues in the order they're on screen. */
-  const listed = useMemo(
-    () => groups.flatMap((g) => (view === 'list' && folded.has(g.id) ? [] : g.issues)).map((i) => i.n),
-    [groups, folded, view],
-  );
+  const listed = useMemo(() => groups.flatMap((g) => (view === 'list' && folded.has(g.id) ? [] : g.issues)).map((i) => i.n), [groups, folded, view]);
   const byN = useMemo(() => new Map(issues.map((i) => [i.n, i])), [issues]);
   const get = (n: number | null) => (n == null ? undefined : byN.get(n));
 
@@ -136,7 +140,7 @@ export function useTrack({ embedded }: { embedded?: boolean } = {}) {
         action: {
           label: 'Undo',
           onClick: () => {
-            setIssues((list) => list.map((i) => (ns.includes(i.n) ? before.find((b) => b.n === i.n) ?? i : i)));
+            setIssues((list) => list.map((i) => (ns.includes(i.n) ? (before.find((b) => b.n === i.n) ?? i) : i)));
             setChecked(new Set(ns));
           },
         },
@@ -154,6 +158,9 @@ export function useTrack({ embedded }: { embedded?: boolean } = {}) {
     const at = Math.max(...ns.map((n) => order.indexOf(n)));
     const rest = order.filter((n) => !ns.includes(n));
     const next = order.slice(at + 1).find((n) => !ns.includes(n)) ?? rest[rest.length - 1] ?? null;
+    // If focus goes with them, it follows to that issue.
+    const scope = document.activeElement?.closest('[data-view]') ?? document.querySelector(`[data-n="${ns[0]}"]`)?.closest('[data-view]');
+    refocus(scope);
     setIssues((list) => list.filter((i) => !ns.includes(i.n)));
     setChecked((c) => new Set([...c].filter((n) => !ns.includes(n))));
     if (open != null && ns.includes(open)) setOpen(next);
@@ -166,6 +173,8 @@ export function useTrack({ embedded }: { embedded?: boolean } = {}) {
           setIssues((list) => [...list, ...gone]);
           if (wasChecked.length) setChecked(new Set(wasChecked));
           setFocus(ns[0]);
+          // The toast that held focus goes; focus goes to the issue that came back.
+          refocus(scope);
         },
       },
     });
@@ -198,7 +207,9 @@ export function useTrack({ embedded }: { embedded?: boolean } = {}) {
   /** A comment from you, at the end of the issue's history. */
   const comment = (n: number, body: string) => {
     const at = clock();
-    setIssues((list) => list.map((i) => (i.n === n ? { ...i, updated: at, activity: [...i.activity, { who: 'me', text: 'commented', at, body }] } : i)));
+    setIssues((list) =>
+      list.map((i) => (i.n === n ? { ...i, updated: at, activity: [...i.activity, { who: 'me', text: 'commented', at, body }] } : i)),
+    );
   };
 
   /** A card dropped in `status`, before `before` (or last). */
@@ -225,7 +236,8 @@ export function useTrack({ embedded }: { embedded?: boolean } = {}) {
   // (a new issue, a comment) they're held, and arrive once you stop: a break in the task.
   const holds = useRef(new Set<string>());
   const held = useRef<Change[]>([]);
-  const arrive = (c: Change) => setIncoming((q) => (q.some((x) => x.n === c.n && x.text === c.text && x.body === c.body) ? q : [...q, { ...c, at: clock() }]));
+  const arrive = (c: Change) =>
+    setIncoming((q) => (q.some((x) => x.n === c.n && x.text === c.text && x.body === c.body) ? q : [...q, { ...c, at: clock() }]));
   const hold = (why: string, on: boolean) => {
     if (on) return void holds.current.add(why);
     holds.current.delete(why);
@@ -258,7 +270,18 @@ export function useTrack({ embedded }: { embedded?: boolean } = {}) {
   const letIn = (only?: number) => {
     const live = waiting.filter((c) => only == null || c.n === only);
     if (!live.length) return;
-    setIssues((list) => live.reduce((l, c) => (due(c, l.find((i) => i.n === c.n)) ? patchAll(l, [c.n], c.patch, c.who, c.text, c.at, c.body) : l), list));
+    setIssues((list) =>
+      live.reduce(
+        (l, c) =>
+          due(
+            c,
+            l.find((i) => i.n === c.n),
+          )
+            ? patchAll(l, [c.n], c.patch, c.who, c.text, c.at, c.body)
+            : l,
+        list,
+      ),
+    );
     setIncoming((q) => (only == null ? [] : q.filter((c) => c.n !== only)));
     mark(live.map((c) => c.n));
   };

@@ -24,15 +24,7 @@ export function Checkbox({ label, description, pin, className, ...props }: Check
       <BaseCheckbox.Indicator
         keepMounted
         className={s.indicator}
-        render={(p, state) => (
-          <span {...p}>
-            {state.indeterminate ? (
-              <Minus size={12} strokeWidth={2} nonScalingStroke aria-hidden />
-            ) : (
-              <Check size={12} strokeWidth={2} nonScalingStroke aria-hidden />
-            )}
-          </span>
-        )}
+        render={(p, state) => <span {...p}>{state.indeterminate ? <Minus size={14} aria-hidden /> : <Check size={14} aria-hidden />}</span>}
       />
     </BaseCheckbox.Root>
   );

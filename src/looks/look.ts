@@ -2,6 +2,7 @@
 // never code. What a product publishes is used as published, with its source; what it doesn't is
 // the playbook's, marked so. Plan: docs/plans/2026-11-01-looks-and-vague-words.md.
 import precision from '../tokens/precision.json';
+import { lowestNote } from './contrast';
 
 /** The variables a look sets: the ones the components read. */
 export const NAMES = [
@@ -36,6 +37,7 @@ export const NAMES = [
   'radius-md',
   'radius-lg',
   'radius-control',
+  'shadow-xs',
   'shadow-sm',
   'shadow-md',
   'control-md',
@@ -116,10 +118,17 @@ export function playbook(palette = 'blue'): Record<Name, Value> {
   ) as Record<Name, Value>;
 }
 
-/** Every variable of a look, the product's where it publishes one, else the playbook's. */
+/** Every variable of a look, the product's where it publishes one, else the playbook's. Each text and
+ * edge colour's note ends with its lowest contrast, from `contrast.ts`. */
 export function valuesOf(look: Look): [Name, Value][] {
   const base = playbook();
-  return NAMES.map((n) => [n, look.values[n] ?? base[n]]);
+  const all = Object.fromEntries(NAMES.map((n) => [n, look.values[n] ?? base[n]])) as Record<Name, Value>;
+  return NAMES.map((n) => {
+    const low = lowestNote(all, n);
+    const v = all[n];
+    if (!low) return [n, v];
+    return [n, { ...v, note: v.note ? `${v.note.replace(/\.$/, '')}; ${low}` : low[0].toUpperCase() + low.slice(1) }];
+  });
 }
 
 /** The `:root` blocks to paste: light, then dark for a dark theme and the system's dark setting. */

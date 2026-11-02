@@ -8,7 +8,7 @@ import { useFromWidth, type Chrome } from './List';
 import type { Compose } from './useCompose';
 import s from './List.module.scss';
 
-const ic = { size: 16, strokeWidth: 1.5, nonScalingStroke: true, 'aria-hidden': true } as const;
+const ic = { size: 16, 'aria-hidden': true } as const;
 
 const when = (ms: number) => {
   const d = new Date(ms);
@@ -73,7 +73,7 @@ export function DraftList({ compose, chrome }: { compose: Compose; chrome: Chrom
           <div className={s.empty}>
             <p>No drafts.</p>
             <Button size="sm" onClick={compose.compose}>
-              Compose
+              New message
             </Button>
           </div>
         )}

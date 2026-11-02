@@ -8,7 +8,7 @@ import { place } from './data';
 import s from './sheet.module.scss';
 
 const POINTS = [0.5, 1];
-const ic = { size: 16, strokeWidth: 1.5, nonScalingStroke: true, 'aria-hidden': true } as const;
+const ic = { size: 16, 'aria-hidden': true } as const;
 
 type Props = {
   kind?: 'standard' | 'modal';
@@ -90,7 +90,7 @@ export function Walk({ kind = 'standard', tall, stop, reveal, long, scrollGrows 
               Back to route
             </Button>
           ) : (
-            <Sheet.Close render={<Button ref={close} size="sm" variant="ghost" icon aria-label="Close" />}>
+            <Sheet.Close render={<Button ref={close} size="sm" variant="ghost" icon label="Close" />}>
               <X {...ic} />
             </Sheet.Close>
           )
@@ -101,4 +101,3 @@ export function Walk({ kind = 'standard', tall, stop, reveal, long, scrollGrows 
     </Sheet.Root>
   );
 }
-

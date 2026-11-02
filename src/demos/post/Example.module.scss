@@ -35,6 +35,9 @@
 }
 
 // The app's own container, at a fixed height: it lays itself out by its width, as at full screen.
+// It stands for the window, so the mail's card nests in it: 18 + the card's 8 inset + this 1px
+// border = 27. Narrower, where the app goes edge to edge (its 760px container query, plus the
+// border), the card is square and the window takes the usual radius-lg.
 .frame {
   container-type: inline-size;
   height: min(720px, 85dvh);
@@ -43,6 +46,10 @@
   border-radius: var(--radius-lg);
   // Show scrolls it clear of the sticky page header.
   scroll-margin: 72px 0 var(--space-4);
+
+  @media (min-width: 800px) {
+    border-radius: calc(18px + var(--space-2) + 1px);
+  }
 
   @media (min-width: 1200px) {
     height: min(760px, 100dvh - 56px - var(--space-4) * 2 - 40px);

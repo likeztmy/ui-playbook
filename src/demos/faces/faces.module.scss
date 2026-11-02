@@ -159,6 +159,64 @@
   opacity: 0;
 }
 
+// On a phone: the face at 36, sender over subject in two lines, and no checkbox column. Selecting
+// is a long press there, so the column would only take the subject's room.
+@media (width <= 640px) {
+  .row,
+  .row[data-check] {
+    grid-template-areas:
+      'lead from time'
+      'lead subject subject';
+    grid-template-columns: 36px minmax(0, 1fr) auto;
+    row-gap: 2px;
+    height: auto;
+    min-height: 60px;
+    padding-block: var(--space-2);
+  }
+
+  .row[data-lead='none'] {
+    grid-template-areas:
+      'from time'
+      'subject subject';
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .lead {
+    grid-area: lead;
+  }
+
+  .from {
+    grid-area: from;
+  }
+
+  .subject {
+    grid-area: subject;
+  }
+
+  .time {
+    grid-area: time;
+  }
+
+  .check,
+  .row .swap .swapCheck {
+    display: none;
+  }
+
+  .row .swap .swapFace {
+    opacity: 1;
+  }
+
+  .row .lead [data-size] {
+    width: 36px;
+    height: 36px;
+    font-size: 13px;
+  }
+
+  .row .lead [data-size][data-org] {
+    border-radius: 10px;
+  }
+}
+
 // ── Find someone ────────────────────────────────────────
 
 .find {
@@ -195,6 +253,15 @@
   width: 100%;
 }
 
+// Held open, so a wrong pick's line moves no row.
+.miss {
+  min-height: 18px;
+  margin: 0 0 var(--space-2);
+  color: var(--ink-muted);
+  font-size: 13px;
+  line-height: 18px;
+}
+
 .results {
   display: flex;
   flex-direction: column;
@@ -207,13 +274,16 @@
   }
 }
 
+// Three figures read together: one row each, a line between, no tile around any.
 .result {
   display: flex;
   justify-content: space-between;
-  padding: var(--space-3);
-  border-radius: var(--radius-md);
-  background: var(--fill-control);
+  padding: var(--space-3) 0;
   font-size: 14px;
+
+  &:not(:last-of-type) {
+    border-bottom: 1px solid var(--line);
+  }
 }
 
 .resultTime {

@@ -58,7 +58,16 @@ function Share({ keepDraft = true, noFocus, popupClass }: ShareProps) {
           </Button>
         }
       >
-        <TextField label="Email" placeholder="name@acme.com" value={email} onValueChange={setEmail} type="text" inputMode="email" autoComplete="off" inputRef={field} />
+        <TextField
+          label="Email"
+          placeholder="name@acme.com"
+          value={email}
+          onValueChange={setEmail}
+          type="text"
+          inputMode="email"
+          autoComplete="off"
+          inputRef={field}
+        />
       </Popover>
       <span className={s.shareList}>Shared with {people.join(', ')}</span>
     </div>
@@ -82,8 +91,8 @@ function StorageInfo() {
       Storage: 4.2 of 10 GB
       <Popover
         trigger={
-          <Button variant="ghost" size="sm" icon aria-label="About storage">
-            <Info size={16} strokeWidth={1.5} nonScalingStroke aria-hidden />
+          <Button variant="ghost" size="sm" icon label="About storage">
+            <Info size={16} aria-hidden />
           </Button>
         }
         title="About storage"
@@ -104,11 +113,7 @@ function LabelColour() {
     <Popover
       open={open}
       onOpenChange={setOpen}
-      trigger={
-        <Button leading={<span className={s.swatch} data-tone={tone} aria-hidden />}>
-          Label colour
-        </Button>
-      }
+      trigger={<Button leading={<span className={s.swatch} data-tone={tone} aria-hidden />}>Label colour</Button>}
       title="Label colour"
       hideTitle
     >
@@ -204,33 +209,60 @@ export function PopoverFocus() {
   );
 }
 
+// Each panel holds two choices that work together, which is what makes it a popover: one value
+// from one list would be a Select.
 const VIEW = [
-  { label: 'Filter', icon: ListFilter, options: ['All files', 'Shared with me', 'Starred'] },
-  { label: 'Sort', icon: ArrowDownUp, options: ['Name', 'Last modified', 'Size'] },
-  { label: 'Group', icon: Rows3, options: ['None', 'Type', 'Owner'] },
+  {
+    label: 'Filter',
+    icon: ListFilter,
+    groups: [
+      { label: 'Owner', options: ['Anyone', 'Me', 'Shared with me'] },
+      { label: 'Type', options: ['Any', 'Documents', 'Folders'] },
+    ],
+  },
+  {
+    label: 'Sort',
+    icon: ArrowDownUp,
+    groups: [
+      { label: 'Sort by', options: ['Name', 'Last modified', 'Size'] },
+      { label: 'Order', options: ['Ascending', 'Descending'] },
+    ],
+  },
+  {
+    label: 'Group',
+    icon: Rows3,
+    groups: [
+      { label: 'Group by', options: ['None', 'Type', 'Owner'] },
+      { label: 'Empty groups', options: ['Show', 'Hide'] },
+    ],
+  },
 ];
 
 /** A view bar of icon buttons, each opening its own popover. */
 function ViewBar({ buttonClass }: { buttonClass?: string }) {
   return (
     <div className={s.leftRow}>
-      {VIEW.map(({ label, icon: Icon, options }) => (
+      {VIEW.map(({ label, icon: Icon, groups }) => (
         <Popover
-            key={label}
-            tip={label}
-            trigger={
-              <Button variant="ghost" icon aria-label={label} className={buttonClass}>
-                <Icon size={16} strokeWidth={1.5} nonScalingStroke aria-hidden />
-              </Button>
-            }
-            title={label}
-          >
-            <RadioGroup label={label} defaultValue={options[0]} className={s.bareGroup}>
-              {options.map((o) => (
-                <Radio key={o} value={o} label={o} />
-              ))}
-            </RadioGroup>
-          </Popover>
+          key={label}
+          trigger={
+            <Button variant="ghost" icon label={label} className={buttonClass}>
+              <Icon size={16} aria-hidden />
+            </Button>
+          }
+          title={label}
+          hideTitle
+        >
+          <div className={s.formColumn}>
+            {groups.map((g) => (
+              <RadioGroup key={g.label} label={g.label} defaultValue={g.options[0]}>
+                {g.options.map((o) => (
+                  <Radio key={o} value={o} label={o} />
+                ))}
+              </RadioGroup>
+            ))}
+          </div>
+        </Popover>
       ))}
     </div>
   );
@@ -241,7 +273,7 @@ export function PopoverTrigger() {
     <Compare
       beforeLabel="Trigger unchanged when open"
       afterLabel="Trigger stays filled"
-      height={240}
+      height={340}
       before={
         <div className={s.top}>
           <ViewBar buttonClass={m.noOpenState} />

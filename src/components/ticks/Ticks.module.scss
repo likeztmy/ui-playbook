@@ -35,17 +35,14 @@
   display: grid;
   justify-items: start;
 
-  // Set per page by ticks.ts.
-  --tick-h: 20px;
-
   button {
     border: 0;
     background: none;
     cursor: pointer;
-    // 20px rows, so each tick is a reasonable target, fewer on a long page (ticks.ts); the mark
-    // is the 2px line inside.
+    // 24px rows, the smallest target a pointer gets (WCAG 2.2, 2.5.8); a long page thins its ticks
+    // instead (ticks.ts). The mark is the 2px line inside.
     width: 40px;
-    height: var(--tick-h);
+    height: 24px;
     padding: 0;
 
     &::before {

@@ -8,7 +8,8 @@ function Access({ ruled }: { ruled?: boolean }) {
   return (
     <section className={cx(s.access, ruled && s.ruled)}>
       <h4 className={s.heading}>Access</h4>
-      <p className={s.muted}>People who can see and edit this project.</p>
+      {/* The Avoid's subtitle carries its rule under it; the Prefer needs none: the rows say who. */}
+      {ruled && <p className={s.muted}>People who can see and edit this project.</p>}
       <Members />
     </section>
   );

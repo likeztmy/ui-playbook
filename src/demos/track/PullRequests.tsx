@@ -3,7 +3,7 @@ import type { PullRequest } from './model';
 import { MARK, STATE } from './PrMark';
 import s from './Details.module.scss';
 
-const ic = { size: 16, strokeWidth: 1.5, 'aria-hidden': true } as const;
+const ic = { size: 16, 'aria-hidden': true } as const;
 const REVIEW = { approved: 'Approved', changes: 'Changes asked for', waiting: 'Waiting for review' };
 
 /**
@@ -37,15 +37,15 @@ export function PullRequests({ prs }: { prs?: PullRequest[] }) {
                     {c &&
                       (c.failing ? (
                         <span className={s.failing}>
-                          <CircleX size={12} strokeWidth={2} aria-hidden /> {c.failing} failed
+                          <CircleX size={12} aria-hidden /> {c.failing} failed
                         </span>
                       ) : c.passed === c.total ? (
                         <span className={s.passing}>
-                          <CircleCheck size={12} strokeWidth={2} aria-hidden /> {c.total} checks passed
+                          <CircleCheck size={12} aria-hidden /> {c.total} checks passed
                         </span>
                       ) : (
                         <span>
-                          <CircleDashed size={12} strokeWidth={2} aria-hidden /> {c.passed} of {c.total} checks
+                          <CircleDashed size={12} aria-hidden /> {c.passed} of {c.total} checks
                         </span>
                       ))}
                     {pr.review && <span className={pr.review === 'changes' ? s.failing : undefined}>{REVIEW[pr.review]}</span>}

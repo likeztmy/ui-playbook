@@ -43,7 +43,7 @@ function Shop({ near }: { near?: boolean }) {
       </div>
       <div className={s.shopBody}>
         <div className={s.shopImage} aria-hidden>
-          <ShoppingBag size={40} strokeWidth={1} nonScalingStroke />
+          <ShoppingBag size={40} aria-hidden />
         </div>
         <div className={s.shopInfo}>
           <span className={s.shopName}>Canvas tote</span>
@@ -52,13 +52,18 @@ function Shop({ near }: { near?: boolean }) {
           <Button variant="primary" onClick={add} className={s.shopAdd}>
             {added ? (
               <>
-                <Check size={16} strokeWidth={2} nonScalingStroke aria-hidden />
+                <Check size={16} aria-hidden />
                 Added
               </>
             ) : (
               'Add to cart'
             )}
           </Button>
+          {near && (
+            <span className={s.srOnly} role="status">
+              {added ? 'Added to cart' : ''}
+            </span>
+          )}
         </div>
       </div>
     </div>
@@ -153,7 +158,9 @@ export function EyeFloor() {
 
 // ── It skips what looks like an ad ───────────────────────
 
-const NOTICE = 'Your card expires on 31 Oct. Update it to keep your plan.';
+// The band has to say whose card; beside it, the card's row already does.
+const NOTICE = 'The Visa ending 4242 expires on 31 Oct. Update the card to keep the Team plan.';
+const NOTE = 'Update the card to keep the Team plan.';
 
 function Billing({ inline }: { inline?: boolean }) {
   return (
@@ -180,11 +187,11 @@ function Billing({ inline }: { inline?: boolean }) {
           <span className={s.billingCard}>
             <CreditCard size={16} aria-hidden />
             Visa •••• 4242
-            <span className={inline ? s.billingExpiring : s.memberRole}>Expires 10/26</span>
+            <span className={inline ? s.billingExpiring : s.memberRole}>Expires 31 Oct</span>
           </span>
           {inline && <Button size="sm">Update card</Button>}
         </div>
-        {inline && <span className={s.billingWarn}>{NOTICE}</span>}
+        {inline && <span className={s.billingWarn}>{NOTE}</span>}
       </section>
       <section className={s.settingsSection}>
         <span className={s.settingsHeading}>Invoices</span>
@@ -214,7 +221,7 @@ export function EyeBanner() {
           ad-shaped, whatever it says.
         </>
       }
-      afterNote="The same words, in the interface’s own voice, beside the card they’re about. The eye reaches them on its way through Payment method, the one place it goes when it cares about the card."
+      afterNote="The same news, in the interface’s own voice, beside the card it’s about. The eye reaches them on its way through Payment method, the one place it goes when it cares about the card."
     />
   );
 }

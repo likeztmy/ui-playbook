@@ -36,7 +36,7 @@ const SORT: Row[][] = [
 
 type Placement = 'leading' | 'trailing' | 'replace' | 'afterLabel';
 
-const tick = <Check size={16} strokeWidth={1.75} nonScalingStroke aria-hidden />;
+const tick = <Check size={16} aria-hidden />;
 
 function Item({ row, place }: { row: Row; place: Placement }) {
   const Icon = row.icon;

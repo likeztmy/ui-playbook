@@ -45,7 +45,7 @@ Tabs switch between views of one thing, each replacing a region of the page. A m
 
 | Part | Token | Value |
 | --- | --- | --- |
-| Tab height | 40 | 40 |
+| Tab height | 40; in a toolbar, the toolbar's `toolbar-height` | 40 · 48 |
 | Between tabs | `space-4` | 16 |
 | Label | 14 / 20, weight 500 | 14 |
 | Default | `ink-muted` | |
@@ -55,7 +55,7 @@ Tabs switch between views of one thing, each replacing a region of the page. A m
 | Count | mono 11, `surface-sunken`, `radius-full` | 18 |
 | Panel gap | `space-4` | 16 |
 
-The bar sits on the line, under the label's full width. Tabs have no side padding: the gap is the only space between them, so labels line up with the content's left edge.
+The bar sits on the line, under the label's full width. Tabs have no side padding: the gap is the only space between them, so labels line up with the content's left edge. In a toolbar the tabs take its full height rather than their own 40: the toolbar's hairline becomes their line, and the bar sits on it rather than above it.
 
 ## States
 

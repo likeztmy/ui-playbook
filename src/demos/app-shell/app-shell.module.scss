@@ -14,32 +14,49 @@
   container-type: inline-size;
 }
 
-.titlebar {
-  display: flex;
-  flex: none;
-  align-items: center;
-  height: 36px;
-  padding: 0 var(--space-4);
-  border-bottom: 1px solid var(--line);
-  color: var(--ink-muted);
-  font-size: 13px;
-  font-weight: 500;
-}
-
 // The layer every guide forgets: a flex item whose minimum height is its content's, unless told.
 .layout {
+  position: relative;
   display: grid;
   flex: 1;
   grid-template-rows: minmax(0, 1fr);
   grid-template-columns: minmax(0, var(--sidebar)) minmax(0, 1fr);
   min-height: 0;
 
+  // One pane at a time, as on a phone. The places don't go: they wait behind
+  // the header's Pages button, and open over the page from the left.
   @container (width < 480px) {
     grid-template-columns: minmax(0, 1fr);
 
     > .sidebar {
       display: none;
     }
+
+    &[data-open] > .sidebar {
+      position: absolute;
+      inset-block: 0;
+      left: 0;
+      z-index: 1;
+      display: flex;
+      width: min(var(--sidebar), 85%);
+      box-shadow: var(--shadow-lg);
+    }
+  }
+}
+
+.scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: var(--scrim);
+}
+
+// Only when the sidebar has left its column.
+.placesButton {
+  display: none;
+
+  @container (width < 480px) {
+    display: inline-flex;
   }
 }
 
@@ -50,13 +67,25 @@
 .sidebar {
   display: flex;
   flex-direction: column;
-  padding-top: var(--space-2);
   border-right: 1px solid var(--line);
   background: var(--surface-sunken);
 
   > .item {
     margin: 0 var(--space-2) var(--space-2);
   }
+}
+
+// The workspace, on the row the page's own header takes: toolbar-height 48.
+.head {
+  display: flex;
+  flex: none;
+  align-items: center;
+  height: 48px;
+  padding: 0 var(--space-4);
+  overflow: hidden;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
 }
 
 .list {
@@ -123,7 +152,7 @@
   height: 24px;
   border-radius: 50%;
   background: var(--fill-active);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
 }
 
@@ -144,14 +173,19 @@
   display: flex;
   flex: none;
   align-items: center;
-  justify-content: space-between;
   gap: var(--space-2);
   height: 48px;
   padding: 0 var(--space-2) 0 var(--space-6);
   border-bottom: 1px solid var(--line);
+
+  @container (width < 480px) {
+    padding-left: var(--space-2);
+  }
 }
 
 .title {
+  flex: 1;
+  min-width: 0;
   margin: 0;
   overflow: hidden;
   font-size: 14px;

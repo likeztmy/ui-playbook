@@ -5,7 +5,6 @@ import { Card, CardGrid } from '../ui/Card';
 import { cx } from '../ui/cx';
 import { Menu } from '../ui/Menu';
 import { Swap } from '../ui/Swap';
-import { Tip } from '../ui/Tooltip';
 import { Compare, Frame, Gallery } from './shell';
 import m from './mistakes.module.scss';
 import s from './demos.module.scss';
@@ -32,11 +31,9 @@ const PROJECTS: Project[] = [
 function MoreMenu({ title }: { title: string }) {
   return (
     <Menu.Root>
-      <Tip label="More">
-        <Menu.Trigger render={<Button variant="ghost" size="sm" icon aria-label={`More for ${title}`} />}>
-          <Ellipsis size={16} aria-hidden />
-        </Menu.Trigger>
-      </Tip>
+      <Menu.Trigger render={<Button variant="ghost" size="sm" icon label={`More for ${title}`} />}>
+        <Ellipsis size={16} aria-hidden />
+      </Menu.Trigger>
       <Menu.Popup align="end">
         <Menu.Item icon={Pencil}>Rename</Menu.Item>
         <Menu.Item icon={CopyPlus}>Duplicate</Menu.Item>
@@ -73,7 +70,14 @@ export function CardLive() {
           {(n) => (
             <CardGrid key={n} minWidth={180}>
               {PROJECTS.map((p) => (
-                <Card key={p.id} stage={<Thumb art={p.art} />} title={p.title} subtitle={p.sub} onOpen={() => setOpened(p.title)} action={<MoreMenu title={p.title} />} />
+                <Card
+                  key={p.id}
+                  stage={<Thumb art={p.art} />}
+                  title={p.title}
+                  subtitle={p.sub}
+                  onOpen={() => setOpened(p.title)}
+                  action={<MoreMenu title={p.title} />}
+                />
               ))}
             </CardGrid>
           )}
@@ -100,13 +104,22 @@ export function CardVariants() {
         {
           name: 'Link',
           use: 'Opens a project or a page. The whole card is the target.',
-          render: () => <Card className={s.cardOne} stage={<Thumb art="bars" />} title="Q4 roadmap" subtitle="Edited 2 hours ago" onOpen={() => {}} />,
+          render: () => (
+            <Card className={s.cardOne} stage={<Thumb art="bars" />} title="Q4 roadmap" subtitle="Edited 2 hours ago" onOpen={() => {}} />
+          ),
         },
         {
           name: 'With an action',
           use: 'A ghost icon button for the card’s own menu, apart from opening it.',
           render: () => (
-            <Card className={s.cardOne} stage={<Thumb art="swatches" />} title="Brand refresh" subtitle="Edited yesterday" onOpen={() => {}} action={<MoreMenu title="Brand refresh" />} />
+            <Card
+              className={s.cardOne}
+              stage={<Thumb art="swatches" />}
+              title="Brand refresh"
+              subtitle="Edited yesterday"
+              onOpen={() => {}}
+              action={<MoreMenu title="Brand refresh" />}
+            />
           ),
         },
         {
@@ -150,7 +163,9 @@ export function CardAnatomy() {
         <div className={s.magnify}>
           <Card className={s.cardSmall} stage={<Thumb art="swatches" />} title="Brand refresh" />
         </div>
-        <figcaption className={s.anatomyCaption}>radius-xl 18 − space-2 8 = radius-lg 10: the gap is as wide at the corners as along the sides. Shown at 2×.</figcaption>
+        <figcaption className={s.anatomyCaption}>
+          radius-xl 18 − space-2 8 = radius-lg 10: the gap is as wide at the corners as along the sides. Shown at 2×.
+        </figcaption>
       </figure>
     </Frame>
   );
@@ -176,7 +191,9 @@ export function CardLift() {
       beforeLabel="Up to 1.05, heavy shadow"
       afterLabel="Up to 1.01, small shadow"
       height={240}
-      before={<Card className={cx(s.cardOne, m.bigLift)} stage={<Thumb art="phone" />} title="Onboarding" subtitle="Edited 3 days ago" onOpen={() => {}} />}
+      before={
+        <Card className={cx(s.cardOne, m.bigLift)} stage={<Thumb art="phone" />} title="Onboarding" subtitle="Edited 3 days ago" onOpen={() => {}} />
+      }
       after={<Card className={s.cardOne} stage={<Thumb art="phone" />} title="Onboarding" subtitle="Edited 3 days ago" onOpen={() => {}} />}
       beforeNote="The same spring, up to 1.05 with a heavy shadow. In a grid the neighbours seem to shrink, and sweeping across leaves a wake of moving cards."
       afterNote="hover-lift 1.01 and shadow-sm on the gentle spring: enough to say “this one”, too little to disturb the grid."
@@ -212,7 +229,7 @@ function NumberCard({ animated }: { animated: boolean }) {
   return (
     <Card
       className={s.cardOne}
-      stage={animated ? <Swap value={v} className={s.bigNumber} /> : <span className={s.bigNumber}>{v}</span>}
+      stage={animated ? <Swap value={`${v}%`} className={s.bigNumber} /> : <span className={s.bigNumber}>{v}%</span>}
       title="Conversion"
       subtitle="Last 7 days"
       onOpen={next}

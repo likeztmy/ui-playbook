@@ -61,8 +61,8 @@ export function ReadingFastest() {
         ? skimmed
           ? 'Faster than anyone reads: try again at your usual pace'
           : fastest === favourite
-          ? 'Your favourite was your fastest: it is, for one reader in five'
-          : 'Your fastest face wasn’t your favourite'
+            ? 'Your favourite was your fastest: it is, for one reader in five'
+            : 'Your fastest face wasn’t your favourite'
         : `Passage ${step.i + 1} of 3`;
 
   return (
@@ -106,7 +106,8 @@ export function ReadingFastest() {
               <div key={f.name} className={s.result} data-fastest={i === fastest && !skimmed ? '' : undefined}>
                 <span style={faceStyle(f)}>{f.name}</span>
                 <span className={s.resultMeta}>
-                  {i === favourite && 'Your favourite · '}
+                  {i === fastest && !skimmed && <strong className={s.resultFastest}>Fastest · </strong>}
+                  {i === favourite && 'Favourite · '}
                   {wpm[i]} words a minute
                 </span>
               </div>

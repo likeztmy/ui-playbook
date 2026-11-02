@@ -20,7 +20,15 @@ export const apple: Look = {
     'surface-raised': { light: '#ffffff', dark: '#3a3a3c', from: colour, note: 'white; in dark, systemGray4' },
     'surface-sunken': { light: '#e5e5ea', dark: '#1c1c1e', from: colour, note: 'systemGray5; in dark, systemGray6' },
     line: { light: '#d1d1d6', dark: '#48484a', from: colour, note: 'systemGray4; in dark, systemGray3' },
-    'line-strong': { light: '#8e8e93', dark: '#8e8e93', from: colour, note: 'systemGray, 3.3:1 on white' },
+    'line-strong': {
+      light: '#828287',
+      dark: '#8e8e93',
+      from: colour,
+      note: 'systemGray; on light a step darker (from #8e8e93), so it holds on systemGray5',
+    },
+    'accent-text': { light: '#0064ca', dark: '#7dbbff', note: 'the playbook’s, darker on light so it holds on systemGray5' },
+    success: { light: '#067556', dark: '#54cc9e', note: 'the playbook’s, darker on light so it holds on systemGray5' },
+    warning: { light: '#975800', dark: '#eeaa3b', note: 'the playbook’s, darker on light so it holds on systemGray5' },
     'font-sans': { light: sans, dark: sans, from: fonts, note: 'the system font, never SF Pro’s files' },
   },
 };

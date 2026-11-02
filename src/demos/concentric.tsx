@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { FieldKey } from '../ui/Field';
 import { SegmentedControl } from '../ui/SegmentedControl';
 import { Slider } from '../ui/Slider';
 import { Compare, Tweak } from './shell';
@@ -8,10 +9,7 @@ type Mode = 'Concentric' | 'Same radius';
 
 function Nest({ outer, inner, pad, border }: { outer: number; inner: number; pad: number; border: number }) {
   return (
-    <div
-      className={s.nestOuter}
-      style={{ borderRadius: outer, padding: pad, borderWidth: border }}
-    >
+    <div className={s.nestOuter} style={{ borderRadius: outer, padding: pad, borderWidth: border }}>
       <div className={s.nestInner} style={{ borderRadius: inner }} />
     </div>
   );
@@ -44,9 +42,7 @@ export function ConcentricTweak() {
       readout={
         mode === 'Concentric' ? (
           <code className={s.readout}>
-            {outer - pad - border > 0
-              ? `${outer} − ${pad} − ${border} = ${inner}px`
-              : `inset + border ≥ radius: inner keeps its own ${inner}px`}
+            {outer - pad - border > 0 ? `${outer} − ${pad} − ${border} = ${inner}px` : `inset + border ≥ radius: inner keeps its own ${inner}px`}
           </code>
         ) : (
           <code className={s.readout}>inner = outer = {outer}px</code>
@@ -106,7 +102,7 @@ export function BorderCounts() {
         <div className={s.magnify}>
           <div className={s.field}>
             <span>Search</span>
-            <kbd className={s.key} style={{ borderRadius: 10 }}>⌘K</kbd>
+            <FieldKey keys={['⌘', 'K']} className={s.keyCopied} />
           </div>
         </div>
       }
@@ -114,7 +110,7 @@ export function BorderCounts() {
         <div className={s.magnify}>
           <div className={s.field}>
             <span>Search</span>
-            <kbd className={s.key} style={{ borderRadius: 6 }}>⌘K</kbd>
+            <FieldKey keys={['⌘', 'K']} />
           </div>
         </div>
       }

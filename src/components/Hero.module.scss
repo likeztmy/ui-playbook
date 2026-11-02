@@ -36,7 +36,8 @@
 }
 
 // ── Search field ─────────────────────────────────────────
-// Same anatomy as an input: control-lg tall, radius-lg, line-strong edge.
+// Same anatomy as an input, radius-lg and a line-strong edge, at control-lg: the page's one main
+// field, as a dialog's main action takes 40 (Work tool). Text 14, 16 under a finger so iOS doesn't zoom.
 
 .search {
   position: relative;
@@ -76,7 +77,11 @@
     background: transparent;
     color: var(--ink);
     font: inherit;
-    font-size: 15px;
+    font-size: 14px;
+
+    @media (pointer: coarse) {
+      font-size: 16px;
+    }
 
     &::placeholder {
       color: var(--ink-muted);

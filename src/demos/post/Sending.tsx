@@ -13,14 +13,14 @@ export function Sending({ onUndo, done }: { onUndo: () => void; done?: boolean }
   if (done)
     return (
       <span className={s.status} role="status">
-        <Check size={14} strokeWidth={1.75} nonScalingStroke aria-hidden />
+        <Check size={14} aria-hidden />
         Sent
       </span>
     );
   return (
     <>
       <span className={s.status} role="status" data-spot="undo">
-        <LoaderCircle size={14} strokeWidth={1.75} nonScalingStroke aria-hidden className={s.spin} />
+        <LoaderCircle size={14} aria-hidden className={s.spin} />
         Sending
         <Button size="sm" onClick={onUndo}>
           Undo

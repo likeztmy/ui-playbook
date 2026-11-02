@@ -3,7 +3,6 @@ import { CircleAlert, CircleCheck, Info, TriangleAlert, X, type LucideIcon } fro
 import { useCallback, type ReactNode } from 'react';
 import { Button, buttonClass } from './Button';
 import { cx } from './cx';
-import { Tip } from './Tooltip';
 import s from './Toast.module.scss';
 
 export { s as toastClasses };
@@ -67,15 +66,32 @@ function List() {
         <Toast.Title className={s.title} />
         <span className={s.actions}>
           {t.actionProps && <Toast.Action className={buttonClass({})} />}
-          <Tip label="Dismiss">
-            <Toast.Close render={<Button variant="ghost" icon aria-label="Dismiss" />}>
-              <X size={16} aria-hidden />
-            </Toast.Close>
-          </Tip>
+          <Toast.Close render={<Button variant="ghost" icon label="Dismiss" />}>
+            <X size={16} aria-hidden />
+          </Toast.Close>
         </span>
       </Toast.Root>
     );
   });
+}
+
+type StillProps = { title: string; type?: ToastType; action?: string };
+
+/** One toast held still, for previews: the live toast's classes and parts, out of the queue. */
+export function ToastStill({ title, type, action }: StillProps) {
+  const Icon = type ? ICON[type] : undefined;
+  return (
+    <div className={cx(s.toast, s.still)} data-type={type}>
+      {Icon && <Icon className={s.icon} size={16} aria-hidden />}
+      <span className={s.title}>{title}</span>
+      <span className={s.actions}>
+        {action && <Button>{action}</Button>}
+        <Button variant="ghost" icon label="Dismiss">
+          <X size={16} aria-hidden />
+        </Button>
+      </span>
+    </div>
+  );
 }
 
 type ProviderProps = {

@@ -24,7 +24,7 @@ const DENSITY = 'post:density';
 const BAR = '65px';
 const HEIGHTS = [BAR, 1];
 
-const ic = { size: 16, strokeWidth: 1.5, nonScalingStroke: true, 'aria-hidden': true } as const;
+const ic = { size: 16, 'aria-hidden': true } as const;
 
 /** What a page around Post reads and drives, to play a decision in the app. Current as of the last render. */
 export type Control = { post: Post; compose: Compose; root: HTMLDivElement | null };
@@ -118,6 +118,7 @@ export function Shell({ onToasts, spot, control, pinned, back, embedded }: Shell
     outbox: null,
     search,
     density,
+    compose: compose.compose,
     folders: (
       <Menu.Root>
         <Menu.Trigger render={<Button variant="ghost" className={s.folderMenu} />}>
@@ -151,12 +152,20 @@ export function Shell({ onToasts, spot, control, pinned, back, embedded }: Shell
             post.search(q);
           }}
         />
-        <Tip label="New message">
-          <Button ref={composeButton} variant="primary" className={s.newMessage} aria-label="New message" onClick={compose.compose}>
+        {/* Named by a tip only on a phone, where it's the icon alone. */}
+        {narrow ? (
+          <Tip label="New message">
+            <Button ref={composeButton} variant="primary" className={s.newMessage} aria-label="New message" onClick={compose.compose}>
+              <Pencil {...ic} />
+              <span className={s.newLabel}>New message</span>
+            </Button>
+          </Tip>
+        ) : (
+          <Button ref={composeButton} variant="primary" className={s.newMessage} onClick={compose.compose}>
             <Pencil {...ic} />
             <span className={s.newLabel}>New message</span>
           </Button>
-        </Tip>
+        )}
       </>
     ),
   };

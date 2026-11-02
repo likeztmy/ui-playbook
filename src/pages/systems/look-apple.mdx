@@ -4,6 +4,8 @@ slug: look-apple
 ---
 import Look from '../../components/look/Look.astro';
 
+It isn't on [the screens](/systems/looks) yet: only its greys and font are Apple's own.
+
 ## When to use
 
 A web app that sits beside Apple's own, or a brief that says it should feel like a Mac or an iPhone: the grouped grey behind white panels, the system font, nothing tinted. The greys are the system greys Apple publishes for iOS at default contrast ([HIG, Color](https://developer.apple.com/design/human-interface-guidelines/color)).
@@ -12,9 +14,12 @@ A web app that sits beside Apple's own, or a brief that says it should feel like
 
 - **The system colours aren't text on the web.** Against white, system blue is 3.5:1, red 3.6:1 and green 2.2:1, and white on system blue is 3.5:1. Apple draws them for native controls; at 14px on the web each falls short of the 4.5:1 every text holds ([Lightness first](/principles/lightness-first)). The accent and the status colours stay the playbook's, darker ones that hold 4.5:1.
 - **The system font, never its files.** Apple licenses SF Pro for mockups of its platforms, not for embedding ([Apple Fonts](https://developer.apple.com/fonts/)). `-apple-system` shows it on Apple devices; elsewhere the platform's own font takes its place.
+- **On light, systemGray is a step darker.** As a field's edge, #8e8e93 is 2.6:1 on systemGray5; #828287 holds 3:1. Dark keeps systemGray. The accent text and status colours are a step darker than the playbook's on light for the same grey, where they fell to between 4.1 and 4.4:1.
 - **Text greys are the playbook's.** What Apple publishes with values is the system colours and greys; its text colours aren't among them, so text and muted text are the playbook's, solid and 4.5:1 on every surface.
 
 ## Values
+
+Each text colour's note gives its lowest contrast in each theme, against the four surfaces and `accent-soft` laid on each (a status colour also on its own soft fill). Text holds 4.5:1; `line-strong` and the focus ring, 3:1.
 
 <Look id="apple" part="values" />
 

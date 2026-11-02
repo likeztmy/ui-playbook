@@ -25,7 +25,7 @@ const Lazy = lazy(loadBody);
  */
 export const preloadBody = () => void loadBody();
 
-const ic = { size: 16, strokeWidth: 1.5, nonScalingStroke: true, 'aria-hidden': true } as const;
+const ic = { size: 16, 'aria-hidden': true } as const;
 
 type Props = {
   d: Draft;
@@ -65,7 +65,13 @@ export function Composer({ d, compose, page, sheet, onBack }: Props) {
   // A reply starts in its body; a new message or a forward needs someone to send it to first.
   const startInTo = d.kind === 'forward' || (d.kind === 'new' && !d.to.length);
   useEffect(() => {
-    if (startInTo) toInput.current?.focus();
+    if (!startInTo) return;
+    // Without scrolling: the browser would scroll the app's clipped panes to the field, carrying a
+    // phone's sheet off its top. Only the page around an embedded app scrolls, to bring the app whole.
+    const field = toInput.current;
+    field?.focus({ preventScroll: true });
+    const app = field?.closest('[data-view]')?.getBoundingClientRect();
+    if (app && (app.top < 0 || app.bottom > innerHeight)) field?.closest('[data-view]')?.scrollIntoView({ block: 'nearest' });
   }, []);
 
   const set = (patch: Partial<Draft>) => {

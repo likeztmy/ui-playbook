@@ -28,7 +28,7 @@ export function Group({ status, name, issues, hidden, open, onToggle, track, onO
     <section className={s.group} aria-label={name}>
       <h2 className={s.heading}>
         <button type="button" className={s.header} aria-expanded={open} aria-controls={list} onClick={onToggle}>
-          <ChevronRight className={s.chevron} size={14} strokeWidth={2} aria-hidden />
+          <ChevronRight className={s.chevron} size={14} aria-hidden />
           <StatusIcon status={status} />
           <span className={s.name}>
             {name}
@@ -39,7 +39,7 @@ export function Group({ status, name, issues, hidden, open, onToggle, track, onO
         </button>
         <Tip label={`Add an issue to ${name}`}>
           <button type="button" className={s.add} aria-label={`Add an issue to ${name}`} onClick={onAdd}>
-            <Plus size={16} strokeWidth={1.5} aria-hidden />
+            <Plus size={16} aria-hidden />
           </button>
         </Tip>
       </h2>

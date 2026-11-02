@@ -2,17 +2,7 @@ import { Coffee } from 'lucide-react';
 import { PLACES, ROUTE, VIA } from './data';
 import s from './sheet.module.scss';
 
-const STREETS = [
-  'M0 96H340',
-  'M0 176H340',
-  'M0 128H340',
-  'M0 300H340',
-  'M0 400H340',
-  'M60 0V520',
-  'M150 0V520',
-  'M262 0V520',
-  'M0 236L340 236',
-];
+const STREETS = ['M0 96H340', 'M0 176H340', 'M0 128H340', 'M0 300H340', 'M0 400H340', 'M60 0V520', 'M150 0V520', 'M262 0V520', 'M0 236L340 236'];
 
 type Props = {
   picked: string | null;
@@ -50,7 +40,7 @@ export function Map({ picked, onPick, via }: Props) {
             aria-pressed={picked === p.id}
             onClick={() => onPick(p.id)}
           >
-            <Coffee size={14} strokeWidth={2} aria-hidden />
+            <Coffee size={14} aria-hidden />
           </button>
         ))}
       </div>

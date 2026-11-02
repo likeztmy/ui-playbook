@@ -1,28 +1,63 @@
-// A field on the list's bar: as tall as the bar's controls, wide enough for a query.
+@use '../../styles/states' as *;
+
+// A field on the list's bar, as Input draws one: as tall as the bar's controls, wide enough for a
+// query, radius-lg 10 with a line-strong edge. Focus recolours that edge, with nothing around it.
 .find {
+  box-sizing: border-box;
   display: flex;
   flex: 0 1 320px;
   align-items: center;
   gap: var(--space-2);
   min-width: 0;
-  height: 32px;
-  padding: 0 var(--space-1) 0 var(--space-3);
-  border-radius: var(--radius-full);
-  background: var(--fill-control);
+  height: var(--control-md);
+  // The clear button sits 4 from the outer edge on three sides: the 1px border plus 3.
+  padding: 0 calc(var(--space-1) - 1px) 0 calc(var(--space-3) - 1px);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
   color: var(--ink-muted);
+  cursor: text;
+  transition: border-color var(--duration-fast) var(--ease-out);
+
+  @include hover {
+    border-color: var(--ink-muted);
+    transition-duration: var(--duration-instant);
+  }
+
+  &:focus-within {
+    border-color: var(--accent);
+  }
+
+  > svg {
+    flex: none;
+  }
 
   input {
     flex: 1;
     min-width: 0;
     height: 100%;
+    padding: 0;
     border: 0;
     outline: none;
     background: none;
     color: var(--ink);
     font: inherit;
+    font-size: 14px;
+    line-height: 20px;
+
+    &::placeholder {
+      color: var(--ink-muted);
+    }
+
+    // iOS Safari zooms into any field under 16px when it takes focus.
+    @media (pointer: coarse) {
+      font-size: 16px;
+    }
   }
 
-  &:focus-within {
-    box-shadow: var(--focus-ring);
+  // 24 tall in 32, 4 from three edges: 10 − 3 − 1 = radius-sm 6.
+  button {
+    flex: none;
+    border-radius: var(--radius-sm);
   }
 }

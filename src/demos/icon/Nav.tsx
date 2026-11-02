@@ -1,5 +1,5 @@
 import { Button } from '../../ui/Button';
-import { Tip, TipGroup } from '../../ui/Tooltip';
+import { TipGroup } from '../../ui/Tooltip';
 import { cx } from '../../ui/cx';
 import { NAV } from './data';
 import s from './icon.module.scss';
@@ -11,11 +11,9 @@ export function Nav({ rail, selected = 'My issues' }: { rail?: boolean; selected
       <nav className={cx(s.nav, s.rail)} aria-label="Workspace">
         <TipGroup>
           {NAV.map(([label, Icon]) => (
-            <Tip key={label} label={label}>
-              <Button variant="ghost" icon aria-label={label} className={s.railItem} data-selected={label === selected || undefined}>
-                <Icon size={16} aria-hidden />
-              </Button>
-            </Tip>
+            <Button key={label} variant="ghost" icon label={label} className={s.railItem} data-selected={label === selected || undefined}>
+              <Icon size={16} aria-hidden />
+            </Button>
           ))}
         </TipGroup>
       </nav>

@@ -36,7 +36,7 @@ function Form({ marks }: { marks: typeof library }) {
       <span className={s.formLabel}>Password</span>
       <span className={s.field}>
         <span className={s.dots}>••••••••••</span>
-        <Button variant="ghost" icon size="sm" aria-label="Show password">
+        <Button variant="ghost" icon size="sm" label="Show password">
           {marks.eye}
         </Button>
       </span>

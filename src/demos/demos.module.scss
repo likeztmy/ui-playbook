@@ -66,22 +66,14 @@
   background: var(--surface);
   color: var(--ink-muted);
 
-  span {
+  > span {
     flex: 1;
   }
 }
 
-.key {
-  box-sizing: border-box;
-  display: grid;
-  place-items: center;
-  height: 24px;
-  padding: 0 var(--space-2);
-  background: var(--surface-sunken);
-  box-shadow: inset 0 0 0 1px var(--line);
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--ink-muted);
+// The mistake: the key copies the field's corner. Two classes, to win over the kit's own key.
+.field .keyCopied {
+  border-radius: var(--radius-lg);
 }
 
 .stack {
@@ -134,36 +126,6 @@
   gap: var(--space-1);
 }
 
-// A file card that takes a context menu.
-.contextTarget {
-  border-radius: var(--radius-lg);
-  outline: none;
-
-  &[data-popup-open] .fileCard,
-  &:focus-visible .fileCard {
-    box-shadow: var(--shadow-xs), 0 0 0 2px var(--accent);
-  }
-}
-
-.fileCard {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  width: 240px;
-  padding: var(--space-3) var(--space-4);
-  border-radius: var(--radius-lg);
-  background: var(--surface);
-  box-shadow: var(--shadow-xs);
-  color: var(--ink-muted);
-  cursor: context-menu;
-  user-select: none;
-
-  > span {
-    display: flex;
-    flex-direction: column;
-  }
-}
-
 .fileName {
   color: var(--ink);
   font-weight: 500;
@@ -210,28 +172,6 @@
 // Half the column, so it still fits at 2×.
 .magnifiedField {
   width: 150px;
-}
-
-// Rows of a list, each selected by a bare checkbox.
-.checkList {
-  display: flex;
-  flex-direction: column;
-  width: 220px;
-  border-radius: var(--radius-md);
-  box-shadow: inset 0 0 0 1px var(--line);
-}
-
-.checkListRow {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  height: var(--control-md);
-  padding: 0 var(--space-3);
-  font-size: 13px;
-
-  & + & {
-    border-top: 1px solid var(--line);
-  }
 }
 
 .narrowRow {
@@ -282,9 +222,7 @@
   box-shadow: inset 0 0 0 1px var(--line);
 
   &[data-grid] {
-    background-image:
-      linear-gradient(var(--line) 1px, transparent 1px),
-      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
     background-size: 12px 12px;
     background-position: -1px -1px;
   }
@@ -485,13 +423,14 @@
 
   &[data-art='phone'] {
     background:
-      linear-gradient(color-mix(in srgb, var(--accent) 30%, transparent), color-mix(in srgb, var(--accent) 30%, transparent)) center / 48px 88px no-repeat,
+      linear-gradient(color-mix(in srgb, var(--accent) 30%, transparent), color-mix(in srgb, var(--accent) 30%, transparent)) center / 48px 88px
+        no-repeat,
       linear-gradient(var(--accent), var(--accent)) center 72px / 32px 8px no-repeat;
   }
 
   &[data-art='grid'] {
-    background:
-      repeating-linear-gradient(90deg, color-mix(in srgb, var(--accent) 30%, transparent) 0 16px, transparent 16px 24px) center / 136px 72px no-repeat;
+    background: repeating-linear-gradient(90deg, color-mix(in srgb, var(--accent) 30%, transparent) 0 16px, transparent 16px 24px) center / 136px 72px
+      no-repeat;
   }
 
   &[data-art='type'] {
@@ -622,30 +561,11 @@
     align-items: center;
     justify-content: space-between;
     min-height: 40px;
-    border-bottom: 1px solid var(--line);
+
+    &:not(:last-child) {
+      border-bottom: 1px solid var(--line);
+    }
   }
-}
-
-// A toast drawn in place, for the gallery card.
-.toastStill {
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  height: 40px;
-  padding: var(--space-1) var(--space-1) var(--space-1) var(--space-4);
-  border-radius: var(--radius-full);
-  background: var(--surface-raised);
-  box-shadow: var(--shadow-lg);
-  font-size: 14px;
-
-  > span {
-    margin-right: var(--space-4);
-  }
-}
-
-.toastStillIcon {
-  color: var(--success);
 }
 
 // A field at a column's width, keeping its own label gap.
@@ -977,29 +897,6 @@
   width: min(100%, 520px);
 }
 
-.issueList {
-  display: flex;
-  flex-direction: column;
-  font-size: 13px;
-  line-height: 18px;
-}
-
-.issueRow {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: center;
-  gap: var(--space-3);
-  min-height: 36px;
-  border-bottom: 1px solid var(--line);
-}
-
-.issueId {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-variant-numeric: tabular-nums;
-  color: var(--ink-muted);
-}
-
 .issueTitle {
   display: flex;
   align-items: center;
@@ -1016,20 +913,6 @@
 
 .anatomyCheck {
   width: 150px;
-}
-
-// Menu: files sorted from a choice menu, each with a context menu.
-.menuFiles {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  width: 240px;
-  align-self: start;
-}
-
-.menuFilesBar {
-  display: flex;
-  justify-content: flex-end;
 }
 
 .menuFileList {
@@ -1123,7 +1006,8 @@
   cursor: default;
   outline: none;
 
-  &:hover {
+  &:hover,
+  &[data-hover] {
     background: var(--fill-hover);
   }
 
@@ -1529,24 +1413,24 @@
 
 .aimStage {
   position: relative;
-  // Menu 170 and submenu 140, overlapping by the submenu's 4px inset.
-  width: 310px;
-  height: 236px;
+  // Menu 160 and submenu 120, overlapping by the submenu's 4px inset: inside a phone's stage too.
+  width: 276px;
+  height: 248px;
 }
 
 .aimMenu {
   position: absolute;
   top: 0;
   left: 0;
-  width: 170px;
+  width: 160px;
 }
 
 // Beside the Move to row: popup inset 4 + one row 32, less the submenu's inset.
 .aimSub {
   position: absolute;
   top: calc(var(--control-md));
-  left: 166px;
-  width: 140px;
+  left: 156px;
+  width: 120px;
 }
 
 .aimArea {
@@ -1592,12 +1476,37 @@
 }
 
 .tileThumb {
-  display: grid;
-  place-items: center;
+  display: flex;
+  justify-content: center;
   height: 72px;
+  overflow: hidden;
+  padding: var(--space-3) var(--space-4) 0;
   border-radius: var(--radius-lg);
-  background: var(--surface-sunken);
+  background: var(--fill-control);
+}
+
+// The first page, at about a sixth of its size: a picture of the file, exempt from the type floor.
+.tilePage {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  width: 100%;
+  padding: var(--space-2);
+  border-radius: 2px 2px 0 0;
+  background: var(--surface);
+  box-shadow: 0 0 0 1px var(--line);
   color: var(--ink-muted);
+  font-size: 5px;
+  line-height: 6px;
+  white-space: nowrap;
+}
+
+.tilePageTitle {
+  margin-bottom: 2px;
+  color: var(--ink);
+  font-size: 8px;
+  font-weight: 600;
+  line-height: 10px;
 }
 
 .tileName {
@@ -1614,10 +1523,16 @@
   pointer-events: none;
   transition: opacity var(--duration-fast) var(--ease-out);
 
-  // In sight at rest, quietly: what's hidden until hovered is found only by those who hover.
+  // In sight at rest, quietly: what's hidden until hovered is found only by those who hover. Muted
+  // ink, not a faded one: the only sign the action is there still holds 3:1.
   &[data-quiet] {
-    opacity: 0.45;
+    color: var(--ink-muted);
+    opacity: 1;
     pointer-events: auto;
+  }
+
+  &[data-quiet][data-shown] {
+    color: var(--ink);
   }
 
   &[data-shown],
@@ -1781,17 +1696,40 @@
   font-size: 13px;
 }
 
+// The magnifier at the leading end names the field, as a search field's label.
+.docSearchBox {
+  position: relative;
+  display: flex;
+}
+
+.docSearchIcon {
+  position: absolute;
+  top: 50%;
+  left: var(--space-3);
+  color: var(--ink-muted);
+  translate: 0 -50%;
+  pointer-events: none;
+}
+
 .docSearchInput {
   box-sizing: border-box;
+  flex: 1;
+  min-width: 0;
   height: var(--control-md);
-  padding: 0 var(--space-3);
+  padding: 0 var(--space-3) 0 calc(var(--space-3) + 16px + var(--space-2));
   border: 1px solid var(--line-strong);
   border-radius: var(--radius-lg);
   background: var(--surface);
   color: var(--ink);
   font: inherit;
-  line-height: 30px;
+  font-size: 14px;
+  line-height: 20px;
   outline: none;
+
+  &::placeholder {
+    color: var(--ink-muted);
+    opacity: 1;
+  }
 
   &:focus {
     border-color: var(--accent);
@@ -2003,598 +1941,6 @@
   font-family: var(--font-sans);
 }
 
-// How waiting feels: a file list, progress bars, a flight search, a profile, stars.
-.waitSpin {
-  animation: wait-spin 0.8s linear infinite;
-
-  @media (prefers-reduced-motion: reduce) {
-    animation-duration: 2.4s;
-  }
-}
-
-@keyframes wait-spin {
-  to {
-    rotate: 1turn;
-  }
-}
-
-.waitList,
-.waitFlights {
-  display: flex;
-  flex-direction: column;
-  width: min(100%, 300px);
-  font-size: 13px;
-}
-
-.waitHead {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding-bottom: var(--space-2);
-  border-bottom: 1px solid var(--line);
-
-  // The action sits at the end of the row.
-  > :last-child {
-    margin-left: auto;
-  }
-}
-
-.waitTitle {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-1);
-  font-weight: 600;
-}
-
-.waitMeta {
-  flex: 1;
-  color: var(--ink-muted);
-  font-size: 12px;
-  font-variant-numeric: tabular-nums;
-}
-
-.waitRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  min-height: 36px;
-  border-bottom: 1px solid var(--line);
-  transition: opacity var(--duration-fast) var(--ease-out);
-
-  &[data-stale] {
-    opacity: 0.5;
-  }
-}
-
-// A progress bar and its controls.
-.waitBarDemo {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-3);
-  width: min(100%, 280px);
-  min-height: 112px;
-}
-
-.waitBar {
-  width: 100%;
-  height: 8px;
-  overflow: hidden;
-  border-radius: var(--radius-full);
-  background: var(--fill-control);
-}
-
-.waitFill {
-  display: block;
-  height: 100%;
-  border-radius: inherit;
-  background: var(--ink);
-}
-
-.waitLinear {
-  animation: wait-fill 6s linear both;
-}
-
-@keyframes wait-fill {
-  from {
-    width: 0;
-  }
-  to {
-    width: 100%;
-  }
-}
-
-// Stripes that drift backwards against the fill, slowing as they go.
-.waitRibs {
-  background-image: repeating-linear-gradient(-45deg, transparent 0 6px, color-mix(in srgb, var(--surface) 28%, transparent) 6px 12px);
-  background-size: 200% 100%;
-  animation:
-    wait-fill 6s linear both,
-    wait-ribs 6s var(--ease-out) both;
-
-  @media (prefers-reduced-motion: reduce) {
-    animation: wait-fill 6s linear both;
-  }
-}
-
-@keyframes wait-ribs {
-  from {
-    background-position: 0 0;
-  }
-  to {
-    background-position: -240px 0;
-  }
-}
-
-.waitGuess {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-
-.waitChips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-1);
-}
-
-// A flight search.
-.waitFlightBody {
-  display: flex;
-  flex-direction: column;
-  // Six checks of 24 with 4 between, plus the top padding: the tallest state.
-  min-height: calc(6 * 24px + 5 * var(--space-1) + var(--space-2));
-  padding-top: var(--space-2);
-}
-
-.waitChecks {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-}
-
-.waitCheck {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  height: 24px;
-  color: var(--ink-muted);
-
-  &[data-state='done'] {
-    color: var(--ink);
-  }
-
-  &[data-state='now'] {
-    color: var(--ink);
-    font-weight: 500;
-  }
-}
-
-.waitDot {
-  width: 16px;
-  display: grid;
-  place-items: center;
-
-  &::before {
-    content: '';
-    width: 4px;
-    height: 4px;
-    border-radius: var(--radius-full);
-    background: var(--ink-disabled);
-  }
-}
-
-.waitCentre {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  flex: 1;
-  color: var(--ink-muted);
-}
-
-.waitPrice {
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-}
-
-// A profile card, its skeleton, and a spinner in its place.
-.waitProfileDemo {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-3);
-  width: min(100%, 300px);
-}
-
-.waitProfileStage {
-  display: flex;
-  width: 100%;
-  min-height: 260px;
-  padding: var(--space-4);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-lg);
-}
-
-.waitProfile {
-  display: grid;
-  grid-template-columns: 40px 1fr;
-  gap: var(--space-3);
-  align-content: start;
-  width: 100%;
-  font-size: 13px;
-}
-
-.waitAvatar {
-  display: grid;
-  place-items: center;
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-full);
-  background: var(--accent-soft);
-  color: var(--accent-text);
-  font-size: 13px;
-  font-weight: 600;
-}
-
-.waitProfileText {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: var(--space-1);
-}
-
-.waitBio {
-  grid-column: 1 / -1;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  margin: 0;
-  color: var(--ink-muted);
-  line-height: 18px;
-}
-
-.waitBone {
-  display: block;
-  border-radius: var(--radius-xs);
-  background: var(--fill-control);
-}
-
-// A profile page: the card, then its files under a hairline.
-.waitPage {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-  width: 100%;
-}
-
-.waitFiles {
-  display: flex;
-  flex-direction: column;
-  padding-top: var(--space-3);
-  border-top: 1px solid var(--line);
-  font-size: 13px;
-}
-
-.waitFilesHead {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  height: 20px;
-  margin-bottom: var(--space-1);
-  color: var(--ink-muted);
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.waitFileRow {
-  display: flex;
-  align-items: center;
-  height: 28px;
-}
-
-.waitButtons {
-  display: flex;
-  gap: var(--space-2);
-}
-
-// The avatar's bone keeps the avatar's shape.
-.waitAvatar.waitBone {
-  border-radius: var(--radius-full);
-}
-
-// A star, and the line that says it couldn't be saved.
-.waitStarOn {
-  fill: currentColor;
-}
-
-.waitError {
-  min-height: 32px;
-  padding-top: var(--space-2);
-  color: var(--danger);
-  font-size: 12px;
-}
-
-.waitStill {
-  zoom: 0.9;
-  pointer-events: none;
-}
-
-// Never too busy to listen: a photo carousel, an FAQ, and photos you swipe.
-.intCarousel,
-.intSwipe {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-3);
-  width: 240px;
-}
-
-.intViewport,
-.intSwipeViewport {
-  position: relative;
-  width: 100%;
-  overflow: hidden;
-  border-radius: var(--radius-md);
-}
-
-// Bootstrap slides each photo with one transform transition; the lock is the only difference.
-.intSlides {
-  display: flex;
-  transition: translate var(--spring-smooth-duration) var(--ease-spring-smooth);
-}
-
-.intSlide {
-  display: flex;
-  flex: none;
-  align-items: flex-end;
-  width: 100%;
-  height: 150px;
-  padding: var(--space-3);
-  color: oklch(1 0 0);
-  font-size: 13px;
-  font-weight: 600;
-  text-shadow: 0 1px 2px oklch(0 0 0 / 0.25);
-  user-select: none;
-}
-
-.intArrow {
-  position: absolute;
-  top: 50%;
-  display: grid;
-  place-items: center;
-  width: 28px;
-  height: 28px;
-  border: 0;
-  border-radius: 50%;
-  background: oklch(1 0 0 / 0.85);
-  color: oklch(0.2 0 0);
-  box-shadow: var(--shadow-sm);
-  translate: 0 -50%;
-  cursor: pointer;
-
-  // A larger hit area than the visible disc.
-  &::before {
-    content: '';
-    position: absolute;
-    inset: -8px;
-  }
-
-  &:disabled {
-    opacity: 0;
-    pointer-events: none;
-  }
-}
-
-.intArrowPrev {
-  left: var(--space-2);
-}
-
-.intArrowNext {
-  right: var(--space-2);
-}
-
-.intDots {
-  display: flex;
-  gap: 6px;
-}
-
-.intDot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--line-strong);
-
-  &[data-current] {
-    background: var(--ink);
-  }
-}
-
-// A settings page and an Edit profile sheet, at shadcn's timing.
-.intSheetStage {
-  --sheet-in: 500ms;
-  --sheet-out: 300ms;
-  --fade: 150ms;
-  // Off past the edge, shadow and all.
-  --off: calc(100% + 48px);
-
-  position: relative;
-  width: min(100%, 320px);
-  height: 200px;
-  overflow: hidden;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-md);
-  background: var(--surface);
-
-  [data-slow] & {
-    --sheet-in: 5000ms;
-    --sheet-out: 3000ms;
-    --fade: 1500ms;
-  }
-}
-
-.intPage,
-.intSheet {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-  padding: var(--space-4);
-}
-
-.intPageTitle {
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.intPageMeta {
-  color: var(--ink-muted);
-  font-size: 12px;
-}
-
-.intOpen {
-  align-self: flex-start;
-  margin-top: var(--space-3);
-}
-
-.intOverlay {
-  position: absolute;
-  inset: 0;
-  background: oklch(0 0 0 / 0.5);
-  opacity: 0;
-  pointer-events: none;
-
-  &[data-open] {
-    pointer-events: auto;
-  }
-}
-
-.intSheet {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: 75%;
-  border-left: 1px solid var(--line);
-  background: var(--surface);
-  box-shadow: var(--shadow-lg);
-  translate: var(--off) 0;
-}
-
-.intField {
-  display: flex;
-  align-items: center;
-  height: 32px;
-  margin-top: var(--space-2);
-  padding: 0 var(--space-2);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
-  font-size: 13px;
-}
-
-.intClose {
-  position: absolute;
-  top: var(--space-2);
-  right: var(--space-2);
-}
-
-// shadcn's slide-in-from-right and slide-out-to-right. Each always plays
-// from its own first frame.
-.intSheetKeys {
-  .intSheet[data-touched] {
-    animation: int-sheet-out var(--sheet-out) ease-in-out both;
-  }
-
-  .intSheet[data-open] {
-    animation: int-sheet-in var(--sheet-in) ease-in-out both;
-  }
-
-  .intOverlay[data-touched] {
-    animation: int-fade-out var(--fade) ease both;
-  }
-
-  .intOverlay[data-open] {
-    animation: int-fade-in var(--fade) ease both;
-  }
-}
-
-@keyframes int-sheet-in {
-  from {
-    translate: var(--off) 0;
-  }
-  to {
-    translate: 0 0;
-  }
-}
-
-@keyframes int-sheet-out {
-  from {
-    translate: 0 0;
-  }
-  to {
-    translate: var(--off) 0;
-  }
-}
-
-@keyframes int-fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes int-fade-out {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
-}
-
-// The same timing as transitions: each takes the duration of the state it heads for.
-.intSheetFluid {
-  .intSheet {
-    transition: translate var(--sheet-out) ease-in-out;
-
-    &[data-open] {
-      translate: 0 0;
-      transition-duration: var(--sheet-in);
-    }
-  }
-
-  .intOverlay {
-    transition: opacity var(--fade) ease;
-
-    &[data-open] {
-      opacity: 1;
-    }
-  }
-}
-
-.intSwipeViewport {
-  touch-action: pan-y;
-  cursor: grab;
-
-  &:active {
-    cursor: grabbing;
-  }
-}
-
-.intSwipeStrip {
-  display: flex;
-}
-
-.intTrace {
-  width: 100%;
-  height: 64px;
-}
-
-.intStill {
-  pointer-events: none;
-}
-
 // Space groups by ratio: an inbox in date sections, a striped ledger, one-line rows.
 .ratList {
   width: min(100%, 320px);
@@ -2681,7 +2027,7 @@
 .ratStream {
   display: grid;
   grid-template-columns: max-content minmax(0, 1fr) max-content;
-  width: min(100%, 340px);
+  width: min(100%, 360px);
 
   .ratRow {
     display: grid;

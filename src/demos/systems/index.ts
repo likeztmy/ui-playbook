@@ -1,2 +1,2 @@
 // Systems: the home page's cards.
-export { SystemPreview } from './Preview';
+export { SystemPreview, type SystemSlug } from './Preview';

@@ -20,7 +20,7 @@ import type { Track } from './useTrack';
 import { dueIn } from './when';
 import s from './Panel.module.scss';
 
-const ic = { size: 16, strokeWidth: 1.5, nonScalingStroke: true, 'aria-hidden': true } as const;
+const ic = { size: 16, 'aria-hidden': true } as const;
 
 type PanelProps = {
   issue: Issue;
@@ -260,7 +260,7 @@ export function Panel({ issue, track, onClose, narrow, closeRef }: PanelProps) {
         {blockers.length > 0 && (
           <section className={s.blocked} aria-label="Blocked by">
             <h3 className={s.blockedHead}>
-              <Ban size={14} strokeWidth={2} aria-hidden />
+              <Ban size={14} aria-hidden />
               Blocked by
             </h3>
             {blockers.map((b) => (
@@ -273,7 +273,7 @@ export function Panel({ issue, track, onClose, narrow, closeRef }: PanelProps) {
           ref={bodyEl}
           className={s.description}
           aria-label="Description"
-          placeholder="Add a description…"
+          placeholder="Add description…"
           value={body.draft}
           onChange={(e) => {
             body.setDraft(e.target.value);

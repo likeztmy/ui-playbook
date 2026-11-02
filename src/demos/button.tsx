@@ -43,11 +43,9 @@ function DocHeader() {
           </Badge>
         </div>
         <div className={s.docActions}>
-          <Tip label="More">
-            <Button variant="ghost" icon aria-label="More">
-              <Ellipsis size={16} aria-hidden />
-            </Button>
-          </Tip>
+          <Button variant="ghost" icon label="More">
+            <Ellipsis size={16} aria-hidden />
+          </Button>
           <Button>Preview</Button>
           <Button variant="primary" loading={busy} loadingLabel="Publishing" onClick={publish}>
             Publish
@@ -87,7 +85,7 @@ export function ButtonStates() {
         {
           name: 'Icon',
           render: (state) => (
-            <Button icon aria-label="Add" data-pin={statePin[state]} disabled={state === 'Disabled'}>
+            <Button icon label="Add" data-pin={statePin[state]} disabled={state === 'Disabled'}>
               <PlusIcon />
             </Button>
           ),
@@ -314,7 +312,7 @@ export function ButtonVariants() {
           render: () => (
             <>
               <Button leading={<PlusIcon />}>New file</Button>
-              <Button leading={<Download size={16} strokeWidth={1.5} nonScalingStroke aria-hidden />}>Download</Button>
+              <Button leading={<Download size={16} aria-hidden />}>Download</Button>
             </>
           ),
         },
@@ -323,11 +321,9 @@ export function ButtonVariants() {
           use: 'Icons everyone knows, where space is tight. Always with a tooltip.',
           render: () => (
             <TipGroup>
-              <Tip label="Settings">
-                <Button icon aria-label="Settings">
-                  <Settings2 size={16} strokeWidth={1.5} nonScalingStroke aria-hidden />
-                </Button>
-              </Tip>
+              <Button icon label="Settings">
+                <Settings2 size={16} aria-hidden />
+              </Button>
               <Tip label="New file" keys={['⌘', 'N']}>
                 <Button icon aria-label="New file">
                   <PlusIcon />

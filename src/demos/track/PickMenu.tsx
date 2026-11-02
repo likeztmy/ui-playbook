@@ -18,15 +18,18 @@ type Common = {
 type PickMenuProps = Common &
   ({ multiple?: false; value: string | null; onPick: (v: string) => void } | { multiple: true; value: string[]; onPick: (v: string[]) => void });
 
-/** A value's row: its mark, its name, and the check at the end when it's on. */
+/**
+ * A value's row: the check in the leading column when it's on, as Menu draws it, then the value's
+ * mark (the shape it has in the list), then its name.
+ */
 function PickRow({ option: o, on }: { option: Option; on: boolean }) {
   return (
     <>
+      <span className={m.check} data-off={on ? undefined : ''}>
+        <Check size={16} aria-hidden />
+      </span>
       {o.lead && <span className={s.lead}>{o.lead}</span>}
       <span className={m.text}>{o.label}</span>
-      <span className={m.check} data-off={on ? undefined : ''}>
-        <Check size={16} strokeWidth={1.75} nonScalingStroke aria-hidden />
-      </span>
     </>
   );
 }
@@ -53,8 +56,8 @@ export function PickChecks({ options, value, onPick }: ChecksProps) {
 }
 
 /**
- * A menu of values with their marks, the current one checked at the row's end: status, priority,
- * labels. One closes on a pick; several (labels) stay open to flip more.
+ * A menu of values with their marks, the current one checked in the leading column: status,
+ * priority, labels. One closes on a pick; several (labels) stay open to flip more.
  */
 export function PickMenu(props: PickMenuProps) {
   const { trigger, options, side = 'bottom', align = 'start' } = props;

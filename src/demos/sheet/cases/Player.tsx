@@ -7,7 +7,7 @@ import c from './cases.module.scss';
 
 const SONGS = ['Harbour Lights', 'Gate Two', 'Quay Street', 'Low Tide', 'The 8:30', 'Salt and Rope', 'Last Ferry'];
 const POINTS = ['58px', 1];
-const ic = { size: 16, strokeWidth: 1.5, 'aria-hidden': true } as const;
+const ic = { size: 16, 'aria-hidden': true } as const;
 
 /** A library with the song playing in a sheet: a bar under the list, the whole player when pulled up. */
 export function Player() {
@@ -15,7 +15,7 @@ export function Player() {
   const [playing, setPlaying] = useState(true);
   const [point, setPoint] = useState<number | string | null>(POINTS[0]);
   const toggle = (
-    <Button size="sm" variant="ghost" icon aria-label={playing ? 'Pause' : 'Play'} onClick={() => setPlaying((p) => !p)}>
+    <Button size="sm" variant="ghost" icon label={playing ? 'Pause' : 'Play'} onClick={() => setPlaying((p) => !p)}>
       {playing ? <Pause {...ic} /> : <Play {...ic} />}
     </Button>
   );

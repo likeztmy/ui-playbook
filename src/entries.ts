@@ -183,7 +183,7 @@ export const entries: Entry[] = [
     slug: 'toast',
     kind: 'component',
     title: 'Toast',
-    summary: 'A one-line confirmation that offers Undo. Rises from below, colour on the icon only.',
+    summary: 'A short confirmation that offers Undo. Rises from below, colour on the icon only.',
     details: 3,
     keywords: ['toast', 'snackbar', 'notification', 'undo', 'message', 'alert'],
   },

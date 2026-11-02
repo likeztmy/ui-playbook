@@ -8,6 +8,7 @@ import { Compare, Frame } from './shell';
 import { GROUPS, type Group, type Row } from './menu-lab/content';
 import m from './mistakes.module.scss';
 import s from './demos.module.scss';
+import fl from './menu.module.scss';
 
 type StillProps = {
   /** The menu's content; defaults to the Edit menu. */
@@ -167,7 +168,7 @@ export function MenuShortcuts() {
       before={<StillMenu capShortcuts />}
       after={<StillMenu />}
       beforeNote="A box per key is louder than the label it explains."
-      afterNote="Bare symbols a step lighter, as macOS draws them; the last key sits in a fixed cell, so the keys form a column."
+      afterNote="Bare symbols in the icons’ muted grey, a step back from the label; the last key sits in a fixed cell, so the keys form a column."
     />
   );
 }
@@ -230,15 +231,15 @@ const START_FILES: FileRow[] = [
 const edited = (m: number) =>
   m < 1 ? 'Edited just now' : m < 60 ? `Edited ${m} minutes ago` : m < 1440 ? `Edited ${Math.round(m / 60)} hours ago` : 'Edited yesterday';
 
-function FileCard({ name, meta }: { name: string; meta: string }) {
+function FileRowContent({ name, meta }: { name: string; meta: string }) {
   return (
-    <span className={s.fileCard}>
+    <>
       <FileText size={16} aria-hidden />
       <span>
-        <span className={s.fileName}>{name}</span>
-        <span className={s.fileMeta}>{meta}</span>
+        <span className={fl.name}>{name}</span>
+        <span className={fl.meta}>{meta}</span>
       </span>
-    </span>
+    </>
   );
 }
 
@@ -259,8 +260,8 @@ function FilesScene() {
   const duplicate = (f: FileRow) => setFiles((l) => [...l, { ...f, id: next.current++, name: `${f.name} copy`, minutes: 0 }]);
   const remove = (f: FileRow) => setFiles((l) => l.filter((x) => x.id !== f.id));
   return (
-    <div className={s.menuFiles}>
-      <div className={s.menuFilesBar}>
+    <div className={fl.files}>
+      <div className={fl.bar}>
         <Menu.Root>
           <Menu.Trigger render={<Button variant="ghost" size="sm" />}>
             Sort: {field} <ChevronDownIcon />
@@ -284,12 +285,12 @@ function FilesScene() {
           </Menu.Popup>
         </Menu.Root>
       </div>
-      <div className={s.menuFileList} role="list">
+      <div role="list">
         {sorted.map((f) => (
-          <div key={f.id} role="listitem">
+          <div key={f.id} role="listitem" className={fl.item}>
             <ContextMenu.Root>
-              <ContextMenu.Trigger className={s.contextTarget}>
-                <FileCard name={f.name} meta={field === 'Size' ? `${f.size.toFixed(1)} MB` : edited(f.minutes)} />
+              <ContextMenu.Trigger className={fl.row}>
+                <FileRowContent name={f.name} meta={field === 'Size' ? `${f.size.toFixed(1)} MB` : edited(f.minutes)} />
               </ContextMenu.Trigger>
               <ContextMenu.Popup>
                 {CONTEXT.map((g, gi) => (

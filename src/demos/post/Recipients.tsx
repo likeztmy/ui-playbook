@@ -46,7 +46,7 @@ export function Recipients({ m }: { m: Message }) {
       trigger={
         <button type="button" className={s.trigger}>
           <span className={s.names}>{summary(m)}</span>
-          <ChevronDown size={14} strokeWidth={1.5} nonScalingStroke aria-hidden />
+          <ChevronDown size={14} aria-hidden />
         </button>
       }
     >

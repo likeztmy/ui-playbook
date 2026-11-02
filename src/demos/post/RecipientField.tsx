@@ -97,7 +97,7 @@ export function RecipientField({ label, value, onChange, inputRef, trailing, err
             >
               {p.name}
               <button type="button" className={s.remove} aria-label={`Remove ${p.name}`} onClick={() => onChange(value.filter((x) => x !== a))}>
-                <X size={12} strokeWidth={1.75} nonScalingStroke aria-hidden />
+                <X size={12} aria-hidden />
               </button>
             </span>
           );

@@ -8,7 +8,8 @@ import s from './copy.module.scss';
 /** A sign-up whose request failed: the message under the terms box, or with the action that failed. */
 function SignUp({ misplaced }: { misplaced?: boolean }) {
   const message = (text: string) => (
-    <p className={s.error} role="alert">
+    // No live role: a specimen shown on load has failed nothing yet.
+    <p className={s.error}>
       <CircleAlert size={14} aria-hidden />
       {text}
     </p>
@@ -20,7 +21,7 @@ function SignUp({ misplaced }: { misplaced?: boolean }) {
         <Checkbox label="I agree to the Terms" defaultChecked />
         {misplaced && message('Something went wrong. Please try again.')}
       </div>
-      {!misplaced && message('Couldn’t create your account: the server didn’t respond. Try again in a moment.')}
+      {!misplaced && message('Couldn’t create the account: the server didn’t respond. Try again in a moment.')}
       <Button variant="primary" type="submit">
         Create account
       </Button>

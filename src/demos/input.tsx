@@ -10,16 +10,18 @@ import s from './demos.module.scss';
 
 const searchIcon = <Search size={16} aria-hidden />;
 
+// Format checks run when a field is left. An empty field is `required`'s,
+// which waits for Continue.
 const validateEmail = (value: unknown) => {
   const v = String(value ?? '').trim();
-  if (!v) return 'Enter an email address.';
+  if (!v) return null;
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? null : 'Enter an email address, like ana@studio.com.';
 };
 
-const required = (message: string) => (value: unknown) => (String(value ?? '').trim() ? null : message);
-
-const validatePostal = (value: unknown) =>
-  /^\d{5}$/.test(String(value ?? '').trim()) ? null : 'Enter a 5-digit postal code, like 10115.';
+const validatePostal = (value: unknown) => {
+  const v = String(value ?? '').trim();
+  return !v || /^\d{5}$/.test(v) ? null : 'Enter a 5-digit postal code, like 10115.';
+};
 
 // type="text": a native email check would answer first, in the browser's
 // words and language.
@@ -72,12 +74,54 @@ function ShippingAddress() {
         requestAnimationFrame(() => edit.current?.focus());
       }}
     >
-      <TextField name="name" label="Full name" autoComplete="name" value={address.name} onValueChange={set('name')} validate={required('Enter your full name.')} inputRef={first} />
-      <TextField name="email" label="Email" {...emailProps} value={address.email} onValueChange={set('email')} validate={validateEmail} description="For delivery updates only." />
-      <TextField name="street" label="Street" autoComplete="street-address" value={address.street} onValueChange={set('street')} validate={required('Enter a street and house number.')} />
+      <TextField
+        name="name"
+        label="Full name"
+        autoComplete="name"
+        value={address.name}
+        onValueChange={set('name')}
+        required="Enter your full name."
+        inputRef={first}
+      />
+      <TextField
+        name="email"
+        label="Email"
+        {...emailProps}
+        value={address.email}
+        onValueChange={set('email')}
+        validate={validateEmail}
+        required="Enter an email address."
+        description="For delivery updates only."
+      />
+      <TextField
+        name="street"
+        label="Street"
+        autoComplete="street-address"
+        value={address.street}
+        onValueChange={set('street')}
+        required="Enter a street and house number."
+      />
       <div className={s.addressRow}>
-        <TextField name="postal" label="Postal code" autoComplete="postal-code" inputMode="numeric" value={address.postal} onValueChange={set('postal')} validate={validatePostal} className={s.narrowField} />
-        <TextField name="city" label="City" autoComplete="address-level2" value={address.city} onValueChange={set('city')} validate={required('Enter a city.')} className={s.addressCity} />
+        <TextField
+          name="postal"
+          label="Postal code"
+          autoComplete="postal-code"
+          inputMode="numeric"
+          value={address.postal}
+          onValueChange={set('postal')}
+          validate={validatePostal}
+          required="Enter a postal code."
+          className={s.narrowField}
+        />
+        <TextField
+          name="city"
+          label="City"
+          autoComplete="address-level2"
+          value={address.city}
+          onValueChange={set('city')}
+          required="Enter a city."
+          className={s.addressCity}
+        />
       </div>
       <div>
         <Button type="submit" variant="primary">
@@ -123,16 +167,12 @@ export function InputVariants() {
         {
           name: 'With unit',
           use: 'A number in a known unit. Sized to the number.',
-          render: () => (
-            <TextField label="Width" defaultValue="1280" trailing={<FieldSuffix>px</FieldSuffix>} className={s.narrowField} />
-          ),
+          render: () => <TextField label="Width" defaultValue="1280" trailing={<FieldSuffix>px</FieldSuffix>} className={s.narrowField} />,
         },
         {
           name: 'Multiline',
           use: 'A sentence or more. Grows by dragging its corner.',
-          render: () => (
-            <TextField label="Description" placeholder="What is this project for?" multiline className={s.fieldWide} />
-          ),
+          render: () => <TextField label="Description" placeholder="Ship offline sync to every team by Q4." multiline className={s.fieldWide} />,
         },
       ]}
     />
@@ -217,8 +257,8 @@ export function InputValidation() {
       afterNote={
         <>
           Checked when focus leaves, then rechecked as you type, so it clears the moment the address is right. In{' '}
-          <a href="https://alistapart.com/article/inline-validation-in-web-forms/">Wroblewski’s tests</a> this cut completion time by 42%. When
-          to check sooner: <a href="/principles/error-timing">Error timing</a>.
+          <a href="https://alistapart.com/article/inline-validation-in-web-forms/">Wroblewski’s tests</a> this cut completion time by 42%. When to
+          check sooner: <a href="/principles/error-timing">Error timing</a>.
         </>
       }
     />
@@ -345,8 +385,8 @@ export function InputWidth() {
       after={<CardFields sized />}
       beforeNote={
         <>
-          When a field’s length doesn’t match the answer, people doubt they read the label right, most of all on unfamiliar ones like a
-          CVC (<a href="https://baymard.com/blog/form-field-usability-matching-user-expectations">Baymard</a>).
+          When a field’s length doesn’t match the answer, people doubt they read the label right, most of all on unfamiliar ones like a CVC (
+          <a href="https://baymard.com/blog/form-field-usability-matching-user-expectations">Baymard</a>).
         </>
       }
       afterNote="The width is the first hint of the answer: sixteen digits, four, three."
@@ -357,7 +397,12 @@ export function InputWidth() {
 export function InputPreview() {
   return (
     <div className={s.formColumn}>
-      <TextField label="Email" defaultValue="ana@studio" error="Enter an email address, like ana@studio.com." description="We send the invite here." />
+      <TextField
+        label="Email"
+        defaultValue="ana@studio"
+        error="Enter an email address, like ana@studio.com."
+        description="We send the invite here."
+      />
     </div>
   );
 }

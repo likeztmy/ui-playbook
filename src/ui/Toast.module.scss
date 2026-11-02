@@ -37,7 +37,8 @@
   width: fit-content;
   min-width: min(320px, 100%);
   max-width: 100%;
-  height: 40px;
+  // 40, or taller when a narrow screen wraps the message to two lines.
+  min-height: 40px;
   margin: 0 auto;
   padding: var(--space-1) var(--space-1) var(--space-1) var(--space-4);
   border-radius: var(--radius-full);
@@ -118,19 +119,30 @@
   flex: 1;
   min-width: 0;
   margin: 0;
-  padding: 0;
+  padding: var(--space-0-5) 0;
   border: 0;
   overflow: hidden;
   font-size: 14px;
   line-height: 20px;
   font-weight: 400;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  // Two lines before it truncates, so a narrow screen keeps the object:
+  // "Deleted “Q4 roadmap.fig”", not "Deleted “Q4 roadm…".
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  text-wrap: pretty;
 
   // A failure stays until it's closed so it can be read: its reason wraps rather than being cut.
   [data-type='error'] & {
-    white-space: normal;
+    -webkit-line-clamp: none;
   }
+}
+
+// Held still in a preview: in the flow, not the queue's stack.
+.still {
+  position: static;
+  margin: 0;
+  translate: none;
 }
 
 .actions {

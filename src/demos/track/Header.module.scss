@@ -6,7 +6,8 @@
   align-items: center;
   gap: var(--space-2);
   box-sizing: border-box;
-  height: 44px;
+  // App shell's toolbar height.
+  height: var(--toolbar-height);
   // On the rows' left edge: their margin and inset.
   padding: 0 var(--space-2) 0 calc(var(--space-2) + var(--space-3));
   border-bottom: 1px solid var(--line);
@@ -23,7 +24,7 @@
   gap: var(--space-2);
   margin: 0 var(--space-4) 0 0;
   font-family: var(--font-sans);
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   line-height: 20px;
   white-space: nowrap;
@@ -51,7 +52,6 @@
 
 .tab {
   height: 100%;
-  font-size: 13px;
 }
 
 .end {
@@ -85,7 +85,13 @@
   }
 
   .title {
-    margin-right: var(--space-2);
+    margin-right: 0;
   }
 
+  // The list keeps its 8px of room for the focus ring, inside its root rather than over the title
+  // and Filter; the cut edge fades, saying there's more.
+  .header .tabs {
+    margin-inline: 0;
+    mask-image: linear-gradient(to right, black calc(100% - var(--space-6)), transparent);
+  }
 }

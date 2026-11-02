@@ -12,7 +12,8 @@
 .app {
   position: relative;
   display: grid;
-  grid-template: 'side main' minmax(0, 1fr) / 232px minmax(0, 1fr);
+  // App shell's sidebar width.
+  grid-template: 'side main' minmax(0, 1fr) / 240px minmax(0, 1fr);
   height: 100%;
   overflow: hidden;
   // A grey with a breath of the accent in light, so the white mail is the brightest thing on screen
@@ -27,7 +28,7 @@
 .brand {
   display: flex;
   align-items: center;
-  height: 56px;
+  height: var(--toolbar-height);
   margin: 0 0 var(--space-1);
   padding-left: var(--space-3);
   font-size: 16px;
@@ -86,8 +87,8 @@
   display: grid;
   grid-template-columns: 16px minmax(0, 1fr) auto;
   align-items: center;
-  gap: var(--space-3);
-  height: 34px;
+  gap: var(--space-2);
+  height: var(--control-md);
   padding: 0 var(--space-3);
   border: 0;
   border-radius: var(--radius-md);
@@ -97,13 +98,15 @@
   text-align: left;
   cursor: pointer;
 
-  // Halfway to the mail's surface: hover leans toward what choosing it would make it.
+  // Halfway to the mail's surface: hover leans toward what choosing it would make it, in the
+  // row's full ink, icon included.
   @include hover {
     background: light-dark(color-mix(in oklab, var(--surface) 55%, transparent), var(--surface));
+    color: var(--ink);
   }
 
   // Where you are is lifted onto a raised surface, in light the mail's own white, the sheet it
-  // opens; the blue stays for unread and the one filled button, with only the icon taking it here.
+  // opens; the blue stays for unread and the one filled button. The icon takes the row's ink.
   &[aria-current] {
     background: var(--surface-raised);
     box-shadow:
@@ -111,10 +114,6 @@
       0 1px 2px color-mix(in oklab, var(--ink) 7%, transparent);
     color: var(--ink);
     font-weight: 600;
-
-    svg {
-      color: var(--accent-text);
-    }
   }
 
   &:focus-visible {
@@ -137,10 +136,12 @@
   font-variant-numeric: tabular-nums;
 }
 
-// The main area is where a phone's message sheet rises; it fills the card.
-.sheetArea {
+// The main area is where a phone's message sheet rises; it fills the card. Clipped, not hidden: a
+// field focused in the sheet can't scroll the area and carry the sheet's top off screen.
+.app .sheetArea {
   min-width: 0;
   min-height: 0;
+  overflow: clip;
 }
 
 // Above the draft's bar, so the list's last row can be scrolled clear of it. The bar is 65.

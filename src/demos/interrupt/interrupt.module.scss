@@ -1,0 +1,290 @@
+// Never too busy to listen: a photo carousel, an FAQ, and photos you swipe.
+.intCarousel,
+.intSwipe {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  width: 240px;
+}
+
+.intViewport,
+.intSwipeViewport {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+}
+
+// Bootstrap slides each photo with one transform transition; the lock is the only difference.
+.intSlides {
+  display: flex;
+  transition: translate var(--spring-smooth-duration) var(--ease-spring-smooth);
+}
+
+// The place's name sits on a scrim that holds white text at 4.5:1 on the lightest stop.
+.intSlide {
+  display: flex;
+  flex: none;
+  align-items: flex-end;
+  width: 100%;
+  height: 150px;
+  padding: var(--space-3);
+  // An eased scrim: dark enough under the name (at least 0.5 over the 32px it sits in), no hard edge above it.
+  background-image:
+    linear-gradient(to top, oklch(0 0 0 / 0.55), oklch(0 0 0 / 0.5) 32px, oklch(0 0 0 / 0.3) 56px, oklch(0 0 0 / 0.12) 76px, oklch(0 0 0 / 0) 96px),
+    linear-gradient(160deg, var(--stops));
+  color: oklch(1 0 0);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 18px;
+  user-select: none;
+}
+
+.intArrow {
+  position: absolute;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 50%;
+  background: oklch(1 0 0 / 0.85);
+  color: oklch(0.2 0 0);
+  box-shadow: var(--shadow-sm);
+  translate: 0 -50%;
+  cursor: pointer;
+
+  // A larger hit area than the visible disc.
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -8px;
+  }
+
+  &:disabled {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+.intArrowPrev {
+  left: var(--space-2);
+}
+
+.intArrowNext {
+  right: var(--space-2);
+}
+
+.intDots {
+  display: flex;
+  gap: 6px;
+}
+
+.intDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--line-strong);
+
+  &[data-current] {
+    background: var(--ink);
+  }
+}
+
+// A settings page and an Edit profile sheet, at shadcn's timing.
+.intSheetStage {
+  --sheet-in: 500ms;
+  --sheet-out: 300ms;
+  --fade: 150ms;
+  // Off past the edge, shadow and all.
+  --off: calc(100% + 48px);
+
+  position: relative;
+  width: min(100%, 320px);
+  height: 200px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+
+  [data-slow] & {
+    --sheet-in: 5000ms;
+    --sheet-out: 3000ms;
+    --fade: 1500ms;
+  }
+}
+
+.intPage,
+.intSheet {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-4);
+}
+
+.intPageTitle {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.intPageMeta {
+  color: var(--ink-muted);
+  font-size: 12px;
+}
+
+.intOpen {
+  align-self: flex-start;
+  margin-top: var(--space-3);
+}
+
+.intOverlay {
+  position: absolute;
+  inset: 0;
+  background: oklch(0 0 0 / 0.5);
+  opacity: 0;
+  pointer-events: none;
+
+  &[data-open] {
+    pointer-events: auto;
+  }
+}
+
+.intSheet {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 75%;
+  border-left: 1px solid var(--line);
+  background: var(--surface);
+  box-shadow: var(--shadow-lg);
+  translate: var(--off) 0;
+}
+
+.intField {
+  box-sizing: border-box;
+  height: 32px;
+  margin-top: var(--space-2);
+  padding: 0 var(--space-2);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-size: 13px;
+  outline: none;
+
+  &:focus {
+    border-color: var(--accent);
+  }
+
+  @media (pointer: coarse) {
+    font-size: 16px;
+  }
+}
+
+.intClose {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+}
+
+// shadcn's slide-in-from-right and slide-out-to-right. Each always plays
+// from its own first frame.
+.intSheetKeys {
+  .intSheet[data-touched] {
+    animation: int-sheet-out var(--sheet-out) ease-in-out both;
+  }
+
+  .intSheet[data-open] {
+    animation: int-sheet-in var(--sheet-in) ease-in-out both;
+  }
+
+  .intOverlay[data-touched] {
+    animation: int-fade-out var(--fade) ease both;
+  }
+
+  .intOverlay[data-open] {
+    animation: int-fade-in var(--fade) ease both;
+  }
+}
+
+@keyframes int-sheet-in {
+  from {
+    translate: var(--off) 0;
+  }
+  to {
+    translate: 0 0;
+  }
+}
+
+@keyframes int-sheet-out {
+  from {
+    translate: 0 0;
+  }
+  to {
+    translate: var(--off) 0;
+  }
+}
+
+@keyframes int-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes int-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+// The same timing as transitions: each takes the duration of the state it heads for.
+.intSheetFluid {
+  .intSheet {
+    transition: translate var(--sheet-out) ease-in-out;
+
+    &[data-open] {
+      translate: 0 0;
+      transition-duration: var(--sheet-in);
+    }
+  }
+
+  .intOverlay {
+    transition: opacity var(--fade) ease;
+
+    &[data-open] {
+      opacity: 1;
+    }
+  }
+}
+
+.intSwipeViewport {
+  touch-action: pan-y;
+  cursor: grab;
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.intSwipeStrip {
+  display: flex;
+}
+
+.intTrace {
+  width: 100%;
+  height: 64px;
+}
+
+.intStill {
+  pointer-events: none;
+}

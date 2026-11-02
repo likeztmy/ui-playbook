@@ -8,7 +8,7 @@ import { PickMenu } from './PickMenu';
 import type { Track } from './useTrack';
 import s from './SelectionBar.module.scss';
 
-const ic = { size: 16, strokeWidth: 1.5, nonScalingStroke: true, 'aria-hidden': true } as const;
+const ic = { size: 16, 'aria-hidden': true } as const;
 
 /** What's ticked, then what can be done to all of it at once. Esc or × lets go. */
 export function SelectionBar({ track }: { track: Track }) {

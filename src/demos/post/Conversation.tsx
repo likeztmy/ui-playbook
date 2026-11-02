@@ -11,7 +11,7 @@ import type { Compose } from './useCompose';
 import type { Post } from './usePost';
 import s from './Conversation.module.scss';
 
-const ic = { size: 16, strokeWidth: 1.5, nonScalingStroke: true, 'aria-hidden': true } as const;
+const ic = { size: 16, 'aria-hidden': true } as const;
 
 /** Unread messages and the newest start open; the rest start as one line each. */
 const startOpen = (c: Conv) => new Set(c.messages.filter((m, i) => m.unread || i === c.messages.length - 1).map((m) => m.id));
@@ -158,9 +158,7 @@ export function Conversation({ post, compose, c, single }: { post: Post; compose
       <div className={s.scroll}>
         <div className={s.column}>
           <header className={s.head}>
-            <h1 className={s.subject}>
-              {c.subject}
-            </h1>
+            <h1 className={s.subject}>{c.subject}</h1>
             <Tip label={c.starred ? 'Unstar' : 'Star'}>
               <Button
                 variant="ghost"

@@ -19,7 +19,7 @@ $gap: var(--space-2);
   align-items: center;
   gap: 2px;
   // The header's height above its hairline, so Hide here and Show there sit in one spot.
-  height: 43px;
+  height: calc(var(--toolbar-height) - 1px);
   padding: 0 var(--space-2);
 }
 
@@ -109,7 +109,8 @@ $gap: var(--space-2);
   column-gap: $gap;
   box-sizing: border-box;
   width: 100%;
-  height: 28px;
+  // App shell's sidebar rows.
+  height: var(--control-md);
   padding: 0 $inset;
   border: 0;
   border-radius: var(--radius-md);
@@ -126,10 +127,14 @@ $gap: var(--space-2);
   // Halfway to the page's white: hover leans toward what choosing it would make it, as in Post.
   @include hover {
     background: light-dark(color-mix(in oklab, var(--surface) 60%, transparent), var(--fill-hover));
+
+    > svg {
+      color: var(--ink);
+    }
   }
 
-  // Where you are, lifted onto the page's white; only its icon takes the blue. A folded team holding
-  // it carries the same lift.
+  // Where you are, lifted onto the page's white, its icon in the row's full ink. A folded team
+  // holding it carries the same lift.
   &[aria-current='page'],
   &[data-holds] {
     background: var(--surface-raised);
@@ -139,7 +144,7 @@ $gap: var(--space-2);
     font-weight: 600;
 
     > svg {
-      color: var(--accent-text);
+      color: var(--ink);
     }
   }
 

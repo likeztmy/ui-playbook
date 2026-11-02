@@ -98,8 +98,11 @@ export function PostExample() {
         {DECISIONS.map((d, i) => (
           <li key={d.spot} className={s.decision} data-active={spot === d.spot ? '' : undefined}>
             <span className={s.number}>{i + 1}</span>
-            <span className={s.text}>{d.text}</span>
-            <Button size="sm" onClick={() => show(d)}>
+            <span id={`decision-${d.spot}`} className={s.text}>
+              {d.text}
+            </span>
+            {/* Ten of them on the page: each names its number, as it reads beside it, and points at its decision. */}
+            <Button size="sm" aria-label={`Show decision ${i + 1}`} aria-describedby={`decision-${d.spot}`} onClick={() => show(d)}>
               Show
             </Button>
           </li>

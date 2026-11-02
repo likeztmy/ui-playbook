@@ -31,10 +31,11 @@ const ROWS = [
   { tone: 'success', label: 'Payment received' },
 ] as const;
 
+// Short names for the segments, as colour science abbreviates them; the frame's caption spells each out.
 const VISIONS: { value: Vision; label: string }[] = [
   { value: 'typical', label: 'Typical' },
-  { value: 'deuteranopia', label: 'Deuteranopia' },
-  { value: 'protanopia', label: 'Protanopia' },
+  { value: 'deuteranopia', label: 'Deutan' },
+  { value: 'protanopia', label: 'Protan' },
 ];
 
 /** The same three statuses twice, seen through a colour-blind eye: same lightness, or lightness apart. */

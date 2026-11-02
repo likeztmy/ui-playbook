@@ -96,30 +96,18 @@
   font-variant-numeric: tabular-nums;
 }
 
-// Straddles the header's bottom edge, over no row's text.
+// Straddles the header's bottom edge, over no row's text. As in Post: a secondary button on a
+// raised plate, its ground under the button's translucent fill.
 .pill {
   position: absolute;
   top: 24px;
   left: 50%;
   z-index: 1;
-  height: 24px;
-  padding: 0 var(--space-3);
-  border: 0;
-  border-radius: 999px;
-  background: var(--ink);
-  color: var(--surface);
-  font: inherit;
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 24px;
+  display: flex;
+  border-radius: var(--radius-full);
+  background: var(--surface-raised);
   box-shadow: var(--shadow-md);
   translate: -50% 0;
-  cursor: pointer;
-
-  &:focus-visible {
-    outline: none;
-    box-shadow: var(--focus-ring);
-  }
 }
 
 .status {

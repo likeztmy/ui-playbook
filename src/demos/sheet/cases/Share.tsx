@@ -5,7 +5,7 @@ import { Sheet } from '../../../ui/Sheet';
 import s from '../sheet.module.scss';
 import c from './cases.module.scss';
 
-const ic = { size: 16, strokeWidth: 1.5, 'aria-hidden': true } as const;
+const ic = { size: 16, 'aria-hidden': true } as const;
 const ACTIONS = [
   { label: 'Copy link', done: 'Link copied', icon: Link },
   { label: 'Message', done: 'Sent in Messages', icon: MessageCircle },
@@ -45,11 +45,7 @@ export function Share() {
       <Sheet.Popup title="Share" finalFocus={trigger}>
         <div className={c.stack}>
           {ACTIONS.map((x) => (
-            <Sheet.Close
-              key={x.label}
-              render={<Button variant="ghost" className={c.action} />}
-              onClick={() => setDone(x.done)}
-            >
+            <Sheet.Close key={x.label} render={<Button variant="ghost" className={c.action} />} onClick={() => setDone(x.done)}>
               <x.icon {...ic} />
               {x.label}
             </Sheet.Close>

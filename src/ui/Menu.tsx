@@ -30,7 +30,7 @@ function Popup({ side = 'bottom', align = 'start', sub, className, ...props }: P
 
 function KeyGlyph({ k }: { k: string }) {
   const Icon = KEY_ICON[k];
-  return Icon ? <Icon size={12} strokeWidth={1.25} nonScalingStroke aria-label={k} /> : <>{k}</>;
+  return Icon ? <Icon size={12} aria-label={k} /> : <>{k}</>;
 }
 
 /**
@@ -68,7 +68,7 @@ type RowProps = {
 function CheckSlot({ on }: { on: boolean }) {
   return (
     <span className={s.check} data-off={on ? undefined : ''}>
-      <Check size={16} strokeWidth={1.75} nonScalingStroke aria-hidden />
+      <Check size={16} aria-hidden />
     </span>
   );
 }
@@ -149,17 +149,20 @@ function Submenu({ icon, label, children, className }: SubmenuProps) {
 
 type RadioItemProps = Omit<ComponentProps<typeof BaseMenu.RadioItem>, 'children'> & {
   children: string;
+  /** The value's own mark (a status icon, priority bars), after the check column. Plain values go without. */
+  icon?: LucideIcon;
   /** Trailing, muted: a count that belongs to the value, such as a folder's unread, or a swatch. */
   detail?: ReactNode;
 };
 
 /** One value in a choice menu (Sort by, View as). Picking it closes the menu. */
-function RadioItem({ children, detail, className, closeOnClick = true, ...props }: RadioItemProps) {
+function RadioItem({ children, icon: Icon, detail, className, closeOnClick = true, ...props }: RadioItemProps) {
   return (
     <BaseMenu.RadioItem {...props} closeOnClick={closeOnClick} label={children} className={cx(s.item, className as string)}>
       <BaseMenu.RadioItemIndicator keepMounted className={s.check}>
-        <Check size={16} strokeWidth={1.75} nonScalingStroke aria-hidden />
+        <Check size={16} aria-hidden />
       </BaseMenu.RadioItemIndicator>
+      {Icon && <Icon className={s.icon} size={16} aria-hidden />}
       <span className={s.text}>{children}</span>
       {detail !== undefined && <span className={s.detail}>{detail}</span>}
     </BaseMenu.RadioItem>

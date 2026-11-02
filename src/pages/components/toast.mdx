@@ -42,11 +42,11 @@ Hovering or focusing a toast pauses its clock; F6 moves keyboard focus into the 
 | Part | Token | Value |
 | --- | --- | --- |
 | Shape | `surface-raised`, `shadow-lg`, `radius-full` | pill |
-| Height | button 32 + inset 4 × 2 | 40 |
+| Height | button 32 + inset 4 × 2; grows with a second line | 40 |
 | Inset | `space-1`; `space-4` before the text | 4 |
-| Width | fits the text, 320 to 440 | 320 |
+| Width | fits the text, 320 to 440; never wider than the screen | 320 |
 | Icon | Lucide 16 in the kind's colour | 16 |
-| Text | 14 / 20, `ink`, one line | 14 |
+| Text | 14 / 20, `ink`; wraps to a second line, then truncates; a failure shows it all | 14 |
 | Actions | one pill button, then Dismiss | 32 |
 | Place | bottom centre, `z-toast` | 300 |
 
@@ -58,7 +58,7 @@ Toasts rise 8px out of `enter-scale` on the smooth spring and leave in `duration
 
 - **Errors that disappear.** A failure people have to act on stays until they close it, and is announced at once.
 - **Toasts as the only feedback.** A screen reader hears it; a sighted user looking elsewhere may not. The page itself should show the change.
-- **Links and paragraphs.** One line, one action. If it needs more, it isn't a toast.
+- **Links and paragraphs.** A sentence and one action. If it needs more, it isn't a toast.
 - **Toasts on page load.** Nobody has done anything yet; there's nothing to confirm.
 
 ## Copy

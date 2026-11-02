@@ -5,7 +5,7 @@ import type { DraftFile } from './draft';
 import { fileType } from './model';
 import s from './Uploads.module.scss';
 
-const ic = { size: 16, strokeWidth: 1.5, nonScalingStroke: true, 'aria-hidden': true } as const;
+const ic = { size: 16, 'aria-hidden': true } as const;
 
 /** A draft's files: each card fills with its own upload, then says what it is. */
 export function Uploads({ files, onRemove }: { files: DraftFile[]; onRemove: (id: string) => void }) {

@@ -236,7 +236,6 @@
   }
 }
 
-
 // A static card that lifts on hover anyway.
 .fakeLift:hover {
   scale: var(--hover-lift);
@@ -263,7 +262,8 @@
 // Solid status badges with white text.
 .solidBadge {
   background: var(--tone, var(--ink-muted)) !important;
-  color: var(--on-accent) !important;
+  // The page's own ground as ink: white on light tones' dark fills, near-black on dark tones' light ones.
+  color: var(--surface) !important;
 }
 
 // Not a mistake: a view of the page as someone who sees no colour.
@@ -346,7 +346,8 @@
 }
 
 // Hover in the selection's tint.
-.tintHover:hover {
+.tintHover:hover,
+.tintHover[data-hover] {
   background: var(--accent-soft) !important;
 }
 
@@ -360,7 +361,6 @@
 .blueText {
   color: var(--accent-text) !important;
 }
-
 
 // A notice dressed as a promotion: a bright band, a sparkle, a close button.
 .promoBand {

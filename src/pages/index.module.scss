@@ -12,8 +12,6 @@
   align-items: baseline;
   justify-content: space-between;
   margin-bottom: var(--space-4);
-  padding-bottom: var(--space-2);
-  border-bottom: 1px solid var(--line);
 }
 
 .groupTitle {
@@ -40,71 +38,35 @@
   }
 }
 
-// Card: radius-lg; the header row is the link, the stage is live.
+// The kit's Card (src/ui/Card): a frame around a grey stage, words beneath, the whole card lifting
+// under the pointer. These add what a gallery card needs on top.
 .card {
-  position: relative;
-  display: flex;
-  flex-direction: column;
   min-width: 0;
-  border-radius: var(--radius-lg);
-  background: var(--surface);
-  box-shadow: var(--shadow-xs);
 
   &[hidden] {
     display: none;
   }
-
-  // The whole card is its title's link: one target, one focus ring around the card.
-  &:has(.cardHead:focus-visible) {
-    box-shadow: var(--focus-ring);
-  }
 }
 
-.cardHead {
+.cardStage {
+  // One height for every stage, so the words line up across a row.
+  height: 284px;
+  padding: var(--space-6) var(--space-2);
+}
+
+.cardWords {
+  padding: var(--space-3) var(--space-2) var(--space-1);
+}
+
+.cardTitleRow {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: var(--space-2);
-  padding: var(--space-3) var(--space-4);
-  border-bottom: 1px solid var(--line);
-  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-  color: var(--ink);
-  transition: background-color var(--duration-fast) var(--ease-out);
-
-  &::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-  }
-
-  &:focus-visible {
-    box-shadow: none;
-  }
-
-  .card:hover & {
-    background: var(--fill-hover);
-    transition-duration: var(--duration-instant);
-  }
-
-  &:focus-visible {
-    box-shadow: var(--focus-ring);
-  }
-}
-
-.cardTitle {
-  // One line, so every card's stage starts on one line across the row; the page has it in full.
-  min-width: 0;
-  overflow: hidden;
-  font-size: 15px;
-  line-height: 22px;
-  font-weight: 600;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .cardMeta {
-  // The count stays one line; a long title wraps beside it instead.
+  // The count stays one line; the title truncates beside it.
   flex: none;
   white-space: nowrap;
   font-size: 12px;
@@ -113,20 +75,8 @@
   font-variant-numeric: tabular-nums;
 }
 
-.cardStage {
-  display: grid;
-  place-items: center;
-  // One height for every stage, so summaries line up across a row too.
-  height: 300px;
-  overflow: hidden;
-  padding: var(--space-6) var(--space-4);
-  background: var(--bg);
-}
-
 .cardSummary {
-  margin: 0;
-  padding: var(--space-3) var(--space-4);
-  border-top: 1px solid var(--line);
+  margin: var(--space-1) 0 0;
   font-size: 13px;
   line-height: 18px;
   color: var(--ink-muted);

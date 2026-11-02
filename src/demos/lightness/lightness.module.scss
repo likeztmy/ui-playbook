@@ -71,7 +71,7 @@
 .ratio {
   color: var(--ink-muted);
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12px;
   font-variant-numeric: tabular-nums;
 
   &[data-fails] {
@@ -118,7 +118,7 @@
 .stepName {
   color: var(--ink-muted);
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12px;
   font-variant-numeric: tabular-nums;
 }
 
@@ -385,7 +385,7 @@
   align-items: center;
   gap: 2px;
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12px;
   font-variant-numeric: tabular-nums;
 
   [data-fails] {

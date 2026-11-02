@@ -3,6 +3,7 @@ import { useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } f
 import { Button } from '../ui/Button';
 import { cx } from '../ui/cx';
 import { TextField } from '../ui/Field';
+import { SearchIcon } from '../ui/icons';
 import { Compare, localized, useLang } from './shell';
 import { zh as ZH } from './shift.zh';
 import m from './mistakes.module.scss';
@@ -199,18 +200,21 @@ export function DocSearch({ keep }: { keep?: boolean }) {
   return (
     <Measured status={opened && `Opened “${opened}”`}>
       <div className={s.docSearch}>
-        <input
-          className={s.docSearchInput}
-          role="combobox"
-          aria-label="Search docs"
-          aria-expanded
-          aria-controls={`${id}-list`}
-          aria-activedescendant={rows[active] ? `${id}-${active}` : undefined}
-          placeholder="Search docs"
-          value={q}
-          onChange={(e) => type(e.target.value)}
-          onKeyDown={onKey}
-        />
+        <div className={s.docSearchBox}>
+          <SearchIcon className={s.docSearchIcon} />
+          <input
+            className={s.docSearchInput}
+            role="combobox"
+            aria-label="Search docs"
+            aria-expanded
+            aria-controls={`${id}-list`}
+            aria-activedescendant={rows[active] ? `${id}-${active}` : undefined}
+            placeholder="Search docs"
+            value={q}
+            onChange={(e) => type(e.target.value)}
+            onKeyDown={onKey}
+          />
+        </div>
         <div className={s.docSearchList} role="listbox" id={`${id}-list`} aria-label="Pages">
           {groups.map((g) => (
             <div key={g.name} role="group" aria-labelledby={`${id}-${g.name}`} className={s.docSearchGroup}>
@@ -360,7 +364,7 @@ function Members({ stable }: { stable?: boolean }) {
   const thumb = scrolls ? (VIEW / content) * VIEW : 0;
   return (
     <div className={s.members}>
-      <TextField label="Filter members" placeholder="Name" value={q} onValueChange={setQ} />
+      <TextField label="Filter members" value={q} onValueChange={setQ} />
       <div className={s.membersBox} data-gutter={scrolls || stable ? '' : undefined}>
         <div className={s.membersList} tabIndex={0} role="region" aria-label="Members" onScroll={(e) => setTop(e.currentTarget.scrollTop)}>
           {shown.map(([name, role]) => (

@@ -1,13 +1,15 @@
-import { Archive, Copy, Pencil, Trash2 } from 'lucide-react';
+import { Archive, Copy, Ellipsis, Pencil, Trash2 } from 'lucide-react';
+import { cx } from '../../ui/cx';
+import { menuClasses as ms, RowContent } from '../../ui/Menu';
 import { Compare } from '../shell';
 import s from './shadow.module.scss';
 
-const ic = { size: 14, strokeWidth: 1.5, nonScalingStroke: true, 'aria-hidden': true } as const;
-const FILES = ['Q4 roadmap', 'Brand guide', 'Metrics', 'Onboarding'];
+const FILES = ['Q4 roadmap', 'Brand guide', 'Metrics', 'Onboarding', 'Pricing', 'Hiring plan'];
 
 /**
  * A file list with a row's menu open. `everywhere` gives every part its own shadow, as a page does
  * when shadow is a style; otherwise only the menu, the one thing lying over the rest, casts one.
+ * The menu is drawn from Menu's own parts, so it keeps Menu's rows, icons and last group.
  */
 function Files({ everywhere }: { everywhere?: boolean }) {
   return (
@@ -20,24 +22,23 @@ function Files({ everywhere }: { everywhere?: boolean }) {
         <div key={f} className={s.fileRow} data-open={i === 1 ? '' : undefined}>
           <span className={s.fileIcon} />
           <span>{f}</span>
-          <span className={s.fileMore}>···</span>
+          <Ellipsis className={s.fileMore} size={16} aria-hidden />
         </div>
       ))}
-      <div className={s.fileMenu} role="presentation">
-        {[
-          ['Rename', Pencil],
-          ['Duplicate', Copy],
-          ['Archive', Archive],
-          ['Delete', Trash2],
-        ].map(([label, Icon]) => {
-          const I = Icon as typeof Pencil;
-          return (
-            <span key={label as string} className={s.fileMenuItem}>
-              <I {...ic} />
-              {label as string}
-            </span>
-          );
-        })}
+      <div className={cx(ms.popup, s.fileMenu)} role="presentation">
+        <div className={ms.item}>
+          <RowContent icon={Pencil}>Rename</RowContent>
+        </div>
+        <div className={ms.item}>
+          <RowContent icon={Copy}>Duplicate</RowContent>
+        </div>
+        <div className={ms.item}>
+          <RowContent icon={Archive}>Archive</RowContent>
+        </div>
+        <div className={ms.separator} />
+        <div className={cx(ms.item, ms.danger)}>
+          <RowContent icon={Trash2}>Delete</RowContent>
+        </div>
       </div>
     </div>
   );

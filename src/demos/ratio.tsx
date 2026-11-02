@@ -66,10 +66,9 @@ export const RatioScene = localized(function RatioScene() {
       beforeNote="Each date header has as much space above it as below. “Yesterday” is as close to Today’s last message as to its own first one, so it reads as neither the end of one group nor the start of the next."
       afterNote={
         <>
-          The same space, split unevenly: most of it above the header, little below, so the header joins the messages it names.
-          Grouping by nearness follows the ratio of the gaps; in Kubovy’s dot lattices, once one spacing was about 1.6 times the other,
-          people almost never grouped along it (
-          <a href="https://doi.org/10.1006/cogp.1997.0673">Kubovy, Holcombe &amp; Wagemans, 1998</a>).
+          The same space, split unevenly: most of it above the header, little below, so the header joins the messages it names. Grouping by nearness
+          follows the ratio of the gaps; in Kubovy’s dot lattices, once one spacing was about 1.6 times the other, people almost never grouped along
+          it (<a href="https://doi.org/10.1006/cogp.1997.0673">Kubovy, Holcombe &amp; Wagemans, 1998</a>).
         </>
       }
     />
@@ -145,9 +144,8 @@ export const RatioRegion = localized(function RatioRegion() {
       beforeNote="The stripes alternate every line, so a transaction’s name and its details sit in different bands. Nothing but the fill differs: the spacing keeps each pair together, and the stripes pull them apart."
       afterNote={
         <>
-          The stripes alternate every transaction. A shared background groups what it holds more strongly than nearness, and the smallest
-          enclosing area wins (
-          <a href="https://doi.org/10.1016/0010-0285(92)90014-S">Palmer, 1992</a>; reaction-time evidence reviewed in{' '}
+          The stripes alternate every transaction. A shared background groups what it holds more strongly than nearness, and the smallest enclosing
+          area wins (<a href="https://doi.org/10.1016/0010-0285(92)90014-S">Palmer, 1992</a>; reaction-time evidence reviewed in{' '}
           <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3482144/">Wagemans et al., 2012</a>).
         </>
       }
@@ -162,7 +160,7 @@ const STREAM = [
   ['Build Bot', 'Deploy to production failed', '9:41'],
   ['Mira Okafor', 'Q4 roadmap: final draft', '9:30'],
   ['Build Bot', 'Nightly tests passed', '6:00'],
-  ['Northwind Billing', 'Invoice #2041 is ready', '5:12'],
+  ['Northwind', 'Invoice #2041 is ready', '5:12'],
 ] as const;
 
 /** One-line rows. `ragged` starts each subject wherever its sender ends. */
@@ -191,9 +189,9 @@ export const RatioEdge = localized(function RatioEdge() {
       beforeNote="Each subject starts where its sender’s name ends, so every line’s news begins at a different place and the eye hunts for it on each return."
       afterNote={
         <>
-          Subjects share one left edge, as wide as the longest sender. When many lines open with the same words, readers learn to skip them
-          (NN/g’s <a href="https://www.nngroup.com/articles/f-shaped-pattern-reading-web-content/">bypassing pattern</a>); a fixed
-          edge lets the skip land in the same place every time.
+          Subjects share one left edge, as wide as the longest sender. When many lines open with the same words, readers learn to skip them (NN/g’s{' '}
+          <a href="https://www.nngroup.com/articles/f-shaped-pattern-reading-web-content/">bypassing pattern</a>); a fixed edge lets the skip land in
+          the same place every time.
         </>
       }
     />

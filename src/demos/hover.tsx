@@ -1,9 +1,10 @@
-import { ChevronRight, Ellipsis, FileText } from 'lucide-react';
-import { useRef, useState, type CSSProperties } from 'react';
+import { ChevronRight, Ellipsis } from 'lucide-react';
+import { Fragment, useRef, useState, type CSSProperties } from 'react';
 import { Button } from '../ui/Button';
-import { Checkbox } from '../ui/Checkbox';
 import { cx } from '../ui/cx';
 import { Menu, menuClasses as ms } from '../ui/Menu';
+import { Switch } from '../ui/Switch';
+import { Tip } from '../ui/Tooltip';
 import { Compare } from './shell';
 import s from './demos.module.scss';
 
@@ -99,21 +100,24 @@ function SubmenuDemo({ aim }: { aim?: boolean }) {
       >
         <div className={cx(ms.popup, s.aimMenu)} role="presentation">
           {ROWS.map((r) => (
-            <div
-              key={r}
-              className={cx(ms.item, r === 'Delete' && ms.danger)}
-              data-highlighted={hot === r ? '' : undefined}
-              onMouseMove={(e) => onRowMove(r, e)}
-            >
-              <span className={ms.text}>{r}</span>
-              {r === 'Move to' && <ChevronRight className={ms.chevron} size={16} aria-hidden />}
-            </div>
+            <Fragment key={r}>
+              {/* Delete in a group of its own, last. */}
+              {r === 'Delete' && <div className={ms.separator} />}
+              <div
+                className={cx(ms.item, r === 'Delete' && ms.danger)}
+                data-highlighted={hot === r ? '' : undefined}
+                onMouseMove={(e) => onRowMove(r, e)}
+              >
+                <span className={ms.text}>{r}</span>
+                {r === 'Move to' && <ChevronRight className={ms.chevron} size={16} aria-hidden />}
+              </div>
+            </Fragment>
           ))}
         </div>
         {open && (
           <div
             ref={sub}
-            className={cx(ms.popup, s.aimSub)}
+            className={cx(ms.popup, ms.subPopup, s.aimSub)}
             role="presentation"
             onMouseEnter={() => {
               clearTimeout(timer.current);
@@ -139,7 +143,7 @@ function SubmenuDemo({ aim }: { aim?: boolean }) {
         <span className={s.aimStatus} aria-live="polite">
           {moved ? `Moved to ${moved}` : ' '}
         </span>
-        {aim && <Checkbox label="Show the safe area" checked={showArea} onCheckedChange={setShowArea} />}
+        {aim && <Switch label="Show the safe area" checked={showArea} onCheckedChange={setShowArea} />}
       </div>
     </div>
   );
@@ -168,39 +172,55 @@ export function HoverSubmenu() {
 
 // ── Actions that appear on hover ─────────────────────────
 
+// What each file's first page says, for its thumbnail.
+const PAGES: Record<string, string[]> = {
+  'Q4 roadmap': ['Ship the new checkout', 'Search across the catalogue', 'Offline cart on iOS', 'Retire the old payments flow'],
+  'Brand guide': ['Logo and clear space', 'Colour', 'Type', 'Photography'],
+};
+
 /** A file card whose More button appears on hover. `owner` is what owns the hover. */
 function FileTile({ name, owner }: { name: string; owner: 'content' | 'card' }) {
   const [hover, setHover] = useState(false);
   const [menu, setMenu] = useState(false);
   const shown = hover || menu;
   const watch = { onMouseEnter: () => setHover(true), onMouseLeave: () => setHover(false) };
+  const label = `More actions for ${name}`;
   return (
     <div className={s.tile} {...(owner === 'card' ? watch : {})}>
       <div className={s.tileContent} {...(owner === 'content' ? watch : {})}>
+        {/* The file's first page, scaled down: a picture of it, not text to read. */}
         <span className={s.tileThumb} aria-hidden>
-          <FileText size={20} />
+          <span className={s.tilePage}>
+            <span className={s.tilePageTitle}>{name}</span>
+            {PAGES[name].map((line) => (
+              <span key={line}>{line}</span>
+            ))}
+          </span>
         </span>
         <span className={s.tileName}>{name}</span>
       </div>
       <Menu.Root onOpenChange={setMenu}>
-        <Menu.Trigger
-          render={
-            <Button
-              variant="ghost"
-              size="sm"
-              icon
-              aria-label={`More actions for ${name}`}
-              className={s.tileMore}
-              data-shown={shown ? '' : undefined}
-              data-quiet={owner === 'card' ? '' : undefined}
-            >
-              <Ellipsis size={16} strokeWidth={1.5} nonScalingStroke aria-hidden />
-            </Button>
-          }
-        />
+        <Tip label={label}>
+          <Menu.Trigger
+            render={
+              <Button
+                variant="ghost"
+                size="sm"
+                icon
+                aria-label={label}
+                className={s.tileMore}
+                data-shown={shown ? '' : undefined}
+                data-quiet={owner === 'card' ? '' : undefined}
+              >
+                <Ellipsis size={16} aria-hidden />
+              </Button>
+            }
+          />
+        </Tip>
         <Menu.Popup align="end">
           <Menu.Item>Rename</Menu.Item>
           <Menu.Item>Duplicate</Menu.Item>
+          <Menu.Separator />
           <Menu.Item danger>Delete</Menu.Item>
         </Menu.Popup>
       </Menu.Root>
@@ -244,14 +264,14 @@ export function HoverPreview() {
           </div>
         ))}
       </div>
-      <div className={cx(ms.popup, s.aimSub)}>
+      <div className={cx(ms.popup, ms.subPopup, s.aimSub)}>
         {FOLDERS.map((f) => (
           <div key={f} className={ms.item}>
             <span className={ms.text}>{f}</span>
           </div>
         ))}
       </div>
-      <div className={s.aimArea} style={{ clipPath: 'polygon(120px 52px, 166px 32px, 166px 176px)' }} />
+      <div className={s.aimArea} style={{ clipPath: 'polygon(110px 52px, 156px 32px, 156px 168px)' }} />
     </div>
   );
 }

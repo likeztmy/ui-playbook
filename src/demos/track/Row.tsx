@@ -1,6 +1,7 @@
 import { ListTree } from 'lucide-react';
 import type { MouseEvent } from 'react';
 import { Checkbox } from '../../ui/Checkbox';
+import { Tip } from '../../ui/Tooltip';
 import { AssigneePicker } from './AssigneePicker';
 import { Face } from './Face';
 import { PrMark } from './PrMark';
@@ -86,9 +87,7 @@ export function Row({ issue, track, onOpen }: RowProps) {
       />
       {/* Its labels follow the title, so what it is reads as one phrase and the right edge stays a column. */}
       <span className={s.what}>
-        <span className={s.title}>
-          {issue.title}
-        </span>
+        <span className={s.title}>{issue.title}</span>
         {issue.labels.map((l) => (
           <span key={l} className={s.label}>
             {l}
@@ -97,10 +96,12 @@ export function Row({ issue, track, onOpen }: RowProps) {
       </span>
       <span className={s.progress}>
         {steps.length > 0 && (
-          <span className={s.steps} title={`${done} of ${steps.length} sub-issues done`}>
-            <ListTree size={14} strokeWidth={1.5} aria-hidden />
-            {done}/{steps.length}
-          </span>
+          <Tip label={`${done} of ${steps.length} sub-issues done`}>
+            <span className={s.steps}>
+              <ListTree size={14} aria-hidden />
+              {done}/{steps.length}
+            </span>
+          </Tip>
         )}
         {pr && <PrMark pr={pr} />}
       </span>
@@ -114,9 +115,11 @@ export function Row({ issue, track, onOpen }: RowProps) {
           </button>
         }
       />
-      <time className={s.time} dateTime={issue.updated} title={fullTime(issue.updated)}>
-        {ago(issue.updated)}
-      </time>
+      <Tip label={fullTime(issue.updated)}>
+        <time className={s.time} dateTime={issue.updated}>
+          {ago(issue.updated)}
+        </time>
+      </Tip>
     </div>
   );
 }

@@ -10,7 +10,7 @@ export const FLOURISH = 450;
 /** The brief way: the row closes up, and the next press counts at once. */
 export const BRIEF = 120;
 
-const ic = { size: 16, strokeWidth: 1.5, nonScalingStroke: true, 'aria-hidden': true } as const;
+const ic = { size: 16, 'aria-hidden': true } as const;
 
 /** Thirty messages and an Archive button that takes the top one. */
 export function Inbox({ flourish }: { flourish?: boolean }) {

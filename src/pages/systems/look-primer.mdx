@@ -14,9 +14,12 @@ A developer tool, or anything used beside GitHub, where people should feel at ho
 
 - **One accent.** GitHub's primary button is green (`button-primary-bgColor-rest`, #1f883d; #238636 in dark) while blue marks focus, selection and links. The look keeps blue for all of them, as the playbook's one accent ([Colour means one thing](/principles/colour-means-one-thing)). To match GitHub, give the primary button the green and leave the rest.
 - **Field edges at 3:1.** Primer draws a field's border in `borderColor-default`, about 1.4:1 on white. A field's edge is all that says it takes input, so this look uses `borderColor-emphasis` (WCAG 2.2, [1.4.11](https://www.w3.org/TR/WCAG22/#non-text-contrast)).
+- **Success and attention text a step darker on light.** On `bgColor-accent-muted`, a selected row's fill, Primer's #1a7f37 and #9a6700 are 4.46 and 4.28:1; a step darker holds 4.5:1.
 - **Motion's length is the playbook's.** Primer publishes a scale of durations without saying which is for what, so `duration-fast` stays 120ms; the curve is Primer's `easeOut`.
 
 ## Values
+
+Each text colour's note gives its lowest contrast in each theme, against the four surfaces and `accent-soft` laid on each (a status colour also on its own soft fill). Text holds 4.5:1; `line-strong` and the focus ring, 3:1.
 
 <Look id="primer" part="values" />
 

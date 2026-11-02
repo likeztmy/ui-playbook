@@ -102,7 +102,6 @@
   gap: var(--space-2);
   height: 48px;
   padding: 0 var(--space-2) 0 var(--space-4);
-  border-bottom: 1px solid var(--line);
 }
 
 .barTitle {
@@ -127,13 +126,30 @@
 }
 
 .issue {
+  position: relative;
   display: flex;
   align-items: center;
   gap: var(--space-2);
   height: 36px;
   padding: 0 var(--space-4);
-  border-bottom: 1px solid var(--line);
   font-size: 13px;
+
+  // A line between rows only, from the title's edge (16 + icon 14 + gap 8),
+  // a step lighter than an edge.
+  & + &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: calc(var(--space-4) + 14px + var(--space-2));
+    height: 1px;
+    background: color-mix(in oklab, var(--line), transparent 40%);
+  }
+}
+
+.status {
+  display: inline-flex;
+  flex: none;
 }
 
 .issueTitle {

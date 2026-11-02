@@ -1,3 +1,4 @@
+import { CheckIcon, CrossIcon } from '../../ui/icons';
 import { Frame } from '../shell';
 import { Lifted } from './Lifted';
 import s from './shadow.module.scss';
@@ -29,7 +30,10 @@ export function ShadowDesks() {
         {WAYS.map((w) => (
           <figure key={w.name} className={s.way}>
             <Lifted shadow={w.shadow} surface={w.surface} />
-            <figcaption data-verdict={w.verdict}>{w.name}</figcaption>
+            <figcaption data-verdict={w.verdict}>
+              {w.verdict === 'good' ? <CheckIcon size={14} /> : <CrossIcon size={14} />}
+              {w.name}
+            </figcaption>
           </figure>
         ))}
       </div>

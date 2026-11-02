@@ -56,6 +56,23 @@ function toMarkdown(site) {
           return `- **${tone}: ${label ? text(label) : ''}.**${note ? ` ${inline(note).trim()}` : ''}`;
         })
         .join('\n');
+    // A gallery: each variant's name and what it's for. The live instance stays on the page.
+    const rows = [...el.querySelectorAll('[class*="_galleryRow_"]')];
+    if (rows.length)
+      return rows
+        .map((row) => {
+          const name = row.querySelector('[class*="_galleryName_"]');
+          const use = row.querySelector('[class*="_galleryUse_"]');
+          return `- **${name ? text(name) : ''}.**${use ? ` ${inline(use).trim()}` : ''}`;
+        })
+        .join('\n');
+    // A state grid: which variants it pins, in which states.
+    const cells = [...el.querySelectorAll('[class*="_cell_"][data-state]')];
+    if (cells.length) {
+      const states = [...new Set(cells.map((c) => c.dataset.state))];
+      const names = [...el.querySelectorAll('[class*="_row_"] > [class*="_name_"]')].map(text);
+      return `- Each of ${names.join(', ')}, in every state: ${states.join(', ')}.`;
+    }
     // Without verdicts, only captions that say something on their own: a scene's name ("Variants")
     // or a live readout (`18 − 8 − 0 = 10px`) means nothing once the demo is gone.
     const says = (n) => !n.startsWith('`') && n.split(' ').length >= 5;

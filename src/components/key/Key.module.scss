@@ -1,20 +1,22 @@
 // The legend: one set of colours for the parts a page's demo names, kept apart from status
-// colours, so a keyed word means only "this part". Equal OKLCH lightness, so no part outranks
-// another. `--key-*` fill the parts; `--key-text-*` colour the words, lighter on dark, each
-// ≥ 4.5:1 on the page.
+// colours, so a keyed word means only "this part". Its hues sit between the ones the interface
+// has spoken for (accent and links 256, danger 33, warning 70, success 165): violet, teal and
+// magenta, so a keyed word reads neither as a link nor as an error. Equal OKLCH lightness, so no
+// part outranks another. `--key-*` fill the parts; `--key-text-*` colour the words, lighter on
+// dark: 6.0, 5.4 and 6.1:1 on the light page, 8.0, 8.6 and 7.8:1 on the dark one.
 :global(:root) {
-  --key-1: oklch(0.5 0.17 258);
-  --key-2: oklch(0.52 0.13 150);
-  --key-3: oklch(0.52 0.18 25);
+  --key-1: oklch(0.5 0.16 300);
+  --key-2: oklch(0.5 0.08 205);
+  --key-3: oklch(0.5 0.16 350);
   --key-text-1: var(--key-1);
   --key-text-2: var(--key-2);
   --key-text-3: var(--key-3);
 }
 
 @mixin dark-text {
-  --key-text-1: oklch(0.72 0.13 258);
-  --key-text-2: oklch(0.74 0.14 150);
-  --key-text-3: oklch(0.72 0.15 25);
+  --key-text-1: oklch(0.74 0.13 300);
+  --key-text-2: oklch(0.74 0.1 205);
+  --key-text-3: oklch(0.74 0.13 350);
 }
 
 :global(:root[data-theme='dark']) {

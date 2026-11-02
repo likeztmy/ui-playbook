@@ -14,7 +14,11 @@
   border-radius: var(--radius-control);
   background: var(--fill-control);
   color: var(--ink);
+  // Body, 14 / 20, whatever the button sits in: a reading page's 15 / 24
+  // isn't a control's size.
   font: inherit;
+  font-size: 14px;
+  line-height: 20px;
   font-weight: 500;
   white-space: nowrap;
   cursor: pointer;
@@ -50,6 +54,20 @@
 
   @include focus {
     box-shadow: var(--focus-ring);
+  }
+
+  // A finger needs 44 × 44 whatever the button looks like: on a touch
+  // screen the target grows past a small button's edge, the drawing doesn't.
+  @media (pointer: coarse) {
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: max(100%, 44px);
+      height: max(100%, 44px);
+      translate: -50% -50%;
+    }
   }
 
   svg {

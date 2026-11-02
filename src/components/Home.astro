@@ -44,7 +44,8 @@ import { CardPreview } from '../demos/card';
 import { BadgePreview } from '../demos/badge';
 import { TablePreview } from '../demos/table';
 import { ToastPreview } from '../demos/toast';
-import { SystemPreview } from '../demos/systems';
+import { SystemPreview, type SystemSlug } from '../demos/systems';
+import { cardClasses as card } from '../ui/Card';
 import Hero from './Hero.astro';
 import s from '../pages/index.module.scss';
 
@@ -73,16 +74,13 @@ const groups = [
           <div class={s.grid}>
             {items.map((e) => (
               <article
-                class={s.card}
+                class:list={[card.card, s.card]}
+                data-interactive
                 data-card
                 data-search={[e.title, e.summary, titleIn(e, lang), summaryIn(e, lang), ...e.keywords].join(' ').toLowerCase()}
               >
-                <a class={s.cardHead} href={linkIn(href(e), lang)}>
-                  <span class={s.cardTitle} title={titleIn(e, lang)}>{titleIn(e, lang)}</span>
-                  <span class={s.cardMeta}>{e.kind === 'practice' ? t.decisions(e.details) : t.details(e.details)}</span>
-                </a>
-                {/* Something to look at, not to use: the card is one link, one Tab stop. */}
-                <div class={s.cardStage} inert>
+                {/* A picture of the page, not a control: the title and summary beneath say what it shows. */}
+                <div class:list={[card.stage, s.cardStage]} inert aria-hidden="true">
                   {e.slug === 'button' && <ButtonPreview client:visible />}
                   {e.slug === 'space-groups-by-ratio' && <RatioPreview client:visible />}
                   {e.slug === 'the-lightest-boundary-that-holds' && <BoundaryPreview />}
@@ -106,7 +104,7 @@ const groups = [
                   {e.slug === 'badge' && <BadgePreview />}
                   {e.slug === 'table' && <TablePreview />}
                   {e.slug === 'toast' && <ToastPreview />}
-                  {e.kind === 'system' && <SystemPreview system={e.slug as 'work-tool' | 'consumer-app'} />}
+                  {e.kind === 'system' && <SystemPreview system={e.slug as SystemSlug} />}
                   {e.slug === 'concentric-radius' && <ConcentricPreview />}
                   {e.slug === 'a-shadow-says-how-high' && <ShadowPreview />}
                   {e.slug === 'lightness-first' && <LightnessPreview />}
@@ -126,7 +124,18 @@ const groups = [
                   {e.slug === 'never-too-busy-to-listen' && <InterruptPreview />}
                   {e.slug === 'mail' && <PostPreview />}
                 </div>
-                <p class={s.cardSummary}>{summaryIn(e, lang)}</p>
+                {/* The title is the card's one link, stretched over the whole card: one target, one Tab stop. */}
+                <div class={s.cardWords}>
+                  <div class={s.cardTitleRow}>
+                    <h3 class={card.title} title={titleIn(e, lang)}>
+                      <a class={card.primary} href={linkIn(href(e), lang)}>
+                        {titleIn(e, lang)}
+                      </a>
+                    </h3>
+                    {e.details > 0 && <span class={s.cardMeta}>{e.kind === 'practice' ? t.decisions(e.details) : t.details(e.details)}</span>}
+                  </div>
+                  <p class={s.cardSummary}>{summaryIn(e, lang)}</p>
+                </div>
               </article>
             ))}
           </div>

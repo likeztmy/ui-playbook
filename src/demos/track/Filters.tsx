@@ -6,7 +6,7 @@ import { PEOPLE } from './people';
 import { PickMenu } from './PickMenu';
 import s from './Filters.module.scss';
 
-const ic = { size: 14, strokeWidth: 1.5, nonScalingStroke: true, 'aria-hidden': true } as const;
+const ic = { size: 14, 'aria-hidden': true } as const;
 
 /** What a filter button says: its name alone, or what it's narrowed to, two at most then a count. */
 function said(name: string, picked: string[]) {
@@ -39,7 +39,13 @@ export function Filters({ filter, onChange }: { filter: Filter; onChange: (f: Fi
         />
       )}
       {filter.label.length > 0 && (
-        <PickMenu multiple options={LABEL_OPTIONS} value={filter.label} onPick={(v) => onChange({ ...filter, label: v })} trigger={chip('Label', filter.label)} />
+        <PickMenu
+          multiple
+          options={LABEL_OPTIONS}
+          value={filter.label}
+          onPick={(v) => onChange({ ...filter, label: v })}
+          trigger={chip('Label', filter.label)}
+        />
       )}
       {filter.priority.length > 0 && (
         <PickMenu
@@ -47,7 +53,10 @@ export function Filters({ filter, onChange }: { filter: Filter; onChange: (f: Fi
           options={PRIORITY_OPTIONS}
           value={filter.priority}
           onPick={(v) => onChange({ ...filter, priority: v as Priority[] })}
-          trigger={chip('Priority', filter.priority.map((p) => priorityName(p)))}
+          trigger={chip(
+            'Priority',
+            filter.priority.map((p) => priorityName(p)),
+          )}
         />
       )}
       <Button variant="ghost" size="sm" onClick={() => onChange(NO_FILTER)}>

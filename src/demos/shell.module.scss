@@ -1,5 +1,6 @@
-// A frame sets its own background and ink so a [data-theme] on it repaints
-// the subtree. No overflow clipping: popups portal inside the frame.
+// A frame's theme switch sets [data-theme] on its stage and its popups' portal only, so the stage
+// sets its own background and ink; the label and tools above it keep the page's. No overflow
+// clipping: popups portal inside the frame.
 
 .frame {
   display: flex;
@@ -62,6 +63,14 @@
   flex: 1;
   place-items: center;
   padding: var(--space-6);
+  color: var(--ink);
+
+  // Flipped to the other theme: the stage paints its own ground. Under a band, its top corners
+  // are the frame's.
+  &[data-theme] {
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    background: var(--surface);
+  }
 }
 
 .compare {
@@ -93,17 +102,23 @@
   font-size: 13px;
   line-height: 18px;
   text-wrap: pretty;
+  color: var(--ink-muted);
 
   &:lang(zh) {
     line-height: 20px;
   }
+}
 
-  color: var(--ink-muted);
+// A stacked pair's notes run the column's full width: held to about 75 characters of 13px Geist
+// (0.449em a character), set here, not by narrowing the column.
+.stacked .note {
+  max-width: 34em;
 }
 
 .verdict {
   display: inline-flex;
-  align-items: center;
+  // A phrase that wraps keeps its mark on the first line.
+  align-items: flex-start;
   gap: var(--space-1);
   font-weight: 500;
   color: var(--danger);
@@ -113,8 +128,9 @@
   }
 
   svg {
+    flex: none;
     width: 14px;
-    height: 14px;
+    height: 1lh;
   }
 }
 
@@ -177,8 +193,8 @@
 }
 
 .head {
-  font-size: 11px;
-  line-height: 14px;
+  font-size: 12px;
+  line-height: 16px;
   font-weight: 500;
   letter-spacing: 0.02em;
   color: var(--ink-muted);
@@ -203,13 +219,14 @@
     &::after {
       content: attr(data-state);
       color: var(--ink-muted);
-      font-size: 11px;
+      font-size: 12px;
+      line-height: 16px;
     }
   }
 }
 
 // Gallery: one row per variant, its purpose on the left and a live instance
-// on the right; rows share one hairline grid.
+// on the right; rows share one hairline grid, a step lighter than the stage's edge.
 .gallery {
   display: flex;
   flex-direction: column;
@@ -225,7 +242,7 @@
   padding: var(--space-4) 0;
 
   & + & {
-    border-top: 1px solid var(--line);
+    border-top: 1px solid color-mix(in oklab, var(--line), transparent 40%);
   }
 
   @media (max-width: 640px) {
@@ -341,7 +358,7 @@
   background: var(--accent);
   color: var(--on-accent);
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 12px;
   line-height: 12px;
   white-space: nowrap;
   translate: 0 -50%;

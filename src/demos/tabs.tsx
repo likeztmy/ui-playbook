@@ -64,17 +64,17 @@ export function TabsVariants() {
         {
           name: 'Sections',
           use: 'Views of one object. Labels are nouns.',
-          render: () => <ProjectTabs tabs={PROJECT.map((t) => ({ ...t, count: undefined }))} panels={false} />,
+          render: () => <ProjectTabs tabs={PROJECT.map((t) => ({ ...t, count: undefined }))} />,
         },
         {
           name: 'With counts',
           use: 'How much is behind a tab, when that’s why you’d open it.',
-          render: () => <ProjectTabs panels={false} />,
+          render: () => <ProjectTabs />,
         },
         {
           name: 'Overflowing',
           use: 'More than fit: the row scrolls sideways. Past about six, rethink.',
-          render: () => <ProjectTabs tabs={MANY} panels={false} listClass={s.narrowTabs} />,
+          render: () => <ProjectTabs tabs={MANY} listClass={s.narrowTabs} />,
         },
       ]}
     />
@@ -131,7 +131,9 @@ export function TabsIndicator() {
       after={<ProjectTabs panels={false} />}
       beforeNote={
         <>
-          The current tab is the one place you can’t usefully click, yet it’s the bluest thing in the row. <a href="https://github.com/material-components/material-components-android/blob/master/docs/components/Tabs.md">Material</a> draws it in the primary colour.
+          The current tab is the one place you can’t usefully click, yet it’s the bluest thing in the row.{' '}
+          <a href="https://github.com/material-components/material-components-android/blob/master/docs/components/Tabs.md">Material</a> draws it in
+          the primary colour.
         </>
       }
       afterNote={

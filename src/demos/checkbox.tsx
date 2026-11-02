@@ -3,6 +3,7 @@ import { Checkbox, CheckboxGroup, checkboxClasses as cs } from '../ui/Checkbox';
 import { Compare, Frame, Gallery, StateGrid, statePin, type State } from './shell';
 import m from './mistakes.module.scss';
 import s from './demos.module.scss';
+import cl from './checkbox.module.scss';
 
 const ACTIVITY = [
   { value: 'comments', label: 'Comments' },
@@ -37,9 +38,9 @@ const FILES = ['Brief.pdf', 'Moodboard.fig', 'Notes.md'];
 function FileList() {
   const [picked, setPicked] = useState(['Moodboard.fig']);
   return (
-    <div className={s.checkList}>
+    <div className={cl.list}>
       {FILES.map((f) => (
-        <div key={f} className={s.checkListRow}>
+        <div key={f} className={cl.row}>
           <Checkbox
             aria-label={`Select ${f}`}
             checked={picked.includes(f)}
@@ -64,9 +65,7 @@ export function CheckboxVariants() {
         {
           name: 'With description',
           use: 'A line under the label for the consequence, not a restatement.',
-          render: () => (
-            <Checkbox label="Allow comments" description="Anyone with the link can reply." />
-          ),
+          render: () => <Checkbox label="Allow comments" description="Anyone with the link can reply." />,
         },
         {
           name: 'Group',
@@ -97,9 +96,7 @@ export function CheckboxVariants() {
 export function CheckboxStates() {
   const row = (name: string, props: { checked?: boolean; indeterminate?: boolean }) => ({
     name,
-    render: (state: State) => (
-      <Checkbox {...props} label="Option" pin={statePin[state]} disabled={state === 'Disabled'} />
-    ),
+    render: (state: State) => <Checkbox {...props} label="Option" pin={statePin[state]} disabled={state === 'Disabled'} />,
   });
   return <StateGrid rows={[row('Off', { checked: false }), row('On', { checked: true }), row('Mixed', { checked: false, indeterminate: true })]} />;
 }
@@ -152,11 +149,7 @@ function NaiveParent() {
   return (
     <div className={cs.group}>
       <span className={cs.groupLabel}>Email me about</span>
-      <Checkbox
-        label="All activity"
-        checked={some}
-        onCheckedChange={(on) => setValue(on ? ALL : [])}
-      />
+      <Checkbox label="All activity" checked={some} onCheckedChange={(on) => setValue(on ? ALL : [])} />
       <div className={cs.children}>
         {ACTIVITY.map((a) => (
           <Checkbox

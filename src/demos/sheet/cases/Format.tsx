@@ -5,7 +5,7 @@ import { Sheet } from '../../../ui/Sheet';
 import s from '../sheet.module.scss';
 import c from './cases.module.scss';
 
-const ic = { size: 16, strokeWidth: 2, 'aria-hidden': true } as const;
+const ic = { size: 16, 'aria-hidden': true } as const;
 const STYLES = [
   { id: 'bold', label: 'Bold', icon: Bold },
   { id: 'italic', label: 'Italic', icon: Italic },
@@ -33,7 +33,7 @@ export function Format() {
       <Sheet.Popup title="Format" initialFocus={false}>
         <div className={c.tools}>
           {STYLES.map((x) => (
-            <Button key={x.id} icon aria-label={x.label} aria-pressed={on.includes(x.id)} onClick={() => toggle(x.id)}>
+            <Button key={x.id} icon label={x.label} aria-pressed={on.includes(x.id)} onClick={() => toggle(x.id)}>
               <x.icon {...ic} />
             </Button>
           ))}

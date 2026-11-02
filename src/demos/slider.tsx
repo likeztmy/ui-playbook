@@ -8,7 +8,7 @@ import s from './demos.module.scss';
 type Spec = { label: string; min: number; max: number; step: number; unit?: string; initial: number };
 
 const OPACITY: Spec = { label: 'Opacity', min: 0, max: 100, step: 1, unit: '%', initial: 64 };
-const RADIUS: Spec = { label: 'Radius', min: 0, max: 48, step: 1, initial: 12 };
+const RADIUS: Spec = { label: 'Radius', min: 0, max: 48, step: 1, unit: 'px', initial: 12 };
 const BOUNCE: Spec = { label: 'Bounce', min: 0, max: 1, step: 0.01, initial: 0.2 };
 const COLUMNS: Spec = { label: 'Columns', min: 1, max: 6, step: 1, initial: 3 };
 
@@ -31,20 +31,21 @@ function Own({ spec, className, pin, value: fixed }: { spec: Spec; className?: s
 }
 
 export function SliderLive() {
-  const [radius, setRadius] = useState(RADIUS.initial);
+  // The swatches are 24 square, so 12px already makes a circle.
+  const [radius, setRadius] = useState(6);
   const [opacity, setOpacity] = useState(OPACITY.initial);
   const [columns, setColumns] = useState(COLUMNS.initial);
   return (
     <Frame label="Properties" height={260}>
       <div className={s.settingsDemo}>
         <SliderPanel className={s.sliderPanel}>
-          <Slider label="Radius" value={radius} onValueChange={setRadius} max={48} />
+          <Slider label="Radius" value={radius} onValueChange={setRadius} max={12} unit="px" />
           <Slider label="Opacity" value={opacity} onValueChange={setOpacity} unit="%" />
           <Slider label="Columns" value={columns} onValueChange={setColumns} min={1} max={6} />
         </SliderPanel>
         <div className={s.swatchGrid} style={{ '--cols': columns } as CSSProperties} aria-label="Preview" role="img">
           {Array.from({ length: columns * 2 }, (_, i) => (
-            <span key={i} style={{ borderRadius: radius / 2, opacity: opacity / 100 }} />
+            <span key={i} style={{ borderRadius: radius, opacity: opacity / 100 }} />
           ))}
         </div>
       </div>
@@ -56,9 +57,21 @@ export function SliderVariants() {
   return (
     <Gallery
       rows={[
-        { name: 'Continuous', use: 'A value with a unit, judged by eye: opacity, size.', render: () => <Own spec={OPACITY} className={s.sliderRow} /> },
-        { name: 'Fine', use: 'A small range in hundredths. The value shows the precision.', render: () => <Own spec={BOUNCE} className={s.sliderRow} /> },
-        { name: 'Discrete', use: 'Ten stops or fewer. Ticks appear on hover; a click lands on a stop.', render: () => <Own spec={COLUMNS} className={s.sliderRow} /> },
+        {
+          name: 'Continuous',
+          use: 'A value with a unit, judged by eye: opacity, size.',
+          render: () => <Own spec={OPACITY} className={s.sliderRow} />,
+        },
+        {
+          name: 'Fine',
+          use: 'A small range in hundredths. The value shows the precision.',
+          render: () => <Own spec={BOUNCE} className={s.sliderRow} />,
+        },
+        {
+          name: 'Discrete',
+          use: 'Ten stops or fewer. Ticks appear on hover; a click lands on a stop.',
+          render: () => <Own spec={COLUMNS} className={s.sliderRow} />,
+        },
         {
           name: 'In a panel',
           use: 'Stacked in a property panel: radius-xl 18 inset 8, so each row takes radius-lg 10.',

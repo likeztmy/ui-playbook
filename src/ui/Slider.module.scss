@@ -150,8 +150,11 @@
   }
 }
 
-// A property panel of sliders: radius-xl 18, inset space-2 8.
+// A property panel of sliders: radius-xl 18, inset space-2 8. It rests on
+// the page, so a hairline holds it, not a shadow. What sits in it takes
+// 18 − 8 = radius-lg 10, a segmented control included.
 .panel {
+  --segmented-radius: var(--radius-lg);
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -159,5 +162,5 @@
   padding: var(--space-2);
   border-radius: var(--radius-xl);
   background: var(--surface);
-  box-shadow: var(--shadow-sm);
+  box-shadow: inset 0 0 0 1px var(--line);
 }

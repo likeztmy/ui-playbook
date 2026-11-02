@@ -44,16 +44,17 @@ export function AssigneePicker({ trigger, value, onPick, side = 'bottom', align 
       <Combobox.Portal container={container}>
         <Combobox.Positioner className={`${m.positioner} ${s.positioner}`} side={side} align={align} sideOffset={6}>
           <Combobox.Popup className={`${m.popup} ${s.popup}`} aria-label="Assignee">
-            <Combobox.Input className={s.input} placeholder="Assign to…" aria-label="Assign to" />
-            <Combobox.Empty className={s.empty}>No one called “{query.trim()}”</Combobox.Empty>
+            <Combobox.Input className={s.input} placeholder="Name" aria-label="Assign to" />
+            <Combobox.Empty className={s.empty}>No one called “{query.trim()}”. Invite them from Members.</Combobox.Empty>
             <Combobox.List className={s.list}>
               {(o: Option) => (
                 <Combobox.Item key={o.value} value={o} className={m.item}>
+                  {/* The current one's check leads, then the face, then the name. */}
+                  <Combobox.ItemIndicator keepMounted className={m.check} data-off={o.value === value ? undefined : ''}>
+                    <Check size={16} aria-hidden />
+                  </Combobox.ItemIndicator>
                   <span className={s.lead}>{o.lead}</span>
                   <span className={m.text}>{o.label}</span>
-                  <Combobox.ItemIndicator keepMounted className={m.check} data-off={o.value === value ? undefined : ''}>
-                    <Check size={16} strokeWidth={1.75} nonScalingStroke aria-hidden />
-                  </Combobox.ItemIndicator>
                 </Combobox.Item>
               )}
             </Combobox.List>

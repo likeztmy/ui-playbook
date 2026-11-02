@@ -1,4 +1,21 @@
-import { ArrowLeft, Box, PanelLeft, ChevronDown, CircleDot, CircleUserRound, Inbox, IterationCw, Layers, RotateCcw, Search, ShoppingBag, SquarePen, Store, Users, type LucideIcon } from 'lucide-react';
+import {
+  ArrowLeft,
+  Box,
+  PanelLeft,
+  ChevronDown,
+  CircleDot,
+  CircleUserRound,
+  Inbox,
+  IterationCw,
+  Layers,
+  RotateCcw,
+  Search,
+  ShoppingBag,
+  SquarePen,
+  Store,
+  Users,
+  type LucideIcon,
+} from 'lucide-react';
 import { useState, type ReactNode, type Ref } from 'react';
 import { Button } from '../../ui/Button';
 import { Menu } from '../../ui/Menu';
@@ -6,7 +23,7 @@ import { Tip } from '../../ui/Tooltip';
 import type { Place, Track } from './useTrack';
 import s from './Sidebar.module.scss';
 
-const ic = { size: 16, strokeWidth: 1.5, 'aria-hidden': true } as const;
+const ic = { size: 16, 'aria-hidden': true } as const;
 
 type Props = {
   track: Track;
@@ -48,7 +65,7 @@ export function Sidebar({ track, onSearch, onNewIssue, onGo, onHide, hideRef, ba
               F
             </span>
             <span className={s.label}>Fernhill</span>
-            <ChevronDown size={14} strokeWidth={1.5} aria-hidden className={s.muted} />
+            <ChevronDown size={14} aria-hidden className={s.muted} />
           </Menu.Trigger>
           <Menu.Popup>
             <Menu.Item icon={RotateCcw} onClick={track.reset}>
@@ -89,7 +106,13 @@ export function Sidebar({ track, onSearch, onNewIssue, onGo, onHide, hideRef, ba
         </Section>
 
         <Section label="Your teams">
-          <Team icon={ShoppingBag} name="Shop app" open={teams.shop} holdsCurrent={at('issues')} onToggle={() => setTeams((t) => ({ ...t, shop: !t.shop }))}>
+          <Team
+            icon={ShoppingBag}
+            name="Shop app"
+            open={teams.shop}
+            holdsCurrent={at('issues')}
+            onToggle={() => setTeams((t) => ({ ...t, shop: !t.shop }))}
+          >
             <Item icon={CircleDot} sub current={at('issues')} onClick={() => go('issues')}>
               Issues
             </Item>
@@ -163,7 +186,14 @@ function Item({ icon: Icon, children, sub, current, onClick, meta }: ItemProps) 
   );
 }
 
-type TeamProps = { icon: LucideIcon; name: string; open: boolean; /** Where you are is one of its places. */ holdsCurrent?: boolean; onToggle: () => void; children: ReactNode };
+type TeamProps = {
+  icon: LucideIcon;
+  name: string;
+  open: boolean;
+  /** Where you are is one of its places. */ holdsCurrent?: boolean;
+  onToggle: () => void;
+  children: ReactNode;
+};
 
 /** A team and its places. Folded with where you are inside, the team's row takes the mark, so it's never lost. */
 function Team({ icon: Icon, name, open, holdsCurrent, onToggle, children }: TeamProps) {
@@ -171,10 +201,10 @@ function Team({ icon: Icon, name, open, holdsCurrent, onToggle, children }: Team
     <li>
       <button type="button" className={s.item} aria-expanded={open} data-holds={!open && holdsCurrent ? '' : undefined} onClick={onToggle}>
         <span className={s.team} aria-hidden>
-          <Icon size={12} strokeWidth={2} />
+          <Icon size={12} />
         </span>
         <span className={s.label}>{name}</span>
-        <ChevronDown size={14} strokeWidth={1.5} aria-hidden className={s.fold} />
+        <ChevronDown size={14} aria-hidden className={s.fold} />
       </button>
       {open && <ul className={s.list}>{children}</ul>}
     </li>

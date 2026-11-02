@@ -28,7 +28,14 @@ const ALIGN: Segment<Align>[] = [
 ];
 
 /** A segmented control that keeps its own value. */
-function Own<T extends string>({ label, segments, initial, className, segmentClassName, pin }: {
+function Own<T extends string>({
+  label,
+  segments,
+  initial,
+  className,
+  segmentClassName,
+  pin,
+}: {
   label: string;
   segments: Segment<T>[];
   initial: T;
@@ -37,7 +44,17 @@ function Own<T extends string>({ label, segments, initial, className, segmentCla
   pin?: { value: T; state: string };
 }) {
   const [value, setValue] = useState(initial);
-  return <SegmentedControl label={label} value={value} onValueChange={setValue} segments={segments} className={className} segmentClassName={segmentClassName} pin={pin} />;
+  return (
+    <SegmentedControl
+      label={label}
+      value={value}
+      onValueChange={setValue}
+      segments={segments}
+      className={className}
+      segmentClassName={segmentClassName}
+      pin={pin}
+    />
+  );
 }
 
 /** Six tasks laid out as the chosen view. */
@@ -67,8 +84,16 @@ export function SegmentedVariants() {
   return (
     <Gallery
       rows={[
-        { name: 'Text', use: 'Two to five nouns of similar length. The usual case.', render: () => <Own label="Theme" segments={THEMES} initial="dark" /> },
-        { name: 'Icons', use: 'Symbols people know, each with a tooltip that names it.', render: () => <Own label="Text alignment" segments={ALIGN} initial="left" /> },
+        {
+          name: 'Text',
+          use: 'Two to five nouns of similar length. The usual case.',
+          render: () => <Own label="Theme" segments={THEMES} initial="dark" />,
+        },
+        {
+          name: 'Icons',
+          use: 'Symbols people know, each with a tooltip that names it.',
+          render: () => <Own label="Text alignment" segments={ALIGN} initial="left" />,
+        },
         {
           name: 'In a panel',
           use: 'Fills the row of an inspector, among sliders.',
@@ -101,7 +126,11 @@ export function SegmentedStates() {
         ))}
         <div className={s.sliderState}>
           <span>Disabled segment</span>
-          <Own label="View, with Timeline disabled" segments={VIEWS.map((v) => (v.value === 'timeline' ? { ...v, disabled: true } : v))} initial="board" />
+          <Own
+            label="View, with Timeline disabled"
+            segments={VIEWS.map((v) => (v.value === 'timeline' ? { ...v, disabled: true } : v))}
+            initial="board"
+          />
         </div>
       </div>
     </Frame>
@@ -130,6 +159,12 @@ const UNEVEN: Segment<'all' | 'mine' | 'review'>[] = [
   { value: 'review', label: 'In review' },
 ];
 
+const EVEN: Segment<'all' | 'mine' | 'review'>[] = [
+  { value: 'all', label: 'All' },
+  { value: 'mine', label: 'Mine' },
+  { value: 'review', label: 'In review' },
+];
+
 export function SegmentedWidths() {
   return (
     <Compare
@@ -137,11 +172,12 @@ export function SegmentedWidths() {
       afterLabel="Equal widths"
       height={120}
       before={<Own label="Filter" segments={UNEVEN} initial="all" className={m.contentWidths} />}
-      after={<Own label="Filter" segments={UNEVEN} initial="all" />}
+      after={<Own label="Filter" segments={EVEN} initial="all" />}
       beforeNote="As wide as their words, the segments look unrelated, and the thumb changes size as it travels."
       afterNote={
         <>
-          Equal widths feel balanced, <a href="https://developer.apple.com/design/human-interface-guidelines/segmented-controls">Apple</a> notes; choose words of similar length.
+          Equal widths feel balanced, <a href="https://developer.apple.com/design/human-interface-guidelines/segmented-controls">Apple</a> notes;
+          choose words of similar length.
         </>
       }
     />
@@ -172,7 +208,7 @@ export function SegmentedAnatomy() {
     <Frame label="At 2×" height={0} still>
       <figure className={s.anatomyItem}>
         <div className={s.magnify}>
-          <Own label="View" segments={VIEWS} initial="list" />
+          <Own label="View" segments={VIEWS.slice(0, 2)} initial="list" />
         </div>
         <figcaption className={s.anatomyCaption}>A pill in a pill with an even 2px inset: concentric by shape, no arithmetic.</figcaption>
       </figure>
@@ -211,7 +247,8 @@ export function SegmentedContent() {
       beforeNote="A word beside icons outweighs them, and the control reads as two things."
       afterNote={
         <>
-          All icons with tooltips, or all words: <a href="https://developer.apple.com/design/human-interface-guidelines/segmented-controls">Apple</a> warns that a mix reads as disconnected.
+          All icons with tooltips, or all words: <a href="https://developer.apple.com/design/human-interface-guidelines/segmented-controls">Apple</a>{' '}
+          warns that a mix reads as disconnected.
         </>
       }
     />

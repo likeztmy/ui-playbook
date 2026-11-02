@@ -7,14 +7,74 @@ import { Compare, Frame, Gallery } from './shell';
 import m from './mistakes.module.scss';
 import s from './demos.module.scss';
 
-type File = { name: string; owner: string; status: [Tone, string]; size: number; modified: string; order: number; type: string; views: number; comments: number };
+type File = {
+  name: string;
+  owner: string;
+  status: [Tone, string];
+  size: number;
+  modified: string;
+  order: number;
+  type: string;
+  views: number;
+  comments: number;
+};
 
 const FILES: File[] = [
-  { name: 'Q4 roadmap.fig', owner: 'Ana Ruiz', status: ['success', 'Shipped'], size: 18.4, modified: 'Today', order: 6, type: 'Design', views: 1204, comments: 32 },
-  { name: 'Brand guide.pdf', owner: 'Kenji Mori', status: ['warning', 'In review'], size: 4.2, modified: 'Yesterday', order: 5, type: 'Document', views: 388, comments: 7 },
-  { name: 'Onboarding flow.fig', owner: 'Ana Ruiz', status: ['info', 'Scheduled'], size: 26.9, modified: 'Mon', order: 4, type: 'Design', views: 96, comments: 14 },
-  { name: 'Metrics.csv', owner: 'Lea Novak', status: ['danger', 'Failed'], size: 0.8, modified: 'Last week', order: 3, type: 'Data', views: 41, comments: 0 },
-  { name: 'Interview notes.md', owner: 'Sam Okafor', status: ['neutral', 'Draft'], size: 0.1, modified: 'In March', order: 2, type: 'Document', views: 12, comments: 3 },
+  {
+    name: 'Q4 roadmap.fig',
+    owner: 'Ana Ruiz',
+    status: ['success', 'Shipped'],
+    size: 18.4,
+    modified: 'Today',
+    order: 6,
+    type: 'Design',
+    views: 1204,
+    comments: 32,
+  },
+  {
+    name: 'Brand guide.pdf',
+    owner: 'Kenji Mori',
+    status: ['warning', 'In review'],
+    size: 4.2,
+    modified: 'Yesterday',
+    order: 5,
+    type: 'Document',
+    views: 388,
+    comments: 7,
+  },
+  {
+    name: 'Onboarding flow.fig',
+    owner: 'Ana Ruiz',
+    status: ['info', 'Scheduled'],
+    size: 26.9,
+    modified: 'Mon',
+    order: 4,
+    type: 'Design',
+    views: 96,
+    comments: 14,
+  },
+  {
+    name: 'Metrics.csv',
+    owner: 'Lea Novak',
+    status: ['danger', 'Failed'],
+    size: 0.8,
+    modified: 'Last week',
+    order: 3,
+    type: 'Data',
+    views: 41,
+    comments: 0,
+  },
+  {
+    name: 'Interview notes.md',
+    owner: 'Sam Okafor',
+    status: ['neutral', 'Draft'],
+    size: 0.1,
+    modified: 'In March',
+    order: 2,
+    type: 'Document',
+    views: 12,
+    comments: 3,
+  },
 ];
 
 const size = (mb: number) => `${mb.toFixed(1)} MB`;
@@ -43,7 +103,14 @@ const WIDE: Column<File>[] = [
 ];
 
 /** A table that keeps its own sort and selection. */
-function Files({ columns = COLUMNS, selectable, sortable = true, stickyFirst, className, initialSort = { key: 'modified', dir: 'desc' } as Sort }: {
+function Files({
+  columns = COLUMNS,
+  selectable,
+  sortable = true,
+  stickyFirst = true,
+  className,
+  initialSort = { key: 'modified', dir: 'desc' } as Sort,
+}: {
   columns?: Column<File>[];
   selectable?: boolean;
   sortable?: boolean;
@@ -98,7 +165,11 @@ export function TableVariants() {
       rows={[
         { name: 'Plain', use: 'A few columns to read and compare.', render: () => <Files sortable={false} /> },
         { name: 'Sortable and selectable', use: 'For acting on many rows at once.', render: () => <Files selectable /> },
-        { name: 'Wide', use: 'More columns than fit: scroll sideways, the name stays pinned.', render: () => <Files columns={WIDE} stickyFirst className={s.narrowTable} /> },
+        {
+          name: 'Wide',
+          use: 'More columns than fit: scroll sideways, the name stays pinned.',
+          render: () => <Files columns={WIDE} stickyFirst className={s.narrowTable} />,
+        },
       ]}
     />
   );
@@ -193,7 +264,7 @@ export function TableScroll() {
       beforeLabel="Names scroll away"
       afterLabel="Name column pinned"
       height={280}
-      before={<Files columns={WIDE} sortable={false} className={cx(s.narrowTable, m.nothingPinned)} />}
+      before={<Files columns={WIDE} sortable={false} stickyFirst={false} className={cx(s.narrowTable, m.nothingPinned)} />}
       after={<Files columns={WIDE} sortable={false} stickyFirst className={s.narrowTable} />}
       beforeNote="Scroll right to see Views and the names scroll away with everything else. Whose row is 388 views?"
       afterNote="The name column stays pinned, with a line at its edge, while the rest scroll under it."

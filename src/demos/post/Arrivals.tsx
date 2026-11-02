@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { Button } from '../../ui/Button';
 import { Compare } from '../shell';
 import { CONVERSATIONS, incoming } from './conversations';
 import { unread, type Conversation } from './model';
@@ -27,17 +28,17 @@ function Arrivals({ push }: { push?: boolean }) {
       <div className={s.list} onPointerEnter={() => (timer.current = setTimeout(arrive, 1200))} onPointerLeave={() => clearTimeout(timer.current)}>
         <div className={s.head}>Inbox</div>
         {waiting.length > 0 && (
-          <button
-            type="button"
-            className={s.pill}
-            data-overlay
-            onClick={() => {
-              setList((l) => [...waiting, ...l]);
-              setWaiting([]);
-            }}
-          >
-            {waiting.length === 1 ? '1 new message' : `${waiting.length} new messages`}
-          </button>
+          <span className={s.pill} data-overlay>
+            <Button
+              size="sm"
+              onClick={() => {
+                setList((l) => [...waiting, ...l]);
+                setWaiting([]);
+              }}
+            >
+              {waiting.length === 1 ? '1 new message' : `${waiting.length} new messages`}
+            </Button>
+          </span>
         )}
         {list.slice(0, 4).map((c) => (
           <button key={c.id} type="button" className={s.row} data-unread={unread(c) ? '' : undefined} onClick={() => setOpened(c.subject)}>
@@ -56,8 +57,8 @@ function Arrivals({ push }: { push?: boolean }) {
 export function MailArrivals() {
   return (
     <Compare
-      beforeLabel="New mail pushes rows down"
-      afterLabel="New mail waits behind a pill"
+      beforeLabel="Pushes rows down"
+      afterLabel="Waits behind a pill"
       height={0}
       before={<Arrivals push />}
       after={<Arrivals />}

@@ -75,7 +75,16 @@ function Invite() {
         setEmail('');
       }}
     >
-      <TextField label="Email" placeholder="ana@studio.com" type="text" inputMode="email" autoComplete="off" value={email} onValueChange={setEmail} inputRef={field} />
+      <TextField
+        label="Email"
+        placeholder="ana@studio.com"
+        type="text"
+        inputMode="email"
+        autoComplete="off"
+        value={email}
+        onValueChange={setEmail}
+        inputRef={field}
+      />
       <Select label="Role" options={ROLES} value={role} onValueChange={setRole} description={ROLE_HINT[role ?? 'editor']} className={s.inviteRole} />
       <div>
         <Button type="submit" variant="primary">
@@ -147,7 +156,7 @@ function Still({ itemClass, hot = 'commenter' }: { itemClass?: string; hot?: str
             data-highlighted={r.value === hot ? '' : undefined}
           >
             <span className={ms.check} data-off={r.value === 'editor' ? undefined : ''}>
-              <Check size={16} strokeWidth={1.75} nonScalingStroke aria-hidden />
+              <Check size={16} aria-hidden />
             </span>
             <span className={ms.text}>{r.label}</span>
           </div>
@@ -168,7 +177,8 @@ export function SelectCurrent() {
       beforeNote="With the current option filled like the keyboard’s row, two fills compete and Enter’s target is a guess."
       afterNote={
         <>
-          The fill means one thing, where the keyboard is; the check marks the value. <a href="/principles/colour-means-one-thing">Colour means one thing</a>.
+          The fill means one thing, where the keyboard is; the check marks the value.{' '}
+          <a href="/principles/colour-means-one-thing">Colour means one thing</a>.
         </>
       }
     />
@@ -200,9 +210,8 @@ export function SelectDefault() {
       beforeNote="“Select…” stops everyone, and the form can now fail on a field nobody cared about."
       afterNote={
         <>
-          Most people move on; the rest change it.{' '}
-          <a href="https://developer.apple.com/design/human-interface-guidelines/pop-up-buttons">Apple</a> asks for a useful default in a pop-up
-          button.
+          Most people move on; the rest change it. <a href="https://developer.apple.com/design/human-interface-guidelines/pop-up-buttons">Apple</a>{' '}
+          asks for a useful default in a pop-up button.
         </>
       }
     />

@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Button } from '../../ui/Button';
 import { hue } from '../post/Avatar';
 import { person, shortName } from '../post/people';
@@ -38,16 +38,28 @@ export function FacesFind() {
   const plan = useRef<Trial[]>([]);
   const [times, setTimes] = useState<Record<Condition, number[]>>({ 'Names only': [], 'Coloured initials': [], 'Grey initials': [] });
   const [misses, setMisses] = useState(0);
+  // A wrong pick says so where the eye is, under the name it was looking for.
+  const [miss, setMiss] = useState('');
+  const list = useRef<HTMLDivElement>(null);
+  // Showing the list moves focus to its first row, so the keyboard starts where the eye does.
+  useEffect(() => {
+    if (step.kind === 'search') list.current?.querySelector('button')?.focus();
+  }, [step.kind]);
 
   const begin = () => {
     plan.current = trials();
     setTimes({ 'Names only': [], 'Coloured initials': [], 'Grey initials': [] });
     setMisses(0);
+    setMiss('');
     setStep({ kind: 'ready', i: 0 });
   };
   const pick = (row: Row, i: number, start: number) => {
     const t = plan.current[i];
-    if (row.face !== t.target) return setMisses((m) => m + 1);
+    if (row.face !== t.target) {
+      setMiss(`That one’s from ${row.from}.`);
+      return setMisses((m) => m + 1);
+    }
+    setMiss('');
     const ms = performance.now() - start;
     setTimes((all) => ({ ...all, [t.condition]: [...all[t.condition], ms] }));
     setStep(i + 1 < plan.current.length ? { kind: 'ready', i: i + 1 } : { kind: 'done' });
@@ -58,7 +70,7 @@ export function FacesFind() {
     step.kind === 'intro'
       ? 'Find a message by who sent it'
       : step.kind === 'done'
-        ? 'Your median time in each'
+        ? 'Median time in each'
         : `${step.i + 1} of ${ROUNDS * CONDITIONS.length} · ${trial!.condition}`;
 
   return (
@@ -68,7 +80,7 @@ export function FacesFind() {
           <div className={s.prompt}>
             <p>Fifteen times, open the message from the person named. Rows shuffle each time; some show faces, some only names.</p>
             <Button variant="primary" onClick={begin}>
-              Start
+              Start the test
             </Button>
           </div>
         )}
@@ -84,8 +96,11 @@ export function FacesFind() {
         )}
 
         {step.kind === 'search' && trial && (
-          <div className={s.list}>
+          <div ref={list} className={s.list}>
             <p className={s.target}>Open {shortName(trial.target)}’s message</p>
+            <p className={s.miss} role="status">
+              {miss}
+            </p>
             {trial.rows.map((r) => (
               <FaceRow
                 key={r.id}

@@ -9,7 +9,7 @@ import { FOLDER_NAME } from './folders';
 import type { Post } from './usePost';
 import s from './List.module.scss';
 
-const ic = { size: 16, strokeWidth: 1.5, nonScalingStroke: true, 'aria-hidden': true } as const;
+const ic = { size: 16, 'aria-hidden': true } as const;
 
 /** The widest sender text in the list, up to 200: subjects keep one left edge with no gap wider than it needs. */
 export function useFromWidth(box: RefObject<HTMLDivElement | null>, deps: unknown[]) {
@@ -41,6 +41,8 @@ export type Chrome = {
   search: RefObject<HTMLInputElement | null>;
   /** How tightly the rows are set. */
   density: 'comfortable' | 'compact';
+  /** Starts a new message: an empty Inbox or Sent's next step. */
+  compose: () => void;
 };
 
 /** The bar over the list: select all, then the selection's actions or where you are; then search and New message. */
@@ -115,22 +117,23 @@ export function List({ post, rows, chrome, pinned }: ListProps) {
       {chrome.outbox}
       {/* New mail waits here, over the list, until asked for: nothing moves under the pointer on its own. */}
       {post.waiting > 0 && post.folder === 'inbox' && !q && (
-        <button
-          type="button"
-          className={s.pill}
-          data-spot="arrive"
-          onClick={() => {
-            post.letIn();
-            box.current?.scrollTo({ top: 0 });
-          }}
-        >
-          {post.waiting === 1 ? '1 new message' : `${post.waiting} new messages`}
-        </button>
+        <span className={s.pill} data-spot="arrive" data-overlay>
+          <Button
+            onClick={() => {
+              post.letIn();
+              box.current?.scrollTo({ top: 0 });
+            }}
+          >
+            {post.waiting === 1 ? '1 new message' : `${post.waiting} new messages`}
+          </Button>
+        </span>
       )}
       <div
         ref={box}
         className={s.rows}
         role="list"
+        // Where focus goes once the last row has left.
+        tabIndex={-1}
         data-selecting={post.checked.size ? '' : undefined}
         style={{ '--from': `${fromWidth}px` } as CSSProperties}
       >
@@ -171,8 +174,22 @@ export function List({ post, rows, chrome, pinned }: ListProps) {
                   </Button>
                 )}
               </>
+            ) : post.folder === 'inbox' || post.folder === 'sent' ? (
+              // What lands here comes from writing.
+              <>
+                <p>{post.folder === 'inbox' ? 'You’re all caught up.' : 'Nothing sent.'}</p>
+                <Button size="sm" onClick={chrome.compose}>
+                  New message
+                </Button>
+              </>
             ) : (
-              <p>{post.folder === 'inbox' ? 'You’re all caught up.' : `Nothing in ${FOLDER_NAME[post.folder]}.`}</p>
+              // Starred and archived mail is picked out of the Inbox.
+              <>
+                <p>{post.folder === 'starred' ? 'Nothing starred.' : 'Nothing archived.'}</p>
+                <Button size="sm" onClick={() => post.go('inbox')}>
+                  Open Inbox
+                </Button>
+              </>
             )}
           </div>
         )}

@@ -3,7 +3,7 @@ import type { Ref } from 'react';
 import { Button } from '../../ui/Button';
 import s from './Find.module.scss';
 
-const ic = { size: 16, strokeWidth: 1.5, nonScalingStroke: true, 'aria-hidden': true } as const;
+const ic = { size: 16, 'aria-hidden': true } as const;
 
 type Props = {
   value: string;

@@ -31,7 +31,7 @@ const VIEW: [string, LucideIcon, string[]][] = [
   ['Fit to screen', Maximize, ['⇧', '1']],
 ];
 
-const ic = { size: 16, strokeWidth: 1.5, nonScalingStroke: true, 'aria-hidden': true } as const;
+const ic = { size: 16, 'aria-hidden': true } as const;
 
 /**
  * A small canvas editor: draw with the tools, select and delete, undo,
@@ -94,15 +94,7 @@ export function CanvasScene({ label = 'Canvas' }: { label?: string }) {
   return (
     <Frame label={label} height={0}>
       <div className={s.sketch}>
-        <div
-          className={s.sketchBoard}
-          data-tool={tool}
-          tabIndex={0}
-          role="application"
-          aria-label="Canvas"
-          onClick={place}
-          onKeyDown={onKey}
-        >
+        <div className={s.sketchBoard} data-tool={tool} tabIndex={0} role="application" aria-label="Canvas" onClick={place} onKeyDown={onKey}>
           <div className={s.sketchLayer} style={{ scale: String(zoom) }}>
             {shapes.map((sh) => (
               <button

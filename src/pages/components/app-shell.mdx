@@ -8,7 +8,7 @@ import { AppShellLive, AppShellWhole, AppShellMinHeight } from '../../demos/app-
 
 ## When to use
 
-Any app people stay in: a sidebar of places beside the thing that's open, in a mail client, an issue tracker, a notes app, a chat. The window holds still at the height of the screen, and each pane scrolls inside it. A page that reads like a document (an article, a docs page, a repository's front page) scrolls as one instead, and so does a phone screen, which shows one pane at a time.
+Any app people stay in: a sidebar of places beside the thing that's open, in a mail client, an issue tracker, a notes app, a chat. The window holds still at the height of the screen, and each pane scrolls inside it. A page that reads like a document (an article, a docs page, a repository's front page) scrolls as one instead, and so does a phone screen, which shows one pane at a time. There the sidebar waits behind a button in the header, which opens it over the page; it isn't dropped.
 
 ## Details
 
@@ -53,7 +53,7 @@ Hairlines (`line`) mark the sidebar's edge and the line above its foot; the foot
 
 ## States
 
-A pane is a stop for Tab. A document with no links or fields gives Tab nowhere to land, so arrow keys and Page Down can't reach it: until Chrome 132, browsers made a scroller focusable only with a `tabindex` or "focusable children" ([Chrome, Keyboard focusable scrollers](https://developer.chrome.com/blog/keyboard-focusable-scrollers)). Give the pane `tabindex="0"` and a name (`role="region"` with `aria-label`), and draw its focus ring inside, where the window doesn't clip it.
+A pane is a stop for Tab. A document with no links or fields gives Tab nowhere to land, so arrow keys and Page Down can't reach it: until Chrome 132, browsers made a scroller focusable only with a `tabindex` or "focusable children" ([Chrome, Keyboard focusable scrollers](https://developer.chrome.com/blog/keyboard-focusable-scrollers)). Give the pane `tabindex="0"` and a name (`role="region"` with `aria-label`), and draw its focus ring inside, where the window doesn't clip it. Any scroller inside a pane takes the same: a code block too wide for it is a named Tab stop with an inset ring, and its token colours keep 4.5:1 on its background.
 
 ## Common mistakes
 
@@ -62,6 +62,7 @@ A pane is a stop for Tab. A document with no links or fields gives Tab nowhere t
 - **A sticky sidebar on a page that scrolls.** It holds for a sidebar beside one document, but the document's own toolbar scrolls away, and a list beside its detail has no scroll of its own.
 - **Content that jumps when it gets long.** Where scrollbars take space (Windows, or a Mac set to always show them), the pane narrows by the scrollbar's width the moment it can scroll. `scrollbar-gutter: stable` keeps that space from the start ([CSS Overflow 3](https://www.w3.org/TR/css-overflow-3/#scrollbar-gutter-property)).
 - **The account in a sidebar that scrolls.** What sits at the sidebar's foot stays at its foot; only the list between scrolls.
+- **A narrow window that drops the sidebar.** Hidden with nothing to bring it back, the places are gone. Put them behind a button in the header.
 
 ## Copy
 

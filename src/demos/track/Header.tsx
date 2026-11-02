@@ -36,14 +36,14 @@ export function Header({ track, view, onShowSidebar, showRef, embedded }: Props)
       {onShowSidebar && (
         <Tip label="Show sidebar">
           <Button ref={showRef} variant="ghost" icon size="sm" aria-label="Show sidebar" className={s.show} onClick={onShowSidebar}>
-            <PanelLeft size={16} strokeWidth={1.5} aria-hidden />
+            <PanelLeft size={16} aria-hidden />
           </Button>
         </Tip>
       )}
       <Title className={s.title}>
         {track.place === 'issues' && (
           <span className={s.team} aria-hidden>
-            <ShoppingBag size={12} strokeWidth={2} />
+            <ShoppingBag size={12} />
           </span>
         )}
         <span className={s.name}>{{ issues: 'Shop app', mine: 'My issues', inbox: 'Inbox' }[track.place]}</span>

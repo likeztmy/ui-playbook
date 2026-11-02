@@ -63,8 +63,10 @@
   }
 }
 
+// A submenu is as wide as its widest row and no wider: beside its parent on a
+// phone, a minimum would push it off the screen.
 .subPopup {
-  min-width: 120px;
+  min-width: 0;
 }
 
 .item {
@@ -98,10 +100,10 @@
       color: inherit;
     }
 
-    // Shortcuts are already ink-disabled; an unavailable row's go fainter
-    // still, so ⌘Z on Undo doesn't look as live as ⌘C on Copy.
+    // Only an unavailable row dims its shortcut, with its label: ⌘Z on
+    // Undo shouldn't look as live as ⌘C on Copy.
     .keys {
-      opacity: 0.55;
+      color: inherit;
     }
   }
 }
@@ -168,9 +170,9 @@
   // At least 24px from the label: with the menu sized to its widest row,
   // this is the only gap between them.
   margin-left: var(--space-6);
-  // One step lighter than the icons, the same grey macOS gives shortcuts
-  // and unavailable items: present, never competing with the label.
-  color: var(--ink-disabled);
+  // Muted, as the icons are: a step back from the label, and still 4.5:1.
+  // ink-disabled is kept for the row that can't run.
+  color: var(--ink-muted);
   font: inherit;
 
   svg {
@@ -191,10 +193,9 @@
 
 .label {
   padding: var(--space-2) var(--space-2) var(--space-1);
-  font-size: 11px;
-  line-height: 14px;
+  font-size: 12px;
+  line-height: 16px;
   font-weight: 500;
-  letter-spacing: 0.02em;
   color: var(--ink-muted);
 }
 

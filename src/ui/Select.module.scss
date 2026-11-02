@@ -78,6 +78,10 @@
 // outrank Menu's own min-width.
 .positioner .popup {
   min-width: var(--anchor-width);
+  // The trigger's size, not a menu's 13: the current option lands on the
+  // trigger's text, so the two must match letter for letter.
+  font-size: var(--text-md, 14px);
+  line-height: 20px;
 
   // Over the trigger, the list shifts left by the check column (16 + gap 8)
   // so the current text lands on the trigger's; widen it by the same so it

@@ -107,8 +107,8 @@ export function ColourOneBlue() {
       after={<Editor />}
       beforeNote={
         <>
-          Every “current” wears the accent, so the one fill that means “do this now” has to be read for, not seen. A single colour pops out of a
-          scene only while it’s the only one; mixed in with others, finding it becomes a search item by item (
+          Every “current” wears the accent, so the one fill that means “do this now” has to be read for, not seen. A single colour pops out of a scene
+          only while it’s the only one; mixed in with others, finding it becomes a search item by item (
           <a href="https://doi.org/10.1109/TVCG.2011.127">Healey and Enns 2012</a>).
         </>
       }
@@ -129,17 +129,41 @@ export function ColourGreyscale() {
 
 // ── More cases ───────────────────────────────────────────
 
-/** A list whose hover can borrow the selection's tint. */
+// The row shown under the pointer while there's none, so the hover reads on a phone too.
+const PINNED = 'Onboarding';
+
+/**
+ * A list whose hover can borrow the selection's tint. One row holds the hover at rest; the
+ * pointer takes it over. Arrows move and choose, as in the editor's list.
+ */
 function HoverList({ hoverTint }: { hoverTint?: boolean }) {
   const [chosen, setChosen] = useState('Pricing');
+  const [hot, setHot] = useState(PINNED);
   return (
-    <div className={s.editorList} role="listbox" aria-label="Frames">
+    <div
+      className={s.editorList}
+      role="listbox"
+      aria-label="Frames"
+      onMouseLeave={() => setHot(PINNED)}
+      onKeyDown={(e) => {
+        const step = e.key === 'ArrowDown' ? 1 : e.key === 'ArrowUp' ? -1 : 0;
+        if (!step) return;
+        e.preventDefault();
+        const next = FRAMES[(FRAMES.indexOf(chosen) + step + FRAMES.length) % FRAMES.length];
+        setChosen(next);
+        (e.currentTarget.querySelector(`[data-frame="${next}"]`) as HTMLElement | null)?.focus();
+      }}
+    >
       {FRAMES.map((f) => (
         <div
           key={f}
           role="option"
+          data-frame={f}
           aria-selected={f === chosen}
+          tabIndex={f === chosen ? 0 : -1}
+          data-hover={f === hot ? '' : undefined}
           className={cx(s.editorRow, hoverTint && m.tintHover)}
+          onMouseEnter={() => setHot(f)}
           onClick={() => setChosen(f)}
         >
           <span className={s.editorThumb} aria-hidden />

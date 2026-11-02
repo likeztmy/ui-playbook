@@ -57,9 +57,19 @@ export const primer: Look = {
     'accent-text': { light: '#0969da', dark: '#4493f8', from: theme, note: 'fgColor-accent' },
     danger: { light: '#d1242f', dark: '#f85149', from: theme, note: 'fgColor-danger' },
     'danger-soft': { light: '#ffebe9', dark: '#f851491a', from: theme, note: 'bgColor-danger-muted' },
-    success: { light: '#1a7f37', dark: '#3fb950', from: theme, note: 'fgColor-success' },
+    success: {
+      light: '#197e36',
+      dark: '#3fb950',
+      from: theme,
+      note: 'fgColor-success; on light a hair darker (from #1a7f37), so it holds on bgColor-accent-muted',
+    },
     'success-soft': { light: '#dafbe1', dark: '#2ea04326', from: theme, note: 'bgColor-success-muted' },
-    warning: { light: '#9a6700', dark: '#d29922', from: theme, note: 'fgColor-attention' },
+    warning: {
+      light: '#966300',
+      dark: '#d29922',
+      from: theme,
+      note: 'fgColor-attention; on light a step darker (from #9a6700), so it holds on bgColor-accent-muted',
+    },
     'warning-soft': { light: '#fff8c5', dark: '#bb800926', from: theme, note: 'bgColor-attention-muted' },
     scrim: { light: '#c8d1da66', dark: '#21283066', from: theme, note: 'overlay-backdrop-bgColor' },
     'focus-ring': {
@@ -72,6 +82,12 @@ export const primer: Look = {
     'radius-md': { light: '6px', dark: '6px', from: radius, note: 'borderRadius-medium, the default' },
     'radius-lg': { light: '12px', dark: '12px', from: radius, note: 'borderRadius-large' },
     'radius-control': { light: '6px', dark: '6px', from: radius, note: 'borderRadius-default' },
+    'shadow-xs': {
+      light: '0 1px 1px 0 #1f23280d',
+      dark: '0 1px 1px 0 #010409cc',
+      from: theme,
+      note: 'shadow-resting-xsmall',
+    },
     'shadow-sm': {
       light: '0 1px 1px 0 #1f23280a, 0 1px 2px 0 #1f232808',
       dark: '0 1px 1px 0 #01040999, 0 1px 3px 0 #01040999',

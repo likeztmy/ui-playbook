@@ -6,7 +6,7 @@ import type { CSSProperties } from 'react';
 import { fileType, type Attachment } from './model';
 import s from './Attachments.module.scss';
 
-const ic = { size: 16, strokeWidth: 1.5, nonScalingStroke: true, 'aria-hidden': true } as const;
+const ic = { size: 16, 'aria-hidden': true } as const;
 
 /** An image's placeholder: its colours, at its own ratio, until the picture loads. */
 const swatch = (a: Attachment) => ({ backgroundImage: `linear-gradient(160deg, ${a.tint})`, '--ratio': a.ratio ?? 4 / 3 }) as CSSProperties;

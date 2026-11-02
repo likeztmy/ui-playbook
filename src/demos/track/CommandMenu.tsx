@@ -7,8 +7,8 @@ import s from './CommandMenu.module.scss';
 type Props = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  /** Says what the commands act on, first: "SHOP-12 Dark mode…", "3 issues". */
-  target: string;
+  /** Says what the commands act on, first: "SHOP-12 Dark mode…", "3 issues"; none when nothing is. */
+  target: string | null;
   commands: Command[];
 };
 
@@ -22,6 +22,8 @@ export function CommandMenu({ open, onOpenChange, target, commands }: Props) {
   const [at, setAt] = useState(0);
   const list = useRef<HTMLDivElement>(null);
   const found = useMemo(() => find(commands, q), [commands, q]);
+  // A group's label only tells groups apart: with one showing, it would name the app it's in.
+  const grouped = new Set(found.map((c) => c.group)).size > 1;
   useEffect(() => {
     if (open) setQ('');
   }, [open]);
@@ -41,7 +43,7 @@ export function CommandMenu({ open, onOpenChange, target, commands }: Props) {
       <Dialog.Portal container={container}>
         <Dialog.Backdrop className={s.backdrop} />
         <Dialog.Popup className={s.popup} aria-label="Commands">
-          <div className={s.target}>{target}</div>
+          {target && <div className={s.target}>{target}</div>}
           <input
             className={s.input}
             placeholder="Type a command…"
@@ -67,7 +69,7 @@ export function CommandMenu({ open, onOpenChange, target, commands }: Props) {
           />
           <div ref={list} id="track-commands" className={s.list} role="listbox" aria-label="Commands">
             {found.map((c, k) => [
-              (k === 0 || found[k - 1].group !== c.group) && (
+              grouped && (k === 0 || found[k - 1].group !== c.group) && (
                 <div key={`g-${c.group}`} className={s.group} role="presentation">
                   {c.group}
                 </div>
@@ -82,7 +84,7 @@ export function CommandMenu({ open, onOpenChange, target, commands }: Props) {
                 onPointerMove={() => setAt(k)}
                 onClick={() => run(c)}
               >
-                <span className={s.lead}>{c.lead ?? (c.icon && <c.icon size={16} strokeWidth={1.5} aria-hidden />)}</span>
+                <span className={s.lead}>{c.lead ?? (c.icon && <c.icon size={16} aria-hidden />)}</span>
                 {c.label}
               </div>,
             ])}

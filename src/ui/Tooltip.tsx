@@ -82,7 +82,7 @@ export function TipKeys({ keys }: { keys: string[] }) {
     <kbd className={s.keys}>
       {inAppleOrder(keys).map((k, i) => {
         const Icon = KEY_ICON[k];
-        return Icon ? <Icon key={i} size={12} strokeWidth={1.5} nonScalingStroke aria-label={k} /> : <span key={i}>{k}</span>;
+        return Icon ? <Icon key={i} size={12} aria-label={k} /> : <span key={i}>{k}</span>;
       })}
     </kbd>
   );

@@ -3,6 +3,7 @@ import { useToast } from '../../ui/Toast';
 import { CONVERSATIONS, incoming } from './conversations';
 import { clock, inFolder, newest, plain, unread, type Conversation, type Folder, type Message } from './model';
 import { person } from './people';
+import { refocus, rowOrList } from './refocus';
 
 /** Post's state and the actions on it. Views read it and call its actions; they hold only view state. */
 export function usePost(seed: Conversation[] = CONVERSATIONS) {
@@ -51,6 +52,13 @@ export function usePost(seed: Conversation[] = CONVERSATIONS) {
   /** Moves conversations between Inbox and Archive, with Undo. An open one gives way to the next in the list. */
   const move = (ids: string[], to: 'inbox' | 'archive') => {
     const before = new Map(mail.filter((c) => ids.includes(c.id)).map((c) => [c.id, c.folder]));
+    // Where focus goes if it leaves with the rows: the row now in the first one's place, else the
+    // one before it, else the list.
+    const scope = document.activeElement?.closest('[data-view]') ?? document.querySelector(`[data-row="${ids[0]}"]`)?.closest('[data-view]');
+    const first = list.findIndex((c) => ids.includes(c.id));
+    const kept = list.filter((c) => !ids.includes(c.id));
+    const near = first < 0 ? undefined : (kept[first] ?? kept[first - 1])?.id;
+    refocus(() => rowOrList(scope, near));
     if (openId && ids.includes(openId)) {
       const rest = list.filter((c) => !ids.includes(c.id));
       const i = list.findIndex((c) => c.id === openId);

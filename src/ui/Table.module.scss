@@ -144,12 +144,13 @@
   }
 }
 
-// A sortable header is a button filling the cell.
+// A sortable header is a button filling the cell: 32 less the header's
+// line, so the header is 32 with it, as each row is 36 with its own.
 .sort {
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
-  height: 32px;
+  height: 31px;
   margin: 0 calc(var(--space-1) * -1);
   padding: 0 var(--space-1);
   border: 0;

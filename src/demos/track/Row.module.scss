@@ -113,13 +113,13 @@
   white-space: nowrap;
 }
 
-// Outlined, not filled: beside the title they say what kind of work, without outweighing what it is.
+// Badge's neutral kind, as the panel draws the same labels: ink-muted on fill-control, no edge.
 .label {
   flex: none;
   height: 20px;
   padding: 0 var(--space-2);
   border-radius: var(--radius-full);
-  box-shadow: inset 0 0 0 1px var(--line);
+  background: var(--fill-control);
   color: var(--ink-muted);
   font-size: 12px;
   line-height: 20px;
@@ -148,11 +148,6 @@
   font-variant-numeric: tabular-nums;
   text-align: right;
   white-space: nowrap;
-}
-
-// No priority, no one: nothing to read, so nothing drawn until the pointer or the keys are on the row.
-.row:not(:hover, :focus-within) :is([data-priority='none'], [data-face='none']) {
-  opacity: 0;
 }
 
 @container (max-width: 760px) {

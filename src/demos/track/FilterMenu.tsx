@@ -14,7 +14,7 @@ export function FilterMenu({ filter, onChange }: { filter: Filter; onChange: (f:
   return (
     <Menu.Root>
       <Menu.Trigger render={<Button variant="ghost" size="sm" aria-label="Filter" className={s.button} />}>
-        <ListFilter size={16} strokeWidth={1.5} aria-hidden />
+        <ListFilter size={16} aria-hidden />
         <span className={s.word}>Filter</span>
       </Menu.Trigger>
       <Menu.Popup align="end">

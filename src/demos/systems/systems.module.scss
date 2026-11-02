@@ -80,3 +80,75 @@
   border-radius: var(--radius-full);
   background: var(--accent);
 }
+
+// A look's card: its field, badge and button on its own surface, in its own values. The names are
+// the looks' variables (src/looks/look.ts); both themes arrive inline as --l-* and --d-*.
+$look-names:
+  bg, surface, surface-raised, surface-sunken, line, line-strong, ink, ink-muted, ink-disabled, fill-hover, fill-active, fill-control,
+  fill-control-hover, accent, accent-hover, on-accent, accent-soft, accent-text, danger, danger-soft, on-danger, success, success-soft, warning,
+  warning-soft, scrim, focus-ring, radius-sm, radius-md, radius-lg, radius-control, shadow-xs, shadow-sm, shadow-md, control-md, duration-fast,
+  ease-out, font-sans, text-sm, text-md, text-lg, text-xl, leading-md, weight-body, weight-strong, line-width, row-height, space-stack, space-card,
+  space-gap;
+
+@mixin look-theme($t) {
+  @each $n in $look-names {
+    --#{$n}: var(--#{$t}-#{$n});
+  }
+
+  // The badge's info tone reads the playbook's info pair, which a look leaves to its accent.
+  --info: var(--accent-text);
+  --info-soft: var(--accent-soft);
+}
+
+.look {
+  @include look-theme(l);
+}
+
+:global(:root[data-theme='dark']) .look {
+  @include look-theme(d);
+}
+
+@media (prefers-color-scheme: dark) {
+  :global(:root:not([data-theme])) .look {
+    @include look-theme(d);
+  }
+}
+
+.look,
+.ours {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-stack, 12px);
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--space-card, 16px);
+  border: var(--line-width, 1px) solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: var(--text-md, 14px);
+  line-height: var(--leading-md, 20px);
+}
+
+.lookRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.one {
+  width: min(100%, 260px);
+}
+
+.looks {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: min(100%, 260px);
+
+  > * {
+    padding: var(--space-2) var(--space-3);
+  }
+}

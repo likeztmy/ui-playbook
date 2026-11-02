@@ -26,7 +26,16 @@ import s from './lab.module.scss';
 // The same Edit menu for every direction, with shortcuts of one, two and
 // three keys, so alignment has something to prove.
 
-type Row = { id: string; label: string; icon: LucideIcon; keys?: string[]; disabled?: boolean; danger?: boolean; checked?: boolean; submenu?: boolean };
+type Row = {
+  id: string;
+  label: string;
+  icon: LucideIcon;
+  keys?: string[];
+  disabled?: boolean;
+  danger?: boolean;
+  checked?: boolean;
+  submenu?: boolean;
+};
 
 const GROUPS: Row[][] = [
   [
@@ -56,9 +65,9 @@ const GLYPH: Record<string, LucideIcon> = {
   '↵': CornerDownLeft,
 };
 
-function Glyph({ k: key, size, stroke }: { k: string; size: number; stroke: number }) {
+function Glyph({ k: key, size }: { k: string; size: number }) {
   const Icon = GLYPH[key];
-  return Icon ? <Icon size={size} strokeWidth={stroke} nonScalingStroke aria-label={key} /> : <>{key}</>;
+  return Icon ? <Icon size={size} aria-label={key} /> : <>{key}</>;
 }
 
 type Style = 'column' | 'text' | 'chip';
@@ -71,11 +80,11 @@ function ColumnKeys({ keys }: { keys: string[] }) {
     <kbd className={k.column}>
       <span className={k.mods}>
         {mods.map((m) => (
-          <Glyph key={m} k={m} size={12} stroke={1.25} />
+          <Glyph key={m} k={m} size={12} />
         ))}
       </span>
       <span className={k.keyCell}>
-        <Glyph k={key} size={12} stroke={1.25} />
+        <Glyph k={key} size={12} />
       </span>
     </kbd>
   );
@@ -86,7 +95,7 @@ function RunKeys({ keys, chip }: { keys: string[]; chip?: boolean }) {
   return (
     <kbd className={cx(k.run, chip && k.chip)}>
       {keys.map((key) => (
-        <Glyph key={key} k={key} size={11} stroke={1.25} />
+        <Glyph key={key} k={key} size={11} />
       ))}
     </kbd>
   );

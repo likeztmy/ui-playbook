@@ -1,9 +1,8 @@
-import { CircleCheck } from 'lucide-react';
 import { useRef, useState, type ReactNode } from 'react';
 import { Button } from '../ui/Button';
 import { AlertDialog } from '../ui/Dialog';
 import { cx } from '../ui/cx';
-import { ToastProvider, useToast } from '../ui/Toast';
+import { ToastProvider, ToastStill, useToast } from '../ui/Toast';
 import { Compare, Frame } from './shell';
 import m from './mistakes.module.scss';
 import s from './demos.module.scss';
@@ -85,7 +84,7 @@ export function ToastLive() {
 
 export function ToastKinds() {
   return (
-    <Frame label="Kinds" height={280}>
+    <Frame label="A button for each kind" height={280}>
       <ToastStage>
         <Triggers />
       </ToastStage>
@@ -217,11 +216,5 @@ export function ToastLimit() {
 }
 
 export function ToastPreview() {
-  return (
-    <div className={s.toastStill}>
-      <CircleCheck className={s.toastStillIcon} size={16} aria-hidden />
-      <span>Deleted “Q4 roadmap”</span>
-      <Button>Undo</Button>
-    </div>
-  );
+  return <ToastStill title="Deleted “Q4 roadmap”" action="Undo" />;
 }

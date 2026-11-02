@@ -2,6 +2,7 @@
 // One part of a look's page, from its data: a link to it on the screens, the values with their
 // sources, or the block to paste.
 import { Code } from 'astro:components';
+import { codeThemes, codeTransformers } from '../../styles/code.mjs';
 import { lookById, rootBlock, valuesOf } from '../../looks';
 import s from './Look.module.scss';
 
@@ -11,6 +12,8 @@ const look = lookById(id);
 const values = valuesOf(look);
 const colour = (v: string) => /^#|^rgb|^oklch|^color-mix/.test(v);
 const ours = values.filter(([, v]) => !v.from).length;
+// A value wraps only between its words, never inside one: "-apple-system" stays whole.
+const words = (v: string) => v.split(' ');
 ---
 
 {part === 'specimen' && <p><a href={`/systems/looks?look=${id}`}>See it on the screens</a></p>}
@@ -45,11 +48,18 @@ const ours = values.filter(([, v]) => !v.from).length;
               {(['light', 'dark'] as const).map((t) => (
                 <td>
                   {colour(v[t]) && <span class={s.chip} style={`background:${v[t]}`} aria-hidden="true" />}
-                  <code class={s.value}>{v[t]}</code>
+                  <code class={s.value}>
+                    {words(v[t]).map((w, k) => (
+                      <>
+                        {k > 0 && ' '}
+                        <span class={s.word}>{w}</span>
+                      </>
+                    ))}
+                  </code>
                 </td>
               ))}
               <td>
-                {v.from ? <a href={v.from.href}>{v.from.label}</a> : 'Playbook.'}
+                {v.from ? <a href={v.from.href}>{v.from.label}</a> : 'Playbook'}
                 {v.note && <span class={s.note}>{' '}{v.note}</span>}
               </td>
             </tr>
@@ -60,4 +70,16 @@ const ours = values.filter(([, v]) => !v.from).length;
   )
 }
 
-{part === 'code' && <Code code={rootBlock(look)} lang="css" themes={{ light: 'github-light', dark: 'github-dark' }} defaultColor={false} />}
+{
+  part === 'code' && (
+    <Code
+      code={rootBlock(look)}
+      lang="css"
+      themes={codeThemes}
+      defaultColor={false}
+      transformers={codeTransformers}
+      role="region"
+      aria-label={`CSS variables for ${look.name}`}
+    />
+  )
+}

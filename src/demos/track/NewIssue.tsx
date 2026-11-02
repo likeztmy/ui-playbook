@@ -130,13 +130,13 @@ export function NewIssue({ open, onOpenChange, track, status: initial, from, onC
                 <span className={s.where}>in</span>
                 <span className={s.team}>
                   <span className={s.mark} aria-hidden>
-                    <ShoppingBag size={11} strokeWidth={2} />
+                    <ShoppingBag size={11} />
                   </span>
                   Shop app
                 </span>
                 <Tip label="Close">
                   <BaseDialog.Close render={<Button variant="ghost" icon size="sm" aria-label="Close" className={s.close} />}>
-                    <X size={16} strokeWidth={1.5} aria-hidden />
+                    <X size={16} aria-hidden />
                   </BaseDialog.Close>
                 </Tip>
               </div>
@@ -211,7 +211,7 @@ export function NewIssue({ open, onOpenChange, track, status: initial, from, onC
                   onPick={setLabels}
                   trigger={chip(
                     <>
-                      <Tag size={14} strokeWidth={1.5} aria-hidden className={s.tag} />
+                      <Tag size={14} aria-hidden className={s.tag} />
                       {labels.length === 0 ? 'Labels' : labels.length <= 2 ? labels.join(', ') : `${labels.length} labels`}
                     </>,
                   )}

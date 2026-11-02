@@ -1,7 +1,7 @@
 import { Ellipsis, ListFilter, Plus, Search } from 'lucide-react';
 import { TipGroup } from '../../ui/Tooltip';
 import { StatusIcon } from '../track/StatusIcon';
-import type { Status } from '../track/model';
+import { statusName, type Status } from '../track/model';
 import { Frame } from '../shell';
 import { IconButton } from './IconButton';
 import { Nav } from './Nav';
@@ -36,7 +36,9 @@ export function IconLive() {
             <ul className={s.issues}>
               {ISSUES.map(([title, status]) => (
                 <li key={title} className={s.issue}>
-                  <StatusIcon status={status} />
+                  <span className={s.status} role="img" aria-label={statusName(status)}>
+                    <StatusIcon status={status} />
+                  </span>
                   <span className={s.issueTitle}>{title}</span>
                 </li>
               ))}

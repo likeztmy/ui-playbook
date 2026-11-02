@@ -42,7 +42,7 @@ export function Activity({ issue, track }: { issue: Issue; track: Track }) {
           const bot = BOTS[a.who];
           const mark = bot ? (
             <span className={s.bot} aria-hidden>
-              <bot.Mark size={11} strokeWidth={2} />
+              <bot.Mark size={11} />
             </span>
           ) : (
             <Face id={a.who} size="sm" />

@@ -8,7 +8,7 @@ import { Popover } from '../../ui/Popover';
 import { Toolbar, toolbarClasses } from '../../ui/Toolbar';
 import s from './FormatBar.module.scss';
 
-const ic = { size: 16, strokeWidth: 1.5, nonScalingStroke: true, 'aria-hidden': true } as const;
+const ic = { size: 16, 'aria-hidden': true } as const;
 
 /** An address as typed, made absolute: "example.com" means https://example.com. */
 const absolute = (url: string) => (/^[a-z][a-z0-9+.-]*:/i.test(url) ? url : `https://${url}`);
@@ -106,7 +106,7 @@ function LinkTool({ editor }: { editor: Editor | null }) {
           ref={field}
           className={cx(f.control, s.address)}
           value={url}
-          placeholder="Paste or type a link"
+          placeholder="https://example.com"
           aria-label="Address"
           onFocus={(e) => e.target.select()}
           onChange={(e) => setUrl(e.target.value)}

@@ -2,20 +2,29 @@
 
 // ── Issues ───────────────────────────────────────────────
 
+.issuesBox {
+  // A size container takes no width from its content: it needs one of its own.
+  width: 100%;
+  container-type: inline-size;
+}
+
+// Id, title, labels, date. The rows share the list's columns, so every label starts on one edge and
+// the dates keep one right edge.
 .issues {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr) max-content auto;
   width: 100%;
   margin: 0;
   padding: 0;
-  container-type: inline-size;
   list-style: none;
 }
 
-// Id, then what it is and its labels, then the date: the right edge stays one column.
 .issue {
   display: grid;
-  grid-template-columns: 64px minmax(0, 1fr) auto;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
   align-items: center;
-  gap: var(--space-3);
+  column-gap: var(--space-3);
   height: 36px;
   padding: 0 var(--space-3);
   border-bottom: 1px solid var(--line);
@@ -32,11 +41,10 @@
   font-variant-numeric: tabular-nums;
 }
 
-.what {
+.labels {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  min-width: 0;
 }
 
 .title {
@@ -87,18 +95,37 @@
   }
 }
 
-// On a phone the labels give way first: the title and the date are the row.
+// Narrow: the title takes the first line whole, with the date; the labels go under it, still on one
+// edge. The id gives way.
 @container (max-width: 480px) {
+  .issues {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .issue {
     grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      'title due'
+      'labels labels';
+    row-gap: var(--space-1);
+    height: auto;
+    padding-block: var(--space-2);
   }
 
   .id {
     display: none;
   }
 
-  .label + .label {
-    display: none;
+  .title {
+    grid-area: title;
+  }
+
+  .labels {
+    grid-area: labels;
+  }
+
+  .due {
+    grid-area: due;
   }
 }
 

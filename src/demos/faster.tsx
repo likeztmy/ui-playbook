@@ -5,7 +5,7 @@ import { Tip } from '../ui/Tooltip';
 import { Compare, localized } from './shell';
 import s from './demos.module.scss';
 
-const ic = { size: 16, strokeWidth: 1.5, nonScalingStroke: true, 'aria-hidden': true } as const;
+const ic = { size: 16, 'aria-hidden': true } as const;
 
 const START = [
   ['Mira Okafor', 'Q4 roadmap: final draft'],
@@ -18,9 +18,9 @@ const START = [
   ['Jonas Weber', 'Standup notes, Tuesday'],
 ].map(([from, subject]) => ({ from, subject, starred: false, unread: true }));
 
-/** The modifier's name where the reader is: ⌥ on a Mac, Alt elsewhere. */
+/** The modifier's name where the reader is, as its keycap says: Option on a Mac, Alt elsewhere. */
 function useModifier() {
-  const [name, setName] = useState('⌥');
+  const [name, setName] = useState('Option');
   useEffect(() => {
     if (!/Mac|iPhone|iPad/.test(navigator.platform)) setName('Alt');
   }, []);

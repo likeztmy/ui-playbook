@@ -2,14 +2,21 @@ import { Button as BaseButton } from '@base-ui/react/button';
 import { LoaderCircle } from 'lucide-react';
 import type { ComponentProps, ReactNode } from 'react';
 import { cx } from './cx';
+import { Tip } from './Tooltip';
 import s from './Button.module.scss';
 
 export type ButtonProps = ComponentProps<typeof BaseButton> & {
   /** `danger-fill` is the one filled button of a destructive dialog. */
   variant?: 'secondary' | 'primary' | 'ghost' | 'danger' | 'danger-fill';
   size?: 'sm' | 'md' | 'lg';
-  /** Square icon-only button. Needs an aria-label and a Tip. */
+  /**
+   * Square icon-only button. Give it a `label`: it becomes the aria-label
+   * and a Tip with the same words. Inside a trigger that brings its own Tip
+   * (a toolbar's tools, with their shortcuts), pass `aria-label` instead.
+   */
   icon?: boolean;
+  /** An icon button's name, said by its aria-label and shown in its Tip. */
+  label?: string;
   /** Busy: spinner in the icon slot, label swapped, presses ignored. */
   loading?: boolean;
   /** The label while loading, e.g. "Saving". Its width is reserved up front. */
@@ -24,18 +31,7 @@ export function buttonClass({ variant = 'secondary', size = 'md', icon }: Pick<B
   return cx(s.button, variant !== 'secondary' && VARIANT_CLASS[variant], size !== 'md' && s[size], icon && s.icon);
 }
 
-export function Button({
-  variant,
-  size,
-  icon,
-  loading,
-  loadingLabel,
-  leading,
-  children,
-  className,
-  onClick,
-  ...props
-}: ButtonProps) {
+export function Button({ variant, size, icon, label, loading, loadingLabel, leading, children, className, onClick, ...props }: ButtonProps) {
   const spinner = <LoaderCircle className={s.spinner} size={16} aria-hidden />;
 
   // Idle and busy content share one grid cell, spinner included, so the
@@ -59,9 +55,10 @@ export function Button({
       </>
     );
 
-  return (
+  const button = (
     <BaseButton
       {...props}
+      aria-label={label ?? props['aria-label']}
       aria-busy={loading || undefined}
       // Stays focusable and in the tab order while busy; presses do nothing.
       onClick={loading ? (e) => e.preventDefault() : onClick}
@@ -71,4 +68,5 @@ export function Button({
       {content}
     </BaseButton>
   );
+  return label ? <Tip label={label}>{button}</Tip> : button;
 }

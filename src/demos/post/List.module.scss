@@ -22,7 +22,8 @@ $gap: var(--space-3);
   flex: none;
   align-items: center;
   gap: var(--space-1);
-  height: 56px;
+  // App shell's toolbar height.
+  height: var(--toolbar-height);
   // Select all centred on the checkboxes' column below it (the bar's checkbox box is 32px wide).
   padding: 0 var(--space-3) 0 calc(#{$margin} + #{$inset} + #{$check} / 2 - 16px);
 }
@@ -41,7 +42,6 @@ $gap: var(--space-3);
 .check + .title {
   padding-left: 0;
 }
-
 
 // The folder as a menu, on a phone only; elsewhere the folders have their own column.
 .where {
@@ -62,6 +62,12 @@ $gap: var(--space-3);
   min-height: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
+
+  // Focused only once its last row has gone: a ring inside, where the card doesn't clip it.
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+  }
 }
 
 // A date section's header: 20 above, 4 below, so it reads with the rows under it. No line under it,
@@ -128,7 +134,8 @@ $gap: var(--space-3);
   align-items: center;
   margin: 2px $margin;
   padding: 10px var(--space-3) 10px $inset;
-  border-radius: 12px;
+  // Concentric with the card: 18 − its 8 margin.
+  border-radius: var(--radius-lg);
 
   // Hover shades whatever the row's colour is, rather than replacing it. Its actions wait until the
   // pointer rests: sweeping down the list is on its way somewhere, and must leave every row as it was.
@@ -186,7 +193,8 @@ $gap: var(--space-3);
 // A starred row's mark, before its time: only where it means something, so it's found.
 .starred {
   flex: none;
-  color: oklch(0.72 0.15 70);
+  // The stroke holds 3:1 as an icon that carries state (L 0.62 on white); the fill stays yellow.
+  color: light-dark(oklch(0.62 0.14 70), oklch(0.72 0.15 70));
   fill: oklch(0.83 0.16 85);
 }
 
@@ -329,7 +337,7 @@ $gap: var(--space-3);
 // Phones keep their two lines: one is too little for a finger to aim at.
 @container (min-width: 761px) {
   .list[data-density='compact'] {
-    --face: 24px;
+    --face: 28px;
 
     .line {
       grid-template-columns: $check var(--face) minmax(0, 1fr);
@@ -426,27 +434,16 @@ $gap: var(--space-3);
   }
 }
 
-// New mail, waiting over the top of the list, under its bar.
+// New mail, waiting over the top of the list, under its bar. A secondary button on a raised plate:
+// it floats over the rows, so it needs a ground of its own under the button's translucent fill.
 .pill {
   position: absolute;
-  top: calc(56px + var(--space-2));
+  top: calc(48px + var(--space-2));
   left: 50%;
   z-index: var(--z-dropdown);
-  height: 28px;
-  padding: 0 var(--space-3);
-  border: 0;
-  border-radius: 999px;
-  background: var(--ink);
-  color: var(--surface);
-  font: inherit;
-  font-size: 13px;
-  font-weight: 500;
+  display: flex;
+  border-radius: var(--radius-full);
+  background: var(--surface-raised);
   box-shadow: var(--shadow-md);
   translate: -50% 0;
-  cursor: pointer;
-
-  &:focus-visible {
-    outline: none;
-    box-shadow: var(--focus-ring);
-  }
 }

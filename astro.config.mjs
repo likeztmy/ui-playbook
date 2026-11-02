@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 import mdx from '@astrojs/mdx';
+import { codeThemes, codeTransformers } from './src/styles/code.mjs';
 
 // Pre-bundle every Base UI entry up front. Otherwise the dev server finds a
 // new one (say @base-ui/react/select) the first time a page imports it,
@@ -22,7 +23,7 @@ export default defineConfig({
   integrations: [react(), mdx()],
   // Code shows in both themes: Shiki writes each colour as a variable, and the page picks one.
   markdown: {
-    shikiConfig: { themes: { light: 'github-light', dark: 'github-dark' }, defaultColor: false },
+    shikiConfig: { themes: codeThemes, defaultColor: false, transformers: codeTransformers },
   },
   vite: {
     cacheDir: isDev ? 'node_modules/.vite-dev' : 'node_modules/.vite',

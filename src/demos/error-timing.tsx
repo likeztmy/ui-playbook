@@ -1,5 +1,5 @@
 import { Check, Circle, X } from 'lucide-react';
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { Button } from '../ui/Button';
 import { TextField } from '../ui/Field';
 import { Frame } from './shell';
@@ -88,6 +88,8 @@ const RULES: { label: string; test: (v: string) => boolean }[] = [
 function NewPassword() {
   const [value, setValue] = useState('');
   const [left, setLeft] = useState(false);
+  const rules = useId();
+  const wrong = left && RULES.some((r) => !r.test(value));
   return (
     <div className={s.formColumn}>
       <TextField
@@ -97,15 +99,18 @@ function NewPassword() {
         value={value}
         onValueChange={setValue}
         onBlur={() => setLeft(value.length > 0)}
+        // The rules describe the field; an unmet one, once it's left, makes it invalid.
+        aria-describedby={rules}
+        aria-invalid={wrong || undefined}
       />
-      <div className={s.ruleList} role="list">
+      <div id={rules} className={s.ruleList} role="list">
         {RULES.map((r) => {
           const met = r.test(value);
           const state = met ? 'met' : left ? 'unmet' : 'pending';
           const Icon = met ? Check : left ? X : Circle;
           return (
             <div key={r.label} className={s.rule} data-state={state} role="listitem">
-              <Icon size={14} strokeWidth={1.75} nonScalingStroke aria-hidden />
+              <Icon size={14} aria-hidden />
               <span>{r.label}</span>
               <span className={s.srOnly}>{met ? ', met' : left ? ', not met' : ''}</span>
             </div>

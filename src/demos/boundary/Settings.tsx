@@ -51,7 +51,7 @@ function Section({
 export function Settings({ boxed }: { boxed?: boolean }) {
   return (
     <div className={s.settings}>
-      <Section boxed={boxed} title="General" footer={<Button variant="primary">Save</Button>}>
+      <Section boxed={boxed} title="General" footer={<Button variant="primary">Save changes</Button>}>
         <div className={s.fields}>
           <TextField label="Name" defaultValue="Shop app" />
           <TextField label="Description" defaultValue="The iOS and Android shopping app." />

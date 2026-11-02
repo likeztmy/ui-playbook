@@ -50,8 +50,9 @@ A segmented control picks one of two to five options that change a view or a mod
 | Segment | equal widths, `space-3` padding | 12 |
 | Label | 13 / 500; `ink-muted`, chosen `ink` | 13 |
 | Icon segment | Lucide 16, 36 wide, with a tooltip | 16 |
+| In a panel | the panel's radius less its inset: 18 − 8 = `radius-lg`; thumb 10 − 2 | 10 · 8 |
 
-Its height matches the buttons beside it.
+Its height matches the buttons beside it. On its own it's a pill; in a panel that isn't one, a pill's ends would bulge into the panel's corner, so it takes the [concentric](/principles/concentric-radius) radius.
 
 <SegmentedAnatomy client:visible />
 

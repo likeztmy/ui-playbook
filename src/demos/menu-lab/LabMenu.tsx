@@ -49,7 +49,7 @@ function RowBody({ row, look, checked }: { row: Row; look: Look; checked?: boole
   const { s } = look;
   const Icon = row.icon;
   const checkSlot = (indicator: ReactNode) => <span className={s.check}>{indicator}</span>;
-  const tick = <Check size={16} strokeWidth={1.75} nonScalingStroke aria-hidden />;
+  const tick = <Check size={16} aria-hidden />;
   const isCheck = row.kind === 'check';
   return (
     <>
@@ -57,9 +57,7 @@ function RowBody({ row, look, checked }: { row: Row; look: Look; checked?: boole
       {look.icons && Icon && <Icon className={s.icon} size={16} aria-hidden />}
       <span className={s.text}>{row.label}</span>
       {look.check === 'right' && isCheck && checkSlot(checked ? tick : null)}
-      {row.kind === 'submenu' && (
-        <ChevronRight className={s.chevron} size={16} aria-hidden />
-      )}
+      {row.kind === 'submenu' && <ChevronRight className={s.chevron} size={16} aria-hidden />}
       {'keys' in row && row.keys && <KeyHint keys={row.keys} look={look} />}
     </>
   );
@@ -117,12 +115,7 @@ function Positioned({ look, children, sub }: { look: Look; children: ReactNode; 
   const container = usePortalContainer();
   return (
     <Menu.Portal container={container}>
-      <Menu.Positioner
-        className={look.s.positioner}
-        sideOffset={sub ? 0 : 6}
-        alignOffset={sub ? -4 : 0}
-        align="start"
-      >
+      <Menu.Positioner className={look.s.positioner} sideOffset={sub ? 0 : 6} alignOffset={sub ? -4 : 0} align="start">
         <Menu.Popup className={cx(look.s.popup, sub && look.s.subPopup)}>{children}</Menu.Popup>
       </Menu.Positioner>
     </Menu.Portal>
@@ -161,13 +154,7 @@ function LiveRow({ row, look }: { row: Row; look: Look }) {
 function LiveCheck({ row, look }: { row: Extract<Row, { kind: 'check' }>; look: Look }) {
   const [checked, setChecked] = useState(row.checked);
   return (
-    <Menu.CheckboxItem
-      className={look.s.item}
-      checked={checked}
-      onCheckedChange={setChecked}
-      closeOnClick={false}
-      label={row.label}
-    >
+    <Menu.CheckboxItem className={look.s.item} checked={checked} onCheckedChange={setChecked} closeOnClick={false} label={row.label}>
       <RowBody row={row} look={look} checked={checked} />
     </Menu.CheckboxItem>
   );

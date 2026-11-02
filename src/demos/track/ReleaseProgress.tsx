@@ -29,7 +29,7 @@ export function ReleaseProgress({ release }: { release?: Release }) {
       <h3 className={s.head}>Release</h3>
       <div className={s.release}>
         <div className={s.releaseHead}>
-          <Rocket size={16} strokeWidth={1.5} aria-hidden />
+          <Rocket size={16} aria-hidden />
           {release.name}
           <span className={s.meta}>Shipyard</span>
         </div>

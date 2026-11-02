@@ -18,6 +18,8 @@ const DIAGRAMS = new Set([
   'src/demos/icon/Drawn.tsx',
   // A line chart in the looks showcase: data, not an icon.
   'src/demos/looks/ship/Line.tsx',
+  // The same chart in the looks gallery directions.
+  'src/demos/looks-lab/ship/Line.tsx',
 ]);
 
 function* files(dir) {

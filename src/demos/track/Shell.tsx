@@ -18,7 +18,7 @@ import { Sidebar } from './Sidebar';
 import { useTrack, type View } from './useTrack';
 import s from './Shell.module.scss';
 
-const ic = { size: 16, strokeWidth: 1.5, nonScalingStroke: true, 'aria-hidden': true } as const;
+const ic = { size: 16, 'aria-hidden': true } as const;
 
 type ShellProps = {
   onToasts: (el: HTMLDivElement | null) => void;
@@ -101,7 +101,8 @@ export function Shell({ onToasts, back, embedded }: ShellProps) {
   };
 
   const target = targetOf(track);
-  const targetText = target.length > 1 ? `${target.length} issues` : target.length ? `${issueId(track.get(target[0])!)} ${track.get(target[0])!.title}` : 'No issue selected';
+  const targetText =
+    target.length > 1 ? `${target.length} issues` : target.length ? `${issueId(track.get(target[0])!)} ${track.get(target[0])!.title}` : null;
   const open = track.get(track.open);
   const Main = embedded ? 'div' : 'main';
 
@@ -128,7 +129,9 @@ export function Shell({ onToasts, back, embedded }: ShellProps) {
   const openNav = () => {
     setNav(true);
     // Onto where you are, so the next arrow or Tab starts from there.
-    requestAnimationFrame(() => (drawer.current?.querySelector<HTMLElement>('[aria-current="page"]') ?? drawer.current?.querySelector('button'))?.focus());
+    requestAnimationFrame(() =>
+      (drawer.current?.querySelector<HTMLElement>('[aria-current="page"]') ?? drawer.current?.querySelector('button'))?.focus(),
+    );
   };
   const closeNav = () => {
     setNav(false);
@@ -174,7 +177,13 @@ export function Shell({ onToasts, back, embedded }: ShellProps) {
       )}
 
       <Main className={s.page} inert={narrow && nav ? true : undefined}>
-        <Header track={track} view={view} embedded={embedded} onShowSidebar={narrow ? openNav : folded ? () => fold(false) : undefined} showRef={menuRef} />
+        <Header
+          track={track}
+          view={view}
+          embedded={embedded}
+          onShowSidebar={narrow ? openNav : folded ? () => fold(false) : undefined}
+          showRef={menuRef}
+        />
 
         {/* What the filters narrow to, only while they do. */}
         {track.filtering && track.place !== 'inbox' && (
@@ -184,12 +193,13 @@ export function Shell({ onToasts, back, embedded }: ShellProps) {
         )}
 
         <div className={s.main} data-open={open && !narrow ? '' : undefined}>
-          <div className={s.issues}>
+          {/* Where focus goes once the last issue has gone. */}
+          <div className={s.issues} tabIndex={-1} data-issues="">
             {/* A teammate's changes wait here instead of moving the row you were about to click. */}
             {track.place !== 'inbox' && track.incoming > 0 && (
-              <button type="button" className={s.pill} onClick={() => track.letIn()}>
-                {track.incoming === 1 ? '1 update' : `${track.incoming} updates`}
-              </button>
+              <span className={s.pill} data-overlay>
+                <Button onClick={() => track.letIn()}>{track.incoming === 1 ? '1 update' : `${track.incoming} updates`}</Button>
+              </span>
             )}
             {track.place === 'inbox' ? (
               <Inbox track={track} onOpen={openIssue} />

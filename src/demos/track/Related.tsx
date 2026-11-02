@@ -25,7 +25,7 @@ export function ParentLink({ issue, track, onOpen }: Props) {
   if (!parent) return null;
   return (
     <button type="button" className={s.parent} onClick={() => onOpen(parent.n)}>
-      <CornerLeftUp size={14} strokeWidth={1.5} aria-hidden />
+      <CornerLeftUp size={14} aria-hidden />
       Sub-issue of <span className={s.id}>{issueId(parent)}</span> <b>{parent.title}</b>
     </button>
   );

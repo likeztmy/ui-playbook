@@ -3,6 +3,7 @@ import { useState, type ReactNode } from 'react';
 import { Badge, type Tone } from '../ui/Badge';
 import { cx } from '../ui/cx';
 import { TextField } from '../ui/Field';
+import { Table, type Column } from '../ui/Table';
 import { Compare, Frame, Gallery } from './shell';
 import m from './mistakes.module.scss';
 import s from './demos.module.scss';
@@ -57,37 +58,43 @@ const ISSUES: Issue[] = [
   { id: 'PB-117', title: 'Offline sync', tone: 'success', state: 'Shipped', tag: 'Beta' },
 ];
 
-/** An issue list you can filter by any word, the states' included. */
+const ISSUE_COLUMNS: Column<Issue>[] = [
+  {
+    key: 'title',
+    header: 'Title',
+    render: (i) => (
+      <span className={s.issueTitle}>
+        {i.title}
+        {i.tag && <Badge tone="info">{i.tag}</Badge>}
+      </span>
+    ),
+  },
+  {
+    key: 'state',
+    header: 'State',
+    render: (i) => (
+      <Badge tone={i.tone} status>
+        {i.state}
+      </Badge>
+    ),
+  },
+  { key: 'id', header: 'ID', muted: true, optional: true, render: (i) => i.id },
+];
+
+/** Issues you can filter by any word, the states' included. A badge in every row is a column, so it has a header. */
 function Issues() {
   const [query, setQuery] = useState('');
   const q = query.trim().toLowerCase();
   const shown = ISSUES.filter((i) => !q || [i.id, i.title, i.state, i.tag ?? ''].some((w) => w.toLowerCase().includes(q)));
   return (
-    <div className={s.issues}>
-      <TextField
-        label="Filter"
-        placeholder="Title, state or ID"
-        value={query}
-        onValueChange={setQuery}
-        leading={<Search size={16} strokeWidth={1.5} nonScalingStroke aria-hidden />}
-      />
+    <div className={cx(s.issues, s.fill)}>
+      <TextField label="Filter" placeholder="Title, state or ID" value={query} onValueChange={setQuery} leading={<Search size={16} aria-hidden />} />
       {shown.length ? (
-        <div className={s.issueList} role="list">
-          {shown.map((i) => (
-            <div key={i.id} className={s.issueRow} role="listitem">
-              <span className={s.issueId}>{i.id}</span>
-              <span className={s.issueTitle}>
-                {i.title}
-                {i.tag && <Badge tone="info">{i.tag}</Badge>}
-              </span>
-              <Badge tone={i.tone} status>
-                {i.state}
-              </Badge>
-            </div>
-          ))}
-        </div>
+        <Table label="Issues" columns={ISSUE_COLUMNS} rows={shown} rowKey={(i) => i.id} stickyFirst />
       ) : (
-        <div className={s.issueEmpty}>No issue matches “{query.trim()}”.</div>
+        <div className={s.issueEmpty} role="status">
+          No issue matches “{query.trim()}”. Try a state or an ID.
+        </div>
       )}
     </div>
   );
@@ -144,6 +151,9 @@ export function BadgeVariants() {
   );
 }
 
+// Each tone twice: a state, with its dot, and an attribute, without.
+const ATTRIBUTES: Record<Tone, string> = { danger: 'Breaking', warning: 'Deprecated', success: 'Verified', info: 'Beta', neutral: 'Admin' };
+
 export function BadgeAll() {
   return (
     <Frame label="Tones" height={0}>
@@ -153,7 +163,7 @@ export function BadgeAll() {
             <Badge tone={t.tone} status>
               {t.state}
             </Badge>
-            <Badge tone={t.tone}>{t.state}</Badge>
+            <Badge tone={t.tone}>{ATTRIBUTES[t.tone]}</Badge>
           </div>
         ))}
       </div>
@@ -179,7 +189,8 @@ export function BadgeWords() {
       }
       afterNote={
         <>
-          The words carry the state, and they can be searched; the colour only speeds the scan. <a href="/principles/colour-means-one-thing">Colour means one thing</a>.
+          The words carry the state, and they can be searched; the colour only speeds the scan.{' '}
+          <a href="/principles/colour-means-one-thing">Colour means one thing</a>.
         </>
       }
     />
@@ -203,7 +214,15 @@ export function BadgeSoft() {
       beforeLabel="Solid fills"
       afterLabel="Soft tints"
       height={220}
-      before={<TaskList badge={(t) => <Badge tone={t.tone} status className={m.solidBadge}>{t.state}</Badge>} />}
+      before={
+        <TaskList
+          badge={(t) => (
+            <Badge tone={t.tone} status className={m.solidBadge}>
+              {t.state}
+            </Badge>
+          )}
+        />
+      }
       after={<TaskList badge={withWords} />}
       beforeNote={
         <>

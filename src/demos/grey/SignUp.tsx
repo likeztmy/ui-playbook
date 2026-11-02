@@ -29,7 +29,7 @@ export function SignUp({ decorated }: { decorated?: boolean }) {
         <div className={s.signup}>
           <div className={s.column}>
             <header className={s.signupHead}>
-              <h3>Create your Track account</h3>
+              <h3>Create a Track account</h3>
               <p>You’ll join the Shop app workspace as a member.</p>
             </header>
             <Form />
