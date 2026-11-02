@@ -54,7 +54,8 @@ test('badge: the states are words, so the list filters by them', async ({ page }
   await hydrateAll(page);
   const scene = page.locator('figure').first();
   await scene.getByRole('textbox', { name: 'Filter' }).fill('review');
-  await expect(scene.getByRole('listitem')).toHaveCount(2);
+  // A badge in every row is a column (C12): the issues are a table's body rows.
+  await expect(scene.getByRole('table', { name: 'Issues' }).locator('tbody').getByRole('row')).toHaveCount(2);
   await scene.getByRole('textbox', { name: 'Filter' }).fill('Atlantis');
   await expect(scene.getByText('No issue matches “Atlantis”.')).toBeVisible();
 });
@@ -163,7 +164,7 @@ test('menu scene: Duplicate and Delete act on the file; Sort reorders', async ({
   await page.goto('/components/menu');
   await hydrateAll(page);
   const scene = page.locator('figure').first();
-  const names = () => scene.getByRole('listitem').evaluateAll((rows) => rows.map((r) => r.querySelector('[class*=fileName]')?.textContent));
+  const names = () => scene.getByRole('listitem').evaluateAll((rows) => rows.map((r) => r.querySelector('[class*=_name_]')?.textContent));
   await scene.getByText('Metrics').click({ button: 'right' });
   await page.getByRole('menuitem', { name: 'Duplicate' }).click();
   await expect.poll(names).toContain('Metrics copy');
@@ -658,9 +659,9 @@ test('slider: click glides to a stop, drag follows, ends stretch, keys step', as
   const columns = live.getByRole('slider', { name: 'Columns' });
   await radius.scrollIntoViewIfNeeded();
 
-  // A click on a long range lands on the nearest tenth: 22% of 0–48 → 0.2 → 10.
+  // A click on a long range lands on the nearest tenth, not the nearest step: 78% of 0–12 → 0.8 → 9.6 → 10.
   const r = (await radius.boundingBox())!;
-  await page.mouse.click(r.x + r.width * 0.22, r.y + r.height / 2);
+  await page.mouse.click(r.x + r.width * 0.78, r.y + r.height / 2);
   await expect(radius).toHaveAttribute('aria-valuenow', '10');
 
   // A click on ten stops or fewer lands on a stop: 62% of 1–6 → 4.
@@ -747,8 +748,10 @@ test('card: opens as one target, More opens its own menu, only live cards lift',
   await page.keyboard.press('Escape');
 
   const scaleOf = (el: import('@playwright/test').Locator) => el.evaluate((n) => getComputedStyle(n).scale);
-  const linkCard = page.locator('figure').filter({ hasText: 'Variants' }).locator('article').first();
-  const staticCard = page.locator('figure').filter({ hasText: 'Variants' }).locator('article').last();
+  // The Variants gallery, found by its rows: Link first, Static last.
+  const variants = page.locator('figure').filter({ hasText: 'With an action' }).filter({ hasText: 'Static' });
+  const linkCard = variants.locator('article').first();
+  const staticCard = variants.locator('article').last();
   await linkCard.hover();
   await expect.poll(() => scaleOf(linkCard)).toBe('1.01');
   await staticCard.hover();
@@ -761,8 +764,10 @@ test('card: a refreshed number swaps in digit by digit', async ({ page }) => {
   const after = page.locator(AFTER).filter({ hasText: 'Conversion' });
   await after.scrollIntoViewIfNeeded();
   await after.getByRole('button', { name: 'Conversion' }).click();
+  // A two-place percentage: four digits, the point and the % sign.
   const digits = after.locator('[aria-hidden] > span');
-  await expect(digits).toHaveCount(5);
+  await expect(digits).toHaveCount(6);
+  await expect(digits.last()).toHaveText('%');
   const delays = await digits.evaluateAll((d) => d.map((n) => getComputedStyle(n).animationDelay.split(',')[0].trim()));
   expect(delays.slice(0, 3)).toEqual(['0s', '0.03s', '0.06s']);
 });
@@ -886,17 +891,21 @@ test('how waiting feels: a quick refresh shows no spinner in the After; once sho
 
   const stars = page
     .locator('figure')
-    .filter({ has: page.getByRole('checkbox', { name: 'Fail the next request' }) })
+    .filter({ has: page.getByRole('switch', { name: 'Fail the next request' }) })
     .nth(1);
   await stars.scrollIntoViewIfNeeded();
   const q4 = stars.getByRole('button', { name: /Star Q4 roadmap|Unstar Q4 roadmap/ });
   await q4.click();
   await expect(q4).toHaveAttribute('aria-pressed', 'true', { timeout: 100 });
-  await stars.getByRole('checkbox', { name: 'Fail the next request' }).click();
+  // It applies on the spot, so it's a Switch, not a Checkbox.
+  await stars.getByRole('switch', { name: 'Fail the next request' }).click();
   await q4.click();
   await expect(q4).toHaveAttribute('aria-pressed', 'false');
   await expect(q4).toHaveAttribute('aria-pressed', 'true', { timeout: 2000 });
-  await expect(stars.getByText('Couldn’t unstar “Q4 roadmap”. Try again.')).toBeVisible();
+  // The failure says why, in the row whose star failed.
+  await expect(stars.locator('[class*="waitRow"]', { hasText: 'Q4 roadmap' }).getByRole('status')).toHaveText(
+    'Couldn’t unstar: the server didn’t respond. Try again.',
+  );
 });
 
 test('never too busy to listen: locked clicks are dropped, a keyframe sheet snaps open before closing, a spring keeps the flick', async ({
@@ -971,7 +980,8 @@ test('mail page: each Show plays its decision in the app and outlines what it is
     undo: () => expect(app.getByRole('status').filter({ hasText: 'Sending' })).toBeVisible(),
     search: () => expect(app.getByText('No conversations match “handover” in Inbox.')).toBeVisible(),
   };
-  const shows = page.getByRole('button', { name: 'Show', exact: true });
+  // Each Show names its decision's number, so ten of them read apart in a list of controls.
+  const shows = page.getByRole('button', { name: /^Show decision \d+$/ });
   const spots = ['colour', 'sections', 'dwell', 'context', 'archive', 'arrive', 'run', 'reply', 'undo', 'search'];
   expect(await shows.count()).toBe(spots.length);
   for (const [i, spot] of spots.entries()) {
@@ -1429,6 +1439,8 @@ test('post: when Undo runs out, a sent message says so in place; nothing under t
 });
 
 test('tip: focus the app moves back opens no tooltip; focus the person moves with Tab does', async ({ page }) => {
+  // On a phone New message is its icon alone, so a tip names it; wider, its label does.
+  await page.setViewportSize({ width: 375, height: 800 });
   await page.goto('/practice/mail/app');
   await hydrateAll(page);
   const list = page.getByRole('region', { name: 'Conversations' });
@@ -1457,6 +1469,14 @@ test('tip: focus the app moves back opens no tooltip; focus the person moves wit
   await page.keyboard.press('Tab');
   await expect(newMessage).toBeFocused();
   await expect(tip).toBeVisible();
+  // At a desk the button reads “New message” itself: no tip repeats it, even on Tab.
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.mouse.move(0, 0);
+  await page.keyboard.press('Shift+Tab');
+  await page.keyboard.press('Tab');
+  await expect(newMessage).toBeFocused();
+  await page.waitForTimeout(800);
+  await expect(tip).toHaveCount(0);
 });
 
 test('site: a link reached by Tab shows a ring, and a link in prose is underlined', async ({ page }) => {
@@ -1765,9 +1785,10 @@ test('reading text: the font test reads three passages, then shows each face’s
     await page.keyboard.press('Enter');
   }
   await expect(page.getByText(/words a minute/)).toHaveCount(3);
-  await expect(page.getByText('Your favourite ·')).toBeVisible();
+  await expect(page.getByText('Favourite ·')).toBeVisible();
   // Pressing straight through is skimming, and says so rather than naming a winner.
   await expect(page.getByText('Faster than anyone reads')).toBeVisible();
+  await expect(page.getByText('Fastest ·')).toHaveCount(0);
   await expect(page.getByRole('button', { name: 'Try again' })).toBeFocused();
 });
 

@@ -26,12 +26,23 @@ export function watchErrors(page: Page) {
 /**
  * Scrolls every island into view so `client:visible` fires, then waits until
  * none is still server-rendered only. A failed hydration leaves `ssr` behind.
+ * A `client:media` island hydrates on its query, not on sight, and one whose
+ * query doesn't match this width is meant to stay server-rendered.
  */
 export async function hydrateAll(page: Page) {
-  const islands = page.locator('astro-island');
+  const islands = page.locator('astro-island:not([client="media"])');
   const n = await islands.count();
   for (let i = 0; i < n; i++) await islands.nth(i).scrollIntoViewIfNeeded();
-  await expect(page.locator('astro-island[ssr]')).toHaveCount(0);
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () =>
+          [...document.querySelectorAll('astro-island[ssr]')].filter(
+            (e) => e.getAttribute('client') !== 'media' || matchMedia(JSON.parse(e.getAttribute('opts') ?? '{}').value).matches,
+          ).length,
+      ),
+    )
+    .toBe(0);
   await page.evaluate(() => window.scrollTo(0, 0));
 }
 

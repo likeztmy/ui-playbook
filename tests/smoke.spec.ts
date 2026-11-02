@@ -46,7 +46,8 @@ for (const { route, box } of READING) {
       await page.goto(box ? `${route}?box=${box}` : route);
       const edges = await page.evaluate(() => {
         const body = document.querySelector('article > div')!;
-        const blocks = [document.querySelector('h1')!, ...body.children].filter((e) => e.tagName !== 'SCRIPT');
+        // A block hidden at this width (display: none) has no box and no edge.
+        const blocks = [document.querySelector('h1')!, ...body.children].filter((e) => e.tagName !== 'SCRIPT' && e.getClientRects().length > 0);
         const edge = (side: 'left' | 'right', els: Element[]) => [
           ...new Set(els.map((e) => Math.round(e.getBoundingClientRect()[side]))),
         ];
