@@ -101,7 +101,7 @@ test('menu: shortcut keys form one column; keyboard flow; focus returns', async 
   const snapLabel = (await snap.getByText('Snap to grid', { exact: true }).boundingBox())!;
   const copyLabel = (await menu.getByRole('menuitem', { name: 'Copy' }).getByText('Copy', { exact: true }).boundingBox())!;
   expect(checkBox.x, 'check leads the row').toBeLessThan(snapLabel.x);
-  expect(Math.round(copyLabel.x), 'labels share one line').toBe(Math.round(snapLabel.x));
+  expect(Math.abs(copyLabel.x - snapLabel.x), 'labels share one line').toBeLessThan(1);
   await expect(snap).toHaveAttribute('aria-checked', 'true');
   await page.keyboard.press('ArrowUp');
   await page.keyboard.press('ArrowUp');
@@ -141,7 +141,7 @@ test('home search filters and names the empty state', async ({ page }) => {
   await page.getByRole('searchbox').fill('slider');
   await expect(page.locator('[data-card]:visible')).toHaveCount(1);
   await page.getByRole('searchbox').fill('zzz');
-  await expect(page.getByText('Nothing matches')).toBeVisible();
+  await expect(page.locator('#empty').getByText('Nothing matches')).toBeVisible();
   await page.getByRole('button', { name: 'Clear search' }).click();
   await expect(page.getByRole('searchbox')).toBeFocused();
 });
@@ -276,7 +276,8 @@ test('task dialog: field focused, Enter submits, scrim cancels only when untouch
 test('input: checked on blur, not per keystroke; clears as you fix it', async ({ page }) => {
   await page.goto('/components/input');
   await hydrateAll(page);
-  const after = page.locator(AFTER).filter({ hasText: 'For delivery updates only.' }).first();
+  // Found by its label: the hint leaves while the error shows.
+  const after = page.locator(AFTER).filter({ hasText: 'Checks when focus leaves' }).first();
   const email = after.getByRole('textbox', { name: 'Email' });
   await email.scrollIntoViewIfNeeded();
   await email.fill('zoe@laurent');
