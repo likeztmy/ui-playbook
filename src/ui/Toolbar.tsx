@@ -1,7 +1,7 @@
 import { Toolbar as BaseToolbar } from '@base-ui/react/toolbar';
 import { Toggle } from '@base-ui/react/toggle';
 import { ToggleGroup } from '@base-ui/react/toggle-group';
-import type { ComponentProps, ReactNode } from 'react';
+import { createContext, useContext, type ComponentProps, type ReactNode } from 'react';
 import { buttonClass } from './Button';
 import { cx } from './cx';
 import { Tip, TipGroup } from './Tooltip';
@@ -25,9 +25,16 @@ function Root({ className, flat, ...props }: RootProps) {
   );
 }
 
+// A disabled group's tools keep their names but drop their shortcuts, as a disabled action does.
+const ToolsOff = createContext(false);
+
 /** A set of mutually exclusive tools, e.g. Select / Rectangle / Pen. */
 function Tools({ className, ...props }: ComponentProps<typeof ToggleGroup>) {
-  return <ToggleGroup {...props} className={cx(s.group, className as string)} />;
+  return (
+    <ToolsOff.Provider value={Boolean(props.disabled)}>
+      <ToggleGroup {...props} className={cx(s.group, className as string)} />
+    </ToolsOff.Provider>
+  );
 }
 
 type ToolProps = {
@@ -45,6 +52,7 @@ type ToolProps = {
 
 /** One tool in a Tools group: an icon toggle, named by its tooltip. */
 function Tool({ value, label, keys, children, className, pin, nativeTitle }: ToolProps) {
+  const off = useContext(ToolsOff);
   const button = (
     <BaseToolbar.Button
       render={<Toggle value={value} />}
@@ -59,7 +67,7 @@ function Tool({ value, label, keys, children, className, pin, nativeTitle }: Too
   return nativeTitle ? (
     button
   ) : (
-    <Tip label={label} keys={keys} offset={TIP_OFFSET}>
+    <Tip label={label} keys={off ? undefined : keys} offset={TIP_OFFSET}>
       {button}
     </Tip>
   );

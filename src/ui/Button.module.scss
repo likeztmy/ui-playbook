@@ -51,8 +51,8 @@
   }
 
   // While its menu or popover is open, the trigger stays pressed in, so
-  // the popup has a visible source.
-  &[data-popup-open] {
+  // the popup has a visible source. A disabled one keeps its tooltip (C46) but stays quiet.
+  &[data-popup-open]:not([data-disabled]) {
     background: var(--fill-control-hover);
   }
 
@@ -97,7 +97,7 @@
   outline-color: transparent;
   color: var(--on-accent);
 
-  &[data-popup-open] {
+  &[data-popup-open]:not([data-disabled]) {
     background: var(--accent-hover);
   }
 
@@ -118,7 +118,7 @@
   outline-color: transparent;
   color: var(--ink-muted);
 
-  &[data-popup-open] {
+  &[data-popup-open]:not([data-disabled]) {
     background: var(--fill-control);
     color: var(--ink);
   }

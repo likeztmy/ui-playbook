@@ -7,7 +7,7 @@ import { CheckList } from '../CheckList';
 import { at, releaseById, releaseName, type Status } from '../model';
 import { PlaceLink } from '../PlaceLink';
 import { Shell } from '../Shell';
-import { setStatus, statusOf } from '../store';
+import { ME, setStatus, statusOf } from '../store';
 import { Composer } from './Composer';
 import { Properties } from './Properties';
 import { story, type Event } from './story';
@@ -35,8 +35,8 @@ export function Release({ id }: { id: string }) {
     status === r.status
       ? []
       : status === 'Paused'
-        ? [{ Icon: Pause, who: 'Mira Chen', what: `paused the rollout at ${r.rollout}%`, hours: 0 }]
-        : [{ Icon: Play, who: 'Mira Chen', what: `resumed the rollout at ${r.rollout}%`, hours: 0 }];
+        ? [{ Icon: Pause, who: ME, what: `paused the rollout at ${r.rollout}%`, hours: 0 }]
+        : [{ Icon: Play, who: ME, what: `resumed the rollout at ${r.rollout}%`, hours: 0 }];
   return (
     <Shell
       title={
@@ -75,10 +75,7 @@ export function Release({ id }: { id: string }) {
               <Timeline events={[...posted, ...changed, ...told.events]} />
               <Composer
                 onPost={(quote) =>
-                  setPosted((p) => [
-                    { Icon: MessageSquare, who: 'Mira Chen', what: 'commented', hours: 0, quote, id: `c${++comments.current}` },
-                    ...p,
-                  ])
+                  setPosted((p) => [{ Icon: MessageSquare, who: ME, what: 'commented', hours: 0, quote, id: `c${++comments.current}` }, ...p])
                 }
               />
             </Tabs.Panel>

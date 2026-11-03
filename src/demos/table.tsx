@@ -114,7 +114,7 @@ type BarProps = {
   selected: string[];
   onRows: (rows: File[]) => void;
   onSelected: (names: string[]) => void;
-  /** Where focus goes once the bar's buttons go quiet. */
+  /** Where focus goes once the bar's actions leave with the selection. */
   selectAll: () => HTMLElement | null | undefined;
 };
 

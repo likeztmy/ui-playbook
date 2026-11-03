@@ -86,10 +86,10 @@
     background: var(--accent-soft);
   }
 
-  // An info badge's tint is the selection's own; give it an edge in its
-  // colour so it stays a badge.
-  &[aria-selected='true'] [data-tone='info'] {
-    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--info) 35%, transparent);
+  // A badge's tint can match the selection's (info, in a palette whose info is its accent) or vanish on
+  // it (a pink on a warm selection); an edge in its own colour keeps each one a badge.
+  &[aria-selected='true'] [data-tone] {
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, currentColor 35%, transparent);
   }
 }
 

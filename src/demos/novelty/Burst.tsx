@@ -3,7 +3,7 @@ import s from './novelty.module.scss';
 
 const PIECES = 14;
 // Content colours, clear of the accent's and the statuses' hues: decoration says nothing went right or wrong.
-const HUES = ['oklch(0.72 0.17 345)', 'oklch(0.74 0.12 185)', 'oklch(0.86 0.15 105)'];
+const HUES = ['oklch(0.72 0.17 345)', 'oklch(0.74 0.12 205)', 'oklch(0.86 0.15 105)'];
 
 /** Confetti from a point: pieces thrown out evenly, each spinning as it falls. Remount it to throw again. */
 export function Burst({ big }: { big?: boolean }) {
