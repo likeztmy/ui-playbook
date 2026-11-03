@@ -85,9 +85,9 @@ export function Row({ issue, track, onOpen }: RowProps) {
           </button>
         }
       />
-      {/* Its labels follow the title, so what it is reads as one phrase and the right edge stays a column. */}
-      <span className={s.what}>
-        <span className={s.title}>{issue.title}</span>
+      <span className={s.title}>{issue.title}</span>
+      {/* Labels in their own column, on one left edge down the list (C18). */}
+      <span className={s.labels}>
         {issue.labels.map((l) => (
           <span key={l} className={s.label}>
             {l}

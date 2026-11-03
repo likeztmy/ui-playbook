@@ -1,5 +1,5 @@
 import { Maximize, Redo2, Undo2, ZoomIn, ZoomOut, type LucideIcon } from 'lucide-react';
-import type { ComponentProps } from 'react';
+import { useState, type ComponentProps, type ReactNode } from 'react';
 import { Button } from '../ui/Button';
 import { cx } from '../ui/cx';
 import { Tip, TipGroup, TipKeys, tooltipClasses as ts } from '../ui/Tooltip';
@@ -25,18 +25,67 @@ function IconButton({ label, Icon, ...props }: { label: string; Icon: LucideIcon
   );
 }
 
+type RowProps = {
+  openFirst?: boolean;
+  /** What each button runs, by its label. */
+  run?: Record<string, () => void>;
+  /** After the buttons: what they act on. */
+  children?: ReactNode;
+};
+
 /** A row of icon buttons sharing one delay. */
-function Row({ openFirst }: { openFirst?: boolean }) {
+function Row({ openFirst, run, children }: RowProps) {
   return (
     <div className={s.toolRow}>
       <TipGroup>
         {ACTIONS.map(([label, Icon, keys], i) => (
           <Tip key={label} label={label} keys={keys} defaultOpen={openFirst && i === 1}>
-            <IconButton label={label} Icon={Icon} />
+            <IconButton label={label} Icon={Icon} onClick={run?.[label]} />
           </Tip>
         ))}
       </TipGroup>
+      {children}
     </div>
+  );
+}
+
+const clamp = (z: number) => Math.min(2, Math.max(0.5, z));
+
+/** The view controls at work: each one changes the zoom, and Undo and Redo step through the changes. */
+function ViewControls() {
+  const [zoom, setZoom] = useState(1);
+  // A step either way already in the history, so Undo and Redo run from the start.
+  const [past, setPast] = useState([0.75]);
+  const [future, setFuture] = useState([1.25]);
+  const go = (next: number) => {
+    if (next === zoom) return;
+    setPast((p) => [...p, zoom]);
+    setFuture([]);
+    setZoom(next);
+  };
+  const run = {
+    Undo: () => {
+      if (!past.length) return;
+      setFuture((f) => [zoom, ...f]);
+      setZoom(past[past.length - 1]);
+      setPast((p) => p.slice(0, -1));
+    },
+    Redo: () => {
+      if (!future.length) return;
+      setPast((p) => [...p, zoom]);
+      setZoom(future[0]);
+      setFuture((f) => f.slice(1));
+    },
+    'Zoom in': () => go(clamp(zoom + 0.25)),
+    'Zoom out': () => go(clamp(zoom - 0.25)),
+    'Fit to screen': () => go(1),
+  };
+  return (
+    <Row openFirst run={run}>
+      <span className={s.sketchZoom} aria-live="polite">
+        {Math.round(zoom * 100)}%
+      </span>
+    </Row>
   );
 }
 
@@ -48,7 +97,7 @@ export function TooltipPreview() {
 export function TooltipLive() {
   return (
     <Frame label="View controls" height={200}>
-      <Row openFirst />
+      <ViewControls />
     </Frame>
   );
 }

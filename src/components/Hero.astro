@@ -16,7 +16,7 @@ const t = ui[lang];
   <Note text={t.searchNote} to="kbd" at="left: calc(100% + 72px); top: 36px">
     <label class={s.search}>
       <SearchIcon />
-      <input id="search" type="search" placeholder={t.search} autocomplete="off" spellcheck="false" />
+      <input id="search" type="search" aria-label={t.search} placeholder={t.searchExample} autocomplete="off" spellcheck="false" />
       <kbd class={s.key} aria-hidden="true">/</kbd>
     </label>
   </Note>

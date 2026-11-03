@@ -64,7 +64,8 @@
   font-weight: 600;
 }
 
-// A café: 28 round, its hit area 44.
+// A café: 28 round, its hit area 44. Neutral, ink on the raised surface in both themes: warning
+// means something is wrong, and the picked pin turns ink.
 .pin {
   position: absolute;
   display: grid;
@@ -72,10 +73,10 @@
   width: 28px;
   height: 28px;
   padding: 0;
-  border: 2px solid var(--surface);
+  border: 0;
   border-radius: 50%;
-  background: var(--warning);
-  color: var(--on-accent);
+  background: var(--surface-raised);
+  color: var(--ink);
   box-shadow: var(--shadow-sm);
   cursor: pointer;
   translate: -50% -50%;

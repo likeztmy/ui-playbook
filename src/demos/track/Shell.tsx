@@ -195,6 +195,14 @@ export function Shell({ onToasts, back, embedded }: ShellProps) {
         <div className={s.main} data-open={open && !narrow ? '' : undefined}>
           {/* Where focus goes once the last issue has gone. */}
           <div className={s.issues} tabIndex={-1} data-issues="">
+            {/* While filtering, how many match is read out as it changes, the empty state too (C29). */}
+            <span className={s.announce} aria-live="polite">
+              {track.place !== 'inbox' && track.filtering
+                ? track.shown.length
+                  ? `${track.shown.length} ${track.shown.length === 1 ? 'issue' : 'issues'}`
+                  : 'No issues match these filters'
+                : ''}
+            </span>
             {/* A teammate's changes wait here instead of moving the row you were about to click. */}
             {track.place !== 'inbox' && track.incoming > 0 && (
               <span className={s.pill} data-overlay>

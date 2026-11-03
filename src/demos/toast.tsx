@@ -2,6 +2,7 @@ import { useRef, useState, type ReactNode } from 'react';
 import { Button } from '../ui/Button';
 import { AlertDialog } from '../ui/Dialog';
 import { cx } from '../ui/cx';
+import { Switch } from '../ui/Switch';
 import { ToastProvider, ToastStill, useToast } from '../ui/Toast';
 import { Compare, Frame } from './shell';
 import m from './mistakes.module.scss';
@@ -60,11 +61,20 @@ function Files({ toastClass }: { toastClass?: string }) {
 
 function Triggers() {
   const toast = useToast();
+  // Offline is a state the page keeps, so it's a switch the reader can see; the toast adds what follows from it.
+  const [offline, setOffline] = useState(false);
   return (
     <div className={s.row}>
       <Button onClick={() => toast({ title: 'Link copied', type: 'success' })}>Copy link</Button>
-      <Button onClick={() => toast({ title: 'Sync paused while offline', type: 'warning' })}>Go offline</Button>
       <Button onClick={() => toast({ title: 'Couldn’t export: the file is locked', type: 'error' })}>Export</Button>
+      <Switch
+        label="Offline"
+        checked={offline}
+        onCheckedChange={(on) => {
+          setOffline(on);
+          if (on) toast({ title: 'Sync paused while offline', type: 'warning' });
+        }}
+      />
     </div>
   );
 }
@@ -84,7 +94,7 @@ export function ToastLive() {
 
 export function ToastKinds() {
   return (
-    <Frame label="A button for each kind" height={280}>
+    <Frame label="One of each kind" height={280}>
       <ToastStage>
         <Triggers />
       </ToastStage>
@@ -134,7 +144,12 @@ export function ToastUndo() {
       beforeLabel="Asks before deleting"
       afterLabel="Deletes, offers Undo"
       height={260}
-      before={<ConfirmFirst />}
+      before={
+        // In the same stage as the Prefer side's, so both lists start at one height.
+        <div className={s.toastStage}>
+          <ConfirmFirst />
+        </div>
+      }
       after={
         <ToastStage>
           <Files />

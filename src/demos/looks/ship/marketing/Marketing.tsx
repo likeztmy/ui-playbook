@@ -43,7 +43,7 @@ export function Marketing() {
           <PlaceLink className={buttonClass({ size: 'sm', variant: 'ghost' })} to={at('dashboard')}>
             Sign in
           </PlaceLink>
-          <a className={buttonClass({ size: 'sm', variant: 'primary' })} href="#ship-pricing" onClick={jump}>
+          <a className={buttonClass({ size: 'sm' })} href="#ship-pricing" onClick={jump}>
             Start free
           </a>
         </span>
@@ -58,7 +58,7 @@ export function Marketing() {
           <strong>Priya Nair</strong> · Head of mobile, Fieldnote
         </figcaption>
       </figure>
-      <Pricing />
+      <Pricing onJump={jump} />
       <Faq />
       <footer className={m.footer}>
         <span className={m.brand}>Ship</span>

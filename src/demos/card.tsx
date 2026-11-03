@@ -125,7 +125,7 @@ export function CardVariants() {
         {
           name: 'Static',
           use: 'A sample or a specimen to look at. No hover: nothing to click.',
-          render: () => <Card className={s.cardOne} stage={<Thumb art="type" />} title="Type scale" subtitle="A specimen" />,
+          render: () => <Card className={s.cardOne} stage={<Thumb art="type" />} title="Type scale" subtitle="Geist, 8 styles" />,
         },
       ]}
     />
@@ -177,8 +177,8 @@ export function CardHonest() {
       beforeLabel="Static card lifts on hover"
       afterLabel="Static card stays still"
       height={240}
-      before={<Card className={cx(s.cardOne, m.fakeLift)} stage={<Thumb art="type" />} title="Type scale" subtitle="A specimen" />}
-      after={<Card className={s.cardOne} stage={<Thumb art="type" />} title="Type scale" subtitle="A specimen" />}
+      before={<Card className={cx(s.cardOne, m.fakeLift)} stage={<Thumb art="type" />} title="Type scale" subtitle="Geist, 8 styles" />}
+      after={<Card className={s.cardOne} stage={<Thumb art="type" />} title="Type scale" subtitle="Geist, 8 styles" />}
       beforeNote="A static card that lifts on hover. It promises a click, the click does nothing, and people stop trusting the cards that do open."
       afterNote="No hover on a card that goes nowhere. Lift is a promise only a link or a button can keep."
     />
@@ -201,11 +201,14 @@ export function CardLift() {
   );
 }
 
+// One word each, so the titles fit under thumbnails 64 wide.
+const SHORT = ['Plan', 'Brand', 'Mobile', 'Grid', 'Type', 'Metrics'];
+
 export function CardStagger() {
   const grid = (key: number, className?: string) => (
     <CardGrid key={key} minWidth={64} className={className}>
       {Array.from({ length: 12 }, (_, i) => (
-        <Card key={i} className={s.cardTiny} stage={<Thumb art={PROJECTS[i % 6].art} />} title={PROJECTS[i % 6].title} />
+        <Card key={i} className={s.cardTiny} stage={<Thumb art={PROJECTS[i % 6].art} />} title={SHORT[i % 6]} />
       ))}
     </CardGrid>
   );

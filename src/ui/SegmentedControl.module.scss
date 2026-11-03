@@ -27,7 +27,7 @@
   z-index: -1;
   width: var(--w, 0px);
   border-radius: calc(var(--segmented-radius, var(--radius-control)) - var(--space-0-5));
-  // surface-raised with a 10% white veil: still white in light, but in dark
+  // surface-raised with a 14% white veil: still white in light, but in dark
   // it must rise above the track, whose fill-control is already lighter
   // than surface-raised.
   background: linear-gradient(rgb(255 255 255 / 0.14), rgb(255 255 255 / 0.14)), var(--surface-raised);
@@ -90,7 +90,7 @@
   // Before the thumb is measured (or with no script), the checked segment
   // carries the thumb's look itself.
   .root:not([data-ready]) > &[data-checked] {
-    background: linear-gradient(rgb(255 255 255 / 0.1), rgb(255 255 255 / 0.1)), var(--surface-raised);
+    background: linear-gradient(rgb(255 255 255 / 0.14), rgb(255 255 255 / 0.14)), var(--surface-raised);
     box-shadow: var(--shadow-xs);
   }
 

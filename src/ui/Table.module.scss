@@ -123,7 +123,8 @@
     z-index: 1;
   }
 
-  &:not(.hasCheck) :is(th, td):first-child {
+  // The line at the pin's edge shows once something has scrolled under it.
+  [data-scrolled] > &:not(.hasCheck) :is(th, td):first-child {
     box-shadow: 1px 0 0 var(--line);
   }
 
@@ -138,12 +139,15 @@
       position: sticky;
       left: calc(16px + 2 * var(--space-3));
       z-index: 1;
-      box-shadow: 1px 0 0 var(--line);
     }
 
     th:nth-child(2) {
       z-index: calc(var(--z-sticky) + 1);
     }
+  }
+
+  [data-scrolled] > &.hasCheck :is(th, td):nth-child(2) {
+    box-shadow: 1px 0 0 var(--line);
   }
 }
 
@@ -162,6 +166,7 @@
   color: inherit;
   font: inherit;
   letter-spacing: inherit;
+  position: relative;
   cursor: pointer;
   outline: none;
 
@@ -169,8 +174,20 @@
     color: var(--ink);
   }
 
+  // The focus ring, drawn 4px inside the button's top and bottom: an outer
+  // ring would be cut by the scrolling frame above the header.
+  &::before {
+    content: '';
+    position: absolute;
+    inset: var(--space-1) 0;
+    border-radius: var(--radius-sm);
+    pointer-events: none;
+  }
+
   @include focus {
-    box-shadow: inset 0 0 0 2px var(--accent);
+    &::before {
+      box-shadow: var(--focus-ring);
+    }
   }
 
   // Numeric columns put the arrow before the label so the label stays

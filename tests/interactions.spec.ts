@@ -408,6 +408,8 @@ test('hover forgives: a diagonal to the submenu closes it in Before, holds in Af
     await f.scrollIntoViewIfNeeded();
     const move = (await f.getByText('Move to', { exact: true }).boundingBox())!;
     await page.mouse.move(move.x + 60, move.y + move.height / 2, { steps: 4 });
+    // The submenu opens once the pointer rests on Move to.
+    await expect(f.getByText('Inbox', { exact: true })).toBeVisible();
     const archive = (await f.getByText('Archive', { exact: true }).boundingBox())!;
     await page.mouse.move(archive.x + 20, archive.y + archive.height / 2, { steps: 12 });
     await expect(f.getByText('Archive', { exact: true })).toHaveCount(holds ? 1 : 0);
@@ -892,7 +894,7 @@ test('how waiting feels: a quick refresh shows no spinner in the After; once sho
   await page.goto('/principles/how-waiting-feels');
   await hydrateAll(page);
   const [before, after] = [page.locator('figure').nth(0), page.locator('figure').nth(1)];
-  const spinner = (f: typeof before) => f.getByRole('button', { name: 'Refresh' }).locator('[class*="waitSpin"]');
+  const spinner = (f: typeof before) => f.locator('button[aria-label="Refresh"][data-loading]');
 
   // Request 1 takes 160 ms: the Before flashes a spinner, the After shows none.
   await before.getByRole('button', { name: 'Refresh' }).click();
@@ -1963,10 +1965,10 @@ test('sheet: adding a stop lowers the sheet in the After; live filters change th
   await expect(result.nth(1).getByRole('button', { name: 'Remove stop' })).toBeFocused();
 
   const cases = page.locator('figure').filter({ has: page.getByRole('group', { name: 'Good' }) });
-  await cases.getByRole('button', { name: 'Filters, live' }).click();
+  await cases.getByRole('radio', { name: 'Filters, live' }).click();
   await cases.getByRole('switch', { name: 'Under £100' }).click();
   await expect(cases.getByText('5 places to stay')).toBeVisible();
-  await cases.getByRole('button', { name: 'Filters, applied' }).click();
+  await cases.getByRole('radio', { name: 'Filters, applied' }).click();
   await cases.getByRole('switch', { name: 'Under £100' }).click();
   await expect(cases.getByText('8 places to stay')).toBeVisible();
   await cases.getByRole('button', { name: 'Show 5 places' }).click();

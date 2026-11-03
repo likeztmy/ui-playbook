@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
+import { Button } from '../ui/Button';
 import { Checkbox, CheckboxGroup, checkboxClasses as cs } from '../ui/Checkbox';
 import { Compare, Frame, Gallery, StateGrid, statePin, type State } from './shell';
 import m from './mistakes.module.scss';
@@ -13,10 +14,14 @@ const ACTIVITY = [
 ];
 const ALL = ACTIVITY.map((a) => a.value);
 
-function Notifications({ initial = ['mentions', 'assignments'] }: { initial?: string[] }) {
+function Notifications({ initial = ['mentions', 'assignments'], onChange }: { initial?: string[]; onChange?: () => void }) {
   const [value, setValue] = useState(initial);
+  const change = (v: string[]) => {
+    setValue(v);
+    onChange?.();
+  };
   return (
-    <CheckboxGroup label="Email me about" parent="All activity" value={value} onValueChange={setValue} allValues={ALL}>
+    <CheckboxGroup label="Email me about" parent="All activity" value={value} onValueChange={change} allValues={ALL}>
       {ACTIVITY.map((a) => (
         <Checkbox key={a.value} value={a.value} label={a.label} />
       ))}
@@ -24,10 +29,34 @@ function Notifications({ initial = ['mentions', 'assignments'] }: { initial?: st
   );
 }
 
+/** Checkboxes wait for the form: nothing is sent until Save changes. */
+function NotificationsForm() {
+  const [saved, setSaved] = useState(false);
+  return (
+    <form
+      className={cl.form}
+      onSubmit={(e) => {
+        e.preventDefault();
+        setSaved(true);
+      }}
+    >
+      <Notifications onChange={() => setSaved(false)} />
+      <div className={cl.actions}>
+        <Button type="submit" variant="primary">
+          Save changes
+        </Button>
+        <span className={cl.saved} role="status">
+          {saved ? 'Saved' : ''}
+        </span>
+      </div>
+    </form>
+  );
+}
+
 export function CheckboxLive() {
   return (
-    <Frame label="Notifications" height={220}>
-      <Notifications />
+    <Frame label="Notifications" height={0}>
+      <NotificationsForm />
     </Frame>
   );
 }
@@ -113,23 +142,35 @@ function BoxOnly({ label, defaultChecked }: { label: string; defaultChecked?: bo
   );
 }
 
+/** The options are sent with the form, so the pair ends in its submit. */
+function SignUp({ children }: { children: ReactNode }) {
+  return (
+    <form className={s.leftStack} onSubmit={(e) => e.preventDefault()}>
+      {children}
+      <Button type="submit" variant="primary">
+        Create account
+      </Button>
+    </form>
+  );
+}
+
 export function CheckboxTarget() {
   return (
     <Compare
       beforeLabel="Only the 16 px box clicks"
       afterLabel="The whole row clicks"
-      height={140}
+      height={200}
       before={
-        <div className={s.leftStack}>
+        <SignUp>
           <BoxOnly label="Keep me signed in" defaultChecked />
-          <BoxOnly label="Show hidden files" />
-        </div>
+          <BoxOnly label="Email me about updates" />
+        </SignUp>
       }
       after={
-        <div className={s.leftStack}>
+        <SignUp>
           <Checkbox label="Keep me signed in" defaultChecked />
-          <Checkbox label="Show hidden files" />
-        </div>
+          <Checkbox label="Email me about updates" />
+        </SignUp>
       }
       beforeNote={
         <>

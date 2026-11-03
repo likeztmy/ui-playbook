@@ -30,11 +30,14 @@ export function Walk({ kind = 'standard', tall, stop, reveal, long, scrollGrows 
   const [point, setPoint] = useState<number | string | null>(tall ? 1 : 0.5);
   const [picked, setPicked] = useState<string | null>(null);
   const [via, setVia] = useState(false);
+  // Route reopening a closed sheet moves focus in; the sheet open on arrival, or opened from the map, leaves it.
+  const [fromRoute, setFromRoute] = useState(false);
   const route = useRef<HTMLButtonElement>(null);
   const close = useRef<HTMLButtonElement>(null);
 
   const pick = (id: string) => {
     setPicked(id);
+    if (!open) setFromRoute(false);
     setOpen(true);
   };
   const toggleStop = () => {
@@ -64,6 +67,7 @@ export function Walk({ kind = 'standard', tall, stop, reveal, long, scrollGrows 
           className={s.reopen}
           onClick={() => {
             setPicked(null);
+            if (!open) setFromRoute(true);
             setOpen(true);
           }}
         >
@@ -73,8 +77,8 @@ export function Walk({ kind = 'standard', tall, stop, reveal, long, scrollGrows 
       </Sheet.Area>
       <Sheet.Popup
         title={p ? p.name : 'Walk to the ferry'}
-        // Opening it is the page's business, not a reason to pull focus into the demo.
-        initialFocus={false}
+        // Open on arrival, it is the page's business, not a reason to pull focus into the demo.
+        initialFocus={fromRoute ? close : false}
         finalFocus={route}
         actions={
           p ? (

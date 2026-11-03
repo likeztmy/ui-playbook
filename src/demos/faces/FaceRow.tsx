@@ -10,11 +10,13 @@ type Props = {
   chroma?: number;
   /** A checkbox in a column of its own, before the lead. */
   check?: ReactNode;
+  /** Ticked: the row takes the selection's tint. */
+  selected?: boolean;
   onClick?: () => void;
 };
 
 /** One of Post's rows, cut down to who, what and when, in one line. */
-export function FaceRow({ row, lead = 'face', chroma, check, onClick }: Props) {
+export function FaceRow({ row, lead = 'face', chroma, check, selected, onClick }: Props) {
   const Tag = onClick ? 'button' : 'div';
   return (
     <Tag
@@ -22,6 +24,7 @@ export function FaceRow({ row, lead = 'face', chroma, check, onClick }: Props) {
       className={s.row}
       data-lead={lead === 'none' ? 'none' : undefined}
       data-check={check ? '' : undefined}
+      data-selected={selected ? '' : undefined}
       data-unread={row.unread ? '' : undefined}
       onClick={onClick}
     >

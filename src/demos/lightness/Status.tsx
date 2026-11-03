@@ -43,7 +43,12 @@ export function LightnessStatus() {
   const [vision, setVision] = useState<Vision>('deuteranopia');
   const id = `vision${useId().replace(/[^a-z0-9]/gi, '')}`;
   return (
-    <Frame label={`Failed against expiring, ${vision === 'typical' ? 'as most people see them' : `seen with ${vision}`}`} height={0}>
+    // The light theme's status colours, so the stage stays light on a dark page (C15).
+    <Frame
+      label={`Failed against expiring, ${vision === 'typical' ? 'as most people see them' : `seen with ${vision}`}`}
+      height={0}
+      defaultTheme="light"
+    >
       <div className={s.status}>
         {vision !== 'typical' && <VisionFilter id={id} vision={vision} />}
         <SegmentedControl label="Vision" value={vision} onValueChange={setVision} segments={VISIONS} />

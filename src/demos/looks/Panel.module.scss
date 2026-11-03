@@ -9,6 +9,13 @@
   --radius-xs: var(--radius-sm);
   --radius-xl: var(--radius-lg);
   --shadow-lg: var(--shadow-md);
+  // A line drawn as a gap between cells: a 0.5px gap paints nothing at 1x (a border would round up),
+  // so it is a whole pixel there and the look's own width where a half pixel can be drawn.
+  --line-gap: max(1px, var(--line-width));
+
+  @media (min-resolution: 2dppx) {
+    --line-gap: var(--line-width);
+  }
 
   container-type: inline-size;
   color: var(--ink);

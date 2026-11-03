@@ -127,8 +127,8 @@ export function Panel({ issue, track, onClose, narrow, closeRef }: PanelProps) {
                 <GitBranch {...ic} />
               </Button>
             </Tip>
-            <Tip label="Delete">
-              <Button variant="ghost" icon aria-label="Delete" onClick={() => track.remove([n])}>
+            <Tip label="Delete issue">
+              <Button variant="ghost" icon aria-label="Delete issue" onClick={() => track.remove([n])}>
                 <Trash2 {...ic} />
               </Button>
             </Tip>

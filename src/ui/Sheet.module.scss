@@ -51,9 +51,10 @@
   background: var(--surface-raised);
   box-shadow: var(--shadow-lg);
   color: var(--ink);
-  // Its own type size: it may portal into 15/24 page prose.
-  font-size: 14px;
-  line-height: 20px;
+  // Its own type size: it may portal into 15/24 page prose. A sheet is a phone's layer, so its body is
+  // the Consumer app's 17/22 under the 17/24 title.
+  font-size: 17px;
+  line-height: 22px;
   outline: none;
   pointer-events: auto;
   touch-action: none;

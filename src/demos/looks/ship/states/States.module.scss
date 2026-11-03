@@ -7,7 +7,7 @@
 .grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--line-width);
+  gap: var(--line-gap);
   background: var(--line);
 
   > section {
@@ -83,6 +83,11 @@
 .meta {
   color: var(--ink-muted);
   font-size: var(--text-sm);
+}
+
+// A sentence to read sits at the body size; 12px is for labels and meta (work tool).
+.note {
+  color: var(--ink-muted);
 }
 
 .head {

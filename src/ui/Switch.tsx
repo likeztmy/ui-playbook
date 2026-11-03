@@ -1,5 +1,5 @@
 import { Switch as BaseSwitch } from '@base-ui/react/switch';
-import type { ComponentProps, ReactNode } from 'react';
+import { useId, type ComponentProps, type ReactNode } from 'react';
 import { cx } from './cx';
 import s from './Switch.module.scss';
 
@@ -20,16 +20,23 @@ type SwitchProps = Omit<ComponentProps<typeof BaseSwitch.Root>, 'className' | 'c
 
 /** An on/off setting that takes effect the moment it flips. */
 export function Switch({ label, description, placement = 'end', pin, thumbClassName, className, ...props }: SwitchProps) {
+  const id = useId();
+  // With a description, the name is the label alone and the description is tied as a hint.
+  const tied = label != null && description ? { 'aria-labelledby': `${id}-label`, 'aria-describedby': `${id}-hint` } : {};
   const track = (
-    <BaseSwitch.Root {...props} className={cx(s.track, label == null && className)} data-pin={pin}>
+    <BaseSwitch.Root {...tied} {...props} className={cx(s.track, label == null && className)} data-pin={pin}>
       <BaseSwitch.Thumb className={cx(s.thumb, thumbClassName)} />
     </BaseSwitch.Root>
   );
   if (label == null) return track;
   const text = (
     <span className={s.text}>
-      <span>{label}</span>
-      {description && <span className={s.description}>{description}</span>}
+      <span id={`${id}-label`}>{label}</span>
+      {description && (
+        <span id={`${id}-hint`} className={s.description}>
+          {description}
+        </span>
+      )}
     </span>
   );
   return (

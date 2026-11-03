@@ -116,7 +116,12 @@ export function TextField({
         <CircleAlert size={14} aria-hidden />
         {error ?? <Field.Validity>{(v) => v.error}</Field.Validity>}
       </Field.Error>
-      {description && <Field.Description className={s.hint}>{description}</Field.Description>}
+      {/* Mounted only while valid: the error takes the hint's line, and its place in aria-describedby. */}
+      {description && (
+        <Field.Validity>
+          {(v) => (error || v.validity.valid === false ? null : <Field.Description className={s.hint}>{description}</Field.Description>)}
+        </Field.Validity>
+      )}
     </Field.Root>
   );
 }
@@ -125,7 +130,7 @@ export function TextField({
 export function FieldKey({ keys, className }: { keys: string[]; className?: string }) {
   return (
     <kbd className={cx(s.key, className)}>
-      {keys.map((k, i) => (k === '⌘' ? <Command key={i} size={12} aria-label="⌘" /> : <span key={i}>{k}</span>))}
+      {keys.map((k, i) => (k === '⌘' ? <Command key={i} size={12} role="img" aria-label="Command" /> : <span key={i}>{k}</span>))}
     </kbd>
   );
 }

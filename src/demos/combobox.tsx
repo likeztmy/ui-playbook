@@ -63,10 +63,10 @@ function TimeZone() {
         value={city}
         onValueChange={setCity}
         placeholder="Lisbon or Portugal"
+        description={city ? `Meetings shown in ${city.label} time` : 'Pick a city'}
         empty={cityEmpty}
         className={s.fieldWide}
       />
-      <span className={s.comboNote}>{city ? `Meetings shown in ${city.label} time` : 'Pick a city'}</span>
     </div>
   );
 }

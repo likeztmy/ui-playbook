@@ -104,6 +104,12 @@
   grid-template-columns: 28px minmax(0, 1fr);
   gap: var(--space-3);
   margin-top: var(--space-6);
+
+  // The face sits beside the box it marks, not its label: down by the label's 16px line and its 4px
+  // gap, then centred on the field's first line.
+  > .face {
+    margin-top: calc(16px + var(--space-1) + (var(--control-md) - 28px) / 2);
+  }
 }
 
 .send {

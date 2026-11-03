@@ -58,18 +58,18 @@
   }
 
   // Around the label, not the 40px box: the box's top and bottom would be
-  // clipped by the scrolling list. 6px out plus a 2px ring fills the list's
-  // 8px padding exactly.
+  // clipped by the scrolling list. 4px out plus the focus ring's 4 fills the
+  // list's 8px padding exactly.
   &::before {
     content: '';
     position: absolute;
-    inset: 6px -6px;
+    inset: 6px -4px;
     border-radius: var(--radius-sm);
   }
 
   @include focus {
     &::before {
-      box-shadow: 0 0 0 2px var(--accent);
+      box-shadow: var(--focus-ring);
     }
   }
 

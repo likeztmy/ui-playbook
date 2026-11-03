@@ -1,4 +1,5 @@
 import { Copy, Ellipsis, Pause, Pencil, Trash2 } from 'lucide-react';
+import type { ReactNode } from 'react';
 import { Button } from '../../../../ui/Button';
 import { cx } from '../../../../ui/cx';
 import { dialogClasses as ds } from '../../../../ui/Dialog';
@@ -16,16 +17,30 @@ const menu = [
   { id: 'pause', label: 'Pause rollout', icon: Pause },
 ];
 
+/** A surface held open is a picture: nothing in it takes focus, and its name says what it shows (C27). */
+function Still({ label, className, children }: { label: string; className: string; children: ReactNode }) {
+  return (
+    <div className={className} role="img" aria-label={label}>
+      <div className={o.held} inert>
+        {children}
+      </div>
+    </div>
+  );
+}
+
 /**
  * Every floating surface held open, so the look's raised fills, edges, shadows and scrim show at once.
  * Each is a section on the page, held by its heading; only the dialog's scrim is a region of its own,
- * because it is the one that dims what's under it. Held still, nothing here takes focus.
+ * because it is the one that dims what's under it. The headings stay readable; the stills are pictures.
  */
 export function Overlays() {
   return (
-    <div className={o.grid} inert>
+    <div className={o.grid}>
       <Section title="Menu and tooltip">
-        <div className={o.stage}>
+        <Still
+          className={o.stage}
+          label="The Copy link tooltip with its shortcut, and the More menu open: Edit notes, Copy link, Pause rollout, Delete release"
+        >
           <div className={o.tipStill}>
             <div className={tt.popup}>
               Copy link
@@ -53,10 +68,10 @@ export function Overlays() {
               </div>
             </div>
           </div>
-        </div>
+        </Still>
       </Section>
       <Section title="Popover">
-        <div className={o.stage}>
+        <Still className={o.stage} label="The Rollout popover open under its button: share of users 50%, Cancel and Raise">
           <div className={o.popoverStill}>
             <Button size="sm" data-popup-open="">
               Rollout 25%
@@ -77,10 +92,10 @@ export function Overlays() {
               </div>
             </div>
           </div>
-        </div>
+        </Still>
       </Section>
-      <Section title="Confirmation">
-        <div className={o.scrim}>
+      <Section title="Confirmation" className={o.wide}>
+        <Still className={o.scrim} label="A confirmation over the dimmed window: Delete 4.2.0 iOS?, with Cancel and Delete release">
           <div className={cx(ds.popup, ds.sm, o.dialog)} role="presentation">
             <h4 className={ds.title}>Delete 4.2.0 iOS?</h4>
             <p className={ds.description}>Its rollout history and notes are lost. People who have it keep it.</p>
@@ -89,13 +104,13 @@ export function Overlays() {
               <Button variant="danger-fill">Delete release</Button>
             </div>
           </div>
-        </div>
+        </Still>
       </Section>
-      <Section title="Toasts">
-        <div className={o.toasts}>
+      <Section title="Toasts" className={o.wide}>
+        <Still className={o.toasts} label="Two toasts: Paused the rollout of 4.2.0 iOS with Undo, and a failure with Retry">
           <ToastStill title="Paused the rollout of 4.2.0 iOS" action="Undo" />
           <ToastStill type="error" title="Couldn’t publish 4.1.3 Android: the Play Store didn’t answer" action="Retry" />
-        </div>
+        </Still>
       </Section>
     </div>
   );

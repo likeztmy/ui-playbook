@@ -27,7 +27,7 @@ function Ticking({ before }: { before?: boolean }) {
             onCheckedChange={(v) => setTicked((t) => (v ? [...t, r.id] : t.filter((x) => x !== r.id)))}
           />
         );
-        if (!before) return <FaceRow key={r.id} row={r} check={<span data-on={on ? '' : undefined}>{box}</span>} />;
+        if (!before) return <FaceRow key={r.id} row={r} selected={on} check={<span data-on={on ? '' : undefined}>{box}</span>} />;
         const face = r.org ? null : <Avatar id={r.face} size="sm" />;
         const lead = (
           <span className={s.swap} data-show={on || selecting ? 'check' : undefined}>
@@ -35,7 +35,7 @@ function Ticking({ before }: { before?: boolean }) {
             <span className={s.swapCheck}>{box}</span>
           </span>
         );
-        return <FaceRow key={r.id} row={r} lead={r.org && !selecting ? 'none' : lead} />;
+        return <FaceRow key={r.id} row={r} selected={on} lead={r.org && !selecting ? 'none' : lead} />;
       })}
     </div>
   );

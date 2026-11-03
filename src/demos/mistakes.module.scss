@@ -378,6 +378,11 @@
   > span {
     flex: 1 1 160px;
   }
+
+  // Its Dismiss in the band's own white, not a ghost's grey.
+  > button[aria-label='Dismiss'] {
+    color: inherit !important;
+  }
 }
 
 // Label, field and hint as far apart as one field from the next.

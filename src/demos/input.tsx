@@ -157,7 +157,7 @@ export function InputVariants() {
           render: () => (
             <TextField
               label="Search"
-              placeholder="Search files"
+              placeholder="Brand refresh"
               leading={searchIcon}
               trailing={<FieldKey keys={['⌘', 'K']} />}
               className={s.fieldWide}
@@ -192,7 +192,7 @@ export function InputAnatomy() {
         </figure>
         <figure className={s.anatomyItem}>
           <div className={cx(s.magnify, s.magnifiedField)}>
-            <TextField label="Search" placeholder="Search" leading={searchIcon} trailing={<FieldKey keys={['⌘', 'K']} />} />
+            <TextField label="Search" placeholder="Brand refresh" leading={searchIcon} trailing={<FieldKey keys={['⌘', 'K']} />} />
           </div>
           <figcaption className={s.anatomyCaption}>24 tall in 32, 4 from three edges: radius 10 − 4 = 6.</figcaption>
         </figure>

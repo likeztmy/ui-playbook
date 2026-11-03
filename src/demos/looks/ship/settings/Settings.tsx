@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import { Button } from '../../../../ui/Button';
 import { Combobox } from '../../../../ui/Combobox';
 import { TextField } from '../../../../ui/Field';
 import { Radio, RadioGroup } from '../../../../ui/Radio';
 import { Switch } from '../../../../ui/Switch';
+import { useToast } from '../../../../ui/Toast';
 import { people } from '../data';
 import t from './Settings.module.scss';
 
@@ -11,9 +13,16 @@ const approvers = people.map((p) => ({ value: p, label: p }));
 /**
  * Settings that save themselves: switches for on and off, radios for one of a few (C31), so there is no
  * Save. Each group is held by its heading and space on one left edge; only the danger zone, the one
- * group unlike the rest, is set apart in a box.
+ * group unlike the rest, is set apart in a box. Archiving can be undone, so it runs at once and offers
+ * Undo rather than asking first.
  */
 export function Settings() {
+  const [archived, setArchived] = useState(false);
+  const toast = useToast();
+  const archive = () => {
+    setArchived(true);
+    toast({ title: 'Archived Ship mobile', action: { label: 'Undo', onClick: () => setArchived(false) } });
+  };
   return (
     <div className={t.column}>
       <section className={t.group} aria-labelledby="ship-general">
@@ -42,12 +51,19 @@ export function Settings() {
       <section className={t.group} aria-labelledby="ship-danger">
         <h3 id="ship-danger">Danger zone</h3>
         <div className={t.danger}>
-          <div>
-            <p className={t.strong}>Archive this project</p>
-            <p className={t.meta}>Releases stop and the history stays readable.</p>
-          </div>
-          <Button size="sm" variant="danger">
-            Archive project
+          {archived ? (
+            <div>
+              <p className={t.strong}>This project is archived</p>
+              <p className={t.meta}>Releases are stopped; the history stays readable.</p>
+            </div>
+          ) : (
+            <div>
+              <p className={t.strong}>Archive this project</p>
+              <p className={t.meta}>Releases stop and the history stays readable.</p>
+            </div>
+          )}
+          <Button size="sm" variant={archived ? 'secondary' : 'danger'} onClick={archived ? () => setArchived(false) : archive}>
+            {archived ? 'Unarchive project' : 'Archive project'}
           </Button>
         </div>
       </section>

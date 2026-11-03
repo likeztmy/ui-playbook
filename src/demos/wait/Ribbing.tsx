@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '../../ui/Button';
 import { cx } from '../../ui/cx';
 import { useTimers } from '../novelty/useTimers';
@@ -14,16 +14,30 @@ function Ribbed({ ribbed }: { ribbed?: boolean }) {
   const [running, setRunning] = useState(false);
   const busy = useBusy(running);
   const later = useTimers();
+  // The fill is a CSS animation; its value is kept for screen readers, as the Stall bars give theirs.
+  const [pct, setPct] = useState(0);
+  useEffect(() => {
+    if (!running) return;
+    const from = performance.now();
+    const tick = setInterval(() => setPct(Math.min(100, Math.round(((performance.now() - from) / RIB_TIME) * 100))), 250);
+    return () => clearInterval(tick);
+  }, [running, run]);
   const start = () => {
     if (running) return;
     setRun((r) => r + 1);
+    setPct(0);
     setRunning(true);
-    later(() => setRunning(false), RIB_TIME);
+    later(() => {
+      setRunning(false);
+      setPct(100);
+    }, RIB_TIME);
   };
   return (
     <div className={s.waitBarDemo}>
       <span className={s.waitMeta}>{running ? 'Uploading video.mov' : 'video.mov'}</span>
-      <div className={s.waitBar}>{run > 0 && <span key={run} className={cx(s.waitFill, s.waitLinear, ribbed && s.waitRibs)} />}</div>
+      <div className={s.waitBar} role="progressbar" aria-label="Upload" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100}>
+        {run > 0 && <span key={run} className={cx(s.waitFill, s.waitLinear, ribbed && s.waitRibs)} />}
+      </div>
       <Button size="sm" onClick={start} loading={busy} loadingLabel="Uploading">
         {run ? 'Upload again' : 'Upload'}
       </Button>

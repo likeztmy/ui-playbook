@@ -101,7 +101,12 @@ export function Combobox(props: SingleProps | MultipleProps) {
   );
 
   const input = (hasValue: boolean) => (
-    <BaseCombobox.Input id={id} className={cx(f.control, s.input)} placeholder={hasValue ? undefined : placeholder} />
+    <BaseCombobox.Input
+      id={id}
+      className={cx(f.control, s.input)}
+      placeholder={hasValue ? undefined : placeholder}
+      aria-describedby={description ? `${id}-hint` : undefined}
+    />
   );
 
   return (
@@ -148,11 +153,15 @@ export function Combobox(props: SingleProps | MultipleProps) {
           ) : (
             input(false)
           )}
-          <BaseCombobox.Trigger className={s.trigger} aria-label={`Show all ${label.toLowerCase()}`}>
+          <BaseCombobox.Trigger className={s.trigger} aria-label="Show list">
             <ChevronsUpDown size={16} aria-hidden />
           </BaseCombobox.Trigger>
         </BaseCombobox.InputGroup>
-        {description && <p className={f.hint}>{description}</p>}
+        {description && (
+          <p id={`${id}-hint`} className={f.hint}>
+            {description}
+          </p>
+        )}
         <BaseCombobox.Portal container={container}>
           <BaseCombobox.Positioner className={s.positioner} sideOffset={6} align="start">
             <BaseCombobox.Popup className={cx(m.popup, s.popup)}>

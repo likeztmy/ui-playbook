@@ -61,6 +61,12 @@ export function Gallery({ looks, path }: { looks: GalleryLook[]; path: string })
     await navigator.clipboard.writeText(look.root);
     setCopied(true);
   };
+  // "Copied" is true only for a moment: after that the clipboard may hold anything.
+  useEffect(() => {
+    if (!copied) return;
+    const t = setTimeout(() => setCopied(false), 2000);
+    return () => clearTimeout(t);
+  }, [copied]);
 
   return (
     <div className={s.window}>
@@ -80,9 +86,16 @@ export function Gallery({ looks, path }: { looks: GalleryLook[]; path: string })
           <a className={s.link} href={look.href}>
             Values and sources
           </a>
-          <Button size="sm" onClick={copy}>
-            {copied ? <Check size={16} aria-hidden /> : <Copy size={16} aria-hidden />}
-            {copied ? 'Copied' : 'Copy :root'}
+          {/* Both labels share one cell, so the button keeps the wider one's width and nothing beside it moves. */}
+          <Button onClick={copy}>
+            <span className={s.swap}>
+              <span data-hidden={copied ? '' : undefined}>
+                <Copy size={16} aria-hidden /> Copy :root
+              </span>
+              <span data-hidden={copied ? undefined : ''}>
+                <Check size={16} aria-hidden /> Copied
+              </span>
+            </span>
           </Button>
         </span>
       </div>

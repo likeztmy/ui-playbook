@@ -2,9 +2,11 @@
 
 // ── New issue ────────────────────────────────────────────
 
+// From the stage's top, so the Avoid's Title field sits as far down as its three lines push it.
 .panel {
   display: flex;
   flex-direction: column;
+  align-self: start;
   gap: var(--space-4);
   width: 300px;
   max-width: 100%;

@@ -241,3 +241,9 @@
   background: var(--fill-control);
   color: var(--ink);
 }
+
+// The way back in the phone's folder menu: a link drawn as the menu's other rows.
+.backItem {
+  color: var(--ink);
+  text-decoration: none;
+}

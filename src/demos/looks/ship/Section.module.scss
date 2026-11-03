@@ -13,10 +13,12 @@
   justify-content: space-between;
   gap: var(--space-2);
 
-  // A button is taller than the heading's line: the row centres on it and keeps the row's height.
+  // A button is taller than the heading's line: the row keeps the line's height and the button
+  // centres on it, standing out evenly above and below. `1lh` is that line in any look, whose
+  // leading may be a length, `normal` or unitless.
   &[data-action] {
     align-items: center;
-    margin-block: calc((var(--leading-md) - var(--control-sm)) / 2);
+    height: 1lh;
   }
 
   > h3 {

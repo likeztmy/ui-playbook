@@ -23,6 +23,7 @@ function Shop({ near }: { near?: boolean }) {
     clearTimeout(timer.current);
     timer.current = setTimeout(() => setAdded(false), 2000);
   };
+  const cart = `Cart, ${count} ${count === 1 ? 'item' : 'items'}`;
   return (
     <div className={s.shop}>
       <div className={s.shopBar}>
@@ -32,7 +33,7 @@ function Shop({ near }: { near?: boolean }) {
           <span>Bottles</span>
           <span>Journals</span>
         </span>
-        <Button variant="ghost" size="sm" aria-label={`Cart, ${count} ${count === 1 ? 'item' : 'items'}`} className={s.shopCart}>
+        <Button variant="ghost" size="sm" label={cart} className={s.shopCart}>
           <ShoppingBag size={16} aria-hidden />
           {count > 0 && (
             <span key={near ? count : undefined} className={cx(s.shopCount, near && s.shopBump)}>
@@ -163,14 +164,28 @@ const NOTICE = 'The Visa ending 4242 expires on 31 Oct. Update the card to keep 
 const NOTE = 'Update the card to keep the Team plan.';
 
 function Billing({ inline }: { inline?: boolean }) {
+  const [band, setBand] = useState(!inline);
+  const root = useRef<HTMLDivElement>(null);
   return (
-    <div className={s.billing}>
-      {!inline && (
+    // Focus lands here when the band and its Dismiss go, rather than on the page's body.
+    <div ref={root} className={s.billing} tabIndex={-1}>
+      {band && (
         <div className={m.promoBand}>
           <Sparkles size={16} aria-hidden />
           <span>{NOTICE}</span>
           <Button size="sm">Update card</Button>
-          <X size={16} aria-label="Dismiss" />
+          <Button
+            variant="ghost"
+            size="sm"
+            icon
+            label="Dismiss"
+            onClick={() => {
+              setBand(false);
+              root.current?.focus({ preventScroll: true });
+            }}
+          >
+            <X size={16} aria-hidden />
+          </Button>
         </div>
       )}
       <span className={s.settingsTitle}>Billing</span>

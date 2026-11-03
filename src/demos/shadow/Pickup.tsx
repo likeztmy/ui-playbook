@@ -1,12 +1,18 @@
-import { useRef, useState, type PointerEvent } from 'react';
+import { useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent } from 'react';
 import { Compare } from '../shell';
 import s from './shadow.module.scss';
 
-// Dark values after the kit's dark shadows, as in Layers.
+// Dark values after the kit's dark shadows, as in Layers. Held takes `shadow-lg`'s drop: longer, the same 8%.
 const REST = `0 0 0 1px light-dark(oklch(0.3 0.01 75 / 0.08), oklch(1 0 0 / 0.09)), 0 1px 2px light-dark(oklch(0.3 0.01 75 / 0.06), oklch(0 0 0 / 0.4))`;
-const HELD = `0 0 0 1px light-dark(oklch(0.3 0.01 75 / 0.08), oklch(1 0 0 / 0.09)), 0 2px 4px light-dark(oklch(0.3 0.01 75 / 0.05), oklch(0 0 0 / 0.3)), 0 12px 24px light-dark(oklch(0.3 0.01 75 / 0.12), oklch(0 0 0 / 0.5))`;
+const HELD = `0 0 0 1px light-dark(oklch(0.3 0.01 75 / 0.08), oklch(1 0 0 / 0.09)), 0 2px 4px light-dark(oklch(0.3 0.01 75 / 0.05), oklch(0 0 0 / 0.3)), 0 12px 24px light-dark(oklch(0.3 0.01 75 / 0.08), oklch(0 0 0 / 0.5))`;
 
-/** A card to drag around its desk; it springs back when let go. `lifts` raises it while held. */
+// Held from the keyboard, the card is carried up over its neighbour, about where a drag would take it.
+const KEY_LIFT = { x: 24, y: -40 };
+
+/**
+ * A card to drag around its desk; it springs back when let go. `lifts` raises it while held.
+ * Space held does the same from the keyboard.
+ */
 function Draggable({ lifts }: { lifts?: boolean }) {
   const [at, setAt] = useState({ x: 0, y: 0 });
   const [held, setHeld] = useState(false);
@@ -24,6 +30,16 @@ function Draggable({ lifts }: { lifts?: boolean }) {
     setHeld(false);
     setAt({ x: 0, y: 0 });
   };
+  const keyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (e.key !== ' ') return;
+    e.preventDefault();
+    if (e.repeat) return;
+    setHeld(true);
+    setAt(KEY_LIFT);
+  };
+  const keyUp = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === ' ') up();
+  };
   return (
     <div className={s.desk}>
       <div className={s.stack}>
@@ -34,12 +50,17 @@ function Draggable({ lifts }: { lifts?: boolean }) {
         </div>
         <div
           className={s.card}
+          role="button"
+          tabIndex={0}
           data-dragging={held ? '' : undefined}
-          style={{ boxShadow: lifts && held ? HELD : REST, translate: `${at.x}px ${at.y}px` }}
+          style={{ '--card-shadow': lifts && held ? HELD : REST, translate: `${at.x}px ${at.y}px` } as CSSProperties}
           onPointerDown={down}
           onPointerMove={move}
           onPointerUp={up}
           onPointerCancel={up}
+          onKeyDown={keyDown}
+          onKeyUp={keyUp}
+          onBlur={up}
         >
           <span className={s.thumb} aria-hidden />
           <span className={s.name}>Q4 roadmap</span>

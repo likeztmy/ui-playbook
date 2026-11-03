@@ -40,10 +40,11 @@
   box-shadow: var(--shadow-sm);
 }
 
+// Neutral: nothing here is chosen, so it takes no selection tint.
 .nestInner {
   flex: 1;
-  background: var(--accent-soft);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent);
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px var(--line-strong);
 }
 
 // A one-pixel difference needs magnifying to be seen.
@@ -115,6 +116,7 @@
 // A row of ghost icon buttons, as on a canvas toolbar.
 .toolRow {
   display: flex;
+  align-items: center;
   gap: var(--space-1);
 }
 
@@ -150,11 +152,6 @@
   flex-direction: column;
   gap: var(--space-4);
   width: min(100%, 320px);
-}
-
-.comboNote {
-  color: var(--ink-muted);
-  font-size: 13px;
 }
 
 .narrowField {
@@ -302,9 +299,10 @@
   justify-content: center;
   width: 200px;
 
+  // Content, not something to press: grey, dark enough that opacity still reads.
   > span {
     height: 24px;
-    background: var(--accent);
+    background: var(--ink-muted);
   }
 }
 
@@ -380,8 +378,14 @@
     }
   }
 
+  // The title beneath the stage, shrunk with the card.
   > div:last-child {
-    display: none;
+    padding: var(--space-1) var(--space-0-5) 0;
+
+    h3 {
+      font-size: 12px !important;
+      line-height: 16px !important;
+    }
   }
 }
 
@@ -601,11 +605,6 @@
   width: min(100%, 320px);
 }
 
-.comboNote {
-  color: var(--ink-muted);
-  font-size: 13px;
-}
-
 // Rows that share a left edge, e.g. checkboxes in one column.
 .leftStack {
   display: flex;
@@ -712,11 +711,6 @@
   flex-direction: column;
   gap: var(--space-3);
   width: min(100%, 320px);
-}
-
-.comboNote {
-  color: var(--ink-muted);
-  font-size: 13px;
 }
 
 .popoverStill {
@@ -996,6 +990,8 @@
   flex-direction: column;
   gap: var(--space-3);
   width: min(100%, 560px);
+  // Centred in a full-width wrapper too (the greyscale copy), as on the stage.
+  margin-inline: auto;
   padding: var(--space-3);
   border-radius: var(--radius-xl);
   background: var(--surface);
@@ -1350,7 +1346,14 @@
   flex-direction: column;
   gap: var(--space-6);
   width: 100%;
+  border-radius: var(--radius-md);
   font-size: 14px;
+
+  // Holds focus once the band's Dismiss is gone.
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
 }
 
 .billingCard {
@@ -1679,6 +1682,15 @@
   color: var(--ink-muted);
 }
 
+// A line with no height above the Drawing toolbar (12 + 40 from the foot):
+// the canvas's toasts rise from it, so they never cover the tools.
+.sketchToasts {
+  position: absolute;
+  right: 0;
+  bottom: calc(var(--space-3) + 40px);
+  left: 0;
+}
+
 // Nothing shifts: each demo over a foot with its live shift score.
 .shiftDemo {
   display: flex;
@@ -1817,8 +1829,7 @@
 // A project nav that bolds the hovered and current link.
 .boldNav {
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-1) var(--space-4);
+  gap: var(--space-4);
   font-size: 14px;
 
   a {
@@ -2128,8 +2139,9 @@
   background: var(--ink);
   color: var(--surface);
   font-family: var(--font-mono);
-  font-size: 10px;
-  line-height: 14px;
+  // The 12px floor, 16 tall: it ends where the bar's line begins.
+  font-size: 12px;
+  line-height: 16px;
   text-align: center;
   translate: -50% 0;
   pointer-events: none;
@@ -2222,6 +2234,13 @@
 // The home page's cards for Space groups by ratio and The faster way: the pages' own scenes, card-sized.
 .ratPreview {
   width: min(320px, 100%);
+  // The card stage's own inset, so the sections don't touch its edge.
+  padding: var(--space-3);
+}
+
+// Narrower than its card's stage: it scrolls inside rather than past the frame.
+.tablePreview {
+  max-width: 100%;
 }
 
 .fkPreview {

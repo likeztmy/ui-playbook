@@ -11,7 +11,7 @@ import { GapsOn } from './Measured';
 import { useStartFrame } from './startFrame';
 import s from '../shell.module.scss';
 
-type Theme = 'light' | 'dark';
+export type Theme = 'light' | 'dark';
 
 function pageTheme(): Theme {
   const pinned = document.documentElement.dataset.theme;

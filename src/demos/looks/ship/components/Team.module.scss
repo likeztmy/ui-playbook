@@ -1,3 +1,8 @@
+// Rows lead with a face, so their lines start past it, at the names.
+.people > li {
+  --lead: calc(28px + var(--space-2));
+}
+
 // A face with no photo: grey, never the accent's hue (who before what). 28, the table's compact size.
 .face {
   display: grid;

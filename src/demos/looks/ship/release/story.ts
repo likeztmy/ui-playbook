@@ -5,13 +5,14 @@ import { CircleCheck, FilePen, GitCommitHorizontal, MessageSquare, OctagonPause,
 import type { Check } from '../CheckList';
 import { hoursAgo, lastChange, type Release } from '../model';
 
-export type Event = { Icon: LucideIcon; who: string; what: string; hours: number; quote?: string };
+export type Event = { Icon: LucideIcon; who: string; what: string; hours: number; quote?: string; id?: string };
 
 // Ship's "now": the afternoon of Nov 2.
 const NOW = new Date(2026, 10, 2, 16);
 
 /** A time in a history: hours ago today, Yesterday, then the date. */
 export function when(hours: number) {
+  if (hours < 1) return 'Just now';
   if (hours < 24) return `${hours}h ago`;
   if (hours < 48) return 'Yesterday';
   return new Date(NOW.getTime() - hours * 3600_000).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });

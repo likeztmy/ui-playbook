@@ -4,7 +4,6 @@ import { Button } from '../../ui/Button';
 import { Tip } from '../../ui/Tooltip';
 import { useTimers } from '../novelty/useTimers';
 import { Compare, localized } from '../shell';
-import { Spinner } from './Spinner';
 import { DELAY } from './useBusy';
 import s from './wait.module.scss';
 
@@ -53,13 +52,19 @@ function Refresh({ patient }: { patient?: boolean }) {
         <span className={s.waitTitle}>Files</span>
         <span className={s.waitMeta}>{updated ? `Updated ${updated === 1 ? 'once' : `${updated} times`}` : 'Not refreshed'}</span>
         <Tip label="Refresh">
-          <Button variant="ghost" size="sm" icon aria-label="Refresh" aria-busy={busy || undefined} onClick={refresh}>
-            {spin ? <Spinner /> : <RefreshCw size={16} aria-hidden />}
-          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            icon
+            aria-label="Refresh"
+            loading={spin}
+            leading={<RefreshCw size={16} aria-hidden />}
+            onClick={refresh}
+          />
         </Tip>
       </div>
       {FILES.map((f) => (
-        <div key={f} className={s.waitRow} data-stale={spin ? '' : undefined}>
+        <div key={f} className={s.waitRow}>
           {f}
         </div>
       ))}

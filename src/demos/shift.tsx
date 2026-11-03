@@ -277,7 +277,8 @@ export const ShiftSearch = localized(function ShiftSearch() {
 
 // ── Bold that pushes ─────────────────────────────────────
 
-const NAV = ['Overview', 'Issues', 'Pull requests', 'Releases', 'Settings'];
+// Four links: one row in the half-column stage, so bold moves links along it, never between lines.
+const NAV = ['Overview', 'Issues', 'Releases', 'Settings'];
 
 export function BoldNav({ reserve }: { reserve?: boolean }) {
   const [current, setCurrent] = useState('Issues');

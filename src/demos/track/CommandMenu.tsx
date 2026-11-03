@@ -88,7 +88,7 @@ export function CommandMenu({ open, onOpenChange, target, commands }: Props) {
                 {c.label}
               </div>,
             ])}
-            {found.length === 0 && <p className={s.empty}>No command matches “{q.trim()}”</p>}
+            {found.length === 0 && <p className={s.empty}>No command matches “{q.trim()}”. Try a shorter word.</p>}
           </div>
         </Dialog.Popup>
       </Dialog.Portal>

@@ -92,7 +92,7 @@
   font-variant-numeric: tabular-nums;
 }
 
-// A discrete slider (ten stops or fewer) shows its stops on hover.
+// A discrete slider (ten stops or fewer) shows its stops on hover and keyboard focus.
 .tick {
   position: absolute;
   top: 50%;
@@ -121,9 +121,12 @@
   }
 }
 
+// The stops show for the keyboard too; the handle stays hover's.
 .slider:hover,
 .slider[data-pin~='hover'],
-.slider[data-dragging] {
+.slider[data-dragging],
+.slider:focus-visible,
+.slider[data-pin~='focus'] {
   .tick {
     opacity: 1;
   }

@@ -50,13 +50,20 @@ function TimedEmail({ timing }: { timing: Timing }) {
       className={s.timingSubmit}
       onSubmit={(e) => {
         e.preventDefault();
-        setError(validateEmail(value));
+        const next = validateEmail(value);
+        setError(next);
+        // A failed submit lands in the field it names, caret at the end, as Form does.
+        const input = e.currentTarget.querySelector('input');
+        if (next && input) {
+          input.focus();
+          input.setSelectionRange(input.value.length, input.value.length);
+        }
       }}
     >
       {field}
       <div>
         <Button type="submit" size="sm">
-          Continue
+          Save email
         </Button>
       </div>
     </form>

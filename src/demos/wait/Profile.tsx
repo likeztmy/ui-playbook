@@ -1,4 +1,6 @@
+import type { CSSProperties } from 'react';
 import { cx } from '../../ui/cx';
+import { hue } from '../post/Avatar';
 import s from './wait.module.scss';
 
 /** Ana's profile card, or its skeleton: the same boxes, in the same places. */
@@ -19,7 +21,8 @@ export function Profile({ bones }: { bones?: boolean }) {
     );
   return (
     <div className={s.waitProfile}>
-      <span className={s.waitAvatar} aria-hidden>
+      {/* One of the faces' pastel hues, from her address, as Post sets them: never the accent's. */}
+      <span className={s.waitAvatar} style={{ '--hue': hue('ana@studio.com') } as CSSProperties} aria-hidden>
         AR
       </span>
       <div className={s.waitProfileText}>

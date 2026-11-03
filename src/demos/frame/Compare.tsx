@@ -41,7 +41,13 @@ export function Compare({ before, after, beforeNote, afterNote, height, stacked,
     const good = shown === 'after';
     return (
       <div className={s.toggled}>
-        <Frame label={<Verdict good={good} words={good ? afterLabel : beforeLabel} />} height={height} tone={good ? 'good' : 'bad'} {...measuring}>
+        <Frame
+          label={<Verdict good={good} words={good ? afterLabel : beforeLabel} />}
+          height={height}
+          tone={good ? 'good' : 'bad'}
+          {...slowing}
+          {...measuring}
+        >
           <div key={shown} className={s.toggledStage}>
             {good ? after : before}
           </div>

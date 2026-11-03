@@ -1,5 +1,5 @@
 // One small release tool's data, shared by every page of the showcase.
-export type Status = 'Live' | 'Rolling out' | 'In review' | 'Draft' | 'Halted';
+export type Status = 'Live' | 'Rolling out' | 'Paused' | 'In review' | 'Draft' | 'Halted';
 export type Release = {
   id: string;
   version: string;
@@ -162,7 +162,7 @@ export const releases: Release[] = [
 ];
 
 export const tone = (s: Status) =>
-  (({ Live: 'success', 'Rolling out': 'info', 'In review': 'warning', Draft: 'neutral', Halted: 'danger' }) as const)[s];
+  (({ Live: 'success', 'Rolling out': 'info', Paused: 'neutral', 'In review': 'warning', Draft: 'neutral', Halted: 'danger' }) as const)[s];
 
 export const people = ['Mira Chen', 'Jonas Berg', 'Ada Okafor', 'Sam Rivera'];
 export const initials = (name: string) =>

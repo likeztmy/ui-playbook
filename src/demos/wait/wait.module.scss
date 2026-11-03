@@ -55,14 +55,9 @@
   gap: var(--space-2);
   min-height: 36px;
   border-bottom: 1px solid var(--line);
-  transition: opacity var(--duration-fast) var(--ease-out);
 
   &:last-of-type {
     border-bottom: 0;
-  }
-
-  &[data-stale] {
-    opacity: 0.5;
   }
 }
 
@@ -238,8 +233,9 @@
   width: 40px;
   height: 40px;
   border-radius: var(--radius-full);
-  background: var(--accent-soft);
-  color: var(--accent-text);
+  // The faces' pastel (Post's Avatar), on the hue the card sets.
+  background: light-dark(oklch(0.93 0.04 var(--hue)), oklch(0.36 0.05 var(--hue)));
+  color: light-dark(oklch(0.35 0.06 var(--hue)), oklch(0.92 0.04 var(--hue)));
   font-size: 13px;
   font-weight: 600;
 }
@@ -321,8 +317,12 @@
   line-height: 16px;
 }
 
-.waitFail {
-  margin-top: var(--space-3);
+// The starred list, and under it, a clear step away, the switch that fails its next request.
+.waitStars {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  width: min(100%, 300px);
 }
 
 // What the empty search is for, before it's run.

@@ -15,6 +15,10 @@ const FOLDERS = ['Inbox', 'Projects', 'Clients', 'Archive'];
 
 type Pt = { x: number; y: number };
 
+// Move to opens once the pointer has been on it this long, as the kit's Menu does (Base UI's submenu
+// delay), so a pointer passing down through it opens nothing. A click or a key opens it at once.
+const SETTLE = 100;
+
 /** Is p inside the triangle abc? Signs of the three cross products agree. */
 function inTriangle(p: Pt, a: Pt, b: Pt, c: Pt) {
   const cross = (o: Pt, u: Pt, v: Pt) => (u.x - o.x) * (v.y - o.y) - (u.y - o.y) * (v.x - o.x);
@@ -41,6 +45,8 @@ function SubmenuDemo({ aim }: { aim?: boolean }) {
   const sub = useRef<HTMLDivElement>(null);
   const lastInMove = useRef<Pt | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  // Set while Move to waits for the pointer to settle.
+  const opening = useRef(false);
   const [subHot, setSubHot] = useState<string | null>(null);
   // Set when a key opened the submenu, so its first row takes focus once it's there.
   const [subFocus, setSubFocus] = useState(false);
@@ -65,8 +71,12 @@ function SubmenuDemo({ aim }: { aim?: boolean }) {
     const [top, bottom] = edge();
     return inTriangle(p, lastInMove.current, top, bottom);
   };
-  const go = (row: string) => {
+  const cancel = () => {
     clearTimeout(timer.current);
+    opening.current = false;
+  };
+  const go = (row: string) => {
+    cancel();
     // Focus in a submenu that's closing goes to the row the pointer is on.
     if (row !== 'Move to' && sub.current?.contains(document.activeElement)) rowEl(row)?.focus();
     setHot(row);
@@ -78,7 +88,14 @@ function SubmenuDemo({ aim }: { aim?: boolean }) {
     if (row === 'Move to') {
       lastInMove.current = p;
       setApex(p);
-      go(row);
+      if (open) go(row);
+      else if (!opening.current) {
+        // Highlighted at once; opened once the pointer has settled.
+        cancel();
+        setHot(row);
+        opening.current = true;
+        timer.current = setTimeout(() => go(row), SETTLE);
+      }
       return;
     }
     if (heading(p)) {
@@ -99,15 +116,25 @@ function SubmenuDemo({ aim }: { aim?: boolean }) {
 
   const step = <T,>(list: T[], at: T | null, by: number) => list[(list.indexOf(at as T) + by + list.length) % list.length];
 
+  // Choosing a folder closes the submenu; focus goes back to the row that opened it, never to the page.
+  const choose = (f: string) => {
+    setMoved(f);
+    setOpen(false);
+    setSubHot(null);
+    rowEl('Move to')?.focus({ preventScroll: true });
+  };
+
   const onMenuKey = (e: KeyboardEvent) => {
     if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
       e.preventDefault();
+      cancel();
       const r = step(ROWS, hot, e.key === 'ArrowDown' ? 1 : -1);
       setHot(r);
       setOpen(false);
       rowEl(r)?.focus();
     } else if (hot === 'Move to' && (e.key === 'ArrowRight' || e.key === 'Enter' || e.key === ' ')) {
       e.preventDefault();
+      cancel();
       setOpen(true);
       setSubHot(FOLDERS[0]);
       setSubFocus(true);
@@ -123,7 +150,7 @@ function SubmenuDemo({ aim }: { aim?: boolean }) {
       subEl(f)?.focus();
     } else if ((e.key === 'Enter' || e.key === ' ') && subHot) {
       e.preventDefault();
-      setMoved(subHot);
+      choose(subHot);
     } else if (e.key === 'ArrowLeft' || e.key === 'Escape') {
       e.preventDefault();
       setOpen(false);
@@ -143,7 +170,7 @@ function SubmenuDemo({ aim }: { aim?: boolean }) {
         ref={root}
         className={s.aimStage}
         onMouseLeave={() => {
-          clearTimeout(timer.current);
+          cancel();
           // While the keyboard is in the menu, the pointer leaving changes nothing.
           if (root.current?.contains(document.activeElement)) return;
           setHot(null);
@@ -165,6 +192,7 @@ function SubmenuDemo({ aim }: { aim?: boolean }) {
                 data-highlighted={hot === r ? '' : undefined}
                 onFocus={() => setHot(r)}
                 onMouseMove={(e) => onRowMove(r, e)}
+                onClick={r === 'Move to' ? () => go(r) : undefined}
               >
                 <span className={ms.text}>{r}</span>
                 {r === 'Move to' && <ChevronRight className={ms.chevron} size={16} aria-hidden />}
@@ -180,7 +208,7 @@ function SubmenuDemo({ aim }: { aim?: boolean }) {
             aria-label="Move to"
             onKeyDown={onSubKey}
             onMouseEnter={() => {
-              clearTimeout(timer.current);
+              cancel();
               setHot('Move to');
             }}
           >
@@ -192,7 +220,7 @@ function SubmenuDemo({ aim }: { aim?: boolean }) {
                 data-folder={f}
                 tabIndex={-1}
                 data-highlighted={subHot === f ? '' : undefined}
-                onClick={() => setMoved(f)}
+                onClick={() => choose(f)}
                 onFocus={() => setSubHot(f)}
                 onMouseEnter={() => setSubHot(f)}
                 onMouseLeave={() => setSubHot(null)}

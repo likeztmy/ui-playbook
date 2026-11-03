@@ -1,5 +1,6 @@
 // Repeated rows in one group: a line between them, none after the last, the meta in one
-// right-aligned column (the lightest boundary; Table).
+// right-aligned column (the lightest boundary; Table). In a list the line starts at the text, past a
+// leading icon or face, as iOS draws it (C21); `--lead` is that mark's width and gap.
 .rows {
   display: grid;
   margin: 0;
@@ -7,14 +8,22 @@
   list-style: none;
 
   > li {
+    position: relative;
     display: flex;
     align-items: center;
     gap: var(--space-2);
     min-height: var(--row-height);
 
-    & + li {
+    & + li::before {
+      position: absolute;
+      inset: 0 0 auto var(--lead, 0);
       border-top: var(--line-width) solid var(--line);
+      content: '';
     }
+  }
+
+  > li:has(> svg:first-child) {
+    --lead: calc(16px + var(--space-2));
   }
 }
 

@@ -67,6 +67,8 @@ export function lastChange(r: Release): { who: string; what: string } {
   switch (r.status) {
     case 'Rolling out':
       return { who: r.owner, what: `raised ${name} to ${r.rollout}%` };
+    case 'Paused':
+      return { who: r.owner, what: `paused ${name} at ${r.rollout}%` };
     case 'In review':
       return { who: r.owner, what: `sent ${name} for review` };
     case 'Live':

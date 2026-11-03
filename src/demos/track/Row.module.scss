@@ -96,16 +96,8 @@
   white-space: nowrap;
 }
 
-// The title, then its labels: the title gives way first, the labels stay whole.
-.what {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  min-width: 0;
-}
-
+// The title, then its labels in their own column: the labels give way first, then the title.
 .title {
-  flex: 0 1 auto;
   min-width: 0;
   overflow: hidden;
   font-weight: 500;
@@ -113,9 +105,20 @@
   white-space: nowrap;
 }
 
+// Whole labels only: one that doesn't fit wraps onto a line the column hides. The first may shorten.
+.labels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  min-width: 0;
+  height: 20px;
+  overflow: hidden;
+}
+
 // Badge's neutral kind, as the panel draws the same labels: ink-muted on fill-control, no edge.
 .label {
   flex: none;
+  overflow: hidden;
   height: 20px;
   padding: 0 var(--space-2);
   border-radius: var(--radius-full);
@@ -123,7 +126,13 @@
   color: var(--ink-muted);
   font-size: 12px;
   line-height: 20px;
+  text-overflow: ellipsis;
   white-space: nowrap;
+
+  &:first-child {
+    flex-shrink: 1;
+    min-width: 0;
+  }
 }
 
 .progress {
@@ -152,7 +161,7 @@
 
 @container (max-width: 760px) {
   .id,
-  .label,
+  .labels,
   .progress,
   .tick {
     display: none;

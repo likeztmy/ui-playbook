@@ -142,6 +142,8 @@
 // Held still in a preview: in the flow, not the queue's stack.
 .still {
   position: static;
+  // Never wider than the live toast, nor than what holds it.
+  max-width: min(440px, 100%);
   margin: 0;
   translate: none;
 }

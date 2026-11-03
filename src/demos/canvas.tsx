@@ -3,6 +3,8 @@ import { useState, type KeyboardEvent, type MouseEvent } from 'react';
 import { Toolbar } from '../ui/Toolbar';
 import { cx } from '../ui/cx';
 import { EllipseIcon, PenIcon, PointerIcon, RectIcon, TextIcon } from '../ui/icons';
+import { ToastProvider } from '../ui/Toast';
+import { Share } from './canvas-share/Share';
 import { Frame } from './shell';
 import s from './demos.module.scss';
 
@@ -44,6 +46,7 @@ export function CanvasScene({ label = 'Canvas' }: { label?: string }) {
   const [shapes, setShapes] = useState<Shape[]>(START);
   const [selected, setSelected] = useState<number | null>(null);
   const [zoom, setZoom] = useState(1);
+  const [toasts, setToasts] = useState<HTMLElement | null>(null);
 
   const commit = (next: Shape[]) => {
     setPast((p) => [...p, shapes]);
@@ -94,58 +97,62 @@ export function CanvasScene({ label = 'Canvas' }: { label?: string }) {
   return (
     <Frame label={label} height={0}>
       <div className={s.sketch}>
-        <div className={s.sketchBoard} data-tool={tool} tabIndex={0} role="application" aria-label="Canvas" onClick={place} onKeyDown={onKey}>
-          <div className={s.sketchLayer} style={{ scale: String(zoom) }}>
-            {shapes.map((sh) => (
-              <button
-                key={sh.id}
-                type="button"
-                tabIndex={-1}
-                aria-label={sh.kind}
-                className={cx(s.sketchShape, s[`sketch_${sh.kind}`])}
-                data-selected={sh.id === selected ? '' : undefined}
-                style={{ left: sh.x, top: sh.y }}
-                onClick={(e) => {
-                  if (tool !== 'select') return;
-                  e.stopPropagation();
-                  setSelected(sh.id);
-                }}
-              >
-                {sh.kind === 'text' && 'Heading'}
-                {sh.kind === 'pen' && (
-                  <svg viewBox="0 0 64 32" aria-hidden>
-                    <path d="M4 24 C 16 4, 28 4, 32 16 S 52 30, 60 8" />
-                  </svg>
-                )}
-              </button>
-            ))}
+        <ToastProvider container={toasts} contained>
+          <div className={s.sketchBoard} data-tool={tool} tabIndex={0} role="application" aria-label="Canvas" onClick={place} onKeyDown={onKey}>
+            <div className={s.sketchLayer} style={{ scale: String(zoom) }}>
+              {shapes.map((sh) => (
+                <button
+                  key={sh.id}
+                  type="button"
+                  tabIndex={-1}
+                  aria-label={sh.kind}
+                  className={cx(s.sketchShape, s[`sketch_${sh.kind}`])}
+                  data-selected={sh.id === selected ? '' : undefined}
+                  style={{ left: sh.x, top: sh.y }}
+                  onClick={(e) => {
+                    if (tool !== 'select') return;
+                    e.stopPropagation();
+                    setSelected(sh.id);
+                  }}
+                >
+                  {sh.kind === 'text' && 'Heading'}
+                  {sh.kind === 'pen' && (
+                    <svg viewBox="0 0 64 32" aria-hidden>
+                      <path d="M4 24 C 16 4, 28 4, 32 16 S 52 30, 60 8" />
+                    </svg>
+                  )}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
-        <Toolbar.Root aria-label="View" className={s.sketchView}>
-          {VIEW.slice(0, 2).map(([name, Icon, keys]) => (
-            <Toolbar.Action key={name} label={name} keys={keys} onClick={run[name]} disabled={name === 'Undo' ? !past.length : !future.length}>
-              <Icon {...ic} />
-            </Toolbar.Action>
-          ))}
-          <Toolbar.Separator />
-          {VIEW.slice(2).map(([name, Icon, keys]) => (
-            <Toolbar.Action key={name} label={name} keys={keys} onClick={run[name]}>
-              <Icon {...ic} />
-            </Toolbar.Action>
-          ))}
-          <span className={s.sketchZoom}>{Math.round(zoom * 100)}%</span>
-        </Toolbar.Root>
-        <Toolbar.Root aria-label="Drawing" className={s.sketchTools}>
-          <Toolbar.Tools value={[tool]} onValueChange={(v: string[]) => v.length && setTool(v[0] as Tool)} aria-label="Tools">
-            {TOOLS.map(([value, name, icon, key]) => (
-              <Toolbar.Tool key={value} value={value} label={name} keys={[key]}>
-                {icon}
-              </Toolbar.Tool>
+          <Toolbar.Root aria-label="View" className={s.sketchView}>
+            {VIEW.slice(0, 2).map(([name, Icon, keys]) => (
+              <Toolbar.Action key={name} label={name} keys={keys} onClick={run[name]} disabled={name === 'Undo' ? !past.length : !future.length}>
+                <Icon {...ic} />
+              </Toolbar.Action>
             ))}
-          </Toolbar.Tools>
-          <Toolbar.Separator />
-          <Toolbar.Action primary>Share</Toolbar.Action>
-        </Toolbar.Root>
+            <Toolbar.Separator />
+            {VIEW.slice(2).map(([name, Icon, keys]) => (
+              <Toolbar.Action key={name} label={name} keys={keys} onClick={run[name]}>
+                <Icon {...ic} />
+              </Toolbar.Action>
+            ))}
+            <span className={s.sketchZoom}>{Math.round(zoom * 100)}%</span>
+          </Toolbar.Root>
+          <Toolbar.Root aria-label="Drawing" className={s.sketchTools}>
+            <Toolbar.Tools value={[tool]} onValueChange={(v: string[]) => v.length && setTool(v[0] as Tool)} aria-label="Tools">
+              {TOOLS.map(([value, name, icon, key]) => (
+                <Toolbar.Tool key={value} value={value} label={name} keys={[key]}>
+                  {icon}
+                </Toolbar.Tool>
+              ))}
+            </Toolbar.Tools>
+            <Toolbar.Separator />
+            <Share />
+          </Toolbar.Root>
+          {/* Toasts rise just above the Drawing toolbar, not over it. */}
+          <div ref={setToasts} className={s.sketchToasts} data-overlay />
+        </ToastProvider>
       </div>
     </Frame>
   );

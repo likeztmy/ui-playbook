@@ -186,12 +186,12 @@
   }
 }
 
+// Lines between the questions only, none above the first or after the last (lightest boundary).
 .faq {
   display: grid;
-  border-top: var(--line-width) solid var(--line);
 
-  details {
-    border-bottom: var(--line-width) solid var(--line);
+  details + details {
+    border-top: var(--line-width) solid var(--line);
   }
 
   summary {

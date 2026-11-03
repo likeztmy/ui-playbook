@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Button } from '../../../../ui/Button';
 import { Checkbox } from '../../../../ui/Checkbox';
 import { FieldSuffix, TextField } from '../../../../ui/Field';
@@ -8,11 +9,13 @@ import p from './Publish.module.scss';
 
 /**
  * A form that waits for Publish: radios for one of three (not a Select, LK#28), a field for an exact
- * share (not a slider, LK#19), a checkbox for an option sent with it (not a switch, LK#6).
+ * share (not a slider, LK#19), a checkbox for an option sent with it (not a switch, LK#6). What the
+ * buttons did shows on the heading row, where the section's meta is read out.
  */
 export function Publish() {
+  const [done, setDone] = useState<string | null>(null);
   return (
-    <Section title="Publish 4.2.0" meta="12 changes">
+    <Section title="Publish 4.2.0" meta={done ?? '12 changes'}>
       <div className={p.form}>
         <TextField label="Version" defaultValue="4.2.0" />
         <RadioGroup label="Channel" defaultValue="stable" inline>
@@ -23,8 +26,10 @@ export function Publish() {
         <TextField label="First rollout" className={p.share} defaultValue="25" inputMode="numeric" trailing={<FieldSuffix>%</FieldSuffix>} />
         <Checkbox label="Email subscribers when it’s live" defaultChecked />
         <div className={c.actions}>
-          <Button>Save draft</Button>
-          <Button variant="primary">Publish</Button>
+          <Button onClick={() => setDone('Draft saved')}>Save draft</Button>
+          <Button variant="primary" onClick={() => setDone('Published')}>
+            Publish
+          </Button>
         </div>
       </div>
     </Section>

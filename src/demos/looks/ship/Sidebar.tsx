@@ -8,7 +8,8 @@ import s from './Shell.module.scss';
 type Row = { to: Place; label: string; Icon?: LucideIcon; count?: number };
 type Group = { heading?: string; rows: Row[] };
 
-const GROUPS: Group[] = [
+// Made at each render: the counts follow a draft added or undone.
+const groups = (): Group[] => [
   {
     rows: [
       { to: at('dashboard'), label: 'Dashboard', Icon: ChartColumn },
@@ -45,7 +46,7 @@ export function Sidebar() {
     <nav className={s.sidebar} aria-label="Ship">
       <div className={s.scroll}>
         <span className={s.name}>Ship</span>
-        {GROUPS.map((g, i) => (
+        {groups().map((g, i) => (
           <div key={g.heading ?? i} className={s.group}>
             {g.heading && (
               <p className={s.heading} id={`${id}-${i}`}>

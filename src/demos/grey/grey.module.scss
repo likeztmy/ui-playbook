@@ -85,7 +85,9 @@
 }
 
 .due {
+  justify-self: end;
   color: var(--ink-muted);
+  text-align: end;
   font-size: 12px;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;

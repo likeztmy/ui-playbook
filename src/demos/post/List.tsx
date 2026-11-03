@@ -115,6 +115,14 @@ export function List({ post, rows, chrome, pinned }: ListProps) {
     <section className={s.list} aria-label="Conversations" data-density={chrome.density}>
       <Bar post={post} chrome={chrome} />
       {chrome.outbox}
+      {/* While searching, how many match is read out as it changes, and so is finding none (C29). */}
+      <span className={s.announce} aria-live="polite">
+        {q
+          ? post.list.length
+            ? `${post.list.length} ${post.list.length === 1 ? 'conversation' : 'conversations'}`
+            : `No conversations match “${q}”`
+          : ''}
+      </span>
       {/* New mail waits here, over the list, until asked for: nothing moves under the pointer on its own. */}
       {post.waiting > 0 && post.folder === 'inbox' && !q && (
         <span className={s.pill} data-spot="arrive" data-overlay>

@@ -125,7 +125,7 @@ export function Board({ track, onOpen, onKeys }: Props) {
                 <Card key={i.n} issue={i} track={track} onOpen={onOpen} onPointerDown={down(i.n)} />,
               ])}
               {gapAt === cards.length && <div className={s.gap} style={{ height: drag!.h }} />}
-              {g.issues.length === 0 && !where && <p className={s.empty}>{g.hidden ? 'None match the filter' : 'No issues'}</p>}
+              {g.issues.length === 0 && !where && <p className={s.empty}>{g.hidden ? 'None match the filter' : 'Drag an issue here'}</p>}
             </div>
           </section>
         );

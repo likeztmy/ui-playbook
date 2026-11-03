@@ -43,6 +43,22 @@
   margin-left: auto;
 }
 
+.swap {
+  display: inline-grid;
+
+  > span {
+    display: inline-flex;
+    grid-area: 1 / 1;
+    gap: var(--space-1);
+    align-items: center;
+    justify-content: center;
+  }
+
+  > [data-hidden] {
+    visibility: hidden;
+  }
+}
+
 .link {
   font-size: 14px;
 }

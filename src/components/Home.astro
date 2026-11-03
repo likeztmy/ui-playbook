@@ -128,7 +128,7 @@ const groups = [
                 {/* The title is the card's one link, stretched over the whole card: one target, one Tab stop. */}
                 <div class={s.cardWords}>
                   <div class={s.cardTitleRow}>
-                    <h3 class={card.title} title={titleIn(e, lang)}>
+                    <h3 class={card.title}>
                       <a class={card.primary} href={linkIn(href(e), lang)}>
                         {titleIn(e, lang)}
                       </a>
@@ -145,6 +145,9 @@ const groups = [
     })
   }
 
+  {/* What a search finds, read out as it changes (C29): each group's name and count, or the empty line. */}
+  <p class={s.announce} id="announce" aria-live="polite"></p>
+
   <div class={s.empty} id="empty" hidden>
     <p>{lang === 'zh' ? <>没有找到与“<span id="empty-query"></span>”相关的内容。</> : <>Nothing matches “<span id="empty-query"></span>”.</>}</p>
     <button type="button" id="clear">{t.clear}</button>
@@ -155,6 +158,7 @@ const groups = [
   const input = document.getElementById('search') as HTMLInputElement;
   const empty = document.getElementById('empty')!;
   const emptyQuery = document.getElementById('empty-query')!;
+  const announce = document.getElementById('announce')!;
   const groups = [...document.querySelectorAll<HTMLElement>('[data-group]')];
   // As wide as the CSS that hides a desk-only card: the counts leave it out too.
   const phone = matchMedia('(width < 760px)');
@@ -176,6 +180,14 @@ const groups = [
     }
     empty.hidden = shown > 0;
     emptyQuery.textContent = input.value.trim();
+    announce.textContent = !q
+      ? ''
+      : shown
+        ? groups
+            .filter((g) => !g.hidden)
+            .map((g) => `${g.querySelector('h2')!.textContent} ${g.querySelector('[data-count]')!.textContent}`)
+            .join(', ')
+        : empty.querySelector('p')!.textContent!;
   }
 
   input.addEventListener('input', filter);

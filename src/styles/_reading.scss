@@ -185,7 +185,8 @@
     padding: 1px var(--space-1);
     border-radius: var(--radius-xs);
     background: var(--surface-sunken);
-    font-size: 0.85em;
+    // Never under the 12px floor, even in a demo's 13px note.
+    font-size: max(12px, 0.85em);
     white-space: nowrap;
   }
 

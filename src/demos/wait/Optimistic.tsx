@@ -5,11 +5,30 @@ import { Switch } from '../../ui/Switch';
 import { Tip } from '../../ui/Tooltip';
 import { useTimers } from '../novelty/useTimers';
 import { Compare, localized } from '../shell';
-import { Spinner } from './Spinner';
+import { useBusy } from './useBusy';
 import s from './wait.module.scss';
 
 const SAVE = 900;
 const STARRED = ['Q4 roadmap', 'Brand guide', 'Onboarding'];
+
+/** A file's star. While a request runs it shows busy, past delay-loading only, as Button's own wait does. */
+function StarButton({ name, on, pending, onClick }: { name: string; on: boolean; pending: boolean; onClick: () => void }) {
+  const busy = useBusy(pending);
+  return (
+    <Tip label={name}>
+      <Button
+        variant="ghost"
+        size="sm"
+        icon
+        aria-label={name}
+        aria-pressed={on}
+        loading={busy}
+        leading={<Star size={16} aria-hidden className={on ? s.waitStarOn : undefined} />}
+        onClick={onClick}
+      />
+    </Tip>
+  );
+}
 
 /** Starring files. `optimistic` stars at once and takes it back if the server says no. */
 function Stars({ optimistic }: { optimistic?: boolean }) {
@@ -39,27 +58,26 @@ function Stars({ optimistic }: { optimistic?: boolean }) {
   };
 
   return (
-    <div className={s.waitList}>
-      {STARRED.map((f) => {
-        const on = starred.includes(f);
-        const name = on ? `Unstar ${f}` : `Star ${f}`;
-        return (
-          <div key={f} className={s.waitRow}>
-            <span className={s.waitRowText}>
-              {f}
-              <span className={s.waitError} role="status">
-                {error?.file === f ? error.text : ''}
+    <div className={s.waitStars}>
+      <div className={s.waitList}>
+        {STARRED.map((f) => {
+          const on = starred.includes(f);
+          const name = on ? `Unstar ${f}` : `Star ${f}`;
+          return (
+            <div key={f} className={s.waitRow}>
+              <span className={s.waitRowText}>
+                {f}
+                <span className={s.waitError} role="status">
+                  {error?.file === f ? error.text : ''}
+                </span>
               </span>
-            </span>
-            <Tip label={name}>
-              <Button variant="ghost" size="sm" icon aria-label={name} aria-pressed={on} onClick={() => toggle(f)}>
-                {pending.includes(f) ? <Spinner /> : <Star size={16} aria-hidden className={on ? s.waitStarOn : undefined} />}
-              </Button>
-            </Tip>
-          </div>
-        );
-      })}
-      <Switch label="Fail the next request" checked={fail} onCheckedChange={setFail} className={s.waitFail} />
+              <StarButton name={name} on={on} pending={pending.includes(f)} onClick={() => toggle(f)} />
+            </div>
+          );
+        })}
+      </div>
+      {/* The demo's own control, under the list rather than in it. */}
+      <Switch label="Fail the next request" checked={fail} onCheckedChange={setFail} />
     </div>
   );
 }

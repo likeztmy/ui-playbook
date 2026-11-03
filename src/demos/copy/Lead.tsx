@@ -5,7 +5,7 @@ import { NewIssue } from './NewIssue';
 export function CopyLead() {
   return (
     <Compare
-      height={420}
+      height={370}
       beforeLabel="Three lines before the first field"
       afterLabel="The task, then the field"
       before={<NewIssue filler />}

@@ -34,6 +34,8 @@ export function ShadowLayers() {
       before={
         <div className={s.layered}>
           <Lifted shadow="0 8px 24px light-dark(oklch(0.3 0.01 75 / 0.22), oklch(0 0 0 / 0.7))" />
+          {/* The Prefer side's switch row, held empty, so the two desks start on one line. */}
+          <div className={s.switches} />
         </div>
       }
       after={<Layered />}

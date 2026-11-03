@@ -53,6 +53,11 @@
     grid-template-columns: 20px 28px 128px minmax(0, 1fr) auto;
   }
 
+  // A ticked row: the selection's tint, as in a table.
+  &[data-selected] {
+    background: var(--accent-soft);
+  }
+
   &:is(button) {
     cursor: pointer;
 

@@ -33,6 +33,8 @@ export const ui = {
   en: {
     lede: 'The small details that make interface components feel right, each one shown side by side.',
     search: 'Search the playbook',
+    // What to type, not an instruction: the field's name is `search`.
+    searchExample: 'Dialog, focus, spacing',
     searchNote: 'press / from anywhere',
     components: 'Components',
     principles: 'Principles',
@@ -58,6 +60,8 @@ export const ui = {
   zh: {
     lede: '让界面组件好用的那些细节，每一条都放在一起对比着看。',
     search: '搜索组件和原则',
+    // Left for the owner to translate.
+    searchExample: 'Dialog, focus, spacing',
     // Left for the owner to translate, as `practice` and `systems` are.
     searchNote: 'press / from anywhere',
     components: '组件',

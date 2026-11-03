@@ -34,16 +34,18 @@
   font-variant-numeric: tabular-nums;
 }
 
+// Five whole rows: the sixth starts at the tally's line, so no sliver of it shows.
 .rows {
-  flex: 1;
-  min-height: 0;
+  flex: none;
+  height: calc(5 * 52px);
   margin: 0;
   padding: 0;
   overflow: hidden;
   list-style: none;
 }
 
-// Two lines, 52 tall with its rule: the height a leaving row gives back.
+// Two lines, 52 tall with its rule: the height a leaving row gives back. Lines only between rows;
+// the head's and the tally's lines close the list.
 .row {
   box-sizing: border-box;
   display: flex;
@@ -51,9 +53,12 @@
   justify-content: center;
   height: 52px;
   padding: 0 var(--space-2);
-  border-bottom: 1px solid var(--line);
   background: var(--surface);
   overflow: hidden;
+
+  & + & {
+    border-top: 1px solid var(--line);
+  }
 
   &[data-leaving='brief'] {
     animation: close-up var(--duration-fast) var(--ease-out) forwards;
@@ -100,7 +105,7 @@
   to {
     height: 0;
     opacity: 0;
-    border-bottom-width: 0;
+    border-top-width: 0;
   }
 }
 
@@ -121,7 +126,7 @@
     height: 0;
     transform: translate(110%, -16px);
     opacity: 0;
-    border-bottom-width: 0;
+    border-top-width: 0;
   }
 }
 
@@ -129,7 +134,7 @@
   to {
     height: 0;
     opacity: 0;
-    border-bottom-width: 0;
+    border-top-width: 0;
   }
 }
 

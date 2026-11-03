@@ -1,6 +1,7 @@
 // Rows selected by a bare box: no outline around the list, which sits in
-// the gallery's own row. Lines between rows only, from the name's edge
-// (padding 12 + box 16 + gap 12), a step lighter than an edge.
+// the gallery's own row. Boxes and names share the other rows' columns
+// (box 16 + gap 8); lines between rows only, from the name's edge, a step
+// lighter than an edge.
 
 .list {
   display: flex;
@@ -12,9 +13,8 @@
   position: relative;
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: var(--space-2);
   height: var(--control-md);
-  padding: 0 var(--space-3);
   font-size: 13px;
 
   & + &::before {
@@ -22,8 +22,27 @@
     position: absolute;
     top: 0;
     right: 0;
-    left: calc(var(--space-3) * 2 + 16px);
+    left: calc(16px + var(--space-2));
     height: 1px;
     background: color-mix(in oklab, var(--line), transparent 40%);
   }
+}
+
+// The live group waits for its form's submit.
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-5);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.saved {
+  color: var(--ink-muted);
+  font-size: 13px;
 }

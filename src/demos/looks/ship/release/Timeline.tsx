@@ -5,8 +5,8 @@ import t from './Release.module.scss';
 export function Timeline({ events }: { events: Event[] }) {
   return (
     <ol className={t.timeline}>
-      {events.map(({ Icon, who, what, hours, quote }) => (
-        <li key={`${who}-${what}-${hours}`}>
+      {events.map(({ Icon, who, what, hours, quote, id }) => (
+        <li key={id ?? `${who}-${what}-${hours}`}>
           <span className={t.mark}>
             <Icon size={16} aria-hidden />
           </span>

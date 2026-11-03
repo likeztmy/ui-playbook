@@ -1,21 +1,17 @@
 import type { ReactNode } from 'react';
 import { Badge } from '../../../../ui/Badge';
-import { hoursAgo, tone, type Release } from '../model';
+import { hoursAgo, tone, type Release, type Status } from '../model';
 import { when } from './story';
 import t from './Release.module.scss';
 
 /** The release's facts beside its history: labels in one column, values in the next (C41: none is an en dash). */
-export function Properties({ release: r, paused }: { release: Release; paused: boolean }) {
+export function Properties({ release: r, status }: { release: Release; status: Status }) {
   const rows: [string, ReactNode][] = [
     [
       'Status',
-      paused ? (
-        <Badge status>Paused</Badge>
-      ) : (
-        <Badge tone={tone(r.status)} status>
-          {r.status}
-        </Badge>
-      ),
+      <Badge tone={tone(status)} status>
+        {status}
+      </Badge>,
     ],
     ['Platform', r.platform],
     ['Owner', r.owner],

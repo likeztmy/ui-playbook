@@ -346,6 +346,7 @@ export function TableScroll() {
 export function TablePreview() {
   return (
     <Table
+      className={s.tablePreview}
       label="Files"
       columns={COLUMNS.filter((c) => c.key !== 'owner' && c.key !== 'modified').map((c) => ({ ...c, sortBy: undefined }))}
       rows={FILES.slice(0, 3)}

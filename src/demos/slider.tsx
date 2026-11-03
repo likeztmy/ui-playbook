@@ -69,7 +69,7 @@ export function SliderVariants() {
         },
         {
           name: 'Discrete',
-          use: 'Ten stops or fewer. Ticks appear on hover; a click lands on a stop.',
+          use: 'Ten stops or fewer. Ticks appear on hover and focus; a click lands on a stop.',
           render: () => <Own spec={COLUMNS} className={s.sliderRow} />,
         },
         {

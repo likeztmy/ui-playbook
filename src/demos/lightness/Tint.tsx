@@ -33,6 +33,7 @@ export function LightnessTint() {
   return (
     <Tweak
       height={0}
+      defaultTheme="light"
       readout={<code className={s.readout}>{tint ? `greys at C ${c.toFixed(3)}, hue ${HUE[hue]}°` : 'greys at C 0: no hue at all'}</code>}
       stage={<Screen palette={palette(c, HUE[hue])} />}
       controls={

@@ -1,0 +1,69 @@
+// What people change in Ship while they look at it: rollouts paused and resumed, releases drafted.
+// The data stays as written; the changes sit over it, so every page reads the same state, and each
+// change hands back the Undo that puts it back.
+import { useSyncExternalStore } from 'react';
+import { releases, type Release, type Status } from './model';
+
+let statuses: Record<string, Status> = {};
+let version = 0;
+const listeners = new Set<() => void>();
+const changed = () => {
+  version++;
+  for (const f of listeners) f();
+};
+const subscribe = (f: () => void) => {
+  listeners.add(f);
+  return () => void listeners.delete(f);
+};
+
+/** Re-renders its component on every change; Ship's root calls it, so every page is current. */
+export const useChanges = () =>
+  useSyncExternalStore(
+    subscribe,
+    () => version,
+    () => 0,
+  );
+
+export const statusOf = (r: Release): Status => statuses[r.id] ?? r.status;
+
+/** Sets each release's status; the Undo puts back only these releases' own. */
+export function setStatus(ids: string[], status: Status) {
+  const before = ids.map((id) => [id, statuses[id]] as const);
+  statuses = { ...statuses, ...Object.fromEntries(ids.map((id) => [id, status])) };
+  changed();
+  return () => {
+    const next = { ...statuses };
+    for (const [id, s] of before) {
+      if (s) next[id] = s;
+      else delete next[id];
+    }
+    statuses = next;
+    changed();
+  };
+}
+
+/** A new draft for a platform, at the top of the list, signed in as Mira Chen; the Undo discards it. */
+export function draft(platform: Release['platform']) {
+  const n = releases.filter((r) => r.id.startsWith('d')).length;
+  const release: Release = {
+    id: `d${n + 1}`,
+    version: platform === 'Web' ? `2026.${45 + n}` : `4.3.${n}`,
+    name: 'Untitled',
+    status: 'Draft',
+    platform,
+    owner: 'Mira Chen',
+    rollout: 0,
+    crashFree: 0,
+    updated: 'Just now',
+    age: 0,
+  };
+  releases.unshift(release);
+  changed();
+  return {
+    release,
+    undo: () => {
+      releases.splice(releases.indexOf(release), 1);
+      changed();
+    },
+  };
+}

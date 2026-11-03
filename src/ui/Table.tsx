@@ -78,9 +78,13 @@ export function Table<R>({
   const [scrolls, setScrolls] = useState(false);
   // Columns still to the right: the edge fades, so a table cut at a column's end doesn't look whole.
   const [more, setMore] = useState(false);
+  // Scrolled sideways: only then does the pinned column need its line, to part it from what slides under.
+  const [scrolled, setScrolled] = useState(false);
   const edge = () => {
     const el = wrap.current;
-    if (el) setMore(el.scrollLeft + el.clientWidth < el.scrollWidth - 1);
+    if (!el) return;
+    setMore(el.scrollLeft + el.clientWidth < el.scrollWidth - 1);
+    setScrolled(el.scrollLeft > 0);
   };
   useEffect(() => {
     const el = wrap.current;
@@ -107,6 +111,7 @@ export function Table<R>({
       role={scrolls ? 'region' : undefined}
       aria-label={scrolls ? label : undefined}
       data-more={more || undefined}
+      data-scrolled={scrolled || undefined}
       onScroll={edge}
     >
       <table aria-label={label} className={cx(s.table, stickyFirst && s.stickyFirst, stickyFirst && selectable && s.hasCheck)}>

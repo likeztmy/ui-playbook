@@ -11,6 +11,19 @@
   }
 }
 
+// Where two columns would hold the confirmation under its 400 and the toasts under 440 (a 1024
+// window leaves each 352), those two take the whole row.
+.wide {
+  @container (max-width: 960px) {
+    grid-column: 1 / -1;
+  }
+}
+
+// The inert wrapper takes no box: each still lays out in its section as before.
+.held {
+  display: contents;
+}
+
 .stage {
   display: flex;
   align-items: flex-start;
@@ -55,6 +68,8 @@
 
 .toasts {
   display: grid;
+  // Toast anatomy: as wide as its text, 440 at most.
+  max-width: 440px;
   align-content: end;
   justify-items: start;
   gap: var(--space-2);

@@ -6,8 +6,10 @@ import { TextField } from '../../../../ui/Field';
 import { SegmentedControl } from '../../../../ui/SegmentedControl';
 import { Select } from '../../../../ui/Select';
 import { Table, type Column, type Sort } from '../../../../ui/Table';
+import { useToast } from '../../../../ui/Toast';
 import { at, hoursAgo, releaseName, releases, tone, type Platform, type Release } from '../model';
 import { PlaceLink } from '../PlaceLink';
+import { setStatus, statusOf } from '../store';
 import r from './Releases.module.scss';
 
 const PAGE = 8;
@@ -46,12 +48,26 @@ const columns: Column<Release>[] = [
 
 const filters = {
   all: () => true,
-  active: (x: Release) => x.status === 'Rolling out' || x.status === 'In review',
+  active: (x: Release) => x.status === 'Rolling out' || x.status === 'Paused' || x.status === 'In review',
   live: (x: Release) => x.status === 'Live',
   halted: (x: Release) => x.status === 'Halted',
 };
 
 type Props = { platform: Platform; onPlatform: (p: Platform) => void };
+
+const CSV_COLUMNS = ['Release', 'Name', 'Status', 'Platform', 'Owner', 'Rollout', 'Updated'];
+const csvCell = (v: string | number) => (/[",\n]/.test(String(v)) ? `"${String(v).replace(/"/g, '""')}"` : String(v));
+
+/** The chosen releases as a CSV file, saved by the browser. */
+function exportCsv(chosen: Release[]) {
+  const lines = [CSV_COLUMNS, ...chosen.map((x) => [x.version, x.name, x.status, x.platform, x.owner, `${x.rollout}%`, x.updated])];
+  const url = URL.createObjectURL(new Blob([lines.map((l) => l.map(csvCell).join(',')).join('\n')], { type: 'text/csv' }));
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = chosen.length === 1 ? `${releaseName(chosen[0]).replace(/ /g, '-')}.csv` : 'releases.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+}
 
 /** The list: filter, search, sort, select some and act on them, page through. The pane is its frame. */
 export function Releases({ platform, onPlatform }: Props) {
@@ -70,8 +86,30 @@ export function Releases({ platform, onPlatform }: Props) {
     setCleared(false);
   }, [cleared]);
 
-  const col = columns.find((c) => c.key === sort.key)!;
-  const shown = releases
+  const toast = useToast();
+  // With a platform chosen, its column would say the same on every row (C34).
+  const cols = platform === 'any' ? columns : columns.filter((c) => c.key !== 'platform');
+  const col = cols.find((c) => c.key === sort.key) ?? cols[cols.length - 1];
+  const all = releases.map((x) => ({ ...x, status: statusOf(x) }));
+  const chosen = all.filter((x) => selected.includes(releaseName(x)));
+  // Pauses the chosen rollouts at once and offers Undo, as the release page does. A choice with none
+  // rolling out says so on press rather than greying the button out.
+  const pause = () => {
+    const rolling = chosen.filter((x) => x.status === 'Rolling out');
+    if (!rolling.length) {
+      toast({ title: chosen.length === 1 ? `${releaseName(chosen[0])} isn’t rolling out` : `None of the ${chosen.length} is rolling out` });
+      return;
+    }
+    const undo = setStatus(
+      rolling.map((x) => x.id),
+      'Paused',
+    );
+    toast({
+      title: rolling.length === 1 ? `Paused the rollout of ${releaseName(rolling[0])}` : `Paused ${rolling.length} rollouts`,
+      action: { label: 'Undo', onClick: undo },
+    });
+  };
+  const shown = all
     .filter(filters[filter])
     .filter((x) => platform === 'any' || x.platform === platform)
     .filter((x) => `${x.version} ${x.name} ${x.owner}`.toLowerCase().includes(query.toLowerCase()))
@@ -99,10 +137,10 @@ export function Releases({ platform, onPlatform }: Props) {
         <div className={r.bar}>
           <span className={r.selected}>{selected.length} selected</span>
           <span className={r.end}>
-            <Button size="sm">
+            <Button size="sm" onClick={pause}>
               <Pause size={16} aria-hidden /> Pause rollout
             </Button>
-            <Button size="sm">
+            <Button size="sm" onClick={() => exportCsv(chosen)}>
               <Download size={16} aria-hidden /> Export
             </Button>
             <Button
@@ -159,13 +197,17 @@ export function Releases({ platform, onPlatform }: Props) {
           </span>
         </div>
       )}
+      {/* The count and the empty state, read out as a filter changes them (C29). */}
+      <span className={r.announce} aria-live="polite">
+        {shown.length ? `${shown.length} ${shown.length === 1 ? 'release' : 'releases'}` : 'No releases match'}
+      </span>
       {shown.length ? (
         <>
           <div ref={table}>
             <Table
               label="Releases"
               className={r.flush}
-              columns={columns}
+              columns={cols}
               rows={rows}
               // The key names the row's checkbox ("Select 4.2.0 iOS"), so it is the name people read, not the id.
               rowKey={releaseName}

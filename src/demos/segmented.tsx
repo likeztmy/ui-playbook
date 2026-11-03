@@ -72,7 +72,8 @@ export function SegmentedLive() {
   const [view, setView] = useState<View>('board');
   return (
     <Frame label="Tasks" height={240}>
-      <div className={s.stack}>
+      {/* The control leads the board's own toolbar row, on its left edge. */}
+      <div className={s.leftStack}>
         <SegmentedControl label="View" value={view} onValueChange={setView} segments={VIEWS} />
         <ViewPreview view={view} />
       </div>

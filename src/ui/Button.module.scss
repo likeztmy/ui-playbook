@@ -133,6 +133,12 @@
   height: var(--control-sm);
   padding: 0 var(--space-2);
   font-size: 13px;
+
+  // Beside 13px words the icon is 14, as in a dense row; icon-only keeps 16.
+  &:not(.icon) svg {
+    width: 14px;
+    height: 14px;
+  }
 }
 
 .lg {

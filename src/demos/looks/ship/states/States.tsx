@@ -2,14 +2,17 @@ import { CloudOff, Package, Plus, RotateCw } from 'lucide-react';
 import { Button } from '../../../../ui/Button';
 import { TextField } from '../../../../ui/Field';
 import { at } from '../model';
+import { useNav } from '../nav';
 import { PlaceLink } from '../PlaceLink';
 import t from './States.module.scss';
 
 /**
  * The states a list goes through, held side by side: empty, loading, failed, and before signing in.
- * Four screens read together, so one surface with a line between them, none round the outside.
+ * Four screens read together, so one surface with a line between them, none round the outside. Each
+ * screen's action leads where it would: the list once it loads, the app once signed in.
  */
 export function States() {
+  const { go } = useNav();
   return (
     <div className={t.page}>
       <div className={t.grid}>
@@ -18,8 +21,8 @@ export function States() {
             <Package size={20} aria-hidden />
           </span>
           <h3 id="ship-empty">No releases yet</h3>
-          <p className={t.meta}>Connect a repository and Ship drafts a release from its next tag.</p>
-          <Button size="sm" variant="primary">
+          <p className={t.note}>Connect a repository and Ship drafts a release from its next tag.</p>
+          <Button size="sm" variant="primary" onClick={() => go(at('releases'))}>
             <Plus size={16} aria-hidden /> Connect repository
           </Button>
         </section>
@@ -43,8 +46,8 @@ export function States() {
             <CloudOff size={20} aria-hidden />
           </span>
           <h3 id="ship-error">Couldn’t load releases</h3>
-          <p className={t.meta}>The App Store didn’t answer in 30 seconds. Nothing was changed.</p>
-          <Button size="sm">
+          <p className={t.note}>The App Store didn’t answer in 30 seconds. Nothing was changed.</p>
+          <Button size="sm" onClick={() => go(at('releases'))}>
             <RotateCw size={16} aria-hidden /> Try again
           </Button>
         </section>
@@ -52,7 +55,9 @@ export function States() {
           <h3 id="ship-signin">Sign in to Ship</h3>
           <TextField label="Work email" type="text" inputMode="email" placeholder="you@company.com" autoComplete="off" />
           <TextField label="Password" type="password" autoComplete="off" />
-          <Button variant="primary">Sign in</Button>
+          <Button variant="primary" onClick={() => go(at('dashboard'))}>
+            Sign in
+          </Button>
           <p className={t.meta}>
             New to Ship? <PlaceLink to={at('marketing')}>See plans</PlaceLink>
           </p>

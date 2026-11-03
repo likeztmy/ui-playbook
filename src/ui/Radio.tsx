@@ -19,15 +19,22 @@ type RadioProps = Omit<ComponentProps<typeof BaseRadio.Root>, 'className' | 'chi
 
 /** One option of a RadioGroup. Click the words or the circle. */
 export function Radio({ label, description, pin, className, children, ...props }: RadioProps) {
+  const id = useId();
+  // With a description, the name is the label alone and the description is tied as a hint.
+  const tied = description ? { 'aria-labelledby': `${id}-label`, 'aria-describedby': `${id}-hint` } : {};
   return (
     <div className={cx(s.option, className)}>
       <label className={s.row} data-disabled={props.disabled || undefined}>
-        <BaseRadio.Root {...props} className={s.circle} data-pin={pin}>
+        <BaseRadio.Root {...tied} {...props} className={s.circle} data-pin={pin}>
           <BaseRadio.Indicator keepMounted className={s.dot} />
         </BaseRadio.Root>
         <span className={s.text}>
-          <span>{label}</span>
-          {description && <span className={s.description}>{description}</span>}
+          <span id={`${id}-label`}>{label}</span>
+          {description && (
+            <span id={`${id}-hint`} className={s.description}>
+              {description}
+            </span>
+          )}
         </span>
       </label>
       {children && <div className={s.more}>{children}</div>}

@@ -95,7 +95,7 @@ function Issues() {
   const shown = ISSUES.filter((i) => !q || [i.id, i.title, i.state, i.tag ?? ''].some((w) => w.toLowerCase().includes(q)));
   return (
     <div className={cx(s.issues, s.fill)}>
-      <TextField label="Filter" placeholder="Title, state or ID" value={query} onValueChange={setQuery} leading={<Search size={16} aria-hidden />} />
+      <TextField label="Filter" placeholder="PB-131" value={query} onValueChange={setQuery} leading={<Search size={16} aria-hidden />} />
       {shown.length ? (
         <Table label="Issues" columns={ISSUE_COLUMNS} rows={shown} rowKey={(i) => i.id} stickyFirst />
       ) : (

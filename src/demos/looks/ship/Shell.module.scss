@@ -124,7 +124,8 @@
   font-size: min(var(--text-md), 13px);
 }
 
-// A face with no photo: grey, never the accent's hue (who before what).
+// A face with no photo: grey, never the accent's hue (who before what). Its hairline ring keeps the
+// circle where a look's control fill is the sidebar's own colour (Primer's #f6f8fa on #f6f8fa).
 .face {
   display: grid;
   flex: none;
@@ -132,6 +133,7 @@
   width: 24px;
   height: 24px;
   border-radius: 50%;
+  border: var(--line-width) solid var(--line);
   background: var(--fill-control);
   color: var(--ink-muted);
   font-size: var(--text-sm);

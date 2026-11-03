@@ -22,7 +22,7 @@ export function Nav({ rail, selected = 'My issues' }: { rail?: boolean; selected
     <nav className={s.nav} aria-label="Workspace">
       {NAV.map(([label, Icon]) => (
         <a key={label} href="#" className={s.navItem} aria-current={label === selected ? 'page' : undefined} onClick={(e) => e.preventDefault()}>
-          <Icon size={16} aria-hidden />
+          <Icon size={14} aria-hidden />
           {label}
         </a>
       ))}

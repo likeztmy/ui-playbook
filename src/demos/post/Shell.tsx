@@ -134,6 +134,16 @@ export function Shell({ onToasts, spot, control, pinned, back, embedded }: Shell
               </Menu.RadioItem>
             ))}
           </Menu.RadioGroup>
+          {/* The sidebar's way back, re-homed with the folders when the sidebar goes. */}
+          {back && (
+            <>
+              <Menu.Separator />
+              {/* On the folders' text edge (the menu keeps a check column), in ink like them. */}
+              <Menu.Item className={s.backItem} render={<a href={back} />}>
+                UI Playbook
+              </Menu.Item>
+            </>
+          )}
         </Menu.Popup>
       </Menu.Root>
     ),

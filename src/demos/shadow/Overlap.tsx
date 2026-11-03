@@ -9,11 +9,12 @@ const FILES = ['Q4 roadmap', 'Brand guide', 'Metrics', 'Onboarding', 'Pricing', 
 /**
  * A file list with a row's menu open. `everywhere` gives every part its own shadow, as a page does
  * when shadow is a style; otherwise only the menu, the one thing lying over the rest, casts one.
- * The menu is drawn from Menu's own parts, so it keeps Menu's rows, icons and last group.
+ * The menu is drawn from Menu's own parts, so it keeps Menu's rows, icons and last group. It's a still
+ * picture, hidden from screen readers; the note beside it says what it shows.
  */
 function Files({ everywhere }: { everywhere?: boolean }) {
   return (
-    <div className={s.files} data-everywhere={everywhere ? '' : undefined}>
+    <div className={s.files} data-everywhere={everywhere ? '' : undefined} aria-hidden>
       <div className={s.filesBar}>
         <span className={s.filesSearch}>Search files</span>
         <span className={s.filesButton}>New file</span>
@@ -25,7 +26,7 @@ function Files({ everywhere }: { everywhere?: boolean }) {
           <Ellipsis className={s.fileMore} size={16} aria-hidden />
         </div>
       ))}
-      <div className={cx(ms.popup, s.fileMenu)} role="presentation">
+      <div className={cx(ms.popup, s.fileMenu)}>
         <div className={ms.item}>
           <RowContent icon={Pencil}>Rename</RowContent>
         </div>

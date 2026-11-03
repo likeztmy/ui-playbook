@@ -21,12 +21,12 @@
   align-items: center;
   height: 36px;
   padding: 0 var(--space-3) 0 var(--space-6);
-  border-bottom: 1px solid var(--line);
   font-size: 13px;
   font-weight: 600;
 }
 
-// Sender and time on one line, the subject under them; the dot in the left padding.
+// Sender and time on one line, the subject under them; the dot in the left padding. A line between
+// rows only, none under the heading, starting at the text as iOS draws it (lightest boundary; C21).
 .row {
   position: relative;
   display: grid;
@@ -35,7 +35,6 @@
   width: 100%;
   padding: 10px var(--space-3) 10px var(--space-6);
   border: 0;
-  border-bottom: 1px solid var(--line);
   background: none;
   color: var(--ink);
   font: inherit;
@@ -43,8 +42,11 @@
   text-align: left;
   cursor: pointer;
 
-  &:last-child {
-    border-bottom: 0;
+  & + &::before {
+    position: absolute;
+    inset: 0 0 auto var(--space-6);
+    border-top: 1px solid var(--line);
+    content: '';
   }
 
   @include hover {
@@ -96,7 +98,7 @@
   font-variant-numeric: tabular-nums;
 }
 
-// Straddles the header's bottom edge, over no row's text. As in Post: a secondary button on a
+// Straddles the heading's foot, over no row's text. As in Post: a secondary button on a
 // raised plate, its ground under the button's translucent fill.
 .pill {
   position: absolute;

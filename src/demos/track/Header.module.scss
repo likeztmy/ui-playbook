@@ -14,6 +14,8 @@
 }
 
 .show {
+  // A 24 × 24 target however tight the header gets.
+  flex: none;
   // Where the sidebar's Hide was: the sidebar's inset from the edge.
   margin-left: calc(var(--space-3) * -1 - 1px);
 }

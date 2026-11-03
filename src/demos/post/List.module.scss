@@ -8,6 +8,15 @@ $check: 20px;
 $face: 36px;
 $gap: var(--space-3);
 
+.announce {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 .list {
   position: relative;
   display: flex;
@@ -345,6 +354,14 @@ $gap: var(--space-3);
       margin-block: 0;
       padding-block: 0;
       border-radius: var(--radius-md);
+    }
+
+    // One-line rows read as a table's: a hairline between them (C2), starting at the sender (C21).
+    .line + .line::before {
+      position: absolute;
+      inset: 0 0 auto calc(#{$inset} + #{$check} + var(--face) + 2 * #{$gap});
+      border-top: 1px solid var(--line);
+      content: '';
     }
 
     .face > * {
