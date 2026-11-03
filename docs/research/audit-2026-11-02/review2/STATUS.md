@@ -14,26 +14,14 @@
 
 Shoulds and nits: fixed in f52c877. A third review of those fixes (`../review3/`) found more, fixed in 92d9f8d and 3c1bd4f; the tests that followed the changed demos in 8cbe87e.
 
-Left for the owner (each one sets a page rule against a demo, so either the demo or the rule changes):
+Owner decisions (2026-11-03): settled as C44–C53, with C8, C16 and C20 rewritten (`../decisions.md`); built in 8a450e3, rule-reviewed in `../review4/owner-decisions.md`, its must and shoulds fixed in 65fa959.
 
-- Bulk actions disabled vs. Button's "a disabled button says why".
-- Tabs count at 11px vs. the 12px floor (C42).
-- Tooltips on disabled icon buttons.
-- C20 "a tap shows what hover shows" vs. Tooltip's "no tooltips on touch".
-- C16 for inputs in a pill look (Linear).
-- C8 "one chevron" vs. Select's up-down chevrons.
-- Hover submenu delay: the demo's 100 ms vs. the page's 0.3–0.5 s.
-- Rough.js hand-drawn notes vs. "no hand-drawn" icons; confetti colours; dimming stale rows.
-- Sheet controls at 17px vs. 14px; Post composer 17/16.
-- Gallery reviewer items D5, R6, GS#7, GS#14, and `line-strong` contrast.
+Left open:
 
-Not fixed yet, smaller:
-
-- A gallery pause doesn't reach the Dashboard or the Updated column.
-- Archive forgets its state when you leave the page.
-- Primer light: the Website's secondary buttons are near invisible.
-- The draft Notes empty state names no next step.
-- The Avoid banner on "where the eye goes" is gone for good after Dismiss.
-- `.gapLabel` sits closer to the wrong neighbour.
+- A disabled toolbar tool shows no tooltip: Base UI's Toggle can't stay focusable when disabled, so only its shortcut is dropped (only the Toolbar States specimen has one).
+- The Avoid band on "where the eye goes" stays gone after Dismiss: dismissing is the real behaviour.
+- Archiving the Ship project changes no other page (Releases still says "Rolling out").
+- Review4 gaps for the owner: the Button page's "Filled, never outlined" against Primer's edged button; Moss's olive info beside its green success.
+- Ink palette: success and warning text on `accent-soft` are 4.1 and 4.0:1 (as at HEAD before this round).
 
 Still to do: frame time on the practice apps and the gallery (C43).
