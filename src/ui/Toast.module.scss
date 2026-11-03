@@ -45,8 +45,8 @@
   background: var(--surface-raised);
   box-shadow: var(--shadow-lg);
   color: var(--ink);
-  font-size: 14px;
-  line-height: 20px;
+  font-size: var(--text-md, 14px);
+  line-height: var(--leading-md, 20px);
   user-select: none;
   outline: none;
   // The newest sits at the bottom; older ones are pushed up by the height
@@ -122,8 +122,8 @@
   padding: var(--space-0-5) 0;
   border: 0;
   overflow: hidden;
-  font-size: 14px;
-  line-height: 20px;
+  font-size: var(--text-md, 14px);
+  line-height: var(--leading-md, 20px);
   font-weight: 400;
   // Two lines before it truncates, so a narrow screen keeps the object:
   // "Deleted “Q4 roadmap.fig”", not "Deleted “Q4 roadm…".
@@ -131,11 +131,12 @@
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   text-wrap: pretty;
+}
 
-  // A failure stays until it's closed so it can be read: its reason wraps rather than being cut.
-  [data-type='error'] & {
-    -webkit-line-clamp: none;
-  }
+// A failure stays until it's closed so it can be read: its reason wraps rather than being cut. The
+// type sits on the toast itself, not above it.
+.toast[data-type='error'] .title {
+  -webkit-line-clamp: none;
 }
 
 // Held still in a preview: in the flow, not the queue's stack.

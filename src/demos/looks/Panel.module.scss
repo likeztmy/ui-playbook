@@ -4,6 +4,11 @@
   // look's values arrive, so it is set again here, where it reads the look's (C13: info stays a tone).
   --info: var(--accent-text);
   --info-soft: var(--accent-soft);
+  // The site's steps a look doesn't publish, mapped onto the nearest it does: a dialog takes the
+  // look's largest radius and shadow, not the site's 18px and lg.
+  --radius-xs: var(--radius-sm);
+  --radius-xl: var(--radius-lg);
+  --shadow-lg: var(--shadow-md);
 
   container-type: inline-size;
   color: var(--ink);

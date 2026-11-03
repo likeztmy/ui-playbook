@@ -46,8 +46,8 @@
   box-shadow: var(--shadow-lg);
   color: var(--ink);
   // Its own type size: it may portal into 15/24 page prose.
-  font-size: 14px;
-  line-height: 20px;
+  font-size: var(--text-md, 14px);
+  line-height: var(--leading-md, 20px);
   outline: none;
   // Grows from enter-scale on the gentle spring, fading in over
   // duration-base; leaves in duration-fast, accelerating, with no spring.
@@ -86,9 +86,10 @@
   margin: 0;
   padding: 0;
   border: 0;
-  font-size: 18px;
-  line-height: 26px;
-  font-weight: 600;
+  // A step up from the body, the look's strong weight: 18 / 26 / 600 on the site.
+  font-size: var(--text-lg, 18px);
+  line-height: calc(var(--text-lg, 18px) + 8px);
+  font-weight: var(--weight-strong, 600);
   letter-spacing: -0.01em;
   text-wrap: balance;
 }

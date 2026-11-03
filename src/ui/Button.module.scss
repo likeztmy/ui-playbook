@@ -17,8 +17,8 @@
   // Body, 14 / 20, whatever the button sits in: a reading page's 15 / 24
   // isn't a control's size.
   font: inherit;
-  font-size: 14px;
-  line-height: 20px;
+  font-size: var(--text-md, 14px);
+  line-height: var(--leading-md, 20px);
   font-weight: 500;
   white-space: nowrap;
   cursor: pointer;
