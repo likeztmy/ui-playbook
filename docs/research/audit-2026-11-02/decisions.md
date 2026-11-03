@@ -59,3 +59,7 @@ changes it. Where a decision changes a rule, the page that states the rule chang
 | C51 | **Owner's call.** In Post's phone composer, To, Subject and the message are all 17px. |
 | C52 | **Owner's call.** A chart's series is content, a single one in the accent included. |
 | C53 | **Owner's call.** Every look uses its own product's values. `info` is one of them: it defaults to the accent, and a look or palette whose accent is warm, beside `danger`, brings a blue. |
+| C54 | **Owner's call.** An archived Ship project says so under every page header but Settings', in a flat row with Unarchive project and no close, as GitHub does under an archived repository's header. Archiving pauses what is rolling out; the project is read-only (no New release, Pause, Resume or comment box) until it is brought back, and Unarchive restarts nothing. |
+| C55 | **Owner's call.** The Button page keeps "Filled, never outlined" and says why Primer edges its button: an opaque fill that matches a surface disappears there, so a hairline marks where the fill ends. A line with no fill is still the mistake. |
+| C56 | **Owner's call.** Moss's `info` is a blue (Clay's `#427097` / `#8bbce7`), apart from its green success. |
+| C57 | **Owner's call.** Ink darkens `success` and `warning` a step in light (`#007152`, `#925400`, same hue) so they hold 4.5:1 on its `accent-soft`, the selected row. |

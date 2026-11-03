@@ -64,11 +64,12 @@ function Tool({ value, label, keys, children, className, pin, nativeTitle }: Too
       {children}
     </BaseToolbar.Button>
   );
-  return nativeTitle ? (
-    button
-  ) : (
+  if (nativeTitle) return button;
+  // Base UI disables a tool natively, keeping it out of the arrow-key order, so it takes no pointer
+  // events: a wrapper takes the hover instead, and the tip still names it.
+  return (
     <Tip label={label} keys={off ? undefined : keys} offset={TIP_OFFSET}>
-      {button}
+      {off ? <span className={s.off}>{button}</span> : button}
     </Tip>
   );
 }

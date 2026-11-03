@@ -65,6 +65,15 @@
   }
 }
 
+// A disabled tool's wrapper, which holds its tooltip; the tool itself lets the pointer through.
+.off {
+  display: inline-flex;
+
+  > button {
+    pointer-events: none;
+  }
+}
+
 .separator {
   width: 1px;
   height: 16px;

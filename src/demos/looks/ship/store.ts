@@ -74,13 +74,19 @@ export function setStatus(ids: string[], status: Status) {
 
 export const isArchived = () => archived;
 
-/** Archives the project, or brings it back; the Undo puts it as it was. */
+/**
+ * Archives the project, pausing whatever is rolling out, or brings it back with those rollouts still
+ * paused, as a restored project is read-write again but restarts nothing. The Undo puts both as they were.
+ */
 export function setArchived(to: boolean) {
   const before = archived;
+  const rolling = to ? releases.filter((r) => statusOf(r) === 'Rolling out').map((r) => r.id) : [];
+  const resume = rolling.length ? setStatus(rolling, 'Paused') : undefined;
   archived = to;
   changed();
   return () => {
     archived = before;
+    resume?.();
     changed();
   };
 }

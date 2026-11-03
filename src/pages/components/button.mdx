@@ -59,7 +59,7 @@ Buttons in one row share one height. An icon-only button always has a tooltip wi
 
 <ButtonStates client:visible />
 
-Secondary is a fill (`fill-control`), translucent ink, so one value works on any surface and in both themes. Focus shows only on `:focus-visible`: a mouse click never draws a ring.
+Secondary is a fill (`fill-control`), translucent ink, so one value works on any surface and in both themes. An opaque fill can't: somewhere it matches the surface and disappears. Primer's `#f6f8fa` is also the colour of its headers and inset panels, so Primer draws a hairline round every button; the line marks where the fill ends and doesn't replace it. Focus shows only on `:focus-visible`: a mouse click never draws a ring.
 
 ## Common mistakes
 

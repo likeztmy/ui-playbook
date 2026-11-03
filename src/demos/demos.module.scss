@@ -1354,6 +1354,11 @@
     outline: none;
     box-shadow: var(--focus-ring);
   }
+
+  // Where the dismissed band was, so the Avoid side can be seen again.
+  > .billingReset {
+    align-self: flex-start;
+  }
 }
 
 .billingCard {

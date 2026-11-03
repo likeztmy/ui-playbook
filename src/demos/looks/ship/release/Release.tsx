@@ -7,7 +7,7 @@ import { CheckList } from '../CheckList';
 import { at, releaseById, releaseName, type Status } from '../model';
 import { PlaceLink } from '../PlaceLink';
 import { Shell } from '../Shell';
-import { ME, setStatus, statusOf } from '../store';
+import { isArchived, ME, setStatus, statusOf } from '../store';
 import { Composer } from './Composer';
 import { Properties } from './Properties';
 import { story, type Event } from './story';
@@ -17,7 +17,8 @@ import t from './Release.module.scss';
 /**
  * One release: its history, checks and notes in tabs, its facts beside them. The header leads back to
  * the list it came from. Pausing a rollout, and resuming a paused or halted one, runs at once and
- * offers Undo (Toast); the history says who did it while it holds.
+ * offers Undo (Toast); the history says who did it while it holds. In an archived project the page is
+ * read-only: no rollout to pause or resume, no comment box.
  */
 export function Release({ id }: { id: string }) {
   const r = releaseById(id);
@@ -27,6 +28,7 @@ export function Release({ id }: { id: string }) {
   const comments = useRef(0);
   const toast = useToast();
   const name = releaseName(r);
+  const archived = isArchived();
   const change = (to: Status, title: string) => {
     const undo = setStatus([r.id], to);
     toast({ title, action: { label: 'Undo', onClick: undo } });
@@ -49,7 +51,7 @@ export function Release({ id }: { id: string }) {
         </>
       }
       actions={
-        status === 'Rolling out' ? (
+        archived ? undefined : status === 'Rolling out' ? (
           <Button size="sm" onClick={() => change('Paused', `Paused the rollout of ${name}`)}>
             <Pause size={16} aria-hidden /> Pause rollout
           </Button>
@@ -73,11 +75,13 @@ export function Release({ id }: { id: string }) {
             </Tabs.List>
             <Tabs.Panel value="overview" className={t.panel}>
               <Timeline events={[...posted, ...changed, ...told.events]} />
-              <Composer
-                onPost={(quote) =>
-                  setPosted((p) => [{ Icon: MessageSquare, who: ME, what: 'commented', hours: 0, quote, id: `c${++comments.current}` }, ...p])
-                }
-              />
+              {!archived && (
+                <Composer
+                  onPost={(quote) =>
+                    setPosted((p) => [{ Icon: MessageSquare, who: ME, what: 'commented', hours: 0, quote, id: `c${++comments.current}` }, ...p])
+                  }
+                />
+              )}
             </Tabs.Panel>
             <Tabs.Panel value="checks" className={t.panel}>
               {told.checks.length ? <CheckList checks={told.checks} /> : <p className={t.meta}>Checks run when a release is sent for review.</p>}

@@ -55,12 +55,12 @@ export function Settings() {
           {archived ? (
             <div>
               <p className={t.strong}>This project is archived</p>
-              <p className={t.meta}>Releases are stopped; the history stays readable.</p>
+              <p className={t.meta}>Its rollouts are paused; the history stays readable.</p>
             </div>
           ) : (
             <div>
               <p className={t.strong}>Archive this project</p>
-              <p className={t.meta}>Releases stop and the history stays readable.</p>
+              <p className={t.meta}>Rollouts pause and the history stays readable.</p>
             </div>
           )}
           <Button size="sm" variant={archived ? 'secondary' : 'danger'} onClick={archived ? () => void setArchived(false) : archive}>

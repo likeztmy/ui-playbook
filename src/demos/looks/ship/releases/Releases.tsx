@@ -9,7 +9,7 @@ import { Table, type Column, type Sort } from '../../../../ui/Table';
 import { useToast } from '../../../../ui/Toast';
 import { at, releaseName, releases, tone, type Platform, type Release } from '../model';
 import { PlaceLink } from '../PlaceLink';
-import { freshness, setStatus, statusOf, updatedOf } from '../store';
+import { freshness, isArchived, setStatus, statusOf, updatedOf } from '../store';
 import r from './Releases.module.scss';
 
 const PAGE = 8;
@@ -137,9 +137,12 @@ export function Releases({ platform, onPlatform }: Props) {
         <div className={r.bar}>
           <span className={r.selected}>{selected.length} selected</span>
           <span className={r.end}>
-            <Button size="sm" onClick={pause}>
-              <Pause size={16} aria-hidden /> Pause rollout
-            </Button>
+            {/* Archived, the project is read-only: what is chosen can still be exported. */}
+            {!isArchived() && (
+              <Button size="sm" onClick={pause}>
+                <Pause size={16} aria-hidden /> Pause rollout
+              </Button>
+            )}
             <Button size="sm" onClick={() => exportCsv(chosen)}>
               <Download size={16} aria-hidden /> Export
             </Button>

@@ -188,6 +188,19 @@ function Billing({ inline }: { inline?: boolean }) {
           </Button>
         </div>
       )}
+      {!inline && !band && (
+        <Button
+          size="sm"
+          className={s.billingReset}
+          onClick={() => {
+            setBand(true);
+            // The band's own Dismiss takes focus, as Reset demo goes with it.
+            requestAnimationFrame(() => root.current?.querySelector<HTMLElement>('[aria-label="Dismiss"]')?.focus({ preventScroll: true }));
+          }}
+        >
+          Reset demo
+        </Button>
+      )}
       <span className={s.settingsTitle}>Billing</span>
       <section className={s.settingsSection}>
         <span className={s.settingsHeading}>Plan</span>

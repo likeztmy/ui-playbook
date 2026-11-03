@@ -283,6 +283,14 @@
             "light": "#e2e2e6",
             "dark": "#303137"
           },
+          "success": {
+            "light": "#007152",
+            "dark": "#54cc9e"
+          },
+          "warning": {
+            "light": "#925400",
+            "dark": "#eeaa3b"
+          },
           "knob": {
             "light": "#ffffff",
             "dark": "#0e0f11"
@@ -658,12 +666,12 @@
             "dark": "#362107"
           },
           "info": {
-            "light": "#536228",
-            "dark": "#c8da9f"
+            "light": "#427097",
+            "dark": "#8bbce7"
           },
           "info-soft": {
-            "light": "#ecf4de",
-            "dark": "#232a0f"
+            "light": "#e4f2fe",
+            "dark": "#0e293d"
           },
           "scrim": {
             "light": "#18181452",

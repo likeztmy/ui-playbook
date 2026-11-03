@@ -148,6 +148,33 @@
   min-height: 0;
 }
 
+// An archived project's row sits under the header, as GitHub's does under the repository's, so the
+// header keeps its line with the sidebar's name; on the window colour, like the sidebar.
+.main[data-archived] {
+  grid-template-rows: 48px auto minmax(0, 1fr);
+}
+
+.archived {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 40px;
+  padding: var(--space-1) var(--ship-inset);
+  border-bottom: var(--line-width) solid var(--line);
+  background: var(--bg);
+  color: var(--ink-muted);
+
+  > svg {
+    flex: none;
+  }
+}
+
+.archivedText {
+  flex: 1;
+  min-width: 0;
+  color: var(--ink);
+}
+
 .header {
   display: flex;
   align-items: center;

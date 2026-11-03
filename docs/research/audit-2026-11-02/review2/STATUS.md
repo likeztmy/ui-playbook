@@ -16,12 +16,8 @@ Shoulds and nits: fixed in f52c877. A third review of those fixes (`../review3/`
 
 Owner decisions (2026-11-03): settled as C44–C53, with C8, C16 and C20 rewritten (`../decisions.md`); built in 8a450e3, rule-reviewed in `../review4/owner-decisions.md`, its must and shoulds fixed in 65fa959.
 
-Left open:
+Settled with the owner (C54–C57): Ship archive is read-only with a row on every page; the Button page says why Primer edges its button; Moss has a blue info; Ink success and warning hold 4.5:1 on a selected row. A disabled toolbar tool now shows its name on hover (a wrapper takes the pointer), and the Avoid band comes back with Reset demo. Rule-reviewed in `../review5/owner-calls-2.md`: no must; its three shoulds fixed (the row moved under the header, Unarchive project, Settings and look-playbook copy).
 
-- A disabled toolbar tool shows no tooltip: Base UI's Toggle can't stay focusable when disabled, so only its shortcut is dropped (only the Toolbar States specimen has one).
-- The Avoid band on "where the eye goes" stays gone after Dismiss: dismissing is the real behaviour.
-- Archiving the Ship project changes no other page (Releases still says "Rolling out").
-- Review4 gaps for the owner: the Button page's "Filled, never outlined" against Primer's edged button; Moss's olive info beside its green success.
-- Ink palette: success and warning text on `accent-soft` are 4.1 and 4.0:1 (as at HEAD before this round).
+Left open: a rollout paused by archiving reads in history as Mira Chen pausing it by hand; in Ink, `info` is its ink, so Rolling out and Paused badges differ only by darkness; the playbook has no page on where a persistent state row goes in an app shell.
 
 Still to do: frame time on the practice apps and the gallery (C43).

@@ -15,7 +15,7 @@ import { Releases } from './releases/Releases';
 import { Settings } from './settings/Settings';
 import { Shell } from './Shell';
 import { States } from './states/States';
-import { draft, useChanges } from './store';
+import { draft, isArchived, useChanges } from './store';
 import s from './Ship.module.scss';
 
 /**
@@ -52,16 +52,18 @@ const newRelease = <NewRelease />;
 
 function Page() {
   const { current, go } = useNav();
+  // An archived project is read-only: nothing new is drafted until it is brought back.
+  const actions = isArchived() ? undefined : newRelease;
   switch (current.page) {
     case 'dashboard':
       return (
-        <Shell actions={newRelease}>
+        <Shell actions={actions}>
           <Dashboard />
         </Shell>
       );
     case 'releases':
       return (
-        <Shell actions={newRelease}>
+        <Shell actions={actions}>
           <Releases platform={current.platform} onPlatform={(p) => go(at('releases', { platform: p }))} />
         </Shell>
       );
