@@ -1,126 +1,38 @@
-// A full-window tool: the looks stay on the left, the bar stays on top, the wall takes the rest.
-.gallery {
+// The gallery as a window under the site's 56px header: a 48px toolbar, and Ship in all the rest.
+// Nothing here scrolls; Ship's sidebar and page do, each on its own (the app shell floor).
+.window {
   display: grid;
-  grid-template-columns: 248px minmax(0, 1fr);
-  min-height: calc(100dvh - 65px);
-
-  @media (max-width: 760px) {
-    grid-template-columns: minmax(0, 1fr);
-  }
+  grid-template-rows: 48px minmax(0, 1fr);
+  height: calc(100dvh - 56px);
 }
 
-// Both stay put under the site's 56px header.
-.rail {
-  position: sticky;
-  top: 56px;
-  align-self: start;
-  display: grid;
-  align-content: start;
-  gap: var(--space-2);
-  max-height: calc(100dvh - 56px);
-  padding: var(--space-6) var(--space-3) var(--space-4);
-  border-right: 1px solid var(--line);
-  overflow-y: auto;
-
-  @media (max-width: 760px) {
-    position: static;
-    max-height: none;
-    padding: var(--space-4);
-    border-right: 0;
-    border-bottom: 1px solid var(--line);
-  }
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+  // On the site header's edges: 24 in from the left, 12 from the right.
+  padding-inline: var(--space-6) var(--space-3);
+  border-bottom: 1px solid var(--line);
+  background: var(--bg);
 }
 
 .title {
-  margin: 0;
-  padding-inline: var(--space-2);
-  font-size: 20px;
-  font-weight: 600;
-  line-height: 28px;
-}
-
-.summary {
-  margin: 0 0 var(--space-3);
-  padding-inline: var(--space-2);
-  color: var(--ink-muted);
-  font-size: 13px;
-  line-height: 18px;
-}
-
-.looks {
-  display: grid;
-  gap: 2px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-
-  @media (max-width: 760px) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-.look {
-  display: grid;
-  width: 100%;
-  padding: 6px var(--space-2);
-  border: 0;
-  border-radius: var(--radius-md);
-  background: none;
-  color: var(--ink);
-  font: inherit;
-  text-align: start;
-  cursor: pointer;
-
-  &:hover {
-    background: var(--fill-hover);
-  }
-
-  &[aria-pressed='true'] {
-    background: var(--fill-active);
-  }
-
-  &:focus-visible {
-    outline: none;
-    box-shadow: var(--focus-ring);
-  }
-}
-
-.name {
-  overflow: hidden;
+  margin: 0 var(--space-1) 0 0;
   font-size: 14px;
+  font-weight: 600;
   line-height: 20px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
-.source {
-  color: var(--ink-muted);
-  font-size: 12px;
-  line-height: 16px;
-}
-
-.stage {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: auto 1fr;
-  min-width: 0;
-}
-
-.bar {
-  position: sticky;
-  top: 56px;
-  z-index: 1;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-3) var(--space-4);
-  border-bottom: 1px solid var(--line);
-  background: var(--bg);
-
-  // On a phone the bar wraps to three rows: it scrolls away rather than covering a third of the screen.
-  @media (max-width: 760px) {
-    position: static;
+// The Select names itself by its value; its label stays for screen readers.
+.bare {
+  > :first-child {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 }
 
@@ -129,43 +41,16 @@
   align-items: center;
   gap: var(--space-3);
   margin-left: auto;
+}
+
+.link {
   font-size: 14px;
 }
 
-// Ship's pages, as a row of tabs that scrolls sideways on a phone rather than wrapping.
-.pages {
-  display: flex;
-  gap: 2px;
-  min-width: 0;
-  max-width: 100%;
-  overflow-x: auto;
-  scrollbar-width: none;
-}
+.stage {
+  min-height: 0;
 
-.page {
-  flex: none;
-  height: var(--control-md);
-  padding: 0 var(--space-3);
-  border: 0;
-  border-radius: var(--radius-full);
-  background: none;
-  color: var(--ink-muted);
-  font: inherit;
-  font-size: 14px;
-  cursor: pointer;
-
-  &:hover {
-    background: var(--fill-hover);
-    color: var(--ink);
-  }
-
-  &[aria-pressed='true'] {
-    background: var(--fill-active);
-    color: var(--ink);
-  }
-
-  &:focus-visible {
-    outline: none;
-    box-shadow: var(--focus-ring);
+  > div {
+    height: 100%;
   }
 }

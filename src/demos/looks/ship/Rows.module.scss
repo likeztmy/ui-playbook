@@ -1,0 +1,41 @@
+// Repeated rows in one group: a line between them, none after the last, the meta in one
+// right-aligned column (the lightest boundary; Table).
+.rows {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  > li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: var(--row-height);
+
+    & + li {
+      border-top: var(--line-width) solid var(--line);
+    }
+  }
+}
+
+.grow {
+  flex: 1;
+  min-width: 0;
+}
+
+.muted {
+  color: var(--ink-muted);
+}
+
+// Status colour sits on the icon; the word beside it carries the state.
+[data-tone='success'] {
+  color: var(--success);
+}
+
+[data-tone='danger'] {
+  color: var(--danger);
+}
+
+[data-tone='info'] {
+  color: var(--info);
+}

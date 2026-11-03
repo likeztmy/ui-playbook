@@ -1,5 +1,10 @@
 // The screens draw everything from the look's variables, so a missing one shows as the page's own.
 .panel {
+  // A look publishes no info tone; the page's :root resolves it to the page's own accent before the
+  // look's values arrive, so it is set again here, where it reads the look's (C13: info stays a tone).
+  --info: var(--accent-text);
+  --info-soft: var(--accent-soft);
+
   container-type: inline-size;
   color: var(--ink);
   font-family: var(--font-sans);

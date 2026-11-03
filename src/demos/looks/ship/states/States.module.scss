@@ -1,0 +1,148 @@
+.page {
+  padding: var(--space-6) var(--ship-inset) var(--space-8);
+}
+
+// Four screens on one surface, a line between them: the lines are the grid's own colour showing
+// through 1px gaps, so they fall only between the cells (as Dashboard's figures).
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--line-width);
+  background: var(--line);
+
+  > section {
+    display: grid;
+    align-content: start;
+    gap: var(--space-3);
+    min-height: 280px;
+    padding: var(--space-6);
+    background: var(--surface);
+  }
+
+  > :nth-child(odd) {
+    padding-left: 0;
+  }
+
+  > :nth-child(even) {
+    padding-right: 0;
+  }
+
+  > :nth-child(-n + 2) {
+    padding-top: 0;
+  }
+
+  > :nth-child(n + 3) {
+    padding-bottom: 0;
+  }
+
+  @container (max-width: 640px) {
+    grid-template-columns: minmax(0, 1fr);
+
+    > section {
+      padding-inline: 0;
+    }
+  }
+
+  h3 {
+    margin: 0;
+    font-size: var(--text-lg);
+    font-weight: var(--weight-strong);
+  }
+
+  p {
+    margin: 0;
+  }
+}
+
+// Empty and failed: the words in the middle of the screen they fill.
+.grid > .centred {
+  justify-items: center;
+  align-content: center;
+  text-align: center;
+
+  > p {
+    max-width: 36ch;
+  }
+}
+
+.icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--fill-control);
+  color: var(--ink-muted);
+
+  &[data-tone='danger'] {
+    background: var(--danger-soft);
+    color: var(--danger);
+  }
+}
+
+.meta {
+  color: var(--ink-muted);
+  font-size: var(--text-sm);
+}
+
+.head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.skeleton {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  > li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    min-height: var(--row-height);
+
+    & + li {
+      border-top: var(--line-width) solid var(--line);
+    }
+  }
+}
+
+.box,
+.line,
+.chip {
+  border-radius: var(--radius-sm);
+  background: var(--fill-active);
+  animation: pulse 1.6s ease-in-out infinite;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+.box {
+  width: 16px;
+  height: 16px;
+}
+
+.line {
+  height: 10px;
+}
+
+.chip {
+  width: 56px;
+  height: 18px;
+  margin-left: auto;
+  border-radius: var(--radius-control);
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.signin > * {
+  max-width: 320px;
+}

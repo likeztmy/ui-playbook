@@ -62,6 +62,7 @@ function Invite() {
   const [email, setEmail] = useState('');
   const [role, setRole] = useState<string | null>('editor');
   const [sent, setSent] = useState<{ email: string; role: string }[]>([]);
+  const [error, setError] = useState<string>();
   const field = useRef<HTMLInputElement>(null);
   const label = (v: string | null) => ROLES.find((r) => r.value === v)?.label ?? '';
   return (
@@ -69,9 +70,12 @@ function Invite() {
       className={s.inviteForm}
       onSubmit={(e) => {
         e.preventDefault();
-        // Never disabled: an empty address sends the caret back to it.
-        if (!email.trim()) return field.current?.focus();
-        setSent((l) => [...l, { email: email.trim(), role: label(role) }]);
+        // Never disabled: a missing or malformed address says so under the field, and the caret goes back to it.
+        const to = email.trim();
+        const problem = !to ? 'Enter an email address.' : /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to) ? undefined : 'Enter an address like ana@studio.com.';
+        setError(problem);
+        if (problem) return field.current?.focus();
+        setSent((l) => [...l, { email: to, role: label(role) }]);
         setEmail('');
       }}
     >
@@ -82,7 +86,11 @@ function Invite() {
         inputMode="email"
         autoComplete="off"
         value={email}
-        onValueChange={setEmail}
+        onValueChange={(v) => {
+          setEmail(v);
+          setError(undefined);
+        }}
+        error={error}
         inputRef={field}
       />
       <Select label="Role" options={ROLES} value={role} onValueChange={setRole} description={ROLE_HINT[role ?? 'editor']} className={s.inviteRole} />

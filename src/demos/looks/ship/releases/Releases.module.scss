@@ -1,0 +1,105 @@
+// The list fills the pane edge to edge: the pane is the table's frame, so there's no box inside it.
+// Bar, header cells and rows all start on the page's inset.
+.page {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+}
+
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 48px;
+  padding: var(--space-2) var(--ship-inset);
+}
+
+.end {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-left: auto;
+
+  // Narrow: the filters take a row of their own, the search the room the platform leaves.
+  .bar > & {
+    @container (max-width: 520px) {
+      flex: 1 1 100%;
+      min-width: 0;
+      margin-left: 0;
+    }
+  }
+}
+
+.selected {
+  font-weight: var(--weight-strong);
+}
+
+// A filter's label is its value or placeholder; the label stays for screen readers only.
+.bare {
+  > :first-child {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+.search {
+  width: 160px;
+
+  @container (max-width: 520px) {
+    flex: 1;
+    width: auto;
+    min-width: 0;
+  }
+}
+
+.flush {
+  border: 0;
+  border-radius: 0;
+
+  th:first-child,
+  td:first-child {
+    padding-left: var(--ship-inset);
+  }
+
+  th:last-child,
+  td:last-child {
+    padding-right: var(--ship-inset);
+  }
+}
+
+.version {
+  display: grid;
+
+  // The name on the look's leading, the subtitle on its font's own (a look carries no small leading):
+  // one 1.3 for both packed the two lines into each other.
+  > span:last-child {
+    color: var(--ink-muted);
+    font-size: var(--text-sm);
+    line-height: normal;
+  }
+}
+
+// A link that reads as the row's name: ink, underlined only under the pointer (C13).
+.open {
+  color: inherit;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.foot {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--ship-inset) var(--space-6);
+  color: var(--ink-muted);
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+}

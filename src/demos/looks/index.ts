@@ -1,2 +1,3 @@
-// Looks: every look on one page, redrawing the same screens.
-export { LookGallery, type GalleryLook } from './Gallery';
+// Looks: one release tool, Ship, redrawn in any look.
+export { Gallery } from './Gallery';
+export { galleryLooks, type GalleryLook } from './looks';

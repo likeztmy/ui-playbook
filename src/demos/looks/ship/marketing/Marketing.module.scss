@@ -1,7 +1,11 @@
-// A landing page in the look: its type scale stretched for headlines, its cards and edges for plans.
+// A landing page in the look: its type scale stretched for headlines, its lines for plans.
+// It fills Ship's window and scrolls as one, as a website does.
 .site {
-  display: grid;
-  min-height: 100%;
+  position: relative;
+  // A block, not a grid: in a grid this tall the overflowing sections would be shrunk to fit it.
+  height: 100%;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
   background: var(--bg);
   color: var(--ink);
   font-size: var(--text-md);
@@ -9,13 +13,19 @@
   line-height: var(--leading-md);
   container-type: inline-size;
 
-  a {
-    color: inherit;
-    text-decoration: none;
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+  }
+}
 
-    &:hover {
-      color: var(--accent-text);
-    }
+// The site's own links read as ink and underline under the pointer; buttons keep their own look.
+.links a {
+  color: inherit;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
   }
 }
 
@@ -34,25 +44,10 @@
   font-weight: var(--weight-strong);
 }
 
-.logo {
-  display: grid;
-  place-items: center;
-  width: 22px;
-  height: 22px;
-  border-radius: var(--radius-sm);
-  background: var(--accent);
-  color: var(--on-accent);
-  font-size: var(--text-sm);
-}
-
 .links {
   display: flex;
   gap: var(--space-card);
   color: var(--ink-muted);
-
-  @container (max-width: 640px) {
-    display: none;
-  }
 }
 
 .navEnd {
@@ -68,13 +63,6 @@
   padding: calc(var(--space-card) * 5) var(--space-card) 0;
   text-align: center;
   overflow: hidden;
-}
-
-.eyebrow {
-  margin: 0;
-  color: var(--accent-text);
-  font-size: var(--text-sm);
-  font-weight: var(--weight-strong);
 }
 
 .headline {
@@ -105,13 +93,16 @@
 
 // The product itself, cut off at the fold of the page.
 .shot {
+  // The app's inset, which its Shell sets and the site doesn't have.
+  --ship-inset: var(--space-4);
+
   width: min(1100px, 100%);
   height: 420px;
   margin-top: calc(var(--space-card) * 2);
   border: var(--line-width) solid var(--line);
   border-bottom: 0;
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-  box-shadow: var(--shadow-md);
+  background: var(--surface);
   overflow: hidden;
   text-align: start;
   mask: linear-gradient(black 70%, transparent);
@@ -195,81 +186,6 @@
   }
 }
 
-.plans {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-gap);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-
-  @container (max-width: 800px) {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
-
-.plan {
-  display: grid;
-  grid-template-rows: auto auto 1fr auto;
-  gap: var(--space-card);
-  padding: calc(var(--space-card) * 1.5);
-  border: var(--line-width) solid var(--line);
-  border-radius: var(--radius-lg);
-  background: var(--surface);
-  box-shadow: var(--shadow-sm);
-
-  &[data-featured] {
-    border-color: var(--accent);
-    box-shadow:
-      0 0 0 var(--line-width) var(--accent),
-      var(--shadow-md);
-  }
-}
-
-.planHead {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  h3 {
-    margin: 0;
-    font-size: var(--text-lg);
-    font-weight: var(--weight-strong);
-  }
-}
-
-.price {
-  margin: 0;
-  font-size: var(--text-xl);
-  font-weight: var(--weight-strong);
-  font-variant-numeric: tabular-nums;
-
-  span {
-    color: var(--ink-muted);
-    font-size: var(--text-sm);
-    font-weight: var(--weight-body);
-  }
-}
-
-.ticks {
-  display: grid;
-  align-content: start;
-  gap: var(--space-2);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-
-  li {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-  }
-
-  svg {
-    color: var(--accent-text);
-  }
-}
-
 .faq {
   display: grid;
   border-top: var(--line-width) solid var(--line);
@@ -318,8 +234,4 @@
   border-top: var(--line-width) solid var(--line);
   color: var(--ink-muted);
   font-size: var(--text-sm);
-
-  > nav {
-    margin-left: auto;
-  }
 }

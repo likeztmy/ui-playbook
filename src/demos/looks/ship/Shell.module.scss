@@ -1,98 +1,110 @@
-// Ship's window, after the work tools it imitates: a sidebar on the window colour, the work on a raised panel.
+// Ship's window. The sidebar sits on the window colour and the work on the surface, split by one
+// hairline: no raised panel, no shadow (lightest boundary; a shadow says how high). App shell's
+// anatomy: sidebar 240, toolbar 48, rows 32, foot 48.
 .shell {
+  // The one inset every row of the work takes, so the title, the bar and the page share a left edge.
+  --ship-inset: var(--space-6);
+
   display: grid;
-  grid-template-columns: 220px minmax(0, 1fr);
-  gap: var(--space-gap);
-  min-height: 100%;
-  padding: var(--space-gap);
-  background: var(--bg);
+  grid-template-columns: 240px minmax(0, 1fr);
+  // A window: as tall as its parent, and every layer down to the panes gives up its minimum height.
+  grid-template-rows: minmax(0, 1fr);
+  height: 100%;
+  background: var(--surface);
   color: var(--ink);
+  font-family: var(--font-sans);
   font-size: var(--text-md);
   font-weight: var(--weight-body);
   line-height: var(--leading-md);
-
-  @container (max-width: 720px) {
-    grid-template-columns: minmax(0, 1fr);
-
-    .sidebar {
-      display: none;
-    }
-  }
 }
 
 .sidebar {
   display: grid;
-  align-content: start;
-  gap: var(--space-2);
-  min-width: 0;
+  grid-template-rows: minmax(0, 1fr) auto;
+  min-height: 0;
+  border-right: var(--line-width) solid var(--line);
+  background: var(--bg);
 }
 
-.team {
+.scroll {
+  display: grid;
+  align-content: start;
+  min-height: 0;
+  padding: 0 var(--space-2) var(--space-4);
+  overflow-y: auto;
+}
+
+// The product's name, set in type: no logo drawn for the occasion. As tall as the header beside it.
+.name {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
-  min-height: var(--control-md);
+  height: 48px;
   padding-inline: var(--space-2);
   font-weight: var(--weight-strong);
 }
 
-.logo {
-  display: grid;
-  place-items: center;
-  width: 20px;
-  height: 20px;
-  border-radius: var(--radius-sm);
-  background: var(--accent);
-  color: var(--on-accent);
+// Groups sit 16 apart; a heading is 4 from the rows it names (space groups by ratio).
+.group + .group {
+  margin-top: var(--space-4);
+}
+
+.heading {
+  margin: 0 0 var(--space-1);
+  padding-inline: var(--space-2);
+  color: var(--ink-muted);
   font-size: var(--text-sm);
 }
 
-.search {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  min-height: var(--control-md);
-  padding-inline: var(--space-2);
-  border: var(--line-width) solid var(--line);
-  border-radius: var(--radius-md);
-  background: var(--surface);
-  color: var(--ink-muted);
-
-  > kbd {
-    margin-left: auto;
-    font: inherit;
-    font-size: var(--text-sm);
-  }
-}
-
-.nav {
+.list {
   display: grid;
+  gap: 2px;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
+// Sidebar rows: 13px, the work tool's size for sidebars, unless the look's body is already smaller.
 .item {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  min-height: var(--control-md);
+  height: var(--control-md);
   padding-inline: var(--space-2);
   border-radius: var(--radius-md);
   color: var(--ink-muted);
+  font-size: min(var(--text-md), 13px);
+  text-decoration: none;
+  transition: background-color var(--duration-fast) var(--ease-out);
 
   &:hover {
     background: var(--fill-hover);
+    color: var(--ink);
+    transition-duration: 0ms;
   }
 
-  &[aria-current='page'] {
+  // The open place, or the list an open release came from.
+  &[aria-current] {
     background: var(--fill-active);
     color: var(--ink);
   }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+}
+
+// Every row keeps the icon's column, so the labels start on one edge with or without one.
+.icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 16px;
 }
 
 .label {
   flex: 1;
+  min-width: 0;
 }
 
 .count {
@@ -101,52 +113,59 @@
   font-variant-numeric: tabular-nums;
 }
 
-.dot {
-  width: 8px;
-  height: 8px;
-  margin-inline: 4px;
-  border-radius: 50%;
-  background: var(--ink-disabled);
+// Who is signed in stays at the foot while the places above scroll.
+.foot {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 48px;
+  padding-inline: var(--space-4);
+  border-top: var(--line-width) solid var(--line);
+  font-size: min(var(--text-md), 13px);
 }
 
-.heading {
-  margin: var(--space-3) 0 0;
-  padding-inline: var(--space-2);
+// A face with no photo: grey, never the accent's hue (who before what).
+.face {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--fill-control);
   color: var(--ink-muted);
   font-size: var(--text-sm);
+  font-weight: var(--weight-strong);
+  line-height: 1;
 }
 
 .main {
   display: grid;
-  grid-template-rows: auto 1fr;
+  grid-template-rows: 48px minmax(0, 1fr);
   min-width: 0;
-  border: var(--line-width) solid var(--line);
-  border-radius: var(--radius-lg);
-  background: var(--surface);
-  box-shadow: var(--shadow-sm);
-  overflow: hidden;
+  min-height: 0;
 }
 
 .header {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-3);
-  min-height: 52px;
-  padding: var(--space-2) var(--space-card);
+  min-width: 0;
+  padding-inline: var(--ship-inset);
   border-bottom: var(--line-width) solid var(--line);
 }
 
-.place {
+.title {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--space-1);
   min-width: 0;
+  margin: 0;
+  font-size: var(--text-md);
   font-weight: var(--weight-strong);
+  line-height: var(--leading-md);
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .actions {
@@ -155,8 +174,19 @@
   gap: var(--space-2);
 }
 
-// The pages lay themselves out by the room the window leaves them.
-.page {
+// The page lays itself out by the room the pane gives it. Positioned, so a hidden label or an
+// indicator placed absolutely scrolls with the page instead of stretching the document.
+.pane {
+  position: relative;
   min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
   container-type: inline-size;
+
+  // Drawn inside: the window would clip a ring outside the pane.
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+  }
 }

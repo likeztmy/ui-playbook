@@ -4,9 +4,10 @@ import { Compare } from '../shell';
 import { Lifted } from './Lifted';
 import s from './shadow.module.scss';
 
-const EDGE = '0 0 0 1px oklch(0.3 0.01 75 / 0.08)';
-const CONTACT = '0 1px 2px oklch(0.3 0.01 75 / 0.06)';
-const DISTANCE = '0 6px 12px oklch(0.3 0.01 75 / 0.08)';
+// Dark values after the kit's dark shadows: the edge a white hairline, contact and distance deeper black.
+const EDGE = `0 0 0 1px light-dark(oklch(0.3 0.01 75 / 0.08), oklch(1 0 0 / 0.09))`;
+const CONTACT = `0 1px 2px light-dark(oklch(0.3 0.01 75 / 0.06), oklch(0 0 0 / 0.4))`;
+const DISTANCE = `0 6px 12px light-dark(oklch(0.3 0.01 75 / 0.08), oklch(0 0 0 / 0.4))`;
 
 /** The After's layers, each one switchable, to see what it does on its own. */
 function Layered() {
@@ -32,7 +33,7 @@ export function ShadowLayers() {
       height={0}
       before={
         <div className={s.layered}>
-          <Lifted shadow="0 8px 24px oklch(0.3 0.01 75 / 0.22)" />
+          <Lifted shadow="0 8px 24px light-dark(oklch(0.3 0.01 75 / 0.22), oklch(0 0 0 / 0.7))" />
         </div>
       }
       after={<Layered />}

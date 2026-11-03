@@ -16,7 +16,7 @@ export function ShadowRaise() {
   const [y, setY] = useState(4);
   const [blur, setBlur] = useState(8);
   const [kind, setKind] = useState<Kind>('Shadow');
-  const shadow = kind === 'Shadow' ? `0 ${y}px ${blur}px oklch(0.3 0.01 75 / 0.2)` : `0 ${y}px ${blur}px oklch(1 0 0 / 0.95)`;
+  const shadow = kind === 'Shadow' ? `0 ${y}px ${blur}px light-dark(oklch(0.3 0.01 75 / 0.2), oklch(0 0 0 / 0.6))` : `0 ${y}px ${blur}px oklch(1 0 0 / 0.95)`;
   return (
     <Tweak
       height={300}

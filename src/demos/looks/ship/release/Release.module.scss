@@ -1,0 +1,159 @@
+// One release: the history and its tabs on the page's inset, the facts beside them past a hairline.
+// No box: the tabs' line, the rows' lines and that one hairline do the work (the lightest boundary).
+.crumb {
+  color: var(--ink-muted);
+  font-weight: var(--weight-body);
+  text-decoration: none;
+
+  &:hover {
+    color: var(--ink);
+    text-decoration: underline;
+  }
+}
+
+.chevron {
+  flex: none;
+  color: var(--ink-muted);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  min-height: 100%;
+
+  @container (max-width: 720px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.main {
+  display: grid;
+  align-content: start;
+  gap: var(--space-6);
+  padding: var(--space-6) var(--ship-inset) var(--space-8);
+}
+
+.title {
+  margin: 0;
+  font-size: var(--text-xl);
+  font-weight: var(--weight-strong);
+  line-height: 1.25;
+}
+
+.meta {
+  margin: var(--space-1) 0 0;
+  color: var(--ink-muted);
+  font-size: var(--text-sm);
+}
+
+.panel {
+  padding-top: var(--space-4);
+}
+
+.timeline {
+  display: grid;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  > li {
+    display: grid;
+    grid-template-columns: 28px minmax(0, 1fr);
+    gap: var(--space-3);
+  }
+
+  p {
+    margin: 0;
+    padding-top: 4px;
+  }
+
+  strong {
+    font-weight: var(--weight-strong);
+  }
+}
+
+// What someone said reads as their words under the event, in ink, on the same left edge: no bubble.
+.quote {
+  max-width: 64ch;
+}
+
+.when {
+  color: var(--ink-muted);
+}
+
+.mark,
+.face {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--fill-control);
+  color: var(--ink-muted);
+}
+
+// A face with no photo: grey, never the accent's hue (who before what).
+.face {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-strong);
+}
+
+.composer {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+.send {
+  grid-column: 2;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.notes {
+  max-width: 64ch;
+  margin: 0;
+}
+
+.side {
+  display: grid;
+  align-content: start;
+  gap: var(--space-3);
+  padding: var(--space-6) var(--space-4);
+  border-left: var(--line-width) solid var(--line);
+
+  @container (max-width: 720px) {
+    padding-inline: var(--ship-inset);
+    border-top: var(--line-width) solid var(--line);
+    border-left: 0;
+  }
+}
+
+.sideTitle {
+  margin: 0;
+  color: var(--ink-muted);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-strong);
+}
+
+.props {
+  display: grid;
+  margin: 0;
+
+  > div {
+    display: grid;
+    grid-template-columns: 96px minmax(0, 1fr);
+    align-items: center;
+    min-height: var(--control-md);
+  }
+
+  dt {
+    color: var(--ink-muted);
+  }
+
+  dd {
+    margin: 0;
+  }
+}

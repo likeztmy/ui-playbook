@@ -1,0 +1,61 @@
+.pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--line-width);
+  margin: 0;
+  background: var(--line);
+
+  > div {
+    display: grid;
+    align-content: start;
+    gap: 2px;
+    padding-left: var(--space-4);
+    background: var(--surface);
+
+    &:first-child {
+      padding: 0 var(--space-4) 0 0;
+    }
+  }
+
+  dt {
+    color: var(--ink-muted);
+    font-size: var(--text-sm);
+  }
+
+  dd {
+    margin: 0;
+  }
+}
+
+.big {
+  font-size: var(--text-xl);
+  font-weight: var(--weight-strong);
+  line-height: 1.25;
+  font-variant-numeric: tabular-nums;
+}
+
+.note {
+  color: var(--ink-muted);
+  font-size: var(--text-sm);
+}
+
+.up {
+  color: var(--success);
+  font-variant-numeric: tabular-nums;
+}
+
+.bar {
+  display: block;
+  height: 6px;
+  margin-top: var(--space-2);
+  border-radius: 3px;
+  background: var(--fill-control);
+  overflow: hidden;
+
+  > span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--accent);
+  }
+}

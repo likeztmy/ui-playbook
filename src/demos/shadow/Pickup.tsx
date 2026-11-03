@@ -2,8 +2,9 @@ import { useRef, useState, type PointerEvent } from 'react';
 import { Compare } from '../shell';
 import s from './shadow.module.scss';
 
-const REST = '0 0 0 1px oklch(0.3 0.01 75 / 0.08), 0 1px 2px oklch(0.3 0.01 75 / 0.06)';
-const HELD = '0 0 0 1px oklch(0.3 0.01 75 / 0.08), 0 2px 4px oklch(0.3 0.01 75 / 0.05), 0 12px 24px oklch(0.3 0.01 75 / 0.12)';
+// Dark values after the kit's dark shadows, as in Layers.
+const REST = `0 0 0 1px light-dark(oklch(0.3 0.01 75 / 0.08), oklch(1 0 0 / 0.09)), 0 1px 2px light-dark(oklch(0.3 0.01 75 / 0.06), oklch(0 0 0 / 0.4))`;
+const HELD = `0 0 0 1px light-dark(oklch(0.3 0.01 75 / 0.08), oklch(1 0 0 / 0.09)), 0 2px 4px light-dark(oklch(0.3 0.01 75 / 0.05), oklch(0 0 0 / 0.3)), 0 12px 24px light-dark(oklch(0.3 0.01 75 / 0.12), oklch(0 0 0 / 0.5))`;
 
 /** A card to drag around its desk; it springs back when let go. `lifts` raises it while held. */
 function Draggable({ lifts }: { lifts?: boolean }) {

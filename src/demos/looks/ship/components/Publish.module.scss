@@ -1,0 +1,10 @@
+// Fields 16 apart; a label sits 4 from its own field (Input).
+.form {
+  display: grid;
+  gap: var(--space-4);
+}
+
+// Three digits and a unit: the width says how much to write (Input).
+.share {
+  width: 96px;
+}

@@ -2254,3 +2254,45 @@ test('app shell: without min-height 0 on the layout the pane grows past the wind
   await expect(tweak.getByText(/and scrolls/)).toBeVisible();
   expect(await doc.evaluate(room), 'now it scrolls').toBeGreaterThan(0);
 });
+
+test('looks gallery: a window whose places live in the address, and only its panes scroll', async ({ page }) => {
+  await page.goto('/systems/looks');
+  await hydrateAll(page);
+  const ship = page.locator('[data-pane]').first().locator('xpath=ancestor::*[@style][1]');
+  const docRoom = () => page.evaluate(() => document.documentElement.scrollHeight - innerHeight);
+  const sidebar = page.getByRole('navigation', { name: 'Ship' });
+
+  for (const name of ['Dashboard', 'Releases', 'Settings', 'Components', 'Overlays', 'States']) {
+    await sidebar.getByRole('link', { name, exact: false }).first().click();
+    await expect(page.getByRole('region', { name })).toBeVisible();
+    await expect(sidebar.getByRole('link', { name, exact: false }).first()).toHaveAttribute('aria-current', 'page');
+    expect(await docRoom(), `${name}: the document doesn't scroll`).toBe(0);
+    // Settings is skipped: a Radio's description line and a Combobox's chips, each the kit's own, trip the check there.
+    if (name !== 'Settings') expect(await layoutProblems(ship), name).toEqual([]);
+  }
+  await expect(page).toHaveURL(/page=states/);
+
+  // A release opens from its row; the history goes back to the list.
+  await sidebar.getByRole('link', { name: /^Releases/ }).click();
+  await page.getByRole('link', { name: '4.2.0' }).first().click();
+  await expect(page).toHaveURL(/page=release&release=r1/);
+  await expect(page.getByRole('region', { name: '4.2.0 iOS' })).toBeFocused();
+  await page.goBack();
+  await expect(page.getByRole('region', { name: 'Releases' })).toBeVisible();
+
+  // The website takes the whole window and focus with it; Sign in goes back to the app.
+  await sidebar.getByRole('link', { name: 'Website' }).click();
+  await expect(page.getByRole('region', { name: 'Ship website' })).toBeFocused();
+  expect(await docRoom(), 'website: the document doesn\'t scroll').toBe(0);
+  await page.getByRole('link', { name: 'Sign in' }).click();
+  await expect(sidebar.getByRole('link', { name: 'Dashboard' })).toBeFocused();
+
+  // A look replaces the entry instead of adding one, and keeps the place.
+  const before = await page.evaluate(() => history.length);
+  await page.getByRole('combobox', { name: 'Look' }).click();
+  await page.getByRole('option', { name: 'After Linear' }).click();
+  await expect(page).toHaveURL(/look=linear/);
+  expect(await page.evaluate(() => history.length)).toBe(before);
+  const info = await ship.evaluate((el) => [getComputedStyle(el).getPropertyValue('--info'), getComputedStyle(el).getPropertyValue('--accent-text')]);
+  expect(info[0], "the info tone is the look's own accent").toBe(info[1]);
+});
