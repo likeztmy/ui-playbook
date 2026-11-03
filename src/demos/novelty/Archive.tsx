@@ -7,7 +7,7 @@ export function NoveltyArchive() {
     <Compare
       beforeLabel="450 ms flight, press waits"
       afterLabel="120 ms close-up, no wait"
-      height={380}
+      height={368}
       before={<Inbox flourish />}
       after={<Inbox />}
       beforeNote={`Each archive lifts the row and flies it off in ${FLOURISH} ms, and Archive waits for it. All thirty cost 13.5 s of waiting, and the wait is as long on the thirtieth as on the first.`}

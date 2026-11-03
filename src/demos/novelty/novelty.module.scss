@@ -12,9 +12,9 @@
   line-height: 18px;
 }
 
-// The stage's height less its padding, so the tally stays in sight below the list.
+// Its content's height, five whole rows, so the stage centres it.
 .inbox {
-  height: 332px;
+  height: 320px;
 }
 
 .inboxHead {

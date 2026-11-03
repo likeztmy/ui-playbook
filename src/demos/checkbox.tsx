@@ -145,8 +145,8 @@ function BoxOnly({ label, defaultChecked }: { label: string; defaultChecked?: bo
 /** The options are sent with the form, so the pair ends in its submit. */
 function SignUp({ children }: { children: ReactNode }) {
   return (
-    <form className={s.leftStack} onSubmit={(e) => e.preventDefault()}>
-      {children}
+    <form className={cl.form} onSubmit={(e) => e.preventDefault()}>
+      <div className={s.leftStack}>{children}</div>
       <Button type="submit" variant="primary">
         Create account
       </Button>

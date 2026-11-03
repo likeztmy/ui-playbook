@@ -11,7 +11,7 @@ const KEY_LIFT = { x: 24, y: -40 };
 
 /**
  * A card to drag around its desk; it springs back when let go. `lifts` raises it while held.
- * Space held does the same from the keyboard.
+ * Space held does the same from the keyboard; Enter picks it up and puts it down.
  */
 function Draggable({ lifts }: { lifts?: boolean }) {
   const [at, setAt] = useState({ x: 0, y: 0 });
@@ -31,6 +31,15 @@ function Draggable({ lifts }: { lifts?: boolean }) {
     setAt({ x: 0, y: 0 });
   };
   const keyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (held) up();
+      else {
+        setHeld(true);
+        setAt(KEY_LIFT);
+      }
+      return;
+    }
     if (e.key !== ' ') return;
     e.preventDefault();
     if (e.repeat) return;
@@ -51,6 +60,7 @@ function Draggable({ lifts }: { lifts?: boolean }) {
         <div
           className={s.card}
           role="button"
+          aria-pressed={held}
           tabIndex={0}
           data-dragging={held ? '' : undefined}
           style={{ '--card-shadow': lifts && held ? HELD : REST, translate: `${at.x}px ${at.y}px` } as CSSProperties}

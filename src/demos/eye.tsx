@@ -33,7 +33,7 @@ function Shop({ near }: { near?: boolean }) {
           <span>Bottles</span>
           <span>Journals</span>
         </span>
-        <Button variant="ghost" size="sm" label={cart} className={s.shopCart}>
+        <Button variant="ghost" size="sm" icon label={cart} className={s.shopCart}>
           <ShoppingBag size={16} aria-hidden />
           {count > 0 && (
             <span key={near ? count : undefined} className={cx(s.shopCount, near && s.shopBump)}>

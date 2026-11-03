@@ -63,7 +63,7 @@ function TimeZone() {
         value={city}
         onValueChange={setCity}
         placeholder="Lisbon or Portugal"
-        description={city ? `Meetings shown in ${city.label} time` : 'Pick a city'}
+        description={city ? `Meetings shown in ${city.label} time` : undefined}
         empty={cityEmpty}
         className={s.fieldWide}
       />

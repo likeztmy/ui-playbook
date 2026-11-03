@@ -42,12 +42,29 @@ export function setStatus(ids: string[], status: Status) {
   };
 }
 
+// Drafts are numbered from a count that only goes up, so an id is never handed out twice.
+let drafted = 0;
+
+const parts = (v: string) => v.split('.').map(Number);
+const later = (a: string, b: string) => {
+  const [x, y] = [parts(a), parts(b)];
+  for (let i = 0; i < Math.max(x.length, y.length); i++) if ((x[i] ?? 0) !== (y[i] ?? 0)) return (x[i] ?? 0) > (y[i] ?? 0);
+  return false;
+};
+
+/** The version after the platform's latest: 4.3.0 → 4.3.1, 2026.44 → 2026.45. */
+function nextVersion(platform: Release['platform']) {
+  const latest = releases.filter((r) => r.platform === platform).reduce((top, r) => (later(r.version, top) ? r.version : top), '0');
+  const p = parts(latest);
+  p[p.length - 1]++;
+  return p.join('.');
+}
+
 /** A new draft for a platform, at the top of the list, signed in as Mira Chen; the Undo discards it. */
 export function draft(platform: Release['platform']) {
-  const n = releases.filter((r) => r.id.startsWith('d')).length;
   const release: Release = {
-    id: `d${n + 1}`,
-    version: platform === 'Web' ? `2026.${45 + n}` : `4.3.${n}`,
+    id: `d${++drafted}`,
+    version: nextVersion(platform),
     name: 'Untitled',
     status: 'Draft',
     platform,
@@ -62,7 +79,9 @@ export function draft(platform: Release['platform']) {
   return {
     release,
     undo: () => {
-      releases.splice(releases.indexOf(release), 1);
+      const at = releases.indexOf(release);
+      if (at < 0) return;
+      releases.splice(at, 1);
       changed();
     },
   };

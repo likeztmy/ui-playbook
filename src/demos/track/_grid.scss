@@ -15,6 +15,13 @@ $gap: var(--space-3);
   align-items: center;
   column-gap: $gap;
 
+  // With an issue open beside the list, the labels give their room to the title rather than show cut
+  // short (Badge: a label is never truncated); the panel shows the open issue's own. No labels' edge
+  // to hold then, so steps and code take only what each row has.
+  :global([data-open] > [data-issues]) & {
+    grid-template-columns: 20px 14px 56px 14px minmax(0, 1fr) 0 auto 22px 44px;
+  }
+
   @container (max-width: 760px) {
     grid-template-columns: 14px 14px minmax(0, 1fr) 22px 36px;
   }
