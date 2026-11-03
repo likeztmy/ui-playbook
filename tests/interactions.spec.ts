@@ -415,6 +415,25 @@ test('hover forgives: a diagonal to the submenu closes it in Before, holds in Af
   }
 });
 
+test('hover forgives: the submenu demos work from the keyboard', async ({ page }) => {
+  await page.goto('/principles/hover-forgives');
+  await hydrateAll(page);
+  const f = page.locator(AFTER).filter({ hasText: 'Move to' }).first();
+  await f.scrollIntoViewIfNeeded();
+  await f.getByRole('menuitem', { name: 'Open' }).focus();
+  await page.keyboard.press('ArrowDown');
+  await expect(f.getByRole('menuitem', { name: 'Move to' })).toBeFocused();
+  await page.keyboard.press('ArrowRight');
+  await expect(f.getByRole('menuitem', { name: 'Inbox' })).toBeFocused();
+  await page.keyboard.press('ArrowUp');
+  await expect(f.getByRole('menuitem', { name: 'Archive' })).toBeFocused();
+  await page.keyboard.press('Enter');
+  await expect(f.getByText('Moved to Archive')).toBeVisible();
+  await page.keyboard.press('ArrowLeft');
+  await expect(f.getByRole('menuitem', { name: 'Move to' })).toBeFocused();
+  await expect(f.getByRole('menuitem', { name: 'Inbox' })).toHaveCount(0);
+});
+
 test('error timing: only “on leaving, cleared on fix” is quiet while typing and clears on the fix', async ({ page }) => {
   await page.goto('/principles/error-timing');
   await hydrateAll(page);

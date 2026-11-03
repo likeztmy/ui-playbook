@@ -1,5 +1,5 @@
 import { ChevronRight, Ellipsis } from 'lucide-react';
-import { Fragment, useRef, useState, type CSSProperties } from 'react';
+import { Fragment, useEffect, useRef, useState, type CSSProperties, type KeyboardEvent } from 'react';
 import { Button } from '../ui/Button';
 import { cx } from '../ui/cx';
 import { Menu, menuClasses as ms } from '../ui/Menu';
@@ -28,7 +28,8 @@ function inTriangle(p: Pt, a: Pt, b: Pt, c: Pt) {
  * A menu whose "Move to" row opens a submenu on hover. With `aim`, leaving
  * the row toward the submenu keeps it open: the pointer is judged by where
  * it's heading (the triangle from where it left to the submenu's near edge),
- * not by the row it happens to cross.
+ * not by the row it happens to cross. The keys follow a menu's: arrows move,
+ * Right or Enter opens the submenu, Left or Escape comes back.
  */
 function SubmenuDemo({ aim }: { aim?: boolean }) {
   const [hot, setHot] = useState<string | null>(null);
@@ -40,6 +41,12 @@ function SubmenuDemo({ aim }: { aim?: boolean }) {
   const sub = useRef<HTMLDivElement>(null);
   const lastInMove = useRef<Pt | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const [subHot, setSubHot] = useState<string | null>(null);
+  // Set when a key opened the submenu, so its first row takes focus once it's there.
+  const [subFocus, setSubFocus] = useState(false);
+
+  const rowEl = (r: string) => root.current?.querySelector<HTMLElement>(`[data-row="${r}"]`);
+  const subEl = (f: string) => sub.current?.querySelector<HTMLElement>(`[data-folder="${f}"]`);
 
   const local = (e: React.MouseEvent): Pt => {
     const r = root.current!.getBoundingClientRect();
@@ -60,6 +67,8 @@ function SubmenuDemo({ aim }: { aim?: boolean }) {
   };
   const go = (row: string) => {
     clearTimeout(timer.current);
+    // Focus in a submenu that's closing goes to the row the pointer is on.
+    if (row !== 'Move to' && sub.current?.contains(document.activeElement)) rowEl(row)?.focus();
     setHot(row);
     setOpen(row === 'Move to');
   };
@@ -81,6 +90,47 @@ function SubmenuDemo({ aim }: { aim?: boolean }) {
     if (hot !== row) go(row);
   };
 
+  useEffect(() => {
+    if (open && subFocus) {
+      subEl(FOLDERS[0])?.focus();
+      setSubFocus(false);
+    }
+  }, [open, subFocus]);
+
+  const step = <T,>(list: T[], at: T | null, by: number) => list[(list.indexOf(at as T) + by + list.length) % list.length];
+
+  const onMenuKey = (e: KeyboardEvent) => {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      const r = step(ROWS, hot, e.key === 'ArrowDown' ? 1 : -1);
+      setHot(r);
+      setOpen(false);
+      rowEl(r)?.focus();
+    } else if (hot === 'Move to' && (e.key === 'ArrowRight' || e.key === 'Enter' || e.key === ' ')) {
+      e.preventDefault();
+      setOpen(true);
+      setSubHot(FOLDERS[0]);
+      setSubFocus(true);
+    }
+  };
+
+  const onSubKey = (e: KeyboardEvent) => {
+    e.stopPropagation();
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      const f = step(FOLDERS, subHot, e.key === 'ArrowDown' ? 1 : -1);
+      setSubHot(f);
+      subEl(f)?.focus();
+    } else if ((e.key === 'Enter' || e.key === ' ') && subHot) {
+      e.preventDefault();
+      setMoved(subHot);
+    } else if (e.key === 'ArrowLeft' || e.key === 'Escape') {
+      e.preventDefault();
+      setOpen(false);
+      rowEl('Move to')?.focus();
+    }
+  };
+
   const [top, bottom] = open && aim && showArea && sub.current && root.current ? edge() : [null, null];
   const area =
     apex && top && bottom
@@ -94,18 +144,26 @@ function SubmenuDemo({ aim }: { aim?: boolean }) {
         className={s.aimStage}
         onMouseLeave={() => {
           clearTimeout(timer.current);
+          // While the keyboard is in the menu, the pointer leaving changes nothing.
+          if (root.current?.contains(document.activeElement)) return;
           setHot(null);
           setOpen(false);
         }}
       >
-        <div className={cx(ms.popup, s.aimMenu)} role="presentation">
-          {ROWS.map((r) => (
+        <div className={cx(ms.popup, s.aimMenu)} role="menu" aria-label="File" onKeyDown={onMenuKey}>
+          {ROWS.map((r, i) => (
             <Fragment key={r}>
               {/* Delete in a group of its own, last. */}
-              {r === 'Delete' && <div className={ms.separator} />}
+              {r === 'Delete' && <div className={ms.separator} role="separator" />}
               <div
                 className={cx(ms.item, r === 'Delete' && ms.danger)}
+                role="menuitem"
+                data-row={r}
+                tabIndex={hot === r || (!hot && i === 0) ? 0 : -1}
+                aria-haspopup={r === 'Move to' ? 'menu' : undefined}
+                aria-expanded={r === 'Move to' ? open : undefined}
                 data-highlighted={hot === r ? '' : undefined}
+                onFocus={() => setHot(r)}
                 onMouseMove={(e) => onRowMove(r, e)}
               >
                 <span className={ms.text}>{r}</span>
@@ -118,7 +176,9 @@ function SubmenuDemo({ aim }: { aim?: boolean }) {
           <div
             ref={sub}
             className={cx(ms.popup, ms.subPopup, s.aimSub)}
-            role="presentation"
+            role="menu"
+            aria-label="Move to"
+            onKeyDown={onSubKey}
             onMouseEnter={() => {
               clearTimeout(timer.current);
               setHot('Move to');
@@ -128,9 +188,14 @@ function SubmenuDemo({ aim }: { aim?: boolean }) {
               <div
                 key={f}
                 className={ms.item}
+                role="menuitem"
+                data-folder={f}
+                tabIndex={-1}
+                data-highlighted={subHot === f ? '' : undefined}
                 onClick={() => setMoved(f)}
-                onMouseEnter={(e) => e.currentTarget.setAttribute('data-highlighted', '')}
-                onMouseLeave={(e) => e.currentTarget.removeAttribute('data-highlighted')}
+                onFocus={() => setSubHot(f)}
+                onMouseEnter={() => setSubHot(f)}
+                onMouseLeave={() => setSubHot(null)}
               >
                 <span className={ms.text}>{f}</span>
               </div>
