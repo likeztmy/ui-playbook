@@ -564,6 +564,8 @@
 .tableToasts {
   position: relative;
   place-self: stretch;
+  // The table scrolls sideways inside; this stays the stage's width.
+  min-width: 0;
   padding-bottom: 72px;
 }
 
