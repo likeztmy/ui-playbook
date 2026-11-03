@@ -61,6 +61,7 @@ export function Releases({ platform, onPlatform }: Props) {
   const [selected, setSelected] = useState<string[]>([]);
   const [page, setPage] = useState(0);
   const table = useRef<HTMLDivElement>(null);
+  const root = useRef<HTMLDivElement>(null);
   // Clearing the selection removes the bar the focus was in: it moves to select-all, never to <body>.
   const [cleared, setCleared] = useState(false);
   useEffect(() => {
@@ -82,9 +83,18 @@ export function Releases({ platform, onPlatform }: Props) {
   const pages = Math.max(1, Math.ceil(shown.length / PAGE));
   const at = Math.min(page, pages - 1);
   const rows = shown.slice(at * PAGE, at * PAGE + PAGE);
+  const narrowed = filter !== 'all' || platform !== 'any' || query !== '';
+
+  // Clear filters goes with the empty state it sits in, so focus goes to the search field.
+  const clear = () => {
+    setFilter('all');
+    onPlatform('any');
+    setQuery('');
+    requestAnimationFrame(() => root.current?.querySelector<HTMLElement>(`.${r.search} input`)?.focus());
+  };
 
   return (
-    <div className={r.page}>
+    <div ref={root} className={r.page}>
       {selected.length > 0 ? (
         <div className={r.bar}>
           <span className={r.selected}>{selected.length} selected</span>
@@ -149,31 +159,44 @@ export function Releases({ platform, onPlatform }: Props) {
           </span>
         </div>
       )}
-      <div ref={table}>
-        <Table
-          label="Releases"
-          className={r.flush}
-          columns={columns}
-          rows={rows}
-          // The key names the row's checkbox ("Select 4.2.0 iOS"), so it is the name people read, not the id.
-          rowKey={releaseName}
-          selected={selected}
-          onSelectedChange={setSelected}
-          sort={sort}
-          onSortChange={setSort}
-        />
-      </div>
-      <div className={r.foot}>
-        <span>{shown.length ? `${at * PAGE + 1}–${at * PAGE + rows.length} of ${shown.length}` : 'No releases match'}</span>
-        <span className={r.end}>
-          <Button size="sm" disabled={at === 0} onClick={() => setPage(at - 1)}>
-            Previous
-          </Button>
-          <Button size="sm" disabled={at >= pages - 1} onClick={() => setPage(at + 1)}>
-            Next
-          </Button>
-        </span>
-      </div>
+      {shown.length ? (
+        <>
+          <div ref={table}>
+            <Table
+              label="Releases"
+              className={r.flush}
+              columns={columns}
+              rows={rows}
+              // The key names the row's checkbox ("Select 4.2.0 iOS"), so it is the name people read, not the id.
+              rowKey={releaseName}
+              selected={selected}
+              onSelectedChange={setSelected}
+              sort={sort}
+              onSortChange={setSort}
+            />
+          </div>
+          <div className={r.foot}>
+            <span>{`${at * PAGE + 1}–${at * PAGE + rows.length} of ${shown.length}`}</span>
+            <span className={r.end}>
+              <Button size="sm" disabled={at === 0} onClick={() => setPage(at - 1)}>
+                Previous
+              </Button>
+              <Button size="sm" disabled={at >= pages - 1} onClick={() => setPage(at + 1)}>
+                Next
+              </Button>
+            </span>
+          </div>
+        </>
+      ) : (
+        <div className={r.empty}>
+          <p>{query ? `No releases match “${query}”` : 'No releases match these filters'}</p>
+          {narrowed && (
+            <Button size="sm" onClick={clear}>
+              Clear filters
+            </Button>
+          )}
+        </div>
+      )}
     </div>
   );
 }

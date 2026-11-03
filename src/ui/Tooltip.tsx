@@ -45,6 +45,9 @@ type TipProps = {
   side?: 'top' | 'bottom';
   /** Start open, e.g. for a still preview. */
   defaultOpen?: boolean;
+  /** Controlled: open now, and told when hover or focus would change that. */
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
   /** Gap from the trigger. Default space-1 4; a trigger inset in a panel adds the inset. */
   offset?: number;
   /** The trigger: an element that forwards props and ref, such as Button. */
@@ -52,15 +55,17 @@ type TipProps = {
 };
 
 /** Names an icon-only control, with its shortcut; or, for a labelled one, gives just its shortcut. One line, never interactive. */
-export function Tip({ label, keys, side = 'top', defaultOpen, offset = 4, children }: TipProps) {
+export function Tip({ label, keys, side = 'top', defaultOpen, open, onOpenChange, offset = 4, children }: TipProps) {
   const container = usePortalContainer();
   useEffect(listen, []);
   return (
     <Tooltip.Root
       defaultOpen={defaultOpen}
-      onOpenChange={(open, details) => {
+      open={open}
+      onOpenChange={(next, details) => {
         // Opened by focus only when the person moved it there; focus the app moves stays quiet.
-        if (open && details.reason === 'trigger-focus' && !navigating) details.cancel();
+        if (next && details.reason === 'trigger-focus' && !navigating) return details.cancel();
+        onOpenChange?.(next);
       }}
     >
       <Tooltip.Trigger render={children} delay={DELAY} />

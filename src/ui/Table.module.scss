@@ -103,7 +103,10 @@
 }
 
 .table .check {
+  // min-width too: a cramped table shrinks cells to their content, and the pinned name column
+  // starts at this width.
   width: calc(16px + 2 * var(--space-3));
+  min-width: calc(16px + 2 * var(--space-3));
   padding-right: 0;
 
   > * {

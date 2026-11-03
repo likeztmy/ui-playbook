@@ -1,0 +1,22 @@
+.row {
+  position: relative;
+  display: flex;
+  gap: var(--space-1);
+}
+
+// The arrow's tip sits on the button's centre; it glides from one button to the next.
+.pointer {
+  position: absolute;
+  z-index: 1;
+  color: var(--surface);
+  fill: var(--ink);
+  pointer-events: none;
+  translate: -3px -3px;
+  transition-property: left, top;
+  transition-duration: 150ms;
+  transition-timing-function: var(--ease-out);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}

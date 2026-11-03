@@ -1,6 +1,6 @@
 import { Toast } from '@base-ui/react/toast';
 import { CircleAlert, CircleCheck, Info, TriangleAlert, X, type LucideIcon } from 'lucide-react';
-import { useCallback, type ReactNode } from 'react';
+import { useCallback, useRef, type FocusEvent, type MouseEvent, type ReactNode } from 'react';
 import { Button, buttonClass } from './Button';
 import { cx } from './cx';
 import s from './Toast.module.scss';
@@ -108,11 +108,27 @@ type ProviderProps = {
 
 /** The toast queue and the place they appear: bottom centre, newest lowest. */
 export function ToastProvider({ children, limit = 3, container, contained, align = 'center' }: ProviderProps) {
+  // Where focus was before it came into a toast, so Undo or Dismiss can send it back.
+  const back = useRef<HTMLElement | null>(null);
+  const onFocus = (e: FocusEvent<HTMLElement>) => {
+    const from = e.relatedTarget;
+    if (from instanceof HTMLElement && !e.currentTarget.contains(from)) back.current = from;
+  };
+  const onClick = (e: MouseEvent<HTMLElement>) => {
+    if (!(e.target instanceof Element) || !e.target.closest('button')) return;
+    const viewport = e.currentTarget;
+    // The toast is on its way out: focus left on it, or dropped to the body, goes back.
+    requestAnimationFrame(() => {
+      const now = document.activeElement;
+      const lost = !now || now === document.body || viewport.contains(now);
+      if (lost && back.current?.isConnected) back.current.focus();
+    });
+  };
   return (
     <Toast.Provider limit={limit}>
       {children}
       <Toast.Portal container={container ?? undefined}>
-        <Toast.Viewport className={cx(s.viewport, contained && s.contained, align === 'start' && s.start)}>
+        <Toast.Viewport className={cx(s.viewport, contained && s.contained, align === 'start' && s.start)} onFocus={onFocus} onClick={onClick}>
           <List />
         </Toast.Viewport>
       </Toast.Portal>

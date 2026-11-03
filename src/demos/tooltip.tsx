@@ -4,10 +4,11 @@ import { Button } from '../ui/Button';
 import { cx } from '../ui/cx';
 import { Tip, TipGroup, TipKeys, tooltipClasses as ts } from '../ui/Tooltip';
 import { Compare, Frame } from './shell';
+import { Walk, type Action } from './tooltip-walk/Walk';
 import m from './mistakes.module.scss';
 import s from './demos.module.scss';
 
-const ACTIONS: [string, LucideIcon, string[]][] = [
+const ACTIONS: Action[] = [
   ['Undo', Undo2, ['⌘', 'Z']],
   ['Redo', Redo2, ['⇧', '⌘', 'Z']],
   ['Zoom in', ZoomIn, ['⌘', '+']],
@@ -24,18 +25,19 @@ function IconButton({ label, Icon, ...props }: { label: string; Icon: LucideIcon
   );
 }
 
-/** A row of icon buttons. `grouped` shares one delay across the row. */
-function Row({ grouped = true, openFirst }: { grouped?: boolean; openFirst?: boolean }) {
-  const buttons = ACTIONS.map(([label, Icon, keys], i) => {
-    const tip = (
-      <Tip key={label} label={label} keys={keys} defaultOpen={openFirst && i === 1}>
-        <IconButton label={label} Icon={Icon} />
-      </Tip>
-    );
-    // Ungrouped: every tip gets its own provider, so each waits the full delay.
-    return grouped ? tip : <TipGroup key={label}>{tip}</TipGroup>;
-  });
-  return <div className={s.toolRow}>{grouped ? <TipGroup>{buttons}</TipGroup> : buttons}</div>;
+/** A row of icon buttons sharing one delay. */
+function Row({ openFirst }: { openFirst?: boolean }) {
+  return (
+    <div className={s.toolRow}>
+      <TipGroup>
+        {ACTIONS.map(([label, Icon, keys], i) => (
+          <Tip key={label} label={label} keys={keys} defaultOpen={openFirst && i === 1}>
+            <IconButton label={label} Icon={Icon} />
+          </Tip>
+        ))}
+      </TipGroup>
+    </div>
+  );
 }
 
 export function TooltipPreview() {
@@ -56,10 +58,10 @@ export function TooltipGrouping() {
     <Compare
       beforeLabel="Each waits 500 ms"
       afterLabel="One shared 500 ms delay"
-      height={140}
-      before={<Row grouped={false} />}
-      after={<Row />}
-      beforeNote="Every button waits the full 500ms. Slide along the row looking for Zoom out and you wait at each stop, so the tooltips never quite keep up."
+      height={0}
+      before={<Walk actions={ACTIONS} />}
+      after={<Walk actions={ACTIONS} shared />}
+      beforeNote="Every button waits the full 500ms. Slide along the row and you wait at every stop, so the tooltips never quite keep up."
       afterNote="One shared delay: wait once, then each neighbour’s label swaps in instantly and without animation."
     />
   );

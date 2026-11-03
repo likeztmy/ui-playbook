@@ -54,9 +54,9 @@ export const linear: Look = {
       note: 'from selection-bg-active, which is the focus colour at 40%; fainter here so muted text on it holds 4.5:1',
     },
     'accent-text': {
-      light: '#4e5ac0',
+      light: '#4450b2',
       dark: 'color-mix(in oklab, #5e6ad2, #fff 35%)',
-      note: 'not read; the accent, darker on light and lighter on dark so it holds on accent-soft',
+      note: 'not read; the accent, darker on light and lighter on dark so it holds on accent-soft, twice over on a selected row',
     },
     success: { light: '#007253', dark: '#54cc9e', note: 'the playbook’s, darker on light so it holds on accent-soft' },
     warning: { light: '#935500', dark: '#eeaa3b', note: 'the playbook’s, darker on light so it holds on accent-soft' },

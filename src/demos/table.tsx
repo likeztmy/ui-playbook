@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Badge, type Tone } from '../ui/Badge';
 import { Button } from '../ui/Button';
 import { cx } from '../ui/cx';
+import { Menu } from '../ui/Menu';
 import { Table, type Column, type Sort } from '../ui/Table';
+import { ToastProvider, useToast } from '../ui/Toast';
 import { Compare, Frame, Gallery } from './shell';
 import m from './mistakes.module.scss';
 import s from './demos.module.scss';
@@ -103,6 +105,63 @@ const WIDE: Column<File>[] = [
 ];
 
 /** A table that keeps its own sort and selection. */
+const FOLDERS = ['Archive', 'Clients', 'Projects'];
+
+const files = (n: number) => (n === 1 ? '1 file' : `${n} files`);
+
+type BarProps = {
+  rows: File[];
+  selected: string[];
+  onRows: (rows: File[]) => void;
+  onSelected: (names: string[]) => void;
+  /** Where focus goes once the bar's buttons go quiet. */
+  selectAll: () => HTMLElement | null | undefined;
+};
+
+/** The count and the bulk actions. Moved or deleted, the rows leave this list, with an Undo. */
+function BulkBar({ rows, selected, onRows, onSelected, selectAll }: BarProps) {
+  const toast = useToast();
+  const take = (title: string) => {
+    onRows(rows.filter((f) => !selected.includes(f.name)));
+    onSelected([]);
+    // The buttons go quiet, so focus goes to the select-all box, as after Clear selection.
+    setTimeout(() => selectAll()?.focus());
+    toast({ title, action: { label: 'Undo', onClick: () => onRows(rows) } });
+  };
+  return (
+    <div className={s.bulkBar} data-active={selected.length > 0 || undefined}>
+      <span aria-live="polite">{selected.length ? `${selected.length} selected` : files(rows.length)}</span>
+      {rows.length ? (
+        <>
+          <Menu.Root>
+            <Menu.Trigger
+              render={
+                <Button size="sm" disabled={!selected.length}>
+                  Move…
+                </Button>
+              }
+            />
+            <Menu.Popup align="end" finalFocus={false}>
+              {FOLDERS.map((f) => (
+                <Menu.Item key={f} onClick={() => take(`Moved ${files(selected.length)} to ${f}`)}>
+                  {f}
+                </Menu.Item>
+              ))}
+            </Menu.Popup>
+          </Menu.Root>
+          <Button size="sm" variant="danger" disabled={!selected.length} onClick={() => take(`Deleted ${files(selected.length)}`)}>
+            Delete
+          </Button>
+        </>
+      ) : (
+        <Button size="sm" onClick={() => onRows(FILES)}>
+          Reset demo
+        </Button>
+      )}
+    </div>
+  );
+}
+
 function Files({
   columns = COLUMNS,
   selectable,
@@ -119,25 +178,25 @@ function Files({
   initialSort?: Sort;
 }) {
   const [sort, setSort] = useState<Sort>(initialSort);
+  const [rows, setRows] = useState(FILES);
   const [selected, setSelected] = useState<string[]>([]);
+  const box = useRef<HTMLDivElement>(null);
   const cols = sortable ? columns : columns.map((c) => ({ ...c, sortBy: undefined }));
   return (
-    <div className={cx(s.stack, s.fill)}>
+    <div ref={box} className={cx(s.stack, s.fill)}>
       {selectable && (
-        <div className={s.bulkBar} data-active={selected.length > 0 || undefined}>
-          <span aria-live="polite">{selected.length ? `${selected.length} selected` : `${FILES.length} files`}</span>
-          <Button size="sm" disabled={!selected.length}>
-            Move…
-          </Button>
-          <Button size="sm" variant="danger" disabled={!selected.length}>
-            Delete
-          </Button>
-        </div>
+        <BulkBar
+          rows={rows}
+          selected={selected}
+          onRows={setRows}
+          onSelected={setSelected}
+          selectAll={() => box.current?.querySelector<HTMLElement>('[aria-label="Select all rows"]')}
+        />
       )}
       <Table
         label="Files"
         columns={cols}
-        rows={FILES}
+        rows={rows}
         rowKey={(f) => f.name}
         sort={sortable ? sort : undefined}
         onSortChange={setSort}
@@ -150,10 +209,22 @@ function Files({
   );
 }
 
+/** Selectable files, with room below for the toast that offers Undo. */
+function Bulk(props: Parameters<typeof Files>[0]) {
+  const [container, setContainer] = useState<HTMLElement | null>(null);
+  return (
+    <div ref={setContainer} className={s.tableToasts}>
+      <ToastProvider container={container} contained>
+        <Files selectable {...props} />
+      </ToastProvider>
+    </div>
+  );
+}
+
 export function TableLive() {
   return (
     <Frame label="Files" height={0}>
-      <Files selectable />
+      <Bulk />
     </Frame>
   );
 }
@@ -164,7 +235,7 @@ export function TableVariants() {
       stacked
       rows={[
         { name: 'Plain', use: 'A few columns to read and compare.', render: () => <Files sortable={false} /> },
-        { name: 'Sortable and selectable', use: 'For acting on many rows at once.', render: () => <Files selectable /> },
+        { name: 'Sortable and selectable', use: 'For acting on many rows at once.', render: () => <Bulk /> },
         {
           name: 'Wide',
           use: 'More columns than fit: scroll sideways, the name stays pinned.',

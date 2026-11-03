@@ -560,6 +560,13 @@
 // ── Toasts ────────────────────────────────────────────────
 
 // A demo area that holds its own toast viewport at its bottom edge.
+// The table's bulk actions: the toast with their Undo rises from the bottom edge, below the rows.
+.tableToasts {
+  position: relative;
+  place-self: stretch;
+  padding-bottom: 72px;
+}
+
 .toastStage {
   position: relative;
   display: grid;

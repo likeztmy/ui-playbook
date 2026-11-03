@@ -9,7 +9,8 @@
 // shoot; default the viewport), --full (whole page), --scale (device pixel
 // ratio, 2), --hover / --click / --context "<selector>" (hover, click or
 // right-click it first, then wait 800ms), --out (shots/<route>.png),
-// --eval "<expression>" (printed as JSON after the shot).
+// --eval "<expression>" (printed as JSON after the shot), --wait <ms> (with the
+// selector in view, wait before the shot: for demos that play on arrival).
 import { chromium } from '@playwright/test';
 import { mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
@@ -79,6 +80,11 @@ try {
     await target.scrollIntoViewIfNeeded();
     await act(target);
     await page.waitForTimeout(800);
+  }
+
+  if (flags.wait) {
+    if (flags.selector) await page.locator(flags.selector).first().scrollIntoViewIfNeeded();
+    await page.waitForTimeout(Number(flags.wait));
   }
 
   mkdirSync(dirname(out), { recursive: true });

@@ -1,18 +1,21 @@
 import { useState } from 'react';
 import { Section } from '../Section';
 import c from './Charts.module.scss';
+import { dayLabel, type Span } from './span';
 
-const days = [4, 6, 3, 7, 5, 2, 1, 6, 8, 5, 7, 9, 3, 2];
-const label = (i: number) => new Date(2026, 9, 20 + i).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+// Thirty days of releases; the range shows the last 7, 14 or 30.
+const ALL = [5, 3, 6, 4, 2, 7, 5, 3, 4, 6, 8, 4, 3, 5, 6, 4, 4, 6, 3, 7, 5, 2, 1, 6, 8, 5, 7, 9, 3, 2];
 
 /** Releases a day: one series, so one colour and no legend; hovering a bar reads it out. */
-export function Bars({ className }: { className?: string }) {
+export function Bars({ span, className }: { span: Span; className?: string }) {
   const [hot, setHot] = useState<number | null>(null);
+  const days = ALL.slice(-span);
+  const label = (i: number) => dayLabel(i, span);
   const top = Math.max(...days);
   return (
     <Section
       title="Releases a day"
-      meta={hot == null ? `${days.reduce((a, b) => a + b)} in 14 days` : `${label(hot)}: ${days[hot]}`}
+      meta={hot == null ? `${days.reduce((a, b) => a + b)} in ${span} days` : `${label(hot)}: ${days[hot]}`}
       className={className}
     >
       <div className={c.bars} role="img" aria-label={`Between ${Math.min(...days)} and ${top} a day`} onPointerLeave={() => setHot(null)}>

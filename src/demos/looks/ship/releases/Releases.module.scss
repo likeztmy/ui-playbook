@@ -103,3 +103,19 @@
   font-size: var(--text-sm);
   font-variant-numeric: tabular-nums;
 }
+
+// Nothing matches: the words say so, and the button beneath is the way back.
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-12) var(--ship-inset);
+  border-top: 1px solid var(--line);
+  color: var(--ink-muted);
+  font-size: var(--text-sm);
+
+  p {
+    margin: 0;
+  }
+}

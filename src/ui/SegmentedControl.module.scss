@@ -13,9 +13,10 @@
   grid-auto-columns: minmax(0, 1fr);
   height: var(--control-md);
   padding: var(--space-0-5);
-  // A pill on its own. In a panel that isn't one, the panel sets the radius
-  // its corner leaves (18 − 8 = 10), and the thumb follows it in by the inset.
-  border-radius: var(--segmented-radius, var(--radius-full));
+  // A control's radius, as the buttons beside it: a pill here, a look's own in a look. In a panel
+  // that isn't one, the panel sets the radius its corner leaves (18 − 8 = 10), and the thumb follows
+  // it in by the inset.
+  border-radius: var(--segmented-radius, var(--radius-control));
   background: var(--fill-control);
 }
 
@@ -25,7 +26,7 @@
   left: 0;
   z-index: -1;
   width: var(--w, 0px);
-  border-radius: calc(var(--segmented-radius, var(--radius-full)) - var(--space-0-5));
+  border-radius: calc(var(--segmented-radius, var(--radius-control)) - var(--space-0-5));
   // surface-raised with a 10% white veil: still white in light, but in dark
   // it must rise above the track, whose fill-control is already lighter
   // than surface-raised.
@@ -60,7 +61,7 @@
   height: 100%;
   padding: 0 var(--space-3);
   border: 0;
-  border-radius: calc(var(--segmented-radius, var(--radius-full)) - var(--space-0-5));
+  border-radius: calc(var(--segmented-radius, var(--radius-control)) - var(--space-0-5));
   background: transparent;
   color: var(--ink-muted);
   font: inherit;

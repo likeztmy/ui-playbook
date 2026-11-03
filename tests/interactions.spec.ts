@@ -1545,6 +1545,54 @@ test('toast: deleting a row hands focus to the next row’s Delete', async ({ pa
   await expect.poll(() => page.evaluate(() => document.activeElement?.textContent)).toBe('Delete');
 });
 
+test('toast: Undo and Dismiss hand focus back to where it was', async ({ page }) => {
+  await page.goto('/components/toast');
+  await hydrateAll(page);
+  const live = page.locator('figure').first();
+  await live.getByRole('button', { name: 'Delete', exact: true }).first().click();
+  const next = live.getByText('Brand guide.pdf', { exact: true }).locator('xpath=..').getByRole('button', { name: 'Delete' });
+  await expect(next).toBeFocused();
+  await live.getByRole('button', { name: 'Undo', exact: true }).click();
+  await expect(next).toBeFocused();
+  const copy = live.getByRole('button', { name: 'Copy link' });
+  await copy.click();
+  // Base UI keeps toasts aria-hidden until focus moves in, so the button is found by its label.
+  await live.locator('[aria-label="Dismiss"]').last().click();
+  await expect(copy).toBeFocused();
+});
+
+test('table: Move… and Delete take the ticked rows, with Undo, and focus goes to select-all', async ({ page }) => {
+  await page.goto('/components/table');
+  await hydrateAll(page);
+  const live = page.locator('figure').first();
+  const all = live.getByRole('checkbox', { name: 'Select all rows' });
+  await live.getByRole('checkbox', { name: 'Select Metrics.csv' }).click();
+  await live.getByRole('checkbox', { name: 'Select Brand guide.pdf' }).click();
+  await live.getByRole('button', { name: 'Delete' }).click();
+  await expect(live.getByText('3 files')).toBeVisible();
+  await expect(all).toBeFocused();
+  await live.getByRole('button', { name: 'Undo', exact: true }).click();
+  await expect(live.getByText('5 files')).toBeVisible();
+  await live.getByRole('checkbox', { name: 'Select Metrics.csv' }).click();
+  await live.getByRole('button', { name: 'Move…' }).click();
+  await page.getByRole('menuitem', { name: 'Archive' }).click();
+  await expect(live.getByText('Moved 1 file to Archive')).toBeVisible();
+  await expect(live.getByText('4 files')).toBeVisible();
+  await expect(all).toBeFocused();
+});
+
+test('tooltip: the delay comparison walks itself, and says how long each side took', async ({ page }) => {
+  await page.goto('/components/tooltip');
+  await hydrateAll(page);
+  const before = page.locator(BEFORE).filter({ hasText: 'Replay' }).first();
+  const after = page.locator(AFTER).filter({ hasText: 'Replay' }).first();
+  await before.scrollIntoViewIfNeeded();
+  await expect(after.getByText('5 labels in 3.25 s')).toBeVisible({ timeout: 8000 });
+  await expect(before.getByText('5 labels in 5.25 s')).toBeVisible({ timeout: 8000 });
+  // At rest, each side keeps its last label showing.
+  await expect(page.locator('[class*="_popup_"][data-open]').filter({ hasText: 'Fit to screen' })).toHaveCount(2);
+});
+
 test('post: focus lands where the action leaves it — unfolding, closing a message, Undo, Search all mail', async ({ page }) => {
   await page.goto('/practice/mail/app');
   await hydrateAll(page);
@@ -2259,6 +2307,25 @@ test('app shell: the document pane takes Tab and the arrow keys, under its title
   await expect(doc).toBeFocused();
   await page.keyboard.press('PageDown');
   await expect.poll(() => doc.evaluate((el) => el.scrollTop)).toBeGreaterThan(0);
+});
+
+test('looks gallery: the range drives the charts; an empty filter offers Clear filters', async ({ page }) => {
+  await page.goto('/systems/looks?page=dashboard');
+  await hydrateAll(page);
+  await expect(page.getByText('68 in 14 days')).toBeVisible();
+  await page.getByRole('radio', { name: '30 days' }).click();
+  await expect(page.getByText(/^\d+ in 30 days$/)).toBeVisible();
+  await expect(page.getByText(/^\d+ runs in 30 days$/)).toBeVisible();
+
+  await page.goto('/systems/looks?page=releases');
+  await hydrateAll(page);
+  const search = page.getByRole('textbox', { name: 'Search' });
+  await search.fill('zzz');
+  await expect(page.getByText('No releases match “zzz”')).toBeVisible();
+  await page.getByRole('button', { name: 'Clear filters' }).click();
+  await expect(search).toBeFocused();
+  await expect(search).toHaveValue('');
+  await expect(page.getByRole('table', { name: 'Releases' })).toBeVisible();
 });
 
 test('app shell: without min-height 0 on the layout the pane grows past the window and nothing scrolls', async ({ page }) => {
