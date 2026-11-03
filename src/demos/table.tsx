@@ -338,7 +338,7 @@ export function TableScroll() {
       before={<Files columns={WIDE} sortable={false} stickyFirst={false} className={cx(s.narrowTable, m.nothingPinned)} />}
       after={<Files columns={WIDE} sortable={false} stickyFirst className={s.narrowTable} />}
       beforeNote="Scroll right to see Views and the names scroll away with everything else. Whose row is 388 views?"
-      afterNote="The name column stays pinned, with a line at its edge, while the rest scroll under it."
+      afterNote="The name column stays pinned while the rest scroll under it; a line appears at its edge once they do."
     />
   );
 }
@@ -346,9 +346,8 @@ export function TableScroll() {
 export function TablePreview() {
   return (
     <Table
-      className={s.tablePreview}
       label="Files"
-      columns={COLUMNS.filter((c) => c.key !== 'owner' && c.key !== 'modified').map((c) => ({ ...c, sortBy: undefined }))}
+      columns={COLUMNS.filter((c) => c.key === 'name' || c.key === 'size').map((c) => ({ ...c, sortBy: undefined }))}
       rows={FILES.slice(0, 3)}
       rowKey={(f) => f.name}
     />

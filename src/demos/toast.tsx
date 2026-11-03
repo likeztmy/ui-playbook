@@ -68,7 +68,7 @@ function Triggers() {
       <Button onClick={() => toast({ title: 'Link copied', type: 'success' })}>Copy link</Button>
       <Button onClick={() => toast({ title: 'Couldn’t export: the file is locked', type: 'error' })}>Export</Button>
       <Switch
-        label="Offline"
+        label="Work offline"
         checked={offline}
         onCheckedChange={(on) => {
           setOffline(on);

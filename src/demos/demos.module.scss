@@ -2131,7 +2131,7 @@
 // Over the button's lower edge, like a keycap label: clear of the glyph, inside the bar.
 .fkKey {
   position: absolute;
-  bottom: -7px;
+  bottom: -6px;
   left: 50%;
   min-width: 16px;
   padding: 0 3px;
@@ -2139,9 +2139,9 @@
   background: var(--ink);
   color: var(--surface);
   font-family: var(--font-mono);
-  // The 12px floor, 16 tall: it ends where the bar's line begins.
+  // The 12px floor on a 14px line, so it clears both the glyph above and the bar's line below.
   font-size: 12px;
-  line-height: 16px;
+  line-height: 14px;
   text-align: center;
   translate: -50% 0;
   pointer-events: none;
@@ -2236,11 +2236,6 @@
   width: min(320px, 100%);
   // The card stage's own inset, so the sections don't touch its edge.
   padding: var(--space-3);
-}
-
-// Narrower than its card's stage: it scrolls inside rather than past the frame.
-.tablePreview {
-  max-width: 100%;
 }
 
 .fkPreview {

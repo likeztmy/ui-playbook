@@ -29,7 +29,7 @@ export function Share() {
       side="top"
       align="end"
       actions={
-        <Button variant="primary" size="sm" onClick={copy}>
+        <Button size="sm" onClick={copy}>
           Copy link
         </Button>
       }
