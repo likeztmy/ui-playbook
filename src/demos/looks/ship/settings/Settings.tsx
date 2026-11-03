@@ -54,8 +54,8 @@ export function Settings() {
         <div className={t.danger}>
           {archived ? (
             <div>
-              <p className={t.strong}>This project is archived</p>
-              <p className={t.meta}>Its rollouts are paused; the history stays readable.</p>
+              <p className={t.strong}>Unarchive this project</p>
+              <p className={t.meta}>It can be changed again; paused rollouts stay paused.</p>
             </div>
           ) : (
             <div>

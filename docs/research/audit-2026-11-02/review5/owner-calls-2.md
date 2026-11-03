@@ -82,3 +82,76 @@ Rules on parts the diff didn't touch: n/a untouched.
 - **Ink's info is its ink.** In Ink, Rolling out is `#18181b` on `#e2e2e6` and Paused is `#5e5e67` on 6% ink: two statuses told apart only by text darkness (and words). C53 and C56 give a blue where the accent collides with a status; an ink accent collides with neutral. Not in this diff; worth a call.
 - **Read-only and Settings.** The row says "read-only", yet Settings' fields stay editable while archived (as GitHub's do). Nothing states which writes an archived project keeps; C54 lists what is removed, not what stays.
 - **A toast's Undo after the state moved on.** Archive, then Unarchive from the row, then Undo in the still-open toast resumes r1 (read from `store.ts:83-92`, not driven), though C54 says Unarchive restarts nothing. Toast doesn't say whether an Undo should still act once the change has been reversed another way.
+
+---
+
+# Round 2: the working tree on b754418 (C54 rewritten, C58–C60)
+
+Same reviewer, same rules. Scope: the uncommitted diff on b754418 (the archived row across the window's top and on Settings; the archive's history wording; Ink's blue `info`; the App shell section "A state of the whole window goes across its top, and stays" with its Anatomy row; the look-playbook line). Quotes were checked against the live Atlassian, Primer and Notion pages (WebFetch, 2026-11-04).
+
+Correction to round 1: my first should, that the row belonged under the header "as GitHub does", was wrong about GitHub. The new placement answers it better: the sidebar's name and the page header share a line again.
+
+Shots: `shots/review5/r2-*` (not committed). Ship driven at 1280 with Playwright pointer events in Playbook Blue light and dark, After Primer light, After Linear dark and Playbook Ink light: Settings → Archive, Dashboard, Releases, a release, Undo, Archive again, Unarchive from the row on a release, Resume and Pause by hand, Archive with nothing rolling, Unarchive from the row on Settings. Ink's Releases table at scale 2, light and dark. /components/app-shell and /systems/look-playbook full-page at 1280 and 375, light and dark. The dev server was only read; the scripts are deleted.
+
+**Counts: 0 must, 2 should, 4 nit.**
+
+## Findings
+
+| severity | where | rule | evidence | fix |
+| --- | --- | --- | --- | --- |
+| should | Ship Settings while archived: the row and the danger zone. `src/demos/looks/ship/Shell.tsx:33`, `settings/Settings.tsx:57`, `:67` | The page's own new rule (`app-shell.mdx:43`): "Say it once"; Every line does a job: one word for one thing; Button: one action, one control | Settings now shows **Unarchive project** twice (`["Unarchive project","Unarchive project"]`): one in the row at the top, one in the danger zone at the foot of the page; and "This project is archived" twice: the row, then the danger zone's "This project is archived / Its rollouts are paused…" (`r2-playbook-light-settings-archived.png`). GitHub, the reference, shows its banner with no action and keeps the one Unarchive button in Settings | On Settings, drop the row's button (GitHub's banner has none) or let the danger zone, while archived, keep its text and lose its own button; one control for the one action either way |
+| should | /components/app-shell, `src/pages/components/app-shell.mdx:47` | Every line does a job: a line says what's true; the section must not contradict its own example | "A state you can lift for yourself needs only a word beside the title." The section's own case, the archived project, is a state the user lifts for themselves (the row's one action, **Unarchive project**, `:45`), yet it gets a row. Notion's lock differs in other ways: it belongs to one page, not the whole window, and hides nothing (one click and the page is editable) | Name the real line: "A state of one page that takes nothing away needs only a word beside the title. Notion shows…" |
+| nit | `src/pages/components/app-shell.mdx:45` | Each quote says what the sentence claims | Primer's line is about *accidental* closure: "If accidental closure of the Banner would leave the user confused or missing something critical, it should not have a close button." The sentence before it argues against closing at all ("Closing a state hides the reason and changes nothing"), and "drops the close wherever closing would leave someone…" leaves out "accidental" | "…wherever closing it by accident would leave someone 'confused or missing something critical'" |
+| nit | `src/pages/components/app-shell.mdx:43` against `src/demos/looks/ship/Shell.tsx:22` | Every line does a job: one word for one thing | The page opens "Some news is about everything that's open"; the code that applies it says the row has no close "since it is a state and not news", and the heading says "A state" | "Some states are about everything that's open: …" |
+| nit | Ship Dashboard, Recent, while archived. `src/demos/looks/ship/store.ts:55` | Every line does a job: the word that differs first, short lines in a list | "Mira Chen archived the project, pausing 4.2.0 iOS at 25%" wraps to two lines at 1280, the only two-line row in Recent; its "now" centres on the pair (`r2-playbook-light-archived-dashboard.png`) | "Mira Chen archived the project, pausing 4.2.0 iOS" (the release page keeps the 25%), or accept the wrap |
+| nit | /systems/look-playbook, `src/pages/systems/look-playbook.mdx:11` | Set reading text for the reader; Every line does a job | The parenthetical in "another palette changes the accent and what follows from it (…)" is now about 70 words: three palettes, three reasons, then Ink's success and warning, before the sentence's main clause resumes. "Ink's black" is its light accent only (dark is #ececef) | Close the parenthetical after "its text", then give the `info` and Ink notes their own sentence: "Clay, Moss and Ink bring a blue for `info`: Clay's rust would sit beside `danger`, Moss's olive beside `success`, and Ink's ink would tell an info badge from a neutral one by darkness alone…" |
+
+## What passed, measured
+
+- **Row across the window (C54).** Row at x 0–1280, y 104–144 (40 tall) in every look and theme toured; the sidebar and the main column both start at 144. Sidebar "Ship" (`.name`, 48 tall) and the page header both centre at y 168, title text at x 264 as before. Icon 16 at x 16, the sidebar name's text edge (16); row text at x 40, the sidebar labels' edge; Unarchive project 24 tall ending at 1256, the header actions' inset. Icon, text and button centres 123.5. Row on `--bg` (the sidebar's colour: #f7f7f8 / #0e0f11, Primer #f6f8fa, Linear #09090a) with `--line` below, so it joins the sidebar on the left and reads as one band of window chrome. Sidebar foot stays at 752–800. No console errors.
+- **Every page.** Row on Settings, Dashboard, Releases and a release page. Read-only as before: no New release, no Pause/Resume, no composer, bulk bar Export only.
+- **Unarchive.** From the row on a release: row gone, focus on the pane ("4.2.0 iOS"), Resume rollout back, r1 still Paused. From the row on Settings: focus on the pane ("Settings").
+- **History (C58).** Archived: the release timeline leads with an Archive icon and "Mira Chen archived the project, pausing the rollout at 25% · now"; Dashboard Recent says "Mira Chen archived the project, pausing 4.2.0 iOS at 25%". Undo from the toast: the line goes, status Rolling out, 2h ago. Unarchive keeps the line (still paused by the archive). Resume by hand: the line goes. Pause by hand afterwards: "paused the rollout at 25%" with the Pause icon. Archive again with nothing rolling: Recent keeps "paused 4.2.0 iOS at 25%", correctly not credited to the archive.
+- **Ink info (C59).** Site (`data-palette="ink"`) and gallery agree: #39678e / #8bbce7 on #e4f2fe / #0e293d. Rolling out on its soft 5.26:1 light, 7.44:1 dark; on Ink's selection `accent-soft` 4.64 / 6.45 (Clay's #427097 would be 4.07 there, so the darker step is needed); on white 5.99. Its soft fill is 1.13 / 1.15 from `accent-soft`, and selected rows keep every badge's ring. Rolling out now reads blue against Draft's grey and Paused's grey (`r2-ink-light-releases-table.png`, `r2-ink-dark-releases-table.png`).
+- **App shell section (C60).** 720 wide, three paragraphs, no overflow at 375 (scrollWidth − innerWidth 0, all four shots). Quotes as sourced: Atlassian "Use banners sparingly at the top of the screen to display critical messaging…" and "…are not dismissible, and only disappear when no longer required"; Primer "Never use flush banners at the top of a page… as this can create confusion with page-level or system-wide announcements" (so "anything else there is mistaken for a 'page-level or system-wide' announcement" holds); Notion "you'll see `Locked` appear next to the name of your page in the top breadcrumb menu", and unlocking starts by selecting that word ("that word is where it's unlocked" holds, it opens Unlock for me / for everyone). Anatomy row "State row (archived, offline) · `bg`, `line` below · 40" matches what Ship renders (min-height 40, `--bg`, `--line`).
+- **Over-signposting.** No line labels the obvious or flags the page's own care; "It has no close." is a claim, not a heading. **Depth.** The section's one mechanism ("each control that's missing is a puzzle again") is argued, not sourced; the rest leans on three design systems' guidance. Acceptable on a component page, where other sections cite Bootstrap and Primer the same way; a principle page would need a study.
+- **look-playbook line.** Matches C56, C57 and C59 (Clay, Moss and Ink blue; Ink success and warning a step darker); length is the nit above.
+
+## Ledger (round 2)
+
+Rules on parts this diff didn't touch: n/a untouched; round 1's ledger stands for them.
+
+**App shell.** Window holds still, panes scroll: P (shell rows `auto minmax(0, 1fr)`; pane and sidebar list still scroll; foot fixed). Title bar 48: P. Sidebar 240, rows 32, foot 48: P. New "state row" rule and Anatomy: P in Ship; F should on the rule's own wording (`:47`), nit (`:43`, `:45`). Common mistakes: n/a.
+
+**Button.** Verb and object: P (Unarchive project). One control per action: F should (two on Settings). Variants, Anatomy: P (secondary sm 24).
+
+**Badge.** Status tones on their soft: P (Ink info measured). Neutral `ink-muted` on `fill-control`: P. Words carry it, colour helps: P; Ink's info no longer leans on darkness alone.
+
+**Table.** Selected `accent-soft` with every badge ringed: P in Ink. Others n/a untouched.
+
+**Toast.** Undo puts back status, row and history line: P. Copy: P.
+
+**Icon.** Lucide `Archive` in the row and the timeline, 16, `ink-muted` in the row: P.
+
+**Where the eye goes.** Flat row, no sparkle or close: P. The change shows where it happened (timeline line on the release; Recent on the Dashboard): P.
+
+**Every line does a job.** Say it once: F should (Settings). Line says what's true: F should (`app-shell.mdx:47`). One word for one thing: F nit (news / state). Short list lines: F nit (Recent wrap). Toast and history copy past tense with object: P.
+
+**The lightest boundary that holds.** Row is the one band of window chrome, `bg` and one hairline: P.
+
+**Colour means one thing; Grey until it matters; Lightness first.** Row grey: P. Ink: accent ink, info blue, success green, warning amber, danger red, each one meaning: P. Ink info L 0.50, text at ≥ 4.5:1 on every surface measured: P.
+
+**Set reading text for the reader.** App shell section 720 measure: P. look-playbook sentence length: F nit.
+
+**Work tool.** Row text 14 / 20 (Linear 13, as its body), controls 24, icons 16: P.
+
+**Playbook look (system).** Palette sentence states what each palette changes: P (nit on length).
+
+**Decisions.** C54 (rewritten): P, F should (Settings duplicate). C58: P (all five transitions driven). C59: P. C60: P, F should and two nits on copy.
+
+**Owner's rules.** One grid: P (sidebar name and header share y 168; row icon on the sidebar's text edge, text on the labels' edge, button on the actions' edge). One left edge: P. Trailing meta right: P. Lightest boundary: P. Focus follows the action, never body: P (pane after Unarchive from the row on a release and on Settings). Copy the reference product: P for placement (GitHub, Primer, Atlassian as sourced); the action in the row is a recorded deviation (C54).
+
+## Gaps (round 2)
+
+- **History keeps only the last change.** Archive, Unarchive, then Resume by hand: the release page shows neither the archive nor the resume, as if nothing happened (the timeline only adds an event while the status differs from the seed). C58 says the wording stops "once it's resumed by hand"; nothing says the resume itself should be recorded. Not a regression; the same holds for any pause then resume.
+- **Round 1's toast-Undo gap stands.** After Unarchive from the row, Undo in the still-open "Archived Ship mobile" toast now also clears the archive's history marks and resumes r1, which still contradicts "Unarchive restarts nothing" (read from `store.ts`, not driven).

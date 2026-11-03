@@ -276,12 +276,12 @@
             "dark": "#ececef"
           },
           "info": {
-            "light": "#18181b",
-            "dark": "#ececef"
+            "light": "#39678e",
+            "dark": "#8bbce7"
           },
           "info-soft": {
-            "light": "#e2e2e6",
-            "dark": "#303137"
+            "light": "#e4f2fe",
+            "dark": "#0e293d"
           },
           "success": {
             "light": "#007152",

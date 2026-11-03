@@ -1,4 +1,4 @@
-import { ChevronRight, MessageSquare, Pause, Play } from 'lucide-react';
+import { Archive, ChevronRight, MessageSquare, Pause, Play } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { Button } from '../../../../ui/Button';
 import { Tabs } from '../../../../ui/Tabs';
@@ -7,7 +7,7 @@ import { CheckList } from '../CheckList';
 import { at, releaseById, releaseName, type Status } from '../model';
 import { PlaceLink } from '../PlaceLink';
 import { Shell } from '../Shell';
-import { isArchived, ME, setStatus, statusOf } from '../store';
+import { isArchived, ME, pausedByArchive, setStatus, statusOf } from '../store';
 import { Composer } from './Composer';
 import { Properties } from './Properties';
 import { story, type Event } from './story';
@@ -36,9 +36,11 @@ export function Release({ id }: { id: string }) {
   const changed: Event[] =
     status === r.status
       ? []
-      : status === 'Paused'
-        ? [{ Icon: Pause, who: ME, what: `paused the rollout at ${r.rollout}%`, hours: 0 }]
-        : [{ Icon: Play, who: ME, what: `resumed the rollout at ${r.rollout}%`, hours: 0 }];
+      : pausedByArchive(r)
+        ? [{ Icon: Archive, who: ME, what: `archived the project, pausing the rollout at ${r.rollout}%`, hours: 0 }]
+        : status === 'Paused'
+          ? [{ Icon: Pause, who: ME, what: `paused the rollout at ${r.rollout}%`, hours: 0 }]
+          : [{ Icon: Play, who: ME, what: `resumed the rollout at ${r.rollout}%`, hours: 0 }];
   return (
     <Shell
       title={

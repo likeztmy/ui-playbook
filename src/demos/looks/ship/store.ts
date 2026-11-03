@@ -13,6 +13,9 @@ let statuses: Record<string, Status> = {};
 let touched: Record<string, number> = {};
 let stamp = 0;
 let archived = false;
+// The stamps archiving gave the rollouts it paused: a pause is the archive's while its stamp still stands,
+// so resuming one by hand, or undoing the archive, makes it no longer so.
+let archivedAt: Record<string, number> = {};
 let version = 0;
 const listeners = new Set<() => void>();
 const changed = () => {
@@ -34,6 +37,9 @@ export const useChanges = () =>
 
 export const statusOf = (r: Release): Status => statuses[r.id] ?? r.status;
 
+/** Whether a release is paused because the project was archived, rather than by hand. */
+export const pausedByArchive = (r: Release) => statusOf(r) === 'Paused' && r.id in archivedAt && archivedAt[r.id] === touched[r.id];
+
 /** Hours since a release last changed: none, for one changed here. */
 export const hoursOf = (r: Release) => (r.id in touched ? 0 : hoursAgo(r));
 /** The Updated column's word: "Just now" for one changed here. */
@@ -46,6 +52,7 @@ export function lastChangeOf(r: Release): { who: string; what: string } {
   const status = statusOf(r);
   if (!(r.id in statuses)) return lastChange(r);
   const name = releaseName(r);
+  if (pausedByArchive(r)) return { who: ME, what: `archived the project, pausing ${name} at ${r.rollout}%` };
   if (status === 'Paused') return { who: ME, what: `paused ${name} at ${r.rollout}%` };
   if (status === 'Rolling out') return { who: ME, what: `resumed ${name} at ${r.rollout}%` };
   return { who: ME, what: lastChange({ ...r, status }).what };
@@ -82,10 +89,15 @@ export function setArchived(to: boolean) {
   const before = archived;
   const rolling = to ? releases.filter((r) => statusOf(r) === 'Rolling out').map((r) => r.id) : [];
   const resume = rolling.length ? setStatus(rolling, 'Paused') : undefined;
+  const marks = archivedAt;
+  archivedAt = { ...archivedAt, ...Object.fromEntries(rolling.map((id) => [id, touched[id]])) };
   archived = to;
   changed();
   return () => {
+    // Undone after the project was already brought back by hand, it has nothing left to put back.
+    if (archived !== to) return;
     archived = before;
+    archivedAt = marks;
     resume?.();
     changed();
   };

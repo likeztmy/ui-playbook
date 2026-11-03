@@ -38,12 +38,21 @@ Every layer between the window and a scrolling pane takes `min-height: 0`, and a
 
 On a phone, `100vh` is the large viewport: the height "assuming any UA interfaces that are dynamically expanded and retracted to be retracted", so content sized to it "might be hidden behind such interfaces" ([CSS Values 4, §6.1.2.1](https://www.w3.org/TR/css-values-4/#viewport-variants)). While the browser's toolbar shows, a `100vh` window's foot (the account, a message box) sits under it. `100dvh` follows the toolbar as it comes and goes.
 
+### A state of the whole window goes across its top, and stays
+
+Some states hold for everything that's open: the project is archived, the file is read-only, the app is offline. Say it once, in a row across the top of the window that pushes the sidebar and the panes down together, so the sidebar's name and the page's header keep their line. Atlassian's banner sits "at the top of the screen", and its banners "are not dismissible, and only disappear when no longer required" ([Atlassian, Banner](https://atlassian.design/components/banner/usage)). Primer keeps an edge-to-edge row at the top of a page for this alone: anything else there is mistaken for a "page-level or system-wide" announcement ([Primer, Banner](https://primer.style/product/components/banner/guidelines/)).
+
+It has no close. Closing a state hides the reason and changes nothing, so each control that's missing is a puzzle again; Primer drops the close wherever closing it by accident would leave someone "confused or missing something critical". Its one action is the way back, **Unarchive project**, so restoring doesn't start with finding Settings.
+
+A state that only guards against a slip, and takes nothing away, needs a word beside the title rather than a row. Notion shows `Locked` "next to the name of your page in the top breadcrumb menu", and that word is where it's unlocked ([Notion Help](https://www.notion.com/help/collaborate-within-a-workspace)).
+
 ## Anatomy
 
 | Part | Token | Value |
 | --- | --- | --- |
 | Window | | `100dvh` |
 | Title bar or toolbar | `toolbar-height` | 48 |
+| State row (archived, offline) | `bg`, `line` below | 40 |
 | Sidebar | `sidebar`, `surface-sunken` | 240 |
 | Sidebar rows | `control-md` | 32 |
 | Sidebar foot | `toolbar-height` | 48 |
