@@ -1,3 +1,5 @@
+@use '../../styles/reading';
+
 // The gallery is a desk tool (owner's call, 2026-11-02): a phone gets the look pages instead.
 .desk {
   @media (width < 760px) {
@@ -13,4 +15,13 @@
   @media (width >= 760px) {
     display: none;
   }
+}
+
+// The page's heading, which the desk shows in its toolbar.
+.title {
+  @include reading.title;
+}
+
+.notice {
+  margin: 0;
 }

@@ -7,9 +7,9 @@ import { SegmentedControl } from '../../../../ui/SegmentedControl';
 import { Select } from '../../../../ui/Select';
 import { Table, type Column, type Sort } from '../../../../ui/Table';
 import { useToast } from '../../../../ui/Toast';
-import { at, hoursAgo, releaseName, releases, tone, type Platform, type Release } from '../model';
+import { at, releaseName, releases, tone, type Platform, type Release } from '../model';
 import { PlaceLink } from '../PlaceLink';
-import { setStatus, statusOf } from '../store';
+import { freshness, setStatus, statusOf, updatedOf } from '../store';
 import r from './Releases.module.scss';
 
 const PAGE = 8;
@@ -42,8 +42,8 @@ const columns: Column<Release>[] = [
   { key: 'platform', header: 'Platform', optional: true, render: (x) => x.platform, sortBy: (x) => x.platform },
   { key: 'owner', header: 'Owner', muted: true, optional: true, render: (x) => x.owner, sortBy: (x) => x.owner },
   { key: 'rollout', header: 'Rollout', numeric: true, optional: true, render: (x) => `${x.rollout}%`, sortBy: (x) => x.rollout },
-  // Sorted on hours, so "Updated, newest first" is true row by row.
-  { key: 'updated', header: 'Updated', muted: true, render: (x) => x.updated, sortBy: (x) => -hoursAgo(x) },
+  // Sorted on hours, so "Updated, newest first" is true row by row; a change made here is the newest.
+  { key: 'updated', header: 'Updated', muted: true, render: (x) => x.updated, sortBy: freshness },
 ];
 
 const filters = {
@@ -90,7 +90,7 @@ export function Releases({ platform, onPlatform }: Props) {
   // With a platform chosen, its column would say the same on every row (C34).
   const cols = platform === 'any' ? columns : columns.filter((c) => c.key !== 'platform');
   const col = cols.find((c) => c.key === sort.key) ?? cols[cols.length - 1];
-  const all = releases.map((x) => ({ ...x, status: statusOf(x) }));
+  const all = releases.map((x) => ({ ...x, status: statusOf(x), updated: updatedOf(x) }));
   const chosen = all.filter((x) => selected.includes(releaseName(x)));
   // Pauses the chosen rollouts at once and offers Undo, as the release page does. A choice with none
   // rolling out says so on press rather than greying the button out.

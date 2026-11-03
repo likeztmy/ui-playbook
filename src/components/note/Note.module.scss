@@ -11,10 +11,10 @@
 .noted {
   position: relative;
 
-  // The note, its arrow and circle: one ink, the accent's text colour, so they follow the palette.
+  // The note, its arrow and circle: one muted ink. The page speaking to the reader, not a control, so never the accent.
   :global(.note-arrows),
   :global(.rough-annotation) {
-    color: var(--accent-text);
+    color: var(--ink-muted);
   }
 
   :global(.note-arrows) {
@@ -50,7 +50,7 @@
   font-family: 'Playbook Hand', var(--font-mono);
   font-size: 15px;
   line-height: 20px;
-  color: var(--accent-text);
+  color: var(--ink-muted);
   rotate: -3deg;
   white-space: nowrap;
   pointer-events: none;

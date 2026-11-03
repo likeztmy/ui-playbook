@@ -32,10 +32,13 @@ const ALIASES: Record<string, PageId> = { cards: 'components' };
 
 export function readPlace(q = params()): Place {
   const asked = q.get('page') ?? '';
-  const page = ALIASES[asked] ?? PAGES.find((p) => p === asked) ?? 'dashboard';
+  const named = ALIASES[asked] ?? PAGES.find((p) => p === asked) ?? 'dashboard';
   const platform: Platform = PLATFORMS.find((p) => p.toLowerCase() === q.get('platform')) ?? 'any';
-  const release = releases.find((r) => r.id === q.get('release'))?.id ?? HOME.release;
-  return { page, platform: page === 'releases' ? platform : 'any', release };
+  const found = releases.find((r) => r.id === q.get('release'))?.id;
+  // A release that isn't there any more (a draft undone, then Back) opens the list it was in, not
+  // another release under its address.
+  const page = named === 'release' && !found ? 'releases' : named;
+  return { page, platform: page === 'releases' ? platform : 'any', release: found ?? HOME.release };
 }
 
 /** A plain left click stays in the page; a modified one (new tab, new window) is the browser's. */

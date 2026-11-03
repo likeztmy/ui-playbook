@@ -351,8 +351,9 @@
 .gapLabel {
   position: absolute;
   top: 50%;
-  // Inside the gap it measures, 12 tall, so it fits even the tightest gap between lines.
-  right: 0;
+  // Inside the gap it measures, 12 tall, so it fits even the tightest gap between lines; centred, clear of
+  // a trailing column's glyphs.
+  left: 50%;
   padding: 0 var(--space-1);
   border-radius: var(--radius-sm);
   background: var(--accent);
@@ -361,7 +362,7 @@
   font-size: 12px;
   line-height: 12px;
   white-space: nowrap;
-  translate: 0 -50%;
+  translate: -50% -50%;
 }
 
 // ── The pilot's frames (`data-box` on <html>) ─────────────

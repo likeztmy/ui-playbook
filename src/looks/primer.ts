@@ -41,6 +41,12 @@ export const primer: Look = {
     'fill-active': { light: '#818b9826', dark: '#656c7640', from: theme, note: 'control-transparent-bgColor-active' },
     'fill-control': { light: '#f6f8fa', dark: '#212830', from: theme, note: 'control-bgColor-rest' },
     'fill-control-hover': { light: '#eff2f5', dark: '#262c36', from: theme, note: 'control-bgColor-hover' },
+    'control-edge': {
+      light: '#d1d9e0',
+      dark: '#3d444d',
+      from: theme,
+      note: 'button-default-borderColor-rest: GitHub edges its default button, whose fill is the page’s own #f6f8fa',
+    },
     accent: {
       light: '#0969da',
       dark: '#1f6feb',
@@ -55,7 +61,12 @@ export const primer: Look = {
     'on-accent': { light: '#ffffff', dark: '#ffffff', from: theme, note: 'fgColor-onEmphasis' },
     'accent-soft': { light: '#ddf4ff', dark: '#388bfd1a', from: theme, note: 'bgColor-accent-muted' },
     'accent-text': { light: '#0969da', dark: '#4493f8', from: theme, note: 'fgColor-accent' },
-    danger: { light: '#d1242f', dark: '#f85149', from: theme, note: 'fgColor-danger' },
+    danger: {
+      light: '#d1242f',
+      dark: '#fb6358',
+      from: theme,
+      note: 'fgColor-danger; on dark a step lighter (from #f85149), so a badge holds on a selected row',
+    },
     'danger-soft': { light: '#ffebe9', dark: '#f851491a', from: theme, note: 'bgColor-danger-muted' },
     success: {
       light: '#197e36',
@@ -71,6 +82,12 @@ export const primer: Look = {
       note: 'fgColor-attention; on light a step darker (from #9a6700), so it holds on bgColor-accent-muted',
     },
     'warning-soft': { light: '#fff8c5', dark: '#bb800926', from: theme, note: 'bgColor-attention-muted' },
+    info: {
+      light: '#0969da',
+      dark: '#4da0ff',
+      from: theme,
+      note: 'fgColor-accent; on dark display-blue-fgColor, so a badge holds on a selected row',
+    },
     scrim: { light: '#c8d1da66', dark: '#21283066', from: theme, note: 'overlay-backdrop-bgColor' },
     'focus-ring': {
       light: '0 0 0 2px #ffffff, 0 0 0 4px #0969da',
@@ -82,6 +99,7 @@ export const primer: Look = {
     'radius-md': { light: '6px', dark: '6px', from: radius, note: 'borderRadius-medium, the default' },
     'radius-lg': { light: '12px', dark: '12px', from: radius, note: 'borderRadius-large' },
     'radius-control': { light: '6px', dark: '6px', from: radius, note: 'borderRadius-default' },
+    'radius-field': { light: '6px', dark: '6px', from: radius, note: 'borderRadius-default, as GitHub draws its text inputs' },
     'shadow-xs': {
       light: '0 1px 1px 0 #1f23280d',
       dark: '0 1px 1px 0 #010409cc',

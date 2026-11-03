@@ -13,8 +13,11 @@ const entry = entries.find((e) => e.slug === 'looks')!;
   <div class={s.desk}>
     <Gallery />
   </div>
-  <p class={s.phone}>
-    The looks need a wider window. Each one’s values are on its own page:{' '}
-    <a href="/systems/look-playbook">Playbook</a>,{' '}<a href="/systems/look-primer">After Primer</a>,{' '}<a href="/systems/look-linear">After Linear</a>.
-  </p>
+  <div class={s.phone}>
+    <h1 class={s.title}>Looks</h1>
+    <p class={s.notice}>
+      The looks need a wider window. Each one’s values are on its own page:{' '}
+      <a href="/systems/look-playbook">Playbook</a>,{' '}<a href="/systems/look-primer">After Primer</a>,{' '}<a href="/systems/look-linear">After Linear</a>.
+    </p>
+  </div>
 </Base>

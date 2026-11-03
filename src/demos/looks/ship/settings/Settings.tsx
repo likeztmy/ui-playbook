@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Button } from '../../../../ui/Button';
 import { Combobox } from '../../../../ui/Combobox';
 import { TextField } from '../../../../ui/Field';
@@ -6,6 +5,7 @@ import { Radio, RadioGroup } from '../../../../ui/Radio';
 import { Switch } from '../../../../ui/Switch';
 import { useToast } from '../../../../ui/Toast';
 import { people } from '../data';
+import { isArchived, setArchived } from '../store';
 import t from './Settings.module.scss';
 
 const approvers = people.map((p) => ({ value: p, label: p }));
@@ -17,11 +17,12 @@ const approvers = people.map((p) => ({ value: p, label: p }));
  * Undo rather than asking first.
  */
 export function Settings() {
-  const [archived, setArchived] = useState(false);
+  // Kept in Ship's store, so leaving Settings and coming back finds it as it was left.
+  const archived = isArchived();
   const toast = useToast();
   const archive = () => {
-    setArchived(true);
-    toast({ title: 'Archived Ship mobile', action: { label: 'Undo', onClick: () => setArchived(false) } });
+    const undo = setArchived(true);
+    toast({ title: 'Archived Ship mobile', action: { label: 'Undo', onClick: undo } });
   };
   return (
     <div className={t.column}>
@@ -62,7 +63,7 @@ export function Settings() {
               <p className={t.meta}>Releases stop and the history stays readable.</p>
             </div>
           )}
-          <Button size="sm" variant={archived ? 'secondary' : 'danger'} onClick={archived ? () => setArchived(false) : archive}>
+          <Button size="sm" variant={archived ? 'secondary' : 'danger'} onClick={archived ? () => void setArchived(false) : archive}>
             {archived ? 'Unarchive project' : 'Archive project'}
           </Button>
         </div>

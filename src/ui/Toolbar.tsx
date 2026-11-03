@@ -103,7 +103,8 @@ function Action({ primary, label, keys, className, ...props }: ActionProps) {
     />
   );
   return label ? (
-    <Tip label={label} keys={keys} offset={TIP_OFFSET}>
+    // Disabled, it still says its name; the shortcut, which would do nothing, is left out.
+    <Tip label={label} keys={props.disabled ? undefined : keys} offset={TIP_OFFSET}>
       {button}
     </Tip>
   ) : (

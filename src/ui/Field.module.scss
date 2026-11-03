@@ -18,9 +18,14 @@
 }
 
 // The box carries the edge so leading and trailing parts sit inside it.
-// radius-lg 10; an embedded key sits 4 from the outer edge on three sides
-// (24 tall in 32), so it takes 10 − 4 = radius-sm 6.
+// A field's radius is radius-lg 10 unless a look draws its fields with
+// another (radius-field). What sits 4 from the outer edge on three sides
+// (an embedded key, 24 tall in 32) takes the field's radius − 4: 10 − 4 =
+// 6, radius-sm, in the site; never under 2, so it stays rounded.
 .box {
+  --field-radius: var(--radius-field, var(--radius-lg));
+  --field-inner-radius: max(calc(var(--field-radius) - var(--space-1)), 2px);
+
   box-sizing: border-box;
   display: flex;
   align-items: center;
@@ -28,7 +33,7 @@
   min-height: var(--control-md);
   padding: 0 var(--space-3);
   border: var(--line-width, 1px) solid var(--line-strong);
-  border-radius: var(--radius-lg);
+  border-radius: var(--field-radius);
   background: var(--surface);
   color: var(--ink);
   cursor: text;
@@ -132,7 +137,7 @@ textarea.control {
 }
 
 // A shortcut key inside the field: 24 tall in 32, so 4 from the outer edge
-// above, below and right; radius 10 − 4 = radius-sm 6.
+// above, below and right; the field's radius − 4 (10 − 4 = 6 in the site).
 .key {
   box-sizing: border-box;
   display: inline-flex;
@@ -140,7 +145,7 @@ textarea.control {
   gap: 1px;
   height: 24px;
   padding: 0 var(--space-2);
-  border-radius: var(--radius-sm);
+  border-radius: var(--field-inner-radius);
   background: var(--surface-sunken);
   box-shadow: inset 0 0 0 1px var(--line);
   color: var(--ink-muted);

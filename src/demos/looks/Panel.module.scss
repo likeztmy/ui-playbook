@@ -1,21 +1,13 @@
 // The screens draw everything from the look's variables, so a missing one shows as the page's own.
 .panel {
-  // A look publishes no info tone; the page's :root resolves it to the page's own accent before the
-  // look's values arrive, so it is set again here, where it reads the look's (C13: info stays a tone).
-  --info: var(--accent-text);
-  --info-soft: var(--accent-soft);
   // The site's steps a look doesn't publish, mapped onto the nearest it does: a dialog takes the
   // look's largest radius and shadow, not the site's 18px and lg.
   --radius-xs: var(--radius-sm);
   --radius-xl: var(--radius-lg);
   --shadow-lg: var(--shadow-md);
-  // A line drawn as a gap between cells: a 0.5px gap paints nothing at 1x (a border would round up),
-  // so it is a whole pixel there and the look's own width where a half pixel can be drawn.
+  // A line drawn as a gap between cells: a 0.5px gap can land between device pixels and paint
+  // nothing, at 1x and at 2x alike (a border would round up), so a gap is never under a pixel.
   --line-gap: max(1px, var(--line-width));
-
-  @media (min-resolution: 2dppx) {
-    --line-gap: var(--line-width);
-  }
 
   container-type: inline-size;
   color: var(--ink);

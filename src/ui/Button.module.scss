@@ -13,6 +13,10 @@
   // A pill, filled to say "press me"; never outlined, never lifted.
   border-radius: var(--radius-control);
   background: var(--fill-control);
+  // Unless a look's product edges its default button (Primer's fill is its page's own #f6f8fa). With
+  // no control-edge set, as on the site, the declaration is dropped and there is no outline.
+  outline: var(--line-width, 1px) solid var(--control-edge);
+  outline-offset: calc(-1 * var(--line-width, 1px));
   color: var(--ink);
   // Body, 14 / 20, whatever the button sits in: a reading page's 15 / 24
   // isn't a control's size.
@@ -90,6 +94,7 @@
 
 .primary {
   background: var(--accent);
+  outline-color: transparent;
   color: var(--on-accent);
 
   &[data-popup-open] {
@@ -110,6 +115,7 @@
 // Toolbars and Cancel: no fill until hovered.
 .ghost {
   background: transparent;
+  outline-color: transparent;
   color: var(--ink-muted);
 
   &[data-popup-open] {
@@ -162,6 +168,7 @@
 // Destructive confirm: the dialog's one filled button.
 .dangerFill {
   background: var(--danger);
+  outline-color: transparent;
   color: var(--on-danger);
 
   &:not([data-disabled]) {

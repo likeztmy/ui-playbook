@@ -1,5 +1,6 @@
 // Contrast of a look's text and edge colours, worked out from its values: each role against every
-// surface, and against accent-soft and its own soft fill laid on each, in WCAG 2.2's ratio.
+// surface, and against accent-soft and its own soft fill laid on each, the soft fill also on a selected
+// row's accent-soft (a badge in a chosen row), in WCAG 2.2's ratio.
 // color-mix() and alpha are composited as the browser does (checked against Chrome's canvas).
 import type { Name, Value } from './look';
 
@@ -79,7 +80,12 @@ const ratio = (a: RGBA, b: RGBA) => {
 };
 
 const SURFACES = ['bg', 'surface', 'surface-raised', 'surface-sunken'] as const;
-const SOFT: Partial<Record<Name, Name>> = { danger: 'danger-soft', success: 'success-soft', warning: 'warning-soft' };
+const SOFT: Partial<Record<Name, Name>> = {
+  danger: 'danger-soft',
+  success: 'success-soft',
+  warning: 'warning-soft',
+  info: 'info-soft',
+};
 
 /** What each checked role is read against, and the ratio it needs. */
 const ROLES: Partial<Record<Name, { need: number; on: (v: Values, t: Theme) => RGBA[] }>> = {};
@@ -88,8 +94,18 @@ const grounds = (v: Values, t: Theme, fills: Name[] = []) => {
   const surfaces = SURFACES.map((s) => over(parse(v[s]![t]), bg));
   return [...surfaces, ...fills.flatMap((f) => surfaces.map((s) => over(parse(v[f]![t]), s)))];
 };
-for (const n of ['ink', 'ink-muted', 'accent-text', 'danger', 'success', 'warning'] as const)
-  ROLES[n] = { need: 4.5, on: (v, t) => grounds(v, t, ['accent-soft', ...(SOFT[n] ? [SOFT[n]!] : [])]) };
+// A status colour's own soft fill, laid on a selected row: its soft over accent-soft over each surface.
+const chosen = (v: Values, t: Theme, soft: Name) =>
+  grounds(v, t, ['accent-soft'])
+    .slice(SURFACES.length)
+    .map((g) => over(parse(v[soft]![t]), g));
+for (const n of ['ink', 'ink-muted', 'accent-text', 'danger', 'success', 'warning', 'info'] as const) {
+  const soft = SOFT[n];
+  ROLES[n] = {
+    need: 4.5,
+    on: (v, t) => [...grounds(v, t, ['accent-soft', ...(soft ? [soft] : [])]), ...(soft ? chosen(v, t, soft) : [])],
+  };
+}
 ROLES['on-accent'] = { need: 4.5, on: (v, t) => [parse(v.accent![t]), parse(v['accent-hover']![t])] };
 ROLES['on-danger'] = { need: 4.5, on: (v, t) => [parse(v.danger![t])] };
 ROLES['line-strong'] = { need: 3, on: (v, t) => grounds(v, t) };

@@ -19,7 +19,7 @@ const ACTIONS: Action[] = [
 // Forwards the rest: Tip merges its trigger props and ref into this element.
 function IconButton({ label, Icon, ...props }: { label: string; Icon: LucideIcon } & ComponentProps<typeof Button>) {
   return (
-    <Button {...props} variant="ghost" icon aria-label={label}>
+    <Button focusableWhenDisabled {...props} variant="ghost" icon aria-label={label}>
       <Icon size={16} aria-hidden />
     </Button>
   );
@@ -29,18 +29,20 @@ type RowProps = {
   openFirst?: boolean;
   /** What each button runs, by its label. */
   run?: Record<string, () => void>;
+  /** Which buttons can't run now, by label: they keep their name, without the shortcut. */
+  off?: Record<string, boolean>;
   /** After the buttons: what they act on. */
   children?: ReactNode;
 };
 
 /** A row of icon buttons sharing one delay. */
-function Row({ openFirst, run, children }: RowProps) {
+function Row({ openFirst, run, off, children }: RowProps) {
   return (
     <div className={s.toolRow}>
       <TipGroup>
         {ACTIONS.map(([label, Icon, keys], i) => (
-          <Tip key={label} label={label} keys={keys} defaultOpen={openFirst && i === 1}>
-            <IconButton label={label} Icon={Icon} onClick={run?.[label]} />
+          <Tip key={label} label={label} keys={off?.[label] ? undefined : keys} defaultOpen={openFirst && i === 1}>
+            <IconButton label={label} Icon={Icon} onClick={run?.[label]} disabled={off?.[label]} />
           </Tip>
         ))}
       </TipGroup>
@@ -81,7 +83,7 @@ function ViewControls() {
     'Fit to screen': () => go(1),
   };
   return (
-    <Row openFirst run={run}>
+    <Row openFirst run={run} off={{ Undo: !past.length, Redo: !future.length }}>
       <span className={s.sketchZoom} aria-live="polite">
         {Math.round(zoom * 100)}%
       </span>

@@ -37,7 +37,7 @@ The radius scale steps in 2–4px so the common insets always land on a token.
 | Switch track `radius-full` | 2 | Knob `radius-full` |
 | Dialog `radius-xl` 18 | `space-5` 20 | Buttons, their own pill |
 
-A pill in a pill is concentric by construction, as long as the inset is equal on every side, which is why Precision makes toolbars, segmented controls and toasts pills. A pill inside a corner that isn't one has no such luck: it takes the container's radius minus its inset, like any other inner shape, so a segmented control in a property panel is 10, not a pill. The dialog is the exception above: its padding exceeds its radius, so its buttons keep their own shape.
+A pill in a pill is concentric by construction, as long as the inset is equal on every side, which is why Precision makes toolbars, segmented controls and toasts pills. A pill inside a corner that isn't one has no such luck: it takes the container's radius minus its inset, like any other inner shape, so a segmented control in a property panel is 10, not a pill. A toast works the other way round: it takes its buttons' radius plus the inset, so in a look whose controls are 6, it is 10. The dialog is the exception above: its padding exceeds its radius, so its buttons keep their own shape.
 
 ## Common mistakes
 

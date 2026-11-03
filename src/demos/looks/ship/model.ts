@@ -58,8 +58,8 @@ const HOURS: Record<string, number> = {
 };
 export const hoursAgo = (r: Release) => HOURS[r.id] ?? r.age * 24;
 
-/** How long ago, in the short form a list's time column takes: 2h, 3d. */
-export const ago = (hours: number) => (hours < 24 ? `${hours}h` : `${Math.round(hours / 24)}d`);
+/** How long ago, in the short form a list's time column takes: now, 2h, 3d. */
+export const ago = (hours: number) => (hours < 1 ? 'now' : hours < 24 ? `${hours}h` : `${Math.round(hours / 24)}d`);
 
 /** What last happened to a release, and who did it: the line Recent and the release's history share. */
 export function lastChange(r: Release): { who: string; what: string } {

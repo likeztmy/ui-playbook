@@ -22,7 +22,7 @@ Revealed actions have a second cost: nobody knows they're there until they hover
 
 ### How long to wait
 
-[NN/g's timings](https://www.nngroup.com/articles/timing-exposing-content/) for hover: feedback within 0.1 seconds; wait 0.3 to 0.5 seconds for the pointer to settle before revealing anything; keep what was revealed until the pointer has been away from both the trigger and the content for more than half a second. The wait is a tax on every hover, so a [tooltip](/components/tooltip) group pays it once: after the first tip, neighbours open at once.
+[NN/g's timings](https://www.nngroup.com/articles/timing-exposing-content/) for hover: feedback within 0.1 seconds; wait 0.3 to 0.5 seconds for the pointer to settle before revealing anything; keep what was revealed until the pointer has been away from both the trigger and the content for more than half a second. The wait is a tax on every hover, so a [tooltip](/components/tooltip) group pays it once: after the first tip, neighbours open at once. A submenu waits less, 100 ms, the [Menu](/components/menu)'s: the pointer comes to its row on purpose, and the safe area already forgives the trip across.
 
 ## When it doesn't apply
 

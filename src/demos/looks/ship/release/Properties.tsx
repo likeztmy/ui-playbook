@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { Badge } from '../../../../ui/Badge';
-import { hoursAgo, tone, type Release, type Status } from '../model';
+import { tone, type Release, type Status } from '../model';
+import { hoursOf } from '../store';
 import { when } from './story';
 import t from './Release.module.scss';
 
@@ -17,7 +18,7 @@ export function Properties({ release: r, status }: { release: Release; status: S
     ['Owner', r.owner],
     ['Rollout', r.rollout ? `${r.rollout}% of users` : '–'],
     ['Crash-free', r.crashFree ? `${r.crashFree}%` : '–'],
-    ['Updated', when(hoursAgo(r))],
+    ['Updated', when(hoursOf(r))],
   ];
   return (
     <aside className={t.side} aria-labelledby="ship-properties">

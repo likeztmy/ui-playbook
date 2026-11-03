@@ -86,7 +86,7 @@ export function Release({ id }: { id: string }) {
               {told.checks.length ? <CheckList checks={told.checks} /> : <p className={t.meta}>Checks run when a release is sent for review.</p>}
             </Tabs.Panel>
             <Tabs.Panel value="notes" className={t.panel}>
-              <p className={t.notes}>{told.notes || 'No notes yet.'}</p>
+              {told.notes ? <p className={t.notes}>{told.notes}</p> : <p className={t.meta}>Notes are written when a release is sent for review.</p>}
             </Tabs.Panel>
           </Tabs.Root>
         </div>

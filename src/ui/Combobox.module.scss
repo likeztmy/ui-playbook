@@ -17,7 +17,7 @@
 }
 
 // The chevron is a 24px button, 4 from the edge on three sides like a
-// field's embedded key: radius 10 − 4 = radius-sm 6.
+// field's embedded key: the field's radius − 4 (10 − 4 = 6 in the site).
 .trigger {
   display: grid;
   flex: none;
@@ -26,7 +26,7 @@
   height: var(--control-sm);
   padding: 0;
   border: 0;
-  border-radius: var(--radius-sm);
+  border-radius: var(--field-inner-radius);
   background: transparent;
   color: var(--ink-muted);
   cursor: default;
@@ -64,8 +64,8 @@
   }
 }
 
-// Chips are 24 tall, 4 from the box's edge, so they take radius-sm 6, the
-// same as an embedded key: concentric with the field.
+// Chips are 24 tall, 4 from the box's edge, so they take the field's radius
+// − 4, the same as an embedded key: concentric with the field.
 .chip {
   box-sizing: border-box;
   display: inline-flex;
@@ -73,7 +73,7 @@
   gap: var(--space-0-5);
   height: var(--control-sm);
   padding: 0 var(--space-0-5) 0 var(--space-2);
-  border-radius: var(--radius-sm);
+  border-radius: var(--field-inner-radius);
   background: var(--fill-control);
   color: var(--ink);
   font-size: 13px;
@@ -93,7 +93,8 @@
   height: 20px;
   padding: 0;
   border: 0;
-  border-radius: var(--radius-xs);
+  // 2 inside the chip: its radius − 2 (6 − 2 = radius-xs 4 in the site).
+  border-radius: max(calc(var(--field-inner-radius) - var(--space-0-5)), 2px);
   background: transparent;
   color: var(--ink-muted);
   cursor: default;

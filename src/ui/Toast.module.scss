@@ -1,6 +1,7 @@
-// A pill: surface-raised, shadow-lg, inset space-1 4 with the text side at
-// space-4. Its buttons are pills too, so 32 + 4 × 2 = 40 and the shapes
-// are concentric by construction.
+// surface-raised, shadow-lg, inset space-1 4 with the text side at space-4;
+// 32 + 4 × 2 = 40 tall. Its corner is its buttons' radius plus that inset,
+// so the two stay concentric: a pill around pills in the site, a rounded
+// rectangle where a look's controls are (Primer's 6 → 10).
 
 .viewport {
   position: fixed;
@@ -41,7 +42,7 @@
   min-height: 40px;
   margin: 0 auto;
   padding: var(--space-1) var(--space-1) var(--space-1) var(--space-4);
-  border-radius: var(--radius-full);
+  border-radius: calc(var(--radius-control) + var(--space-1));
   background: var(--surface-raised);
   box-shadow: var(--shadow-lg);
   color: var(--ink);

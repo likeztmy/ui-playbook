@@ -11,6 +11,12 @@
 
 .page[data-sheet] {
   flex: 1;
+
+  // The sheet sets To and Subject at the phone's 17; the message takes the same size, so one composer
+  // has one text size, as in iOS Mail.
+  [role='textbox'] {
+    font-size: 17px;
+  }
 }
 
 .bar {

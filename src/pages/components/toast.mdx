@@ -41,7 +41,7 @@ Hovering or focusing a toast pauses its clock; F6 moves keyboard focus into the 
 
 | Part | Token | Value |
 | --- | --- | --- |
-| Shape | `surface-raised`, `shadow-lg`, `radius-full` | pill |
+| Shape | `surface-raised`, `shadow-lg`, `radius-control` + 4 | pill |
 | Height | button 32 + inset 4 × 2; grows with a second line | 40 |
 | Inset | `space-1`; `space-4` before the text | 4 |
 | Width | fits the text, 320 to 440; never wider than the screen | 320 |
@@ -50,7 +50,7 @@ Hovering or focusing a toast pauses its clock; F6 moves keyboard focus into the 
 | Actions | one pill button, then Dismiss | 32 |
 | Place | bottom centre, `z-toast` | 300 |
 
-A pill in a pill: the buttons inside are pills with an even 4px inset, so they're concentric by construction.
+The corner is the buttons' radius plus the 4px inset, so the two stay concentric: a pill around pill buttons, a 10px corner around 6px ones.
 
 Toasts rise 8px out of `enter-scale` on the smooth spring and leave in `duration-fast`, sinking and fading. The newest sits lowest; older ones move up, on the same spring, to make room. Three at most; a fourth pushes the oldest out.
 

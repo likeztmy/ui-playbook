@@ -57,6 +57,8 @@ export function Button({ variant, size, icon, label, loading, loadingLabel, lead
 
   const button = (
     <BaseButton
+      // A disabled icon button keeps its Tip, so it stays reachable by pointer and focus.
+      focusableWhenDisabled={props.focusableWhenDisabled ?? Boolean(label)}
       {...props}
       aria-label={label ?? props['aria-label']}
       aria-busy={loading || undefined}

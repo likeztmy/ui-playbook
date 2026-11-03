@@ -124,23 +124,18 @@ function BulkBar({ rows, selected, onRows, onSelected, selectAll }: BarProps) {
   const take = (title: string) => {
     onRows(rows.filter((f) => !selected.includes(f.name)));
     onSelected([]);
-    // The buttons go quiet, so focus goes to the select-all box, as after Clear selection.
+    // The actions leave with the selection, so focus goes to the select-all box, as after Clear selection.
     setTimeout(() => selectAll()?.focus());
     toast({ title, action: { label: 'Undo', onClick: () => onRows(rows) } });
   };
   return (
     <div className={s.bulkBar} data-active={selected.length > 0 || undefined}>
       <span aria-live="polite">{selected.length ? `${selected.length} selected` : files(rows.length)}</span>
-      {rows.length ? (
+      {/* The actions appear with a selection, as in Gmail and Linear, so none sits greyed out. */}
+      {selected.length > 0 && (
         <>
           <Menu.Root>
-            <Menu.Trigger
-              render={
-                <Button size="sm" disabled={!selected.length}>
-                  Move…
-                </Button>
-              }
-            />
+            <Menu.Trigger render={<Button size="sm">Move…</Button>} />
             <Menu.Popup align="end" finalFocus={false}>
               {FOLDERS.map((f) => (
                 <Menu.Item key={f} onClick={() => take(`Moved ${files(selected.length)} to ${f}`)}>
@@ -149,11 +144,12 @@ function BulkBar({ rows, selected, onRows, onSelected, selectAll }: BarProps) {
               ))}
             </Menu.Popup>
           </Menu.Root>
-          <Button size="sm" variant="danger" disabled={!selected.length} onClick={() => take(`Deleted ${files(selected.length)}`)}>
+          <Button size="sm" variant="danger" onClick={() => take(`Deleted ${files(selected.length)}`)}>
             Delete
           </Button>
         </>
-      ) : (
+      )}
+      {!rows.length && (
         <Button size="sm" onClick={() => onRows(FILES)}>
           Reset demo
         </Button>

@@ -58,6 +58,11 @@ export const linear: Look = {
       dark: 'color-mix(in oklab, #5e6ad2, #fff 35%)',
       note: 'not read; the accent, darker on light and lighter on dark so it holds on accent-soft, twice over on a selected row',
     },
+    info: {
+      light: '#4450b2',
+      dark: 'color-mix(in oklab, #5e6ad2, #fff 40%)',
+      note: 'not read; accent-text, a step lighter on dark so a badge holds on a selected row',
+    },
     success: { light: '#007253', dark: '#54cc9e', note: 'the playbook’s, darker on light so it holds on accent-soft' },
     warning: { light: '#935500', dark: '#eeaa3b', note: 'the playbook’s, darker on light so it holds on accent-soft' },
     'focus-ring': {
@@ -70,6 +75,7 @@ export const linear: Look = {
     'radius-md': { ...px('8px'), note: 'measured: sidebar items, text fields, the group header' },
     'radius-lg': { ...px('10px'), note: 'measured: a settings card; the content panel is 12px' },
     'radius-control': { ...px('9999px'), note: 'radius-rounded: buttons, tabs and chips are pills' },
+    'radius-field': { ...px('8px'), note: 'measured: text fields' },
     'shadow-sm': {
       light: '0 3px 6px -2px rgb(0 0 0 / 0.02), 0 1px 1px rgb(0 0 0 / 0.04)',
       dark: '0 0.5px 1px 1px rgb(0 0 0 / 0.3)',

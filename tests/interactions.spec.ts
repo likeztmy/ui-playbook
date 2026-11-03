@@ -1569,6 +1569,7 @@ test('table: Move… and Delete take the ticked rows, with Undo, and focus goes 
   await hydrateAll(page);
   const live = page.locator('figure').first();
   const all = live.getByRole('checkbox', { name: 'Select all rows' });
+  await expect(live.getByRole('button', { name: 'Delete' }), 'no actions before a selection').toHaveCount(0);
   await live.getByRole('checkbox', { name: 'Select Metrics.csv' }).click();
   await live.getByRole('checkbox', { name: 'Select Brand guide.pdf' }).click();
   await live.getByRole('button', { name: 'Delete' }).click();
@@ -2382,6 +2383,18 @@ test('looks gallery: a window whose places live in the address, and only its pan
   await page.getByRole('option', { name: 'After Linear' }).click();
   await expect(page).toHaveURL(/look=linear/);
   expect(await page.evaluate(() => history.length)).toBe(before);
-  const info = await ship.evaluate((el) => [getComputedStyle(el).getPropertyValue('--info'), getComputedStyle(el).getPropertyValue('--accent-text')]);
-  expect(info[0], "the info tone is the look's own accent").toBe(info[1]);
+  const tones = () => ship.evaluate((el) => ['--info', '--accent-text'].map((n) => getComputedStyle(el).getPropertyValue(n).trim()));
+  const [info, accent] = await tones();
+  expect(info, "Linear's info tone is its own accent text").toBe(accent);
+  // Clay's accent is a rust beside danger's crimson, so its info is a blue of its own.
+  await page.getByRole('combobox', { name: 'Look' }).click();
+  await page.getByRole('option', { name: 'Playbook Clay' }).click();
+  const [clayInfo, clayAccent] = await tones();
+  expect(clayInfo, "Clay's info tone").toBe('#427097');
+  expect(clayAccent).not.toBe(clayInfo);
+
+  // A release that isn't there (a draft undone, then Back) opens the list, not another release.
+  await page.goto('/systems/looks?page=release&release=d9');
+  await hydrateAll(page);
+  await expect(page.getByRole('region', { name: 'Releases' })).toBeVisible();
 });

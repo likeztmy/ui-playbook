@@ -31,12 +31,16 @@ export const NAMES = [
   'success-soft',
   'warning',
   'warning-soft',
+  'info',
+  'info-soft',
   'scrim',
   'focus-ring',
   'radius-sm',
   'radius-md',
   'radius-lg',
   'radius-control',
+  'radius-field',
+  'control-edge',
   'shadow-xs',
   'shadow-sm',
   'shadow-md',
@@ -74,8 +78,10 @@ type Token = { name: string; value?: unknown; light?: string; dark?: string };
 const groups = precision as unknown as Record<string, { tokens?: Token[]; palettes?: Palette[] }>;
 type Palette = { id: string; name: string; values: Record<string, { light: string; dark: string }> };
 
-// Type, edges and spacing the components read beside the colour tokens: the work-tool system's.
+// Type, edges and spacing the components read beside the colour tokens: the work-tool system's. A
+// filled button needs no line round it; a product that draws one sets control-edge.
 const SIZES: Record<string, string> = {
+  'control-edge': 'transparent',
   'text-sm': '12px',
   'text-md': '14px',
   'text-lg': '16px',
@@ -89,6 +95,11 @@ const SIZES: Record<string, string> = {
   'space-card': '16px',
   'space-gap': '16px',
 };
+
+// What a look may leave out because it follows from another of its values: info is the accent's
+// text unless the look gives a tone of its own, and a field takes the large radius unless the
+// product draws its fields with another.
+const FOLLOWS: Partial<Record<Name, Name>> = { info: 'accent-text', 'info-soft': 'accent-soft', 'radius-field': 'radius-lg' };
 
 const all = new Map<string, Token>();
 for (const g of Object.values(groups)) for (const t of g.tokens ?? []) all.set(t.name, t);
@@ -107,22 +118,32 @@ export const PALETTES = groups.color.palettes!;
 export function playbook(palette = 'blue'): Record<Name, Value> {
   const over = PALETTES.find((p) => p.id === palette)?.values ?? {};
   const sans = (precision as unknown as { type: { families: { sans: string } } }).type.families.sans;
-  return Object.fromEntries(
-    NAMES.map((n) => {
-      if (n === 'font-sans') return [n, { light: sans, dark: sans }];
-      if (SIZES[n]) return [n, { light: SIZES[n], dark: SIZES[n] }];
-      if (over[n]) return [n, over[n]];
-      const t = all.get(n)!;
-      return [n, { light: resolve(t, 'light'), dark: resolve(t, 'dark') }];
-    }),
-  ) as Record<Name, Value>;
+  const own = (n: Name): Value => {
+    if (n === 'font-sans') return { light: sans, dark: sans };
+    if (SIZES[n]) return { light: SIZES[n], dark: SIZES[n] };
+    if (over[n]) return over[n];
+    const t = all.get(n);
+    if (!t) return { ...own(FOLLOWS[n]!), note: FOLLOWS[n] };
+    // An alias to a value the palette changes follows the palette's.
+    const alias = typeof t.value === 'string' && t.value.match(/^\{(.+)\}$/)?.[1];
+    if (alias && over[alias]) return over[alias];
+    return { light: resolve(t, 'light'), dark: resolve(t, 'dark') };
+  };
+  return Object.fromEntries(NAMES.map((n) => [n, own(n)])) as Record<Name, Value>;
 }
 
 /** Every variable of a look, the product's where it publishes one, else the playbook's. Each text and
  * edge colour's note ends with its lowest contrast, from `contrast.ts`. */
 export function valuesOf(look: Look): [Name, Value][] {
   const base = playbook();
-  const all = Object.fromEntries(NAMES.map((n) => [n, look.values[n] ?? base[n]])) as Record<Name, Value>;
+  // A value that follows another follows the look's, not the playbook's: Primer's info is Primer's blue.
+  const pick = (n: Name): Value => {
+    const v = look.values[n];
+    if (v) return v;
+    const from = FOLLOWS[n];
+    return from && look.values[from] ? { ...look.values[from]!, note: from } : base[n];
+  };
+  const all = Object.fromEntries(NAMES.map((n) => [n, pick(n)])) as Record<Name, Value>;
   return NAMES.map((n) => {
     const low = lowestNote(all, n);
     const v = all[n];
